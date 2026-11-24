@@ -42,7 +42,7 @@
           "en": "Colony Drift"
         },
         "role": "Passive",
-        "effect": "Rises 0.5 m/s through haze layers without stamina cost; cannot function in clear-air zones.",
+        "effect": "The colony drifts steadily upward through thick mist without tiring, but loses its grip and sinks when the air clears.",
         "numbers": {}
       },
       "weakness": "Punctured vesicles cause rapid descent; vulnerable to kinetic impact or static discharge.",
@@ -170,7 +170,7 @@
           "en": "Toggle"
         },
         "role": "Control",
-        "effect": "Switches to Chemo-mode: heals 2 HP/turn but moves slowly, or Photo-mode: moves fast but deals 3 damage to self.",
+        "effect": "The creature shifts its metabolism to either draw strength from its surroundings while crawling sluggishly, or surge forward at great speed while weakening itself.",
         "numbers": {}
       },
       "weakness": "Symbiont harvestable; predators can drain chamber energy, leaving Taumoeba immobile.",
@@ -234,7 +234,7 @@
           "en": "Chorus Hum"
         },
         "role": "Social",
-        "effect": "Emits a pressure pulse that pulls all allies within map range into a swarm (+20% defense). Propagation relies on dense haze or wet ground to couple near-field vibrations.",
+        "effect": "The colony vibrates to draw nearby allies into a tight cluster, making them harder to scatter. This resonance only travels effectively through thick mist or damp earth.",
         "numbers": {}
       },
       "weakness": "Sonic Disruption: ultrasonic bursts scramble mucilage coupling and break swarm formation.",
@@ -293,7 +293,7 @@
           "en": "Silica Crust"
         },
         "role": "Defence",
-        "effect": "-25% damage taken from Acid and Chemical attacks.",
+        "effect": "The colony hardens its outer shell, causing corrosive sprays and chemical splashes to slide harmlessly off its surface.",
         "numbers": {}
       },
       "weakness": "Heavy shell reduces movement speed by 15%; vulnerable to high-frequency vibration that shatters coats.",

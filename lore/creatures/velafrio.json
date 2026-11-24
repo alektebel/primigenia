@@ -36,7 +36,7 @@
           "en": "Harmonic Accretion"
         },
         "role": "Control",
-        "effect": "Unfurls a magnetic field that pulls 3 resource tokens from the environment into a 2m radius; also aligns player to magnetic north.",
+        "effect": "The creature's sail unfolds and generates a strong magnetic pull, drawing scattered resources from the surroundings toward its center. This shifting field subtly guides your path, aligning your movement with the natural magnetic flow.",
         "numbers": {}
       },
       "weakness": "High radiation spikes disrupt sail alignment, causing resource loss and stun.",
@@ -101,7 +101,7 @@
           "en": "Radiolytic Soak"
         },
         "role": "Defence",
-        "effect": "Player absorbs 50% of incoming radiation damage for 6 turns; Velafrío gains a temporary shield token.",
+        "effect": "The creature's translucent membrane thickens, creating a protective barrier that absorbs harsh radiation. This shimmering shield lingers for a short while, dampening the surrounding energy before fading away.",
         "numbers": {}
       },
       "weakness": "Absorbed dose must be vented; venting reveals a chemical plume.",
@@ -163,7 +163,7 @@
           "en": "Flash Beacon"
         },
         "role": "Social",
-        "effect": "Emits a chemical pulse that attracts passive creatures within 10m and reveals hidden resources for 4 turns.",
+        "effect": "The creature pulses with chemical luminescence, sending out a glowing wave that draws nearby passive creatures closer. This radiant burst also clears the air, revealing previously hidden resources for a short while.",
         "numbers": {}
       },
       "weakness": "Flash consumes stored energy; Velafrío enters stasis for 2 turns after.",

@@ -35,7 +35,7 @@
           "en": "Lipid Reserve"
         },
         "role": "Defence",
-        "effect": "Absorbs 30% of incoming damage by metabolizing stored fat, regenerates health over 2 turns",
+        "effect": "The creature draws upon its thick fat reserves to soften blows, leaving it visibly winded but quickly recovering its strength. It slowly heals its wounds over a short while as it metabolizes its stored energy.",
         "numbers": {}
       },
       "weakness": "Fat metabolism produces heat; prolonged use causes overheating in dry biomes",
@@ -93,7 +93,7 @@
           "en": "Euphoric Sync"
         },
         "role": "Social",
-        "effect": "Grants +2 morale to all nearby allies and reduces conflict chance by 40% for 3 turns",
+        "effect": "The creature engages in rhythmic movements and vocalizations that lift the spirits of those nearby, making them feel united and calm. This festive atmosphere strongly discourages any sudden altercations among the group.",
         "numbers": {}
       },
       "weakness": "Predictable mating/festival windows allow enemies to ambush gathering sites",
@@ -143,7 +143,7 @@
           "en": "Pelvic Sweep"
         },
         "role": "Defence",
-        "effect": "30% chance to knock back melee attackers; +20% success in social contests",
+        "effect": "The creature swings its heavy muscular tail with surprising force, often sending close attackers stumbling backward. It also carries itself with such confident grace that it strongly sways opponents in negotiations.",
         "numbers": {}
       },
       "weakness": "Tail is highly vascular and vulnerable to crushing; requires constant high-calorie intake",

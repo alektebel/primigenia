@@ -33,7 +33,7 @@
           "en": "Heat Sink"
         },
         "role": "Passive",
-        "effect": "Immune to Kiln heat damage; reduce 'Overheat' risk by 50%.",
+        "effect": "Its bright white dorsal plates shimmer and reflect intense warmth, shielding the creature from the kiln's scorching air. It moves steadily through the heat without ever showing signs of distress.",
         "numbers": {}
       },
       "weakness": "Cold shock; player can use ice/cool skill to stun or slow Cenizo.",
@@ -148,7 +148,7 @@
           "en": "Glass Crush"
         },
         "role": "Basic",
-        "effect": "Deal 5 damage and reveal hidden salt deposits; breaks terrain obstacles.",
+        "effect": "Its sturdy mandibles snap shut with a sharp crack, shattering glassy surfaces and clearing the path ahead. The impact exposes shimmering salt deposits hidden beneath the debris.",
         "numbers": {}
       },
       "weakness": "Beak dulls on hard glass; player can use 'Sharpen' on allies or 'Dull' on enemies.",
@@ -203,7 +203,7 @@
           "en": "Flash Shield"
         },
         "role": "Defence",
-        "effect": "Gain resistance to flare damage; reduce incoming UV/energy damage by 70%.",
+        "effect": "Its dark pupils shrink tightly whenever bright light strikes nearby, shielding its eyes from the glare. It remains calm and focused even when exposed to intense flashes.",
         "numbers": {}
       },
       "weakness": "Slow reaction time; player can use 'Blind' skill during flare to exploit delayed defense.",

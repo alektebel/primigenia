@@ -21,15 +21,15 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_sail_people.c1 | Finger-sail locomotion & wind-driven cruising | thermal plumes over shallow epicontinental seas create strong crosswinds ← high carbonate alkalinity sustains vast pelagic fish schools ← baseline 1-g gravity limits sustained flight without massive wings | **F9** Wind shear is high on exposed ridges and low-g plains due to thermal plumes.; **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Aero-Sail (`at_sail_people.aero_sail`) | Engage | Moves unit across open water at double speed, ignores terrain penalties (duration 4 turns) | Calm winds ground the unit, leaving it vulnerable to melee |
-| at_sail_people.c2 | Tongue-mane manipulators & pelagic strike hunting | high partial oxygen pressure elevates aerobic burst capacity ← shallow, warm seas concentrate nutrient upwellings near reefs ← global island fragmentation isolates prey in coastal straits | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes. | Glossal Lash (`at_sail_people.glossal_lash`) | Poke | Strikes a target within 8m for heavy bludgeoning damage, ignores armor (once per encounter) | Predictable strike trajectory allows opponents to sidestep |
-| at_sail_people.c3 | Rigid finger-sails for wind-driven aquatic propulsion | Scattered island geography demands efficient travel ← Shallow seas allow wind interaction ← Digits elongate and stiffen to support membrane ← Sails replace webbing for speed | **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Wind-Ride (`at_sail_people.wind_ride`) | Basic | Move 40% faster downwind; ignore current drag | Immobilized in dead calm; vulnerable to headwinds |
+| at_sail_people.c1 | Finger-sail locomotion & wind-driven cruising | thermal plumes over shallow epicontinental seas create strong crosswinds ← high carbonate alkalinity sustains vast pelagic fish schools ← baseline 1-g gravity limits sustained flight without massive wings | **F9** Wind shear is high on exposed ridges and low-g plains due to thermal plumes.; **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Aero-Sail (`at_sail_people.aero_sail`) | Engage | The creature glides swiftly across open water, effortlessly ignoring obstacles and currents for a short while. | Calm winds ground the unit, leaving it vulnerable to melee |
+| at_sail_people.c2 | Tongue-mane manipulators & pelagic strike hunting | high partial oxygen pressure elevates aerobic burst capacity ← shallow, warm seas concentrate nutrient upwellings near reefs ← global island fragmentation isolates prey in coastal straits | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes. | Glossal Lash (`at_sail_people.glossal_lash`) | Poke | The creature lashes out at a nearby target with a heavy strike that easily bypasses protective cover. | Predictable strike trajectory allows opponents to sidestep |
+| at_sail_people.c3 | Rigid finger-sails for wind-driven aquatic propulsion | Scattered island geography demands efficient travel ← Shallow seas allow wind interaction ← Digits elongate and stiffen to support membrane ← Sails replace webbing for speed | **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Wind-Ride (`at_sail_people.wind_ride`) | Basic | The creature catches the wind and moves strongly downwind, effortlessly ignoring water resistance. | Immobilized in dead calm; vulnerable to headwinds |
 
 ### at_sail_people.c1: Finger-sail locomotion & wind-driven cruising
 
 Trait ← thermal plumes over shallow epicontinental seas create strong crosswinds ← high carbonate alkalinity sustains vast pelagic fish schools ← baseline 1-g gravity limits sustained flight without massive wings ← F9, F10, F3
 
-- **Skill:** Aero-Sail (Engage): Moves unit across open water at double speed, ignores terrain penalties (duration 4 turns)
+- **Skill:** Aero-Sail (Engage): The creature glides swiftly across open water, effortlessly ignoring obstacles and currents for a short while.
 - **Weakness:** Calm winds ground the unit, leaving it vulnerable to melee
 - **Observe:**
   1. Hands and feet bear elongated, webbed finger-plates that catch air
@@ -47,7 +47,7 @@ Trait ← thermal plumes over shallow epicontinental seas create strong crosswin
 
 Trait ← high partial oxygen pressure elevates aerobic burst capacity ← shallow, warm seas concentrate nutrient upwellings near reefs ← global island fragmentation isolates prey in coastal straits ← F7, F10, F2
 
-- **Skill:** Glossal Lash (Poke): Strikes a target within 8m for heavy bludgeoning damage, ignores armor (once per encounter)
+- **Skill:** Glossal Lash (Poke): The creature lashes out at a nearby target with a heavy strike that easily bypasses protective cover.
 - **Weakness:** Predictable strike trajectory allows opponents to sidestep
 - **Observe:**
   1. Mouths extend into prehensile, muscle-rich tongues during feeding
@@ -64,7 +64,7 @@ Trait ← high partial oxygen pressure elevates aerobic burst capacity ← shall
 
 Trait ← Scattered island geography demands efficient travel ← Shallow seas allow wind interaction ← Digits elongate and stiffen to support membrane ← Sails replace webbing for speed ← F10, F21
 
-- **Skill:** Wind-Ride (Basic): Move 40% faster downwind; ignore current drag
+- **Skill:** Wind-Ride (Basic): The creature catches the wind and moves strongly downwind, effortlessly ignoring water resistance.
 - **Weakness:** Immobilized in dead calm; vulnerable to headwinds
 - **Observe:**
   1. Dorsal membranes snap taut

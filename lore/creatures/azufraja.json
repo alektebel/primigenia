@@ -34,7 +34,7 @@
           "en": "Current-draw"
         },
         "role": "Engage",
-        "effect": "Pulls enemies closer, +20% accuracy on drawn targets",
+        "effect": "The creature's filaments tug nearby foes toward its center, drawing them in. Once gathered, its strikes land strongly on the trapped targets.",
         "numbers": {}
       },
       "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
@@ -97,7 +97,7 @@
           "en": "Gas-lift"
         },
         "role": "Passive",
-        "effect": "+30% movement speed in liquid terrain, grants brief float",
+        "effect": "Its buoyant bladders propel it swiftly through liquid terrain, gliding over the surface. The creature can rise a short while above the water, drifting lightly on the currents.",
         "numbers": {}
       },
       "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
@@ -157,7 +157,7 @@
           "en": "Ion-taste"
         },
         "role": "Basic",
-        "effect": "Reveals enemy stats/weaknesses, +15% crit chance",
+        "effect": "Its sensory nodes scan nearby foes, exposing their fragile points and inner workings. This keen perception allows its strikes to find vulnerable gaps with remarkable precision.",
         "numbers": {}
       },
       "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
@@ -213,7 +213,7 @@
           "en": "Flex-shell"
         },
         "role": "Defence",
-        "effect": "+40% damage reduction during environmental damage phases",
+        "effect": "Its flexible shell joints absorb and redirect harsh environmental forces, shielding its core. The creature withstands extreme conditions by bending and yielding rather than cracking.",
         "numbers": {}
       },
       "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",

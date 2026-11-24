@@ -9,10 +9,15 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Ice-shell stress fractures and vent-conduit junctions",
+    "habitat": "Ice-shell stress fractures and vent-conduit junctions. Also, in the council's sketch (no such creature in this world yet): Vent-Spinners, both crave stress fractures; fights over anchor points.",
     "diet": "Chemolithotrophic symbionts and electro-captured macro-prey",
     "active": "Sessile anchor with mobile stinger-tendrils",
-    "predators": []
+    "predators": [
+      "Deep Silencers"
+    ],
+    "prey": [
+      "Vessica Grazers"
+    ]
   },
   "body": "Jagged crystalline carapace fused to substrate, with three conductive electro-osmotic tendrils pulsing with bioluminescence",
   "chains": [
@@ -35,7 +40,7 @@
           "en": "Resonant Charge"
         },
         "role": "Basic",
-        "effect": "Absorbs tidal vibration to fill charge meter. Unlocks abilities. +15% charge rate near stress fractures.",
+        "effect": "The creature absorbs ambient vibrations to steadily build its energy, glowing brighter as it prepares to unleash a powerful attack. It gathers this strength much more rapidly when standing near deep cracks in the terrain.",
         "numbers": {}
       },
       "weakness": "Cannot charge if locked to dead ice; must be near stress.",
@@ -264,23 +269,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Vessica Grazers",
-      "kind": "cousin",
-      "note": "(council kind 'Predator-Prey') Flashes lure grazers; strikes them before they flee."
-    },
-    {
-      "with": "Vent-Spinners",
-      "kind": "cousin",
-      "note": "(council kind 'Competitor') Both crave stress fractures; fights over anchor points."
-    },
-    {
-      "with": "Deep Silencers",
-      "kind": "cousin",
-      "note": "(council kind 'Predator') Sonar-predators hunt Susurradores; only Phase Lock saves them."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

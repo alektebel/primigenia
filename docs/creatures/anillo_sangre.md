@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Upper troposphere (2–5 km), within ring-shadow bands and magnetic valleys
+- **Habitat:** Upper troposphere (2–5 km), within ring-shadow bands and magnetic valleys. Also, in the council's sketch (no such creature in this world yet): Polvo-Vivo, anillo-Sangre is the apex predator of the ring-rain filter-feeder community; Polvo-Vivo graze on the same dust but cannot harvest static charge, making them easy prey for the Anillo-Sangre's arc
 - **Diet:** Electro-autotrophy (static charge harvest), chemosynthetic CO₂ fixation, particulate ring-dust
 - **Active:** Continuous, but peaks during atmospheric tide shear and eclipse thermal contraction
 - **Predators:** none
@@ -21,16 +21,16 @@ Biradial, flexible, filamentous body of piezoelectric silicate and conductive me
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| anillo_sangre.c1 | Piezoelectric filaments harvest tidal strain as metabolic voltage | Moon's 58-hour orbit strains body flexibly ← Silicate crystal fibers generate voltage under mechanical stress ← ATP synthesis driven by harvest current | **F3** The moon orbits its gas giant at 5.5×10⁵ km with a 58-hour orbital period.; **F6** Solid-body tidal flexing generates an internal heat flux of 2.5 times Earth's radiogenic baseline. | Strain-Drive (`anillo_sangre.strain_drive`) | Basic | Grants +30% movement speed and stamina regen when body is flexed by wind gusts or player actions that pull/stretch it | Rigidity: Coating in resin or freezing immobilizes filaments, cutting power source and halting regeneration |
-| anillo_sangre.c2 | Triboelectric fronds generate lethal electrostatic discharge | Permanent atmospheric tides drive high wind shear ← Friction charges filaments against insulating cuticle ← Arc discharges at threshold to stun prey and deter predators | **F11** Giant-driven atmospheric tides produce permanent wind shear, though eclipse-driven thermal tides dominate local pressure waves.; **F9** Surface pressure is 2.1 bar with a mean temperature of 285 K, dominated by 78% nitrogen and 18% carbon dioxide. | Arc-Whip (`anillo_sangre.arc_whip`) | Poke | Deals 8 damage and stuns target for 3 seconds; charge required, depletes internal capacitor | Grounding: Standing in conductive mud or water shorts the cuticle, instantly draining charge and paralyzing the creature |
+| anillo_sangre.c1 | Piezoelectric filaments harvest tidal strain as metabolic voltage | Moon's 58-hour orbit strains body flexibly ← Silicate crystal fibers generate voltage under mechanical stress ← ATP synthesis driven by harvest current | **F3** The moon orbits its gas giant at 5.5×10⁵ km with a 58-hour orbital period.; **F6** Solid-body tidal flexing generates an internal heat flux of 2.5 times Earth's radiogenic baseline. | Strain-Drive (`anillo_sangre.strain_drive`) | Basic | When wind gusts or the player pull and stretch its body, the creature moves swiftly and quickly recovers its energy. | Rigidity: Coating in resin or freezing immobilizes filaments, cutting power source and halting regeneration |
+| anillo_sangre.c2 | Triboelectric fronds generate lethal electrostatic discharge | Permanent atmospheric tides drive high wind shear ← Friction charges filaments against insulating cuticle ← Arc discharges at threshold to stun prey and deter predators | **F11** Giant-driven atmospheric tides produce permanent wind shear, though eclipse-driven thermal tides dominate local pressure waves.; **F9** Surface pressure is 2.1 bar with a mean temperature of 285 K, dominated by 78% nitrogen and 18% carbon dioxide. | Arc-Whip (`anillo_sangre.arc_whip`) | Poke | After gathering energy, the creature lashes out with an electric whip that briefly stuns nearby targets, draining its stored power. | Grounding: Standing in conductive mud or water shorts the cuticle, instantly draining charge and paralyzing the creature |
 | anillo_sangre.c3 | Polarization-sensitive eyes track ring-scattered light | Ring ice and dust scatter incident starlight ← Scattering produces highly polarized sky background ← Ommatidia detect e-vector angle for precise compass | **F18** Ring-scattered starlight is highly polarized, providing a stable sky compass during eclipses and heavy haze.; **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Ring-Gaze (`anillo_sangre.ring_gaze`) | Engage | Reveals hidden paths, enemies, or resources through heavy haze, fog, or during the 40-minute eclipse when visual landmarks vanish | Glare: Intense direct stellar flare or unfiltered starlight washes out polarization contrast, causing temporary blindness |
-| anillo_sangre.c4 | Magnetotactic migration to induced magnetic valleys | Induced magnetosphere creates localized magnetic valleys ← Conductive blood and filaments align with magnetic flux ← Creature steers along field lines to reach low-radiation zones | **F7** The moon lacks a strong intrinsic dynamo but experiences an induced magnetospheric field from the parent giant.; **F8** Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys. | Flux-Sense (`anillo_sangre.flux_sense`) | Control | Marks magnetic valleys on map for 30 seconds; player can command Anillo-Sangre to lead to these safe zones for radiation shielding | Magnetic Dead Zones: In regions of null field, the creature loses navigation, panics, and drifts randomly, becoming vulnerable |
+| anillo_sangre.c4 | Magnetotactic migration to induced magnetic valleys | Induced magnetosphere creates localized magnetic valleys ← Conductive blood and filaments align with magnetic flux ← Creature steers along field lines to reach low-radiation zones | **F7** The moon lacks a strong intrinsic dynamo but experiences an induced magnetospheric field from the parent giant.; **F8** Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys. | Flux-Sense (`anillo_sangre.flux_sense`) | Control | The creature senses and reveals hidden magnetic valleys, allowing the player to direct it toward these sheltered areas for protection. | Magnetic Dead Zones: In regions of null field, the creature loses navigation, panics, and drifts randomly, becoming vulnerable |
 
 ### anillo_sangre.c1: Piezoelectric filaments harvest tidal strain as metabolic voltage
 
 Trait ← Moon's 58-hour orbit strains body flexibly ← Silicate crystal fibers generate voltage under mechanical stress ← ATP synthesis driven by harvest current ← F3, F6
 
-- **Skill:** Strain-Drive (Basic): Grants +30% movement speed and stamina regen when body is flexed by wind gusts or player actions that pull/stretch it
+- **Skill:** Strain-Drive (Basic): When wind gusts or the player pull and stretch its body, the creature moves swiftly and quickly recovers its energy.
 - **Weakness:** Rigidity: Coating in resin or freezing immobilizes filaments, cutting power source and halting regeneration
 - **Observe:**
   1. Filaments pulsing in rhythm with the giant's gravitational pull
@@ -48,7 +48,7 @@ Trait ← Moon's 58-hour orbit strains body flexibly ← Silicate crystal fibers
 
 Trait ← Permanent atmospheric tides drive high wind shear ← Friction charges filaments against insulating cuticle ← Arc discharges at threshold to stun prey and deter predators ← F11, F9
 
-- **Skill:** Arc-Whip (Poke): Deals 8 damage and stuns target for 3 seconds; charge required, depletes internal capacitor
+- **Skill:** Arc-Whip (Poke): After gathering energy, the creature lashes out with an electric whip that briefly stuns nearby targets, draining its stored power.
 - **Weakness:** Grounding: Standing in conductive mud or water shorts the cuticle, instantly draining charge and paralyzing the creature
 - **Observe:**
   1. Sparks jumping between fronds before an attack
@@ -84,7 +84,7 @@ Trait ← Ring ice and dust scatter incident starlight ← Scattering produces h
 
 Trait ← Induced magnetosphere creates localized magnetic valleys ← Conductive blood and filaments align with magnetic flux ← Creature steers along field lines to reach low-radiation zones ← F7, F8
 
-- **Skill:** Flux-Sense (Control): Marks magnetic valleys on map for 30 seconds; player can command Anillo-Sangre to lead to these safe zones for radiation shielding
+- **Skill:** Flux-Sense (Control): The creature senses and reveals hidden magnetic valleys, allowing the player to direct it toward these sheltered areas for protection.
 - **Weakness:** Magnetic Dead Zones: In regions of null field, the creature loses navigation, panics, and drifts randomly, becoming vulnerable
 - **Observe:**
   1. Spins slowly to sample magnetic direction before moving
@@ -97,12 +97,6 @@ Trait ← Induced magnetosphere creates localized magnetic valleys ← Conductiv
   - Analogue: Magnetotactic bacteria (magnetite chains); long-distance magnetoreception in sea turtles and migratory birds—gradient/map sense rather than simple dipole alignment.: as named by the judge; no mechanism or reference recorded
   - Fix: Treat Flux-Sense as magnetoreception plus radiation-avoidance (symbiont stress pigments, UV/rad damage cues) steering toward F7 shielded pockets; require magnetite or similar inclusions in the conductive matrix for alignment aesthetics; soften null-field panic to disorientation unless multiple cues fail. Russo (2012) is electrotaxis (electric fields), not a substitute for magnetic navigation—cite only if you add galvanotaxis toward charge gradients near vents.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Polvo-Vivo | cousin |  | (council kind 'Predator-Prey') Anillo-Sangre is the apex predator of the ring-rain filter-feeder community; Polvo-Vivo graze on the same dust but cannot harvest static charge, making them easy prey for the Anillo-Sangre's arc |
 
 ## Journal
 

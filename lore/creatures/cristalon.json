@@ -34,7 +34,7 @@
           "en": "Iron Hide"
         },
         "role": "Defence",
-        "effect": "+25% damage reduction from crushing attacks",
+        "effect": "Its thick iron-oxide carapace strongly absorbs heavy impacts, making crushing blows feel noticeably weaker against its shell.",
         "numbers": {}
       },
       "weakness": "Heavy plates drain stamina in low gravity",
@@ -97,7 +97,7 @@
           "en": "Vent Filter"
         },
         "role": "Basic",
-        "effect": "Harvests chemical nodes 30% faster",
+        "effect": "Its tubular gill plumes rapidly draw in nearby chemicals, allowing it to gather resources with swift, continuous motion.",
         "numbers": {}
       },
       "weakness": "Plumes clog in turbid water",
@@ -153,7 +153,7 @@
           "en": "Pressure Equalizer"
         },
         "role": "Passive",
-        "effect": "Immunity to depth crushing, +10% movement on slopes",
+        "effect": "Its gel-filled sinuses balance external forces, letting it traverse steep inclines with steady, unhindered steps without succumbing to heavy pressure.",
         "numbers": {}
       },
       "weakness": "Rapid ascent causes sinus rupture",

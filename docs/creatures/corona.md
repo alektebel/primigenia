@@ -21,16 +21,16 @@ Low-slung radial disc with six frilled arms, ciliated sensory margins, thick pro
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| corona.c1 | Radial frill array with six sensory arms | Prey arrives from any horizontal axis ← Forward-facing mouth wastes captures in cross-currents ← Cave walls channel 3.2 m tidal bores | **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Radial Sweep (`corona.radial_sweep`) | Engage | Detects and pulls prey from any direction within 2.5 m (+15% hit chance in dark/turbid water). | Vulnerable to frontal strikes when reorienting arms. |
-| corona.c2 | Mucus net-capture mechanism along frilled margins | Mucus nets require continuous ciliary beating ← Ciliary beat needs constant ATP from aerobic respiration ← Oxygen partial pressure reaches 0.34 bar via tidal flushing | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Sticky Lash (`corona.sticky_lash`) | Basic | Shoots adhesive frill tip to snag drifting carcass bits (+20% food intake, slows target). | Net tangles if struck by sharp bone or rock. |
-| corona.c3 | Slow benthic crawling with radial reorientation | High locomotor drag makes sprinting metabolically ruinous ← Slow movement conserves energy in low-visibility tuff ← 1.6 bar atmosphere multiplies drag to water interface | **F4** Dense air: 1.6 bar | Tidal Drift (`corona.tidal_drift`) | Control | Rides flood currents to reposition silently (+10 m movement, zero stamina cost). | Cannot flee from fast predators during strong flow. |
-| corona.c4 | Tidal rhythmicity with slack-tide disc collapse | Slack tide removes flow cues and depletes dissolved O2 ← Metabolic rate must drop to survive hypoxia ← Lunar gravity drives 14.9-day spring-neap cycle | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Current Hush (`corona.current_hush`) | Defence | Collapses frills into a sealed disc during slack tide (+30% stealth, reduces detection but stops feeding). | Highly vulnerable to bone spines or rock attacks when collapsed. |
+| corona.c1 | Radial frill array with six sensory arms | Prey arrives from any horizontal axis ← Forward-facing mouth wastes captures in cross-currents ← Cave walls channel 3.2 m tidal bores | **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Radial Sweep (`corona.radial_sweep`) | Engage | It sweeps its sensory arms to sense and drag prey from all sides, working especially well in murky waters. | Vulnerable to frontal strikes when reorienting arms. |
+| corona.c2 | Mucus net-capture mechanism along frilled margins | Mucus nets require continuous ciliary beating ← Ciliary beat needs constant ATP from aerobic respiration ← Oxygen partial pressure reaches 0.34 bar via tidal flushing | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Sticky Lash (`corona.sticky_lash`) | Basic | It lashes out with a sticky frill tip to catch floating debris and slow nearby targets. | Net tangles if struck by sharp bone or rock. |
+| corona.c3 | Slow benthic crawling with radial reorientation | High locomotor drag makes sprinting metabolically ruinous ← Slow movement conserves energy in low-visibility tuff ← 1.6 bar atmosphere multiplies drag to water interface | **F4** Dense air: 1.6 bar | Tidal Drift (`corona.tidal_drift`) | Control | It glides effortlessly along incoming tides to shift its position without straining. | Cannot flee from fast predators during strong flow. |
+| corona.c4 | Tidal rhythmicity with slack-tide disc collapse | Slack tide removes flow cues and depletes dissolved O2 ← Metabolic rate must drop to survive hypoxia ← Lunar gravity drives 14.9-day spring-neap cycle | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Current Hush (`corona.current_hush`) | Defence | It folds its frills into a tight disc to hide from view, though it must stop eating while doing so. | Highly vulnerable to bone spines or rock attacks when collapsed. |
 
 ### corona.c1: Radial frill array with six sensory arms
 
 Trait ← Prey arrives from any horizontal axis ← Forward-facing mouth wastes captures in cross-currents ← Cave walls channel 3.2 m tidal bores ← F13
 
-- **Skill:** Radial Sweep (Engage): Detects and pulls prey from any direction within 2.5 m (+15% hit chance in dark/turbid water).
+- **Skill:** Radial Sweep (Engage): It sweeps its sensory arms to sense and drag prey from all sides, working especially well in murky waters.
 - **Weakness:** Vulnerable to frontal strikes when reorienting arms.
 - **Observe:**
   1. Six frilled arms pulsing in slack water
@@ -48,7 +48,7 @@ Trait ← Prey arrives from any horizontal axis ← Forward-facing mouth wastes 
 
 Trait ← Mucus nets require continuous ciliary beating ← Ciliary beat needs constant ATP from aerobic respiration ← Oxygen partial pressure reaches 0.34 bar via tidal flushing ← F5
 
-- **Skill:** Sticky Lash (Basic): Shoots adhesive frill tip to snag drifting carcass bits (+20% food intake, slows target).
+- **Skill:** Sticky Lash (Basic): It lashes out with a sticky frill tip to catch floating debris and slow nearby targets.
 - **Weakness:** Net tangles if struck by sharp bone or rock.
 - **Observe:**
   1. Iridescent strands stretch between frill edges
@@ -66,7 +66,7 @@ Trait ← Mucus nets require continuous ciliary beating ← Ciliary beat needs c
 
 Trait ← High locomotor drag makes sprinting metabolically ruinous ← Slow movement conserves energy in low-visibility tuff ← 1.6 bar atmosphere multiplies drag to water interface ← F4
 
-- **Skill:** Tidal Drift (Control): Rides flood currents to reposition silently (+10 m movement, zero stamina cost).
+- **Skill:** Tidal Drift (Control): It glides effortlessly along incoming tides to shift its position without straining.
 - **Weakness:** Cannot flee from fast predators during strong flow.
 - **Observe:**
   1. Low disc presses flat against tuff floor
@@ -84,7 +84,7 @@ Trait ← High locomotor drag makes sprinting metabolically ruinous ← Slow mov
 
 Trait ← Slack tide removes flow cues and depletes dissolved O2 ← Metabolic rate must drop to survive hypoxia ← Lunar gravity drives 14.9-day spring-neap cycle ← F6
 
-- **Skill:** Current Hush (Defence): Collapses frills into a sealed disc during slack tide (+30% stealth, reduces detection but stops feeding).
+- **Skill:** Current Hush (Defence): It folds its frills into a tight disc to hide from view, though it must stop eating while doing so.
 - **Weakness:** Highly vulnerable to bone spines or rock attacks when collapsed.
 - **Observe:**
   1. Frills curl inward at ebb

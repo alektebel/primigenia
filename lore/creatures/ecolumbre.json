@@ -41,10 +41,7 @@
         },
         "role": "Passive",
         "effect": "a ping outlines creatures through fog and cave walls",
-        "numbers": {
-          "duration_s": 3,
-          "range_m": 40
-        }
+        "numbers": {}
       },
       "weakness": "a roar blinds it like a flashbang",
       "observe": [
@@ -96,9 +93,7 @@
         },
         "role": "Social",
         "effect": "befriend by copying its light pattern; needs a glow part",
-        "numbers": {
-          "range_m": 25
-        }
+        "numbers": {}
       },
       "weakness": "it stops talking when a sight hunter is near",
       "observe": [
@@ -258,7 +253,7 @@
           "en": "Salt-Crush"
         },
         "role": "Basic",
-        "effect": "Cracks tuff to extract biofilm and salt; restores +10 Biomass and +5 HP.",
+        "effect": "The creature cracks open the stone to feed on the rich crusts, drawing nourishment back into its own body.",
         "numbers": {}
       },
       "weakness": "Drought thins crusts and biofilm; foraging yields drop by 40%.",
@@ -323,7 +318,7 @@
           "en": "Chorus Flash"
         },
         "role": "Control",
-        "effect": "Emits synchronized light pulses and hums. Calms allies within 15m, grants +20% evasion for 8s.",
+        "effect": "It flashes its ventral lights and hums in unison, sending a calming resonance that makes nearby allies harder to strike.",
         "numbers": {}
       },
       "weakness": "Sudden high-pitched sounds break sync; flock freezes and loses evasion.",
@@ -387,7 +382,7 @@
           "en": "Tide Crawl"
         },
         "role": "Engage",
-        "effect": "Sprints along wet walls, gaining +30% movement speed and wall-walking for 4s. Drops a decoy egg that taunts nearby enemies for 3s. If destroyed, releases a 1s stun cloud.",
+        "effect": "It scrambles swiftly across the damp rock and leaves behind a decoy egg that draws enemy attention. When the egg is broken, it bursts into a cloud that temporarily stuns those nearby.",
         "numbers": {}
       },
       "weakness": "Egg sacs are brittle; rocks or strong bites pop them. Neap tides strand larvae.",
@@ -453,7 +448,7 @@
           "en": "Sun Shed"
         },
         "role": "Poke",
-        "effect": "Rubs against basalt outcrops. Removes one debuff, grants 15% flat damage reduction for 10s as new keratin hardens.",
+        "effect": "It grinds against the rough stone to shed its old skin, shedding a lingering affliction while a fresh layer hardens to strongly resist harm.",
         "numbers": {}
       },
       "weakness": "Vulnerable while shedding; attacks during this window deal +30% damage.",
@@ -519,7 +514,7 @@
           "en": "Mist-scoop"
         },
         "role": "Defence",
-        "effect": "Snatch prey from spray; +10% restore. Dive into spray to become invisible to sound and sight for 3s.",
+        "effect": "It scoops nourishment from the waterfall spray and then plunges into the mist, vanishing completely from sight and sound for a short while.",
         "numbers": {}
       },
       "weakness": "Wind shear scatters updraft. Vibration sense detects movement through water.",
@@ -609,7 +604,7 @@
       "via": "F23"
     },
     {
-      "with": "Player",
+      "with": "player_lineage",
       "kind": "mimicry",
       "note": "Player species can mimic Ecolumbre's ventral flashes and low hums to befriended flocks or calm Rondo herds.",
       "via": "F4"

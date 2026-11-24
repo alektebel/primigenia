@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_striders.c1 | Impossibly thin limbs & elongated neck | Extreme skeletal elongation for canopy browsing ← 0.2g surface acceleration reducing gravitational load ← Jovian moon with low planetary mass | **F5** Low-gravity moon environments yield 0.2 g surface acceleration.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Canopy Lunge (`at_striders.canopy_lunge`) | Basic | Leap 15 m vertically using elastic cartilage tendons, reaching high foliage | Extreme fragility; any fall >2 m fractures epiphyseal plates. High wind loads cause toppling. |
-| at_striders.c2 | Heat-dumping skin flaps & chromatophores | Dorsal dermal flaps and color-shifting epidermis ← Low-g reduced convective cooling efficiency ← High solar flux on tidally locked moon | **F5** Low-gravity moon environments yield 0.2 g surface acceleration.; **F9** Wind shear is high on exposed ridges and low-g plains due to thermal plumes.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Solar Flush (`at_striders.solar_flush`) | Engage | Dumps excess heat to heal 3 HP but reduces speed by 25% for 1 turn | Overheats rapidly in shaded or cold microclimates |
+| at_striders.c1 | Impossibly thin limbs & elongated neck | Extreme skeletal elongation for canopy browsing ← 0.2g surface acceleration reducing gravitational load ← Jovian moon with low planetary mass | **F5** Low-gravity moon environments yield 0.2 g surface acceleration.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Canopy Lunge (`at_striders.canopy_lunge`) | Basic | The creature launches itself upward on its long legs, using its flexible joints to reach the highest branches. | Extreme fragility; any fall >2 m fractures epiphyseal plates. High wind loads cause toppling. |
+| at_striders.c2 | Heat-dumping skin flaps & chromatophores | Dorsal dermal flaps and color-shifting epidermis ← Low-g reduced convective cooling efficiency ← High solar flux on tidally locked moon | **F5** Low-gravity moon environments yield 0.2 g surface acceleration.; **F9** Wind shear is high on exposed ridges and low-g plains due to thermal plumes.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Solar Flush (`at_striders.solar_flush`) | Engage | The creature flares its skin flaps to vent a cloud of warm air, feeling refreshed while moving sluggishly for a short while. | Overheats rapidly in shaded or cold microclimates |
 
 ### at_striders.c1: Impossibly thin limbs & elongated neck
 
 Trait ← Extreme skeletal elongation for canopy browsing ← 0.2g surface acceleration reducing gravitational load ← Jovian moon with low planetary mass ← F5, F21
 
-- **Skill:** Canopy Lunge (Basic): Leap 15 m vertically using elastic cartilage tendons, reaching high foliage
+- **Skill:** Canopy Lunge (Basic): The creature launches itself upward on its long legs, using its flexible joints to reach the highest branches.
 - **Weakness:** Extreme fragility; any fall >2 m fractures epiphyseal plates. High wind loads cause toppling.
 - **Observe:**
   1. Joints bending at unnatural, stick-like angles
@@ -47,7 +47,7 @@ Trait ← Extreme skeletal elongation for canopy browsing ← 0.2g surface accel
 
 Trait ← Dorsal dermal flaps and color-shifting epidermis ← Low-g reduced convective cooling efficiency ← High solar flux on tidally locked moon ← F5, F9, F21
 
-- **Skill:** Solar Flush (Engage): Dumps excess heat to heal 3 HP but reduces speed by 25% for 1 turn
+- **Skill:** Solar Flush (Engage): The creature flares its skin flaps to vent a cloud of warm air, feeling refreshed while moving sluggishly for a short while.
 - **Weakness:** Overheats rapidly in shaded or cold microclimates
 - **Observe:**
   1. Thin, translucent membranes flaring between ribs

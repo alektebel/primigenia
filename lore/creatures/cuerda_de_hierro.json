@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Hydrothermal plumes and active chimney surfaces at fluid-rock interfaces",
+    "habitat": "Hydrothermal plumes and active chimney surfaces at fluid-rock interfaces. Also, in the council's sketch (no such creature in this world yet): Silt-Crawler, silt-Crawlers ignore Cuerda de Hierro, mistaking the vibrating filaments for inert rock; the creature benefits from this camouflage. Also, in the council's sketch (no such creature in this world yet): Vent-Limpet, vent-Limpets graze on bacteria that colonize the Cuerda's filaments; the Cuerda tolerates this as the grazing stimulates flow.",
     "diet": "Chemo-electric; oxidizes H2 and reduces Fe2+ while harvesting electrical current from mechanical strain on piezoelectric crystals",
     "active": "Continuous (metabolism tied to ambient turbulence)",
     "predators": []
@@ -36,7 +36,7 @@
           "en": "Iron Lattice"
         },
         "role": "Defence",
-        "effect": "Locks filaments into a rigid, magnetized shield; absorbs 40% of incoming kinetic damage and reflects acoustic pulses.",
+        "effect": "The creature weaves its black iron filaments into a rigid, magnetized shield that strongly absorbs blows and bounces back sound waves. Striking enemies will find their attacks heavily dampened while echoes scatter nearby.",
         "numbers": {}
       },
       "weakness": "Filaments are brittle to resonant frequencies; matching the vent's dominant vibration shatters the crystal arrays.",
@@ -98,7 +98,7 @@
           "en": "Resonant Shriek"
         },
         "role": "Poke",
-        "effect": "Amplifies filament vibration to emit a focused 5 kHz pulse; deals 25 damage and stuns acoustic-based foes for 2 turns.",
+        "effect": "The creature rapidly amplifies its filament vibrations to release a sharp, focused sound wave that heavily wounds nearby targets and causes sound-sensitive enemies to stagger and lose their footing. The sudden shriek echoes outward, leaving foes disoriented and vulnerable.",
         "numbers": {}
       },
       "weakness": "Silence is lethal; in still water, it cannot generate power and suffers 15% max HP per turn.",
@@ -164,7 +164,7 @@
           "en": "Vibration Sense"
         },
         "role": "Basic",
-        "effect": "Reveals all units within 50m on the grid and grants +20% accuracy to ranged attacks.",
+        "effect": "The creature extends its senses to detect pressure waves, making nearby units clearly visible through the terrain. Its heightened awareness allows its strikes to find their marks with remarkable precision.",
         "numbers": {}
       },
       "weakness": "Cannot detect silent movers (stealth skills) or creatures insulated from vibration (heavy armor/insulation).",
@@ -223,7 +223,7 @@
           "en": "Buoyant Shift"
         },
         "role": "Control",
-        "effect": "Adjusts bladder volume to move 10m instantly without action cost; grants advantage on next evasion check.",
+        "effect": "The creature quickly adjusts its internal bladders to shift its position, gliding smoothly across the battlefield. This sudden repositioning makes it exceptionally difficult for enemies to track or strike it.",
         "numbers": {}
       },
       "weakness": "Rapid depressurization causes vesicle rupture; takes 30 damage if exposed to low-pressure zones.",
@@ -266,18 +266,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Silt-Crawler",
-      "kind": "cousin",
-      "note": "(council kind 'predator') Silt-Crawlers ignore Cuerda de Hierro, mistaking the vibrating filaments for inert rock; the creature benefits from this camouflage."
-    },
-    {
-      "with": "Vent-Limpet",
-      "kind": "cousin",
-      "note": "(council kind 'commensal') Vent-Limpets graze on bacteria that colonize the Cuerda's filaments; the Cuerda tolerates this as the grazing stimulates flow."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

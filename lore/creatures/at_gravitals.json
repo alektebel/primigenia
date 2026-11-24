@@ -40,7 +40,7 @@
           "en": "Tidal Anchoring"
         },
         "role": "Defence",
-        "effect": "Generates a localized gravity well that pins fast, jet-based enemies, reducing their movement speed by 50% and negating airborne advantages for 2 turns.",
+        "effect": "The creature projects a heavy gravity field that drags nearby airborne foes to the ground and heavily slows their movement.",
         "numbers": {}
       },
       "weakness": "Gravity-field harmonics can be disrupted by dense mass concentrations (e.g., ark docking), causing a 1-turn system reboot and vulnerability to kinetic strikes.",
@@ -106,7 +106,7 @@
           "en": "Nanite Reconfiguration"
         },
         "role": "Signature",
-        "effect": "Reroutes structural integrity to grow a temporary ramjet, boosting movement speed by 60% for 4 seconds.",
+        "effect": "The creature reshapes its nanotech body into a sleek ramjet, propelling itself forward at breakneck speed for a short while.",
         "numbers": {}
       },
       "weakness": "Rapid reconfiguration consumes stored nanites, requiring a 10-minute recharge cycle in dense atmosphere.",

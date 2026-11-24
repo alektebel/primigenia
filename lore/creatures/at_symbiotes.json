@@ -34,7 +34,7 @@
           "en": "Scent-Command"
         },
         "role": "Control",
-        "effect": "Directs a host to move or attack with a chemical pulse (range 15m, lasts 3 turns)",
+        "effect": "The creature releases a chemical pulse that compels a nearby host to march or strike for a short while.",
         "numbers": {}
       },
       "weakness": "Volatile solvent sprays scramble pheromone trails, causing host confusion",
@@ -93,7 +93,7 @@
           "en": "Habitat Symbiosis"
         },
         "role": "Passive",
-        "effect": "Reduces supply cost for host units by 20% and grants shelter in forest biomes",
+        "effect": "The creature weaves dense nesting architecture that quietly shields nearby hosts and lightens the strain of sustaining them.",
         "numbers": {}
       },
       "weakness": "Firestorms dry out host blood, severing the neural link",
@@ -146,7 +146,7 @@
           "en": "Sensory Hijack"
         },
         "role": "Control",
-        "effect": "25% chance to command a hostile host unit for 2 turns",
+        "effect": "The creature occasionally slips a chemical command into a hostile host, strongly bending it to its will for a short while.",
         "numbers": {}
       },
       "weakness": "Dry environments degrade signal; high wind disperses pheromones",

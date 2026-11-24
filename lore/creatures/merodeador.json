@@ -45,7 +45,7 @@
           "en": "Low stalk"
         },
         "role": "Basic",
-        "effect": "-50% detection beyond 8 m while prone; speed 3 m/s.",
+        "effect": "When lying flat, the creature blends into the terrain and moves with deliberate slowness, making it nearly impossible to spot from a distance.",
         "numbers": {}
       },
       "weakness": "Flattened grass marks its bed; beat the bush and it bolts.",
@@ -101,7 +101,7 @@
           "en": "Mute step"
         },
         "role": "Passive",
-        "effect": "No footstep sound at a walk; running is audible at 30 m.",
+        "effect": "It moves completely silently when walking, but its heavy footsteps echo loudly whenever it breaks into a run.",
         "numbers": {}
       },
       "weakness": "Listen for the burst; it cannot chase quietly.",
@@ -155,7 +155,7 @@
           "en": "Lee pounce"
         },
         "role": "Engage",
-        "effect": "+50% damage if unseen; 15 m range; 8 s cooldown.",
+        "effect": "When it ambushes from the shadows, the creature launches a powerful strike that catches its target completely off guard, though it must rest briefly before attempting another.",
         "numbers": {}
       },
       "weakness": "Circle upwind: it scents you at 30 m and aborts.",
@@ -207,7 +207,7 @@
           "en": "Prowl"
         },
         "role": "Defence",
-        "effect": "In gales above 12 m/s, detection of it drops 60% and gusts cannot knock it back.",
+        "effect": "During fierce windstorms, the creature crouches low and becomes nearly invisible, firmly planting its feet so the howling gusts cannot budge it.",
         "numbers": {}
       },
       "weakness": "Calm air strips the mask: track it at clear midday, when eyes win.",

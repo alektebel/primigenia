@@ -21,16 +21,16 @@ Crystalline silicate/nitride shell; spore-pod mechanism; vascularized radiators
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| espinovent.c1 | Crystalline nitride-carbide shell | Shell precipitates rapidly from vent fluids ← Reducing chemistry favors nitrides over oxides ← Provides armor and mineral storage ← Physical root: Reducing atmosphere and vent chemistry | **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄. | Silica Armor (`espinovent.silica_armor`) | Defence | Gains +50% armor for 8s when near heat sources; blocks elemental damage. | Thermal shock cracks shell; sudden cooling causes explosive fragmentation. |
-| espinovent.c2 | Spore-pod burst mechanism | Expels clouds of crystalline spores ← Disperses via seismic vibration and pressure ← Colonizes new vent sites quickly ← Physical root: Episodic mantle plume tectonics | **F4** The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.; **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨. | Spore Burst (`espinovent.spore_burst`) | Basic | AoE burst deals 15 damage and applies 'Metallic Dust' (reduces enemy armor by 20% for 5s). | Wind shear disperses spores; silence/pressure dampening prevents trigger. |
-| espinovent.c3 | Rapid ammonia-assimilation pathways | Metabolism converts NH3 directly to biomass ← Avoids oxidative fixation costs ← Exploits high ammonia abundance ← Physical root: Reducing atmosphere and biochemistry | **F18** Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄. | Vent Fuel (`espinovent.vent_fuel`) | Basic | Heals 20 HP and gains +3 damage for 4s when attacking near heat sources. | Oxygen exposure is toxic; aerobic weapons cause rapid decay. |
-| espinovent.c4 | Seismic trigger for blooming | Blooms in response to ground vibration ← Mantle plumes cause seismic shifts ← Synchronizes life cycle with geology ← Physical root: Stagnant-lid tectonics and plume activity | **F4** The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.; **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨. | Seismic Wake (`espinovent.seismic_wake`) | Signature | Summons a wave that stuns all enemies in 10m; Espinovent gains full stats and regeneration for 6s. | Requires ground contact; floating/magnetic levitation negates trigger. |
+| espinovent.c1 | Crystalline nitride-carbide shell | Shell precipitates rapidly from vent fluids ← Reducing chemistry favors nitrides over oxides ← Provides armor and mineral storage ← Physical root: Reducing atmosphere and vent chemistry | **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄. | Silica Armor (`espinovent.silica_armor`) | Defence | When drawn near warmth, the creature hardens its crystalline shell and deflects elemental attacks for a short while. | Thermal shock cracks shell; sudden cooling causes explosive fragmentation. |
+| espinovent.c2 | Spore-pod burst mechanism | Expels clouds of crystalline spores ← Disperses via seismic vibration and pressure ← Colonizes new vent sites quickly ← Physical root: Episodic mantle plume tectonics | **F4** The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.; **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨. | Spore Burst (`espinovent.spore_burst`) | Basic | The creature erupts a cloud of shimmering spores that weakens the defenses of nearby foes for a time. | Wind shear disperses spores; silence/pressure dampening prevents trigger. |
+| espinovent.c3 | Rapid ammonia-assimilation pathways | Metabolism converts NH3 directly to biomass ← Avoids oxidative fixation costs ← Exploits high ammonia abundance ← Physical root: Reducing atmosphere and biochemistry | **F18** Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄. | Vent Fuel (`espinovent.vent_fuel`) | Basic | While feeding near warmth, the creature rapidly restores its vitality and strikes with renewed vigor. | Oxygen exposure is toxic; aerobic weapons cause rapid decay. |
+| espinovent.c4 | Seismic trigger for blooming | Blooms in response to ground vibration ← Mantle plumes cause seismic shifts ← Synchronizes life cycle with geology ← Physical root: Stagnant-lid tectonics and plume activity | **F4** The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.; **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨. | Seismic Wake (`espinovent.seismic_wake`) | Signature | The creature triggers a ground tremor that temporarily immobilizes nearby foes while it recovers and grows stronger. | Requires ground contact; floating/magnetic levitation negates trigger. |
 
 ### espinovent.c1: Crystalline nitride-carbide shell
 
 Trait ← Shell precipitates rapidly from vent fluids ← Reducing chemistry favors nitrides over oxides ← Provides armor and mineral storage ← Physical root: Reducing atmosphere and vent chemistry ← F11, F6
 
-- **Skill:** Silica Armor (Defence): Gains +50% armor for 8s when near heat sources; blocks elemental damage.
+- **Skill:** Silica Armor (Defence): When drawn near warmth, the creature hardens its crystalline shell and deflects elemental attacks for a short while.
 - **Weakness:** Thermal shock cracks shell; sudden cooling causes explosive fragmentation.
 - **Observe:**
   1. Shell glows with metallic sheen
@@ -49,7 +49,7 @@ Trait ← Shell precipitates rapidly from vent fluids ← Reducing chemistry fav
 
 Trait ← Expels clouds of crystalline spores ← Disperses via seismic vibration and pressure ← Colonizes new vent sites quickly ← Physical root: Episodic mantle plume tectonics ← F4, F3
 
-- **Skill:** Spore Burst (Basic): AoE burst deals 15 damage and applies 'Metallic Dust' (reduces enemy armor by 20% for 5s).
+- **Skill:** Spore Burst (Basic): The creature erupts a cloud of shimmering spores that weakens the defenses of nearby foes for a time.
 - **Weakness:** Wind shear disperses spores; silence/pressure dampening prevents trigger.
 - **Observe:**
   1. Shell swells with pressure
@@ -67,7 +67,7 @@ Trait ← Expels clouds of crystalline spores ← Disperses via seismic vibratio
 
 Trait ← Metabolism converts NH3 directly to biomass ← Avoids oxidative fixation costs ← Exploits high ammonia abundance ← Physical root: Reducing atmosphere and biochemistry ← F18, F6
 
-- **Skill:** Vent Fuel (Basic): Heals 20 HP and gains +3 damage for 4s when attacking near heat sources.
+- **Skill:** Vent Fuel (Basic): While feeding near warmth, the creature rapidly restores its vitality and strikes with renewed vigor.
 - **Weakness:** Oxygen exposure is toxic; aerobic weapons cause rapid decay.
 - **Observe:**
   1. Sac pulses with ammonia vapor
@@ -85,7 +85,7 @@ Trait ← Metabolism converts NH3 directly to biomass ← Avoids oxidative fixat
 
 Trait ← Blooms in response to ground vibration ← Mantle plumes cause seismic shifts ← Synchronizes life cycle with geology ← Physical root: Stagnant-lid tectonics and plume activity ← F4, F3
 
-- **Skill:** Seismic Wake (Signature): Summons a wave that stuns all enemies in 10m; Espinovent gains full stats and regeneration for 6s.
+- **Skill:** Seismic Wake (Signature): The creature triggers a ground tremor that temporarily immobilizes nearby foes while it recovers and grows stronger.
 - **Weakness:** Requires ground contact; floating/magnetic levitation negates trigger.
 - **Observe:**
   1. Shell locks when ground shakes
@@ -103,7 +103,7 @@ Trait ← Blooms in response to ground vibration ← Mantle plumes cause seismic
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Eridian Crawler | cousin |  | (council kind 'Resource Competition') Espinovent blooms clog vents; Eridians must blast them away to access metal-rich ores. |
+| eridians | cousin |  | (council kind 'Resource Competition') Espinovent blooms clog vents; Eridians must blast them away to access metal-rich ores. |
 
 ## Journal
 

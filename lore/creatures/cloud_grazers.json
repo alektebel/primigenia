@@ -164,7 +164,7 @@
           "en": "Chemical Blend"
         },
         "role": "Engage",
-        "effect": "Ration oxidized N and reduced H₂ pools to heal 15 HP over 4s. Costs 20% of stored redox reserves.",
+        "effect": "The creature carefully divides its chemical stores between separate stomachs, slowly recovering its strength while drawing upon its internal reserves.",
         "numbers": {}
       },
       "weakness": "Entering high-oxidant zones or being sprayed by hunter toxins floods the oxidized chamber, forcing a 3s purge that leaves them vulnerable.",
@@ -224,7 +224,7 @@
           "en": "Herd Call"
         },
         "role": "Control",
-        "effect": "Broadcast 40 Hz pulse, rallying 4 allies within 80m and increasing their defense by 15%",
+        "effect": "It emits a deep, rumbling call that draws nearby allies together and strengthens their resolve.",
         "numbers": {}
       },
       "weakness": "Predictable resonance frequency can be disrupted by acoustic dampeners or mimicry",
@@ -280,7 +280,7 @@
           "en": "Osmotic Seal"
         },
         "role": "Defence",
-        "effect": "Harden membrane for 4 seconds, resisting 20 chemical damage",
+        "effect": "It quickly thickens its outer membrane, shielding itself from corrosive vapors for a short while.",
         "numbers": {}
       },
       "weakness": "Active hardening reduces lateral flexibility, lowering dodge chance by 10%",

@@ -35,7 +35,7 @@
           "en": "Herder's Call"
         },
         "role": "Control",
-        "effect": "Calms large herbivore mounts within 20m and grants +2 stamina to ride",
+        "effect": "The herder's call reaches nearby large herbivores, causing them to settle down and become much easier to mount and ride.",
         "numbers": {}
       },
       "weakness": "Freezes when startled by sudden motion; cannot learn new evasion tactics",
@@ -101,7 +101,7 @@
           "en": "Instinctive Groom"
         },
         "role": "Basic",
-        "effect": "Restores 3 HP on allied mounts and reduces stress by 25%",
+        "effect": "The mount gently grooms its companion, easing their anxiety and helping them recover from minor injuries.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden environmental shifts requiring problem-solving",

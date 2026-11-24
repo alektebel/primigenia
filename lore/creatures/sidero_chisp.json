@@ -34,7 +34,7 @@
           "en": "Brackish Bolt"
         },
         "role": "Basic",
-        "effect": "Deals 20 damage and stuns target for 2 turns.",
+        "effect": "The creature lashes out with a sharp electric shock that briefly stuns its target. Nearby enemies in brackish water feel the sudden jolt and freeze in place for a short while.",
         "numbers": {}
       },
       "weakness": "Shock range drops by 70% in high salinity.",
@@ -48,8 +48,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the voltage as a short close-range pulse from a large electric organ with a recovery cost, label the lineage highly speculative, and make sure the shock fails in brine as the next chain says.",
+        "fixes": [
+          "Keep the voltage as a short close-range pulse from a large electric organ with a recovery cost, label the lineage highly speculative, and make sure the shock fails in brine as the next chain says."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric eels and knifefish, electric catfish and torpedo rays, independent evolutions of electrocytes; electric eels adjust discharge to water conductivity.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 6
@@ -80,7 +90,7 @@
           "en": "Brine Vulnerability"
         },
         "role": "Passive",
-        "effect": "Cannot use electric attacks in full brine; -50% defense.",
+        "effect": "When surrounded by thick brine, its electrical organs short-circuit and it cannot unleash any electric attacks. Its defenses weaken noticeably, leaving it more exposed to incoming strikes.",
         "numbers": {}
       },
       "weakness": "Trapped in brine pools without attack options.",
@@ -93,11 +103,21 @@
         "en": "The salt steals their fire; they are powerless in the deep brine."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "No biological fix needed; phrase the penalty as lost offence plus a brief exposed twitch while current shunts, rather than literal loss of armour.",
+        "fixes": [
+          "No biological fix needed; phrase the penalty as lost offence plus a brief exposed twitch while current shunts, rather than literal loss of armour."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric fish lose discharge effectiveness as water conductivity rises and tune their output to the medium.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 8,
           "skeptic": 2
         }
       },
@@ -125,7 +145,7 @@
           "en": "Electro-locate"
         },
         "role": "Poke",
-        "effect": "Reveals stealthed targets within 30m; +40% hit chance.",
+        "effect": "The creature senses faint bio-electric fields and reveals any hidden targets nearby. Its strikes land with greater accuracy against those it detects.",
         "numbers": {}
       },
       "weakness": "Sensitivity overloaded by lightning; stunned for 1 turn.",
@@ -139,8 +159,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Add F16 as a co-root, explain the glow as a symbiont or reflecting structure if you want to keep it, and keep lightning as a genuine overload.",
+        "fixes": [
+          "Add F16 as a co-root, explain the glow as a symbiont or reflecting structure if you want to keep it, and keep lightning as a genuine overload."
+        ],
+        "analogues": [
+          {
+            "organism": "Sharks' and rays' ampullae of Lorenzini; electric fish use electroreception for prey detection and jamming avoidance.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 6
@@ -170,7 +200,7 @@
           "en": "Rust Cloak"
         },
         "role": "Defence",
-        "effect": "+25% stealth in brackish; enemies roll with disadvantage on first sight.",
+        "effect": "Its rust-colored scales blend seamlessly with the murky brackish water, making it nearly invisible at first glance. Enemies struggle to spot it until it moves or attacks.",
         "numbers": {}
       },
       "weakness": "Obvious against blue/green backgrounds (rare but possible).",
@@ -183,11 +213,21 @@
         "en": "A shadow that wears the color of the sky."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Add F16/F17 as co-roots for rusty silt and acid basins; no biological change needed.",
+        "fixes": [
+          "Add F16/F17 as co-roots for rusty silt and acid basins; no biological change needed."
+        ],
+        "analogues": [
+          {
+            "organism": "Cryptic colour matching in flatfish and other sediment-dwelling fish; animals matching iron-rich soils.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 8,
           "skeptic": 5
         }
       },
@@ -222,6 +262,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

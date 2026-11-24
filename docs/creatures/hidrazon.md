@@ -21,16 +21,16 @@ Streamlined, fluid-filled body; laminated iron-nickel carapace; electroreceptive
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| hidrazon.c1 | Fluid-filled internal cavities matching pressure | Body contains no gas bladders ← Internal fluids equalize with 40-bar ambient ← Prevents tissue collapse under crush pressure ← Physical root: High surface pressure and fluid mechanics | **F16** Fluid-filled internal cavities match ambient 40 bar, preventing tissue collapse without gas bladders.; **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory. | Pressure Match (`hidrazon.pressure_match`) | Passive | Immunity to pressure damage and environmental hazards; -20% fall damage. | Rapid temperature changes cause thermal stress; heat sources attract predators. |
-| hidrazon.c2 | Electroreceptive rostrum snout | Snout detects bioelectric fields ← Prey and ores emit micro-currents ← Hunts in total darkness of deep brine ← Physical root: Metal-rich crust and reducing chemistry | **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.; **F20** Electroreceptive ore-sensing and cultural pressure-sintering enable metalworking without innate bio-alloying. | Ore Sense (`hidrazon.ore_sense`) | Passive | Reveals hidden ores and camouflaged enemies within 15m; reveals weak points. | Strong electromagnetic fields scramble detection; magnetic interference causes disorientation. |
-| hidrazon.c3 | Jaw-thoracic resonator clicker | Clicker produces sharp pulses ← Dense fluid transmits sound efficiently ← Maps surroundings via echolocation ← Physical root: Sound propagation in dense atmosphere/fluid | **F9** Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.; **F14** Species evolved jaw-thoracic resonators for echolocation, compensating for zero-visibility haze. | Sonar Screech (`hidrazon.sonar_screech`) | Control | Stuns enemies for 3s and reveals their position; deals 12 sonic damage. | Soft terrain absorbs sound; silent prey or sound-dampening fields evade detection. |
-| hidrazon.c4 | Laminated carapace with Fe-Ni inlays | Carapace resists fracture ← High gravity stresses skeletal structure ← Bio-scavenged metals reinforce stress lines ← Physical root: Super-Earth gravity and metal bioavailability | **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.; **F17** Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance.; **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins. | Iron Shell (`hidrazon.iron_shell`) | Defence | Reduces all incoming damage by 35%; blocks critical hits. | Inlays fatigue after repeated impact; heavy attacks cause structural cracks. |
+| hidrazon.c1 | Fluid-filled internal cavities matching pressure | Body contains no gas bladders ← Internal fluids equalize with 40-bar ambient ← Prevents tissue collapse under crush pressure ← Physical root: High surface pressure and fluid mechanics | **F16** Fluid-filled internal cavities match ambient 40 bar, preventing tissue collapse without gas bladders.; **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory. | Pressure Match (`hidrazon.pressure_match`) | Passive | The creature's fluid-filled body naturally equalizes with its surroundings, allowing it to withstand crushing depths and harsh environments without strain. It lands from great heights with a soft, cushioned grace that avoids injury. | Rapid temperature changes cause thermal stress; heat sources attract predators. |
+| hidrazon.c2 | Electroreceptive rostrum snout | Snout detects bioelectric fields ← Prey and ores emit micro-currents ← Hunts in total darkness of deep brine ← Physical root: Metal-rich crust and reducing chemistry | **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.; **F20** Electroreceptive ore-sensing and cultural pressure-sintering enable metalworking without innate bio-alloying. | Ore Sense (`hidrazon.ore_sense`) | Passive | Its sensitive snout twitches and hums when near concealed treasures or disguised foes, causing their hidden forms to shimmer into view. The creature instinctively focuses on vulnerable spots, making them glow faintly for easy targeting. | Strong electromagnetic fields scramble detection; magnetic interference causes disorientation. |
+| hidrazon.c3 | Jaw-thoracic resonator clicker | Clicker produces sharp pulses ← Dense fluid transmits sound efficiently ← Maps surroundings via echolocation ← Physical root: Sound propagation in dense atmosphere/fluid | **F9** Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.; **F14** Species evolved jaw-thoracic resonators for echolocation, compensating for zero-visibility haze. | Sonar Screech (`hidrazon.sonar_screech`) | Control | The creature emits a sharp, resonant click that echoes through the area, freezing nearby foes in place for a short while and exposing their hidden locations. The powerful sound waves ripple outward, visibly shaking the ground and leaving opponents disoriented and vulnerable. | Soft terrain absorbs sound; silent prey or sound-dampening fields evade detection. |
+| hidrazon.c4 | Laminated carapace with Fe-Ni inlays | Carapace resists fracture ← High gravity stresses skeletal structure ← Bio-scavenged metals reinforce stress lines ← Physical root: Super-Earth gravity and metal bioavailability | **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.; **F17** Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance.; **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins. | Iron Shell (`hidrazon.iron_shell`) | Defence | Its layered, metal-reinforced carapace deflects incoming strikes with a heavy, clanging resonance, absorbing blows that would otherwise pierce through. The creature braces firmly against attacks, causing sharp impacts to shatter harmlessly against its unyielding armor. | Inlays fatigue after repeated impact; heavy attacks cause structural cracks. |
 
 ### hidrazon.c1: Fluid-filled internal cavities matching pressure
 
 Trait ← Body contains no gas bladders ← Internal fluids equalize with 40-bar ambient ← Prevents tissue collapse under crush pressure ← Physical root: High surface pressure and fluid mechanics ← F16, F5
 
-- **Skill:** Pressure Match (Passive): Immunity to pressure damage and environmental hazards; -20% fall damage.
+- **Skill:** Pressure Match (Passive): The creature's fluid-filled body naturally equalizes with its surroundings, allowing it to withstand crushing depths and harsh environments without strain. It lands from great heights with a soft, cushioned grace that avoids injury.
 - **Weakness:** Rapid temperature changes cause thermal stress; heat sources attract predators.
 - **Observe:**
   1. Body has no air pockets
@@ -48,7 +48,7 @@ Trait ← Body contains no gas bladders ← Internal fluids equalize with 40-bar
 
 Trait ← Snout detects bioelectric fields ← Prey and ores emit micro-currents ← Hunts in total darkness of deep brine ← Physical root: Metal-rich crust and reducing chemistry ← F11, F20
 
-- **Skill:** Ore Sense (Passive): Reveals hidden ores and camouflaged enemies within 15m; reveals weak points.
+- **Skill:** Ore Sense (Passive): Its sensitive snout twitches and hums when near concealed treasures or disguised foes, causing their hidden forms to shimmer into view. The creature instinctively focuses on vulnerable spots, making them glow faintly for easy targeting.
 - **Weakness:** Strong electromagnetic fields scramble detection; magnetic interference causes disorientation.
 - **Observe:**
   1. Snout twitches toward metal
@@ -67,7 +67,7 @@ Trait ← Snout detects bioelectric fields ← Prey and ores emit micro-currents
 
 Trait ← Clicker produces sharp pulses ← Dense fluid transmits sound efficiently ← Maps surroundings via echolocation ← Physical root: Sound propagation in dense atmosphere/fluid ← F9, F14
 
-- **Skill:** Sonar Screech (Control): Stuns enemies for 3s and reveals their position; deals 12 sonic damage.
+- **Skill:** Sonar Screech (Control): The creature emits a sharp, resonant click that echoes through the area, freezing nearby foes in place for a short while and exposing their hidden locations. The powerful sound waves ripple outward, visibly shaking the ground and leaving opponents disoriented and vulnerable.
 - **Weakness:** Soft terrain absorbs sound; silent prey or sound-dampening fields evade detection.
 - **Observe:**
   1. Thorax vibrates before attack
@@ -85,7 +85,7 @@ Trait ← Clicker produces sharp pulses ← Dense fluid transmits sound efficien
 
 Trait ← Carapace resists fracture ← High gravity stresses skeletal structure ← Bio-scavenged metals reinforce stress lines ← Physical root: Super-Earth gravity and metal bioavailability ← F3, F17, F11
 
-- **Skill:** Iron Shell (Defence): Reduces all incoming damage by 35%; blocks critical hits.
+- **Skill:** Iron Shell (Defence): Its layered, metal-reinforced carapace deflects incoming strikes with a heavy, clanging resonance, absorbing blows that would otherwise pierce through. The creature braces firmly against attacks, causing sharp impacts to shatter harmlessly against its unyielding armor.
 - **Weakness:** Inlays fatigue after repeated impact; heavy attacks cause structural cracks.
 - **Observe:**
   1. Plates shift along growth lines
@@ -103,7 +103,7 @@ Trait ← Carapace resists fracture ← High gravity stresses skeletal structure
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Eridian Crawler | cousin |  | (council kind 'Predator') Hidrazón may snatch juvenile Eridians near vent shafts; Eridians use sonic lures to deter them. |
+| eridians | cousin |  | (council kind 'Predator') Hidrazón may snatch juvenile Eridians near vent shafts; Eridians use sonic lures to deter them. |
 
 ## Journal
 

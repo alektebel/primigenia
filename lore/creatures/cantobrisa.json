@@ -9,10 +9,13 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "The Shear Layer (Terminator region, 1-3 km altitude)",
+    "habitat": "The Shear Layer (Terminator region, 1-3 km altitude). Also, in the council's sketch (no such creature in this world yet): Spore-Mat, both consume atmospheric nutrients.",
     "diet": "Aero-plankton, Nitrate aerosols",
     "active": "Flare-pulsed",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Kiln-Strider"
+    ]
   },
   "body": "Translucent ribbed sac, central throat cavity, radial cilia array",
   "chains": [
@@ -33,7 +36,7 @@
           "en": "Resonant Thrust"
         },
         "role": "Basic",
-        "effect": "Propels unit forward 10m using acoustic push, costs 15 stamina.",
+        "effect": "The creature inflates its ribbed acoustic chamber and pushes against the air to launch itself forward with a powerful burst of sound.",
         "numbers": {}
       },
       "weakness": "High-frequency noise disrupts resonance",
@@ -93,7 +96,7 @@
           "en": "Nitrate Feast"
         },
         "role": "Engage",
-        "effect": "Heals 20% and buffs attack during flare events.",
+        "effect": "During bright flare events, the creature absorbs nutrients through its UV-sensitive skin, quickly recovering its strength and striking with greatly increased force.",
         "numbers": {}
       },
       "weakness": "Blind in low UV; sluggish otherwise",
@@ -253,18 +256,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Kiln-Strider",
-      "kind": "cousin",
-      "note": "(council kind 'Predator') Cantobrisa hunts juveniles in the shear."
-    },
-    {
-      "with": "Spore-Mat",
-      "kind": "cousin",
-      "note": "(council kind 'Competitor') Both consume atmospheric nutrients."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

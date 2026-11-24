@@ -21,16 +21,16 @@ Rigid arachnoid crystal frame; joints filled with supercooled CH4/Ethane slush t
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| vivisilice.c1 | Rigid crystal frame | Siloxane backbone brittle at 70 K ← Low thermal energy restricts molecular motion ← Equilibrium temperature 60–110 K | **F2** Orbital distance is 1.38 AU with a 740-day year, placing equilibrium temperature in the 60–110 K range when combined with high planetary albedo and stratospheric haze.; **F14** Biochemical backbone consists of siloxane (Si–O–Si) and organosilicon (Si–C) chains. | Thaw Strike (`vivisilice.thaw_strike`) | Engage | Charges 5m dealing brittle damage; creature freezes instantly after strike, becoming immobile until next pulse. | Shatters if cooled mid-strike; cannot move during inter-pulse periods. |
-| vivisilice.c2 | Joints flow only near 115 K | Supercooled solvent slush melts at 115 K ← Pulse from cryo-jet raises temp ← Remains below 130 K softening limit | **F12** Geothermal flux averages 0.08 W/m², erupting ammonia-water slurry at depth that manifests as surface frost and cryo-jets.; **F17** Universal poisons are H₂O (hydrolyzes silanes), O₂ (oxidizes Si-hydrides instantly), and T > 130 K (polymer softening). | Thaw Sprint (`vivisilice.thaw_sprint`) | Control | Moves at 3x speed for 2 turns; cannot use skills in next turn as it refreezes. | Vulnerable to wind and vibration during thaw; movement causes structural stress. |
-| vivisilice.c3 | Rapid growth during pulse | Metabolic rate accelerates with temp ← Silane catalysis speeds up ← Transition-metal complexes active | **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes.; **F13** Fluoride-rich cryo-volcanic gases temporarily break Si–O bonds, enabling silicon recycling. | Silane Bloom (`vivisilice.silane_bloom`) | Basic | Gains +2 HP and +1 damage for the remainder of the pulse phase. | Growth consumes stored chemical reserves; weakens after pulse. |
-| vivisilice.c4 | Seeks chemical gradients | Infrasonic and IR tracking ← Dense fog obscures vision ← Cold dense air favors low-frequency sound | **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄.; **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking. | Thermal Sense (`vivisilice.thermal_sense`) | Passive | Reveals location of all creatures within 15m that have active thermal signatures. | Blind to silent, non-thermal threats. |
+| vivisilice.c1 | Rigid crystal frame | Siloxane backbone brittle at 70 K ← Low thermal energy restricts molecular motion ← Equilibrium temperature 60–110 K | **F2** Orbital distance is 1.38 AU with a 740-day year, placing equilibrium temperature in the 60–110 K range when combined with high planetary albedo and stratospheric haze.; **F14** Biochemical backbone consists of siloxane (Si–O–Si) and organosilicon (Si–C) chains. | Thaw Strike (`vivisilice.thaw_strike`) | Engage | The creature lunges forward to strike, shattering its target with brittle force before instantly freezing itself solid and remaining motionless. | Shatters if cooled mid-strike; cannot move during inter-pulse periods. |
+| vivisilice.c2 | Joints flow only near 115 K | Supercooled solvent slush melts at 115 K ← Pulse from cryo-jet raises temp ← Remains below 130 K softening limit | **F12** Geothermal flux averages 0.08 W/m², erupting ammonia-water slurry at depth that manifests as surface frost and cryo-jets.; **F17** Universal poisons are H₂O (hydrolyzes silanes), O₂ (oxidizes Si-hydrides instantly), and T > 130 K (polymer softening). | Thaw Sprint (`vivisilice.thaw_sprint`) | Control | It dashes forward at a blistering pace for a short while, then quickly refreezes and stands completely still, unable to act afterward. | Vulnerable to wind and vibration during thaw; movement causes structural stress. |
+| vivisilice.c3 | Rapid growth during pulse | Metabolic rate accelerates with temp ← Silane catalysis speeds up ← Transition-metal complexes active | **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes.; **F13** Fluoride-rich cryo-volcanic gases temporarily break Si–O bonds, enabling silicon recycling. | Silane Bloom (`vivisilice.silane_bloom`) | Basic | Its crystalline body swells and hardens as it absorbs energy, growing noticeably tougher and more aggressive as it blooms. | Growth consumes stored chemical reserves; weakens after pulse. |
+| vivisilice.c4 | Seeks chemical gradients | Infrasonic and IR tracking ← Dense fog obscures vision ← Cold dense air favors low-frequency sound | **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄.; **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking. | Thermal Sense (`vivisilice.thermal_sense`) | Passive | It tilts its head and scans the area, causing faint heat shimmer to outline any nearby living creatures. | Blind to silent, non-thermal threats. |
 
 ### vivisilice.c1: Rigid crystal frame
 
 Trait ← Siloxane backbone brittle at 70 K ← Low thermal energy restricts molecular motion ← Equilibrium temperature 60–110 K ← F2, F14
 
-- **Skill:** Thaw Strike (Engage): Charges 5m dealing brittle damage; creature freezes instantly after strike, becoming immobile until next pulse.
+- **Skill:** Thaw Strike (Engage): The creature lunges forward to strike, shattering its target with brittle force before instantly freezing itself solid and remaining motionless.
 - **Weakness:** Shatters if cooled mid-strike; cannot move during inter-pulse periods.
 - **Observe:**
   1. Crystal shell reflects IR glows
@@ -49,7 +49,7 @@ Trait ← Siloxane backbone brittle at 70 K ← Low thermal energy restricts mol
 
 Trait ← Supercooled solvent slush melts at 115 K ← Pulse from cryo-jet raises temp ← Remains below 130 K softening limit ← F12, F17
 
-- **Skill:** Thaw Sprint (Control): Moves at 3x speed for 2 turns; cannot use skills in next turn as it refreezes.
+- **Skill:** Thaw Sprint (Control): It dashes forward at a blistering pace for a short while, then quickly refreezes and stands completely still, unable to act afterward.
 - **Weakness:** Vulnerable to wind and vibration during thaw; movement causes structural stress.
 - **Observe:**
   1. Slush liquefies in joints
@@ -67,7 +67,7 @@ Trait ← Supercooled solvent slush melts at 115 K ← Pulse from cryo-jet raise
 
 Trait ← Metabolic rate accelerates with temp ← Silane catalysis speeds up ← Transition-metal complexes active ← F15, F13
 
-- **Skill:** Silane Bloom (Basic): Gains +2 HP and +1 damage for the remainder of the pulse phase.
+- **Skill:** Silane Bloom (Basic): Its crystalline body swells and hardens as it absorbs energy, growing noticeably tougher and more aggressive as it blooms.
 - **Weakness:** Growth consumes stored chemical reserves; weakens after pulse.
 - **Observe:**
   1. Crystal lattice extends rapidly
@@ -85,7 +85,7 @@ Trait ← Metabolic rate accelerates with temp ← Silane catalysis speeds up �
 
 Trait ← Infrasonic and IR tracking ← Dense fog obscures vision ← Cold dense air favors low-frequency sound ← F10, F18
 
-- **Skill:** Thermal Sense (Passive): Reveals location of all creatures within 15m that have active thermal signatures.
+- **Skill:** Thermal Sense (Passive): It tilts its head and scans the area, causing faint heat shimmer to outline any nearby living creatures.
 - **Weakness:** Blind to silent, non-thermal threats.
 - **Observe:**
   1. Sensory spines vibrate

@@ -33,7 +33,7 @@
           "en": "Radial Sweep"
         },
         "role": "Engage",
-        "effect": "Detects and pulls prey from any direction within 2.5 m (+15% hit chance in dark/turbid water).",
+        "effect": "It sweeps its sensory arms to sense and drag prey from all sides, working especially well in murky waters.",
         "numbers": {}
       },
       "weakness": "Vulnerable to frontal strikes when reorienting arms.",
@@ -88,7 +88,7 @@
           "en": "Sticky Lash"
         },
         "role": "Basic",
-        "effect": "Shoots adhesive frill tip to snag drifting carcass bits (+20% food intake, slows target).",
+        "effect": "It lashes out with a sticky frill tip to catch floating debris and slow nearby targets.",
         "numbers": {}
       },
       "weakness": "Net tangles if struck by sharp bone or rock.",
@@ -143,7 +143,7 @@
           "en": "Tidal Drift"
         },
         "role": "Control",
-        "effect": "Rides flood currents to reposition silently (+10 m movement, zero stamina cost).",
+        "effect": "It glides effortlessly along incoming tides to shift its position without straining.",
         "numbers": {}
       },
       "weakness": "Cannot flee from fast predators during strong flow.",
@@ -198,7 +198,7 @@
           "en": "Current Hush"
         },
         "role": "Defence",
-        "effect": "Collapses frills into a sealed disc during slack tide (+30% stealth, reduces detection but stops feeding).",
+        "effect": "It folds its frills into a tight disc to hide from view, though it must stop eating while doing so.",
         "numbers": {}
       },
       "weakness": "Highly vulnerable to bone spines or rock attacks when collapsed.",

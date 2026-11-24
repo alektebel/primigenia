@@ -35,7 +35,7 @@
           "en": "Heat-track"
         },
         "role": "Poke",
-        "effect": "+25% range on attacks, reveals stealth",
+        "effect": "It scans the area with glowing thermal sensors, revealing hidden foes and striking with extended reach.",
         "numbers": {}
       },
       "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",
@@ -96,7 +96,7 @@
           "en": "Glass-slide"
         },
         "role": "Engage",
-        "effect": "+30% dodge chance on rocky terrain, grants movement through hazards",
+        "effect": "It glides smoothly over sharp rocks and treacherous ground, slipping past attacks without breaking stride.",
         "numbers": {}
       },
       "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",
@@ -153,7 +153,7 @@
           "en": "Shatter-strike"
         },
         "role": "Basic",
-        "effect": "Ignores 50% armor, +35% damage vs stasis/dormant",
+        "effect": "It delivers crushing blows that shatter thick plating and rattle frozen or motionless foes.",
         "numbers": {}
       },
       "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",

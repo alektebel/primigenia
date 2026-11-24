@@ -21,16 +21,16 @@ Tripedal armored form with thermal-IR photoreceptors, low-friction silicone pads
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| quemador.c1 | Dorsal thermal-IR photoreceptor array | Tracks heat signatures of vents and prey through haze ← Dense aerosols and thermal inversions block visible light ← K2V star emits IR-rich output that penetrates sulfur haze | **F1** Primary star is a K2V main-sequence dwarf with 0.38 L☉ luminosity and 5200 K effective temperature.; **F14** Sensory systems rely on thermal-IR photoreceptors and piezoelectric vibration receptors.; **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts. | Heat-track (`quemador.heat_track`) | Poke | +25% range on attacks, reveals stealth | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
-| quemador.c2 | Low-friction silicone pads | Provides traction on glassy wind-polished rock ← High gravity and abrasive silica winds create slick surfaces ← Fluid-based feet would freeze or shatter on contact | **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Glass-slide (`quemador.glass_slide`) | Engage | +30% dodge chance on rocky terrain, grants movement through hazards | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
-| quemador.c3 | Piezoelectric strike forelimbs | Delivers high-impact blows to crack dormant carapaces ← Cooling prey vitrify their shells into glass ← Dense air dissipates kinetic energy quickly, requiring focused impact | **F6** Sound speed is ~500 m/s; low-frequency waves (<100 Hz) travel >2 km via ground-coupled seismic transmission.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Shatter-strike (`quemador.shatter_strike`) | Basic | Ignores 50% armor, +35% damage vs stasis/dormant | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
+| quemador.c1 | Dorsal thermal-IR photoreceptor array | Tracks heat signatures of vents and prey through haze ← Dense aerosols and thermal inversions block visible light ← K2V star emits IR-rich output that penetrates sulfur haze | **F1** Primary star is a K2V main-sequence dwarf with 0.38 L☉ luminosity and 5200 K effective temperature.; **F14** Sensory systems rely on thermal-IR photoreceptors and piezoelectric vibration receptors.; **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts. | Heat-track (`quemador.heat_track`) | Poke | It scans the area with glowing thermal sensors, revealing hidden foes and striking with extended reach. | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
+| quemador.c2 | Low-friction silicone pads | Provides traction on glassy wind-polished rock ← High gravity and abrasive silica winds create slick surfaces ← Fluid-based feet would freeze or shatter on contact | **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Glass-slide (`quemador.glass_slide`) | Engage | It glides smoothly over sharp rocks and treacherous ground, slipping past attacks without breaking stride. | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
+| quemador.c3 | Piezoelectric strike forelimbs | Delivers high-impact blows to crack dormant carapaces ← Cooling prey vitrify their shells into glass ← Dense air dissipates kinetic energy quickly, requiring focused impact | **F6** Sound speed is ~500 m/s; low-frequency waves (<100 Hz) travel >2 km via ground-coupled seismic transmission.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Shatter-strike (`quemador.shatter_strike`) | Basic | It delivers crushing blows that shatter thick plating and rattle frozen or motionless foes. | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
 | quemador.c4 | Seismic pulse throat organ | Maps underground stasis pockets via ground vibrations ← Low-frequency waves travel kilometers in crustal material ← Line-of-sight navigation fails in perpetual thermal haze | **F6** Sound speed is ~500 m/s; low-frequency waves (<100 Hz) travel >2 km via ground-coupled seismic transmission.; **F16** Communication occurs via infrasound throat organs and seismic pulse transmission. | Ground-listen (`quemador.ground_listen`) | Control | Slows enemy movement, reveals hidden terrain/creatures | Overheating above 400°C melts silicone pads and cracks lattice genetics. |
 
 ### quemador.c1: Dorsal thermal-IR photoreceptor array
 
 Trait ← Tracks heat signatures of vents and prey through haze ← Dense aerosols and thermal inversions block visible light ← K2V star emits IR-rich output that penetrates sulfur haze ← F1, F14, F7
 
-- **Skill:** Heat-track (Poke): +25% range on attacks, reveals stealth
+- **Skill:** Heat-track (Poke): It scans the area with glowing thermal sensors, revealing hidden foes and striking with extended reach.
 - **Weakness:** Overheating above 400°C melts silicone pads and cracks lattice genetics.
 - **Observe:**
   1. Tripedal gait leaving polished grooves in rock
@@ -49,7 +49,7 @@ Trait ← Tracks heat signatures of vents and prey through haze ← Dense aeroso
 
 Trait ← Provides traction on glassy wind-polished rock ← High gravity and abrasive silica winds create slick surfaces ← Fluid-based feet would freeze or shatter on contact ← F3, F15, F18
 
-- **Skill:** Glass-slide (Engage): +30% dodge chance on rocky terrain, grants movement through hazards
+- **Skill:** Glass-slide (Engage): It glides smoothly over sharp rocks and treacherous ground, slipping past attacks without breaking stride.
 - **Weakness:** Overheating above 400°C melts silicone pads and cracks lattice genetics.
 - **Observe:**
   1. Tripedal gait leaving polished grooves in rock
@@ -67,7 +67,7 @@ Trait ← Provides traction on glassy wind-polished rock ← High gravity and ab
 
 Trait ← Delivers high-impact blows to crack dormant carapaces ← Cooling prey vitrify their shells into glass ← Dense air dissipates kinetic energy quickly, requiring focused impact ← F6, F15, F18
 
-- **Skill:** Shatter-strike (Basic): Ignores 50% armor, +35% damage vs stasis/dormant
+- **Skill:** Shatter-strike (Basic): It delivers crushing blows that shatter thick plating and rattle frozen or motionless foes.
 - **Weakness:** Overheating above 400°C melts silicone pads and cracks lattice genetics.
 - **Observe:**
   1. Tripedal gait leaving polished grooves in rock

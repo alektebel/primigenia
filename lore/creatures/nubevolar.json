@@ -33,7 +33,7 @@
           "en": "Polar-Lock"
         },
         "role": "Basic",
-        "effect": "Grants 'True Aim' on ranged attacks and allows flight through 'Obscured' terrain without penalty for 4 turns.",
+        "effect": "Its compound eyes lock onto distant targets, ensuring every projectile finds its mark. It glides smoothly through thick fog and dense foliage as if the air were completely clear.",
         "numbers": {}
       },
       "weakness": "Confused by smooth water surfaces that depolarize light; cannot navigate in total darkness.",
@@ -95,7 +95,7 @@
           "en": "Shadow Glide"
         },
         "role": "Basic",
-        "effect": "Moves 50% further per turn without expending movement when in 'Shadow' or 'Thermal' terrain; falls 1 level if forced out of thermal.",
+        "effect": "It rides the dark updrafts with effortless grace, covering great distances without tiring. If caught in open light, it quickly descends to the nearest lower ground.",
         "numbers": {}
       },
       "weakness": "Cannot soar in uniform lighting or still air; requires thermal contrast.",
@@ -157,7 +157,7 @@
           "en": "Aero-Feed"
         },
         "role": "Basic",
-        "effect": "Heals 5 HP and removes 1 'Exhaustion' per turn while in air; reduces speed by 30% due to net drag.",
+        "effect": "While airborne, it unfurls fine mesh nets to catch floating nourishment, steadily renewing its vigor and clearing away weariness. The heavy nets slow its flight, making its movements deliberately sluggish.",
         "numbers": {}
       },
       "weakness": "Cilia clog with dust or heavy particulates; requires grooming.",
@@ -216,7 +216,7 @@
           "en": "Eclipse-Charm"
         },
         "role": "Social",
-        "effect": "At eclipse onset, all Nubevolar in 60m range gain 'Reproduction Ready' (can spawn an ally at end of turn) and attract 'Predator' attention for 2 turns.",
+        "effect": "When the sky darkens, the flock emits a synchronized glow that strongly stirs an urge to multiply nearby. This brilliant display naturally draws the watchful eyes of hungry hunters to the area.",
         "numbers": {}
       },
       "weakness": "Mass aggregation during eclipse makes them vulnerable to area predators.",

@@ -9,10 +9,12 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Lane borders, dune bases, and evaporite pavements near salt flats.",
+    "habitat": "Lane borders, dune bases, and evaporite pavements near salt flats. Also, in the council's sketch (no such creature in this world yet): Karrow, karrow skid-lines leave brine residue that Rodapiés lick; Rodapiés disturb dust that Karrow senses for navigation.",
     "diet": "Omnivore; scavenges carcasses, hunts small invertebrates, licks mineral crusts.",
     "active": "Crepuscular; avoids midday heat and night frost.",
-    "predators": []
+    "predators": [
+      "Skirl"
+    ]
   },
   "body": "Quadrupedal body with a low center of gravity. Front limbs are bulky, capsule-like structures housing 'Wheel-Capsules'. These capsules can detach and roll independently. Rear limbs are robust walking legs.",
   "chains": [
@@ -37,7 +39,7 @@
           "en": "Drop Leg"
         },
         "role": "Defence",
-        "effect": "Detach a front wheel-capsule. Capsule rolls away in a random direction for 3 seconds, attracting aggro. Host gains 'Light Load' (move speed +30%) but loses forward attack capability.",
+        "effect": "The creature sheds a front wheel-capsule that rolls away randomly, strongly drawing enemy attention. The host moves swiftly while the detached limb distracts foes, though forward strikes are lost.",
         "numbers": {}
       },
       "weakness": "Decoy Vulnerability: If the player or enemy captures the rolling leg, the symbiont can be killed. Dead symbiont cannot be reattached, requiring regrowth.",
@@ -51,11 +53,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make the capsule a dead keratin-mineral shell (F18/F17 step 3) farmed by the symbiont (F23) and attached through a pre-formed autotomy seam, so the decoy is a shed tyre rather than a torn vascular limb. Replace regrowth by dawn with a moul t-cycle replacement and keep the decoy-versus-firepower trade-off.",
+        "fixes": [
+          "Make the capsule a dead keratin-mineral shell (F18/F17 step 3) farmed by the symbiont (F23) and attached through a pre-formed autotomy seam, so the decoy is a shed tyre rather than a torn vascular limb. Replace regrowth by dawn with a moul t-cycle replacement and keep the decoy-versus-firepower trade-off."
+        ],
+        "analogues": [
+          {
+            "organism": "Lizard caudal autotomy and crab limb autotomy at a pre-formed fracture plane, with the wheel spider as the rolling decoy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 4
         }
       },
       "provenance": {
@@ -86,7 +98,7 @@
           "en": "Roll Burst"
         },
         "role": "Basic",
-        "effect": "Host pushes front legs to roll. Speed triples for 3 seconds. Cost: Stamina drain. Can be used to dodge projectiles.",
+        "effect": "The creature forcefully pushes its front legs to launch into a rapid roll. This sudden burst of speed helps it weave through incoming attacks, though the effort quickly tires it.",
         "numbers": {}
       },
       "weakness": "Loose Sand: Symbiont cilia cannot grip loose sand or soft dunes. Rolling fails, and host must switch to walking.",
@@ -100,11 +112,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Say the host drives a dead shell through a rigid strut and pad at the rim (F18) while the symbiont only maintains and cleans the rolling surface; let cilia matter for the film, not traction. Keep loose sand as the hard counter (F22), which is the most honest part of this chain.",
+        "fixes": [
+          "Say the host drives a dead shell through a rigid strut and pad at the rim (F18) while the symbiont only maintains and cleans the rolling surface; let cilia matter for the film, not traction. Keep loose sand as the hard counter (F22), which is the most honest part of this chain."
+        ],
+        "analogues": [
+          {
+            "organism": "Wheel-spider and pangolin whole-body rolling (F19), plus Berg and Anderson's bacterial flagellar motor to show where true rotary drive stops; ciliary propulsion only works at small scale.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 3
         }
       },
       "provenance": {
@@ -148,11 +170,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Tie regrowth to the next moult or F23 tread cycle, charge water and scarce micronutrients (F15/F23), and allow a pre-grown cached capsule as an alternative. Keep the vulnerable-while-regrowing weakness; drop the generic stat penalty, and keep befriending by symbiont fragment only if the fragment is sealed moist against F10/F15 desiccation.",
+        "fixes": [
+          "Tie regrowth to the next moult or F23 tread cycle, charge water and scarce micronutrients (F15/F23), and allow a pre-grown cached capsule as an alternative. Keep the vulnerable-while-regrowing weakness; drop the generic stat penalty, and keep befriending by symbiont fragment only if the fragment is sealed moist against F10/F15 desiccation."
+        ],
+        "analogues": [
+          {
+            "organism": "Crustacean limb regeneration tied to moulting and salamander limb regeneration, both slow and both paid in resources.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 5
         }
       },
       "provenance": {
@@ -195,12 +227,22 @@
         "en": "It walks the desert, wheels tucked like a turtle's head."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "No physics fix needed: state that portage is slower than Lane rolling and energy-expensive on dunes, and keep Roll Burst disabled. Optionally cite F22's quick stow as the model for how fast the capsules tuck away.",
+        "fixes": [
+          "No physics fix needed: state that portage is slower than Lane rolling and energy-expensive on dunes, and keep Roll Burst disabled. Optionally cite F22's quick stow as the model for how fast the capsules tuck away."
+        ],
+        "analogues": [
+          {
+            "organism": "The karrow's two-legs-and-lifting-shoulder portage (F22, the same convergent solution), plus bipedal desert rodents moving over loose substrate.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
-          "skeptic": 6
+          "astrobio": 8,
+          "skeptic": 7
         }
       },
       "provenance": {
@@ -211,18 +253,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Skirl",
-      "kind": "cousin",
-      "note": "(council kind 'Predator') Skirls stoop on Rodapiés. Dropping a leg can confuse the stoop, causing the Skirl to strike the decoy or miss."
-    },
-    {
-      "with": "Karrow",
-      "kind": "cousin",
-      "note": "(council kind 'Commensal') Karrow skid-lines leave brine residue that Rodapiés lick; Rodapiés disturb dust that Karrow senses for navigation."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-24",
     "by": [
@@ -234,6 +265,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

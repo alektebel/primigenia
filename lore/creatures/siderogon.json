@@ -12,7 +12,10 @@
     "habitat": "Shallow tidal flats, sulfide seeps, rift margins.",
     "diet": "Chemosynthetic sulfide mats, microbial biofilms.",
     "active": "Diurnal; crepuscular peaks when tides expose vents.",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Microbial sulfide mat"
+    ]
   },
   "body": "Bilateral, hex-plate armor of iron-sulfide, internal magnetite chains, magnetite-tipped mandibles, siphon for low-frequency humming.",
   "chains": [
@@ -33,7 +36,7 @@
           "en": "Magnetic Lock"
         },
         "role": "Passive",
-        "effect": "Immune to disorientation from wind/tides; +20% navigation speed.",
+        "effect": "The creature moves steadily through shifting winds and tides without losing its way. You watch it navigate the terrain with confident, unbroken strides.",
         "numbers": {}
       },
       "weakness": "Demagnetized by direct lightning strike.",
@@ -47,8 +50,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make it 'aligns to the local field line and reads inclination', a fallback sense that haze and tides make useful, and let nearby ore outcrops scramble it. Drop the immunity claim and reframe lightning as a navigation-glitch secret rather than an electrical charge.",
+        "fixes": [
+          "Make it 'aligns to the local field line and reads inclination', a fallback sense that haze and tides make useful, and let nearby ore outcrops scramble it. Drop the immunity claim and reframe lightning as a navigation-glitch secret rather than an electrical charge."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria such as Magnetospirillum orient with magnetosome chains; homing pigeons and sea turtles use geomagnetic cues, though the animal mechanism is debated.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 5
@@ -79,7 +92,7 @@
           "en": "Acid Shell"
         },
         "role": "Defence",
-        "effect": "-60% damage from acid/bleach attacks; +30% damage resistance.",
+        "effect": "Its iron-sulfide scales easily shrug off corrosive sprays and harsh chemicals. You see the acidic liquids simply slide away without harming the creature.",
         "numbers": {}
       },
       "weakness": "Heavy armor limits movement speed to slow.",
@@ -93,8 +106,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Describe a composite plate: FeS inside, inert organic or oxide skin outside. Acid fog etches and slowly wears it, so it resists rather than ignores acid. Keep the heavy-armour, low-mobility trade-off.",
+        "fixes": [
+          "Describe a composite plate: FeS inside, inert organic or oxide skin outside. Acid fog etches and slowly wears it, so it resists rather than ignores acid. Keep the heavy-armour, low-mobility trade-off."
+        ],
+        "analogues": [
+          {
+            "organism": "Scaly-foot snail Chrysomallon squamiferum: greigite/pyrite scales under a vinyl-like organic layer; acid-mine-drainage systems both precipitate and dissolve FeS.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -125,7 +148,7 @@
           "en": "Crust Scrape"
         },
         "role": "Basic",
-        "effect": "Breaks hard armor; deals 15 damage and breaks guard.",
+        "effect": "Its magnetite-tipped mandibles shatter through thick armor and heavy defenses. You watch the creature crack the surface and leave the target completely exposed.",
         "numbers": {}
       },
       "weakness": "Teeth shatter if struck against solid rock.",
@@ -139,8 +162,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the magnetite tips but add continuous tooth replacement, matching 'teeth grow back slowly', and call the lineage a mollusc with a chiton-like radula rather than a literal hybrid. Make wear on rock the stated weakness.",
+        "fixes": [
+          "Keep the magnetite tips but add continuous tooth replacement, matching 'teeth grow back slowly', and call the lineage a mollusc with a chiton-like radula rather than a literal hybrid. Make wear on rock the stated weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Chitons biomineralise magnetite tooth caps and continually replace radular teeth; limpets rasp rock with a radula.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 7
@@ -171,7 +204,7 @@
           "en": "Long Hum"
         },
         "role": "Control",
-        "effect": "Summons herd from 120m; calms allies, +10% defense sync.",
+        "effect": "A low, vibrating hum echoes across the area, drawing nearby allies to its side. You see the creature's companions steady their footing and stand together in quiet unison.",
         "numbers": {}
       },
       "weakness": "Attracts predators who hunt by sound.",
@@ -185,8 +218,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make it a substrate-coupled thump through wet flats, using the shell as resonator, and keep it far-carrying through ground rather than through open air. Predators hunting by sound remain a good cost.",
+        "fixes": [
+          "Make it a substrate-coupled thump through wet flats, using the shell as resonator, and keep it far-carrying through ground rather than through open air. Predators hunting by sound remain a good cost."
+        ],
+        "analogues": [
+          {
+            "organism": "Elephants' seismic rumbles and blind mole-rats' head-drumming; frogs and insects shifting calls lower in fog or dense habitat.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 7
@@ -201,11 +244,6 @@
     }
   ],
   "relations": [
-    {
-      "with": "Microbial sulfide mat",
-      "kind": "cousin",
-      "note": "(council kind 'predator') Siderogon grazes mats but spores regrow crusts within days."
-    },
     {
       "with": "sidero_chisp",
       "kind": "cousin",
@@ -228,6 +266,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

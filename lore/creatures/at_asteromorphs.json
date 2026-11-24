@@ -90,7 +90,7 @@
           "en": "Cerebral Canopy"
         },
         "role": "Control",
-        "effect": "Project thermal plume that cools allies by 3°C and reveals hidden heat signatures within 15m radius",
+        "effect": "The creature projects a sweeping thermal plume that chills nearby allies and exposes hidden heat signatures to view.",
         "numbers": {}
       },
       "weakness": "Sustained neural firing causes rapid radiative overheating, forcing temporary hibernation",

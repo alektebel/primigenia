@@ -104,7 +104,7 @@
           "en": "Stone Chitin"
         },
         "role": "Defence",
-        "effect": "Expand calcified plates for 5 seconds, blocking 25 melee damage",
+        "effect": "The creature quickly hardens its mineral plates, creating a sturdy barrier that strongly deflects nearby attacks.",
         "numbers": {}
       },
       "weakness": "Expanded plates restrict diaphragm movement, lowering stamina regeneration by 20%",
@@ -223,7 +223,7 @@
           "en": "Pressure Sense"
         },
         "role": "Passive",
-        "effect": "Detect incoming strikes 0.5 seconds early, increasing dodge chance by 20% within active jet streams",
+        "effect": "Its sensitive fronds twitch and ripple as it senses shifting air currents, allowing it to smoothly sidestep incoming blows.",
         "numbers": {}
       },
       "weakness": "Sudden lightning thunder overloads mechanoreceptors, causing 3 seconds of disorientation and blind-spot vulnerability",

@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Inner crust slab-transition zone (~0.65 ρ_sat)",
+    "habitat": "Inner crust slab-transition zone (~0.65 ρ_sat). Also, in the council's sketch (no such creature in this world yet): Sialagón, vibra-Losa grazes on their phase-transition heat; Sialagón avoids competition by migrating to the higher-density gnocchi layer.",
     "diet": "Downward neutron drip flux & latent heat from phase transitions",
     "active": "Continuous (cycles synchronized to stellar spin & glitch cycles)",
     "predators": []
@@ -35,7 +35,7 @@
           "en": "Phonon Sync"
         },
         "role": "Engage",
-        "effect": "Synchronizes with nearby allies, granting +25% resonant tunneling success for 3 turns.",
+        "effect": "The creature aligns its vibrations with nearby allies, making their resonant tunneling much more reliable for a short while.",
         "numbers": {}
       },
       "weakness": "Proton contamination stalls metabolic cycles, causing a 1-turn stun.",
@@ -91,7 +91,7 @@
           "en": "Phase Slip"
         },
         "role": "Basic",
-        "effect": "Shifts to an adjacent pasta layer, dodging seismic waves and gaining +30% mobility.",
+        "effect": "It glides sideways into a neighboring structural layer to evade incoming seismic waves, moving with noticeably greater agility.",
         "numbers": {}
       },
       "weakness": "Micro-glitch fractures trap them, dealing +20% damage taken.",
@@ -155,7 +155,7 @@
           "en": "Knot Weave"
         },
         "role": "Social",
-        "effect": "Shares adaptive isotopes via resonant tunneling, granting +15% radiation resistance to allies.",
+        "effect": "The creature transmits protective isotopes through resonant channels, shielding nearby allies from harmful radiation.",
         "numbers": {}
       },
       "weakness": "X-ray flares disrupt knot topology, breaking the link and causing -20% resistance for 2 turns.",
@@ -211,7 +211,7 @@
           "en": "Drip Siphon"
         },
         "role": "Poke",
-        "effect": "Drains neutron flux from a lattice node, dealing 2 weak-interaction damage and healing 1 HP.",
+        "effect": "It siphons energy from a lattice node, weakening the target while absorbing the released power to mend its own body.",
         "numbers": {}
       },
       "weakness": "Overharvesting triggers inverse beta decay, attracting lattice predators.",
@@ -257,13 +257,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Sialagón",
-      "kind": "cousin",
-      "note": "(council kind 'Niche Partitioning') Vibra-Losa grazes on their phase-transition heat; Sialagón avoids competition by migrating to the higher-density gnocchi layer."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-18",
     "by": [

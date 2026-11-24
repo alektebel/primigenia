@@ -34,7 +34,7 @@
           "en": "Thaw Strike"
         },
         "role": "Engage",
-        "effect": "Charges 5m dealing brittle damage; creature freezes instantly after strike, becoming immobile until next pulse.",
+        "effect": "The creature lunges forward to strike, shattering its target with brittle force before instantly freezing itself solid and remaining motionless.",
         "numbers": {}
       },
       "weakness": "Shatters if cooled mid-strike; cannot move during inter-pulse periods.",
@@ -97,7 +97,7 @@
           "en": "Thaw Sprint"
         },
         "role": "Control",
-        "effect": "Moves at 3x speed for 2 turns; cannot use skills in next turn as it refreezes.",
+        "effect": "It dashes forward at a blistering pace for a short while, then quickly refreezes and stands completely still, unable to act afterward.",
         "numbers": {}
       },
       "weakness": "Vulnerable to wind and vibration during thaw; movement causes structural stress.",
@@ -153,7 +153,7 @@
           "en": "Silane Bloom"
         },
         "role": "Basic",
-        "effect": "Gains +2 HP and +1 damage for the remainder of the pulse phase.",
+        "effect": "Its crystalline body swells and hardens as it absorbs energy, growing noticeably tougher and more aggressive as it blooms.",
         "numbers": {}
       },
       "weakness": "Growth consumes stored chemical reserves; weakens after pulse.",
@@ -209,7 +209,7 @@
           "en": "Thermal Sense"
         },
         "role": "Passive",
-        "effect": "Reveals location of all creatures within 15m that have active thermal signatures.",
+        "effect": "It tilts its head and scans the area, causing faint heat shimmer to outline any nearby living creatures.",
         "numbers": {}
       },
       "weakness": "Blind to silent, non-thermal threats.",

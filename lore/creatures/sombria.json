@@ -34,7 +34,7 @@
           "en": "Moss Hide"
         },
         "role": "Control",
-        "effect": "+40% stealth in shallow water",
+        "effect": "The creature's mossy skin blends seamlessly with the riverbed, rendering it nearly invisible in shallow waters. It drifts silently among the reeds, forcing observers to strain their eyes to locate it.",
         "numbers": {}
       },
       "weakness": "Useless in murky water",
@@ -90,7 +90,7 @@
           "en": "Paralytic Strike"
         },
         "role": "Poke",
-        "effect": "Immobilizes target, +20% damage",
+        "effect": "The creature lashes out with venomous dorsal barbs, instantly paralyzing its target. The potent venom leaves the victim completely helpless and strongly vulnerable to further strikes.",
         "numbers": {}
       },
       "weakness": "Barb regeneration takes 12s",
@@ -146,7 +146,7 @@
           "en": "Twilight Sight"
         },
         "role": "Basic",
-        "effect": "Reveals hidden enemies, +30% accuracy in low light",
+        "effect": "Its wide-set eyes adjust instantly to the gloom, piercing through shadows and darkness. The creature spots concealed foes with ease, tracking their every movement in the dim light.",
         "numbers": {}
       },
       "weakness": "Loses effectiveness in full daylight",
@@ -209,7 +209,7 @@
           "en": "Tidal Glide"
         },
         "role": "Engage",
-        "effect": "Dashes through currents, +25% speed",
+        "effect": "Its sleek, low-profile body cuts effortlessly through the water, riding the currents with remarkable velocity. It surges forward in a blur, closing distances before opponents can react.",
         "numbers": {}
       },
       "weakness": "Cannot roll on its back, exposed belly",

@@ -33,7 +33,7 @@
           "en": "Rock-grind"
         },
         "role": "Basic",
-        "effect": "Chews through mineral armor, +15% damage to rock/armor targets",
+        "effect": "The creature gnaws relentlessly at stony defenses, tearing through hard carapaces with ease. Its jaws crush through rocky armor, leaving deep grooves in the hardest surfaces.",
         "numbers": {}
       },
       "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
@@ -93,7 +93,7 @@
           "en": "Seismic-step"
         },
         "role": "Engage",
-        "effect": "Dashes to target, +20% evasion on next attack",
+        "effect": "The creature leaps forward with a sudden burst of speed, closing the distance in a blur. Its next strike comes from an unpredictable angle, making it nearly impossible to dodge.",
         "numbers": {}
       },
       "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
@@ -156,7 +156,7 @@
           "en": "Heat-sink"
         },
         "role": "Defence",
-        "effect": "Absorbs thermal damage, reflects 30% as AoE",
+        "effect": "The creature draws heat into its back plates, glowing brightly as it absorbs the warmth. It then releases the stored energy outward, bathing the nearby area in a sudden wave of heat.",
         "numbers": {}
       },
       "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
@@ -216,7 +216,7 @@
           "en": "Deep-hum"
         },
         "role": "Control",
-        "effect": "Slows enemies in area, -25% action speed",
+        "effect": "The creature vibrates its throat sac, sending out a low rumble that shakes the ground. Nearby foes move heavily and sluggishly as the deep sound weighs them down.",
         "numbers": {}
       },
       "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
@@ -256,11 +256,6 @@
     }
   ],
   "relations": [
-    {
-      "with": "none (baseline)",
-      "kind": "cousin",
-      "note": "(council kind 'ecological foundation') First trophic layer establishes silicon-hot world food web."
-    },
     {
       "with": "azufraja",
       "kind": "prey",

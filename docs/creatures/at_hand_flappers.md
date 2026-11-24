@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_hand_flappers.c1 | Flag-like hand-wings & splayed perching legs | Maximize visual display surface without structural stress -> ground adaptation after flight became metabolically unsustainable -> 0.88g gravity with 22% oxygen and 1.1 bar pressure limit sustained flight envelope | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk. | Ritual Strut (`at_hand_flappers.ritual_strut`) | Social | Unfolds flag-hands and performs a rhythmic dance, boosting party morale by 20% and stunning rivals for 1 turn. | Completely immobile during display; vulnerable to ambush predators. |
-| at_hand_flappers.c2 | Thermoregulatory frills & ground-dwelling gait | High aerobic metabolism without flight -> 22% O2 and 1.1 bar pressure support elevated baseline heat -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial frills and padded feet | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk. | Heat-Shed (`at_hand_flappers.heat_shed`) | Defence | Reduces incoming damage by 15% during rest turns by venting excess thermal load through frill vasculature. | Frills collapse if dehydrated; requires frequent water access. |
+| at_hand_flappers.c1 | Flag-like hand-wings & splayed perching legs | Maximize visual display surface without structural stress -> ground adaptation after flight became metabolically unsustainable -> 0.88g gravity with 22% oxygen and 1.1 bar pressure limit sustained flight envelope | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk. | Ritual Strut (`at_hand_flappers.ritual_strut`) | Social | The creature spreads its flag-like hand-wings and performs a lively, rhythmic dance that strongly lifts the spirits of nearby allies and stuns opponents for a short while. | Completely immobile during display; vulnerable to ambush predators. |
+| at_hand_flappers.c2 | Thermoregulatory frills & ground-dwelling gait | High aerobic metabolism without flight -> 22% O2 and 1.1 bar pressure support elevated baseline heat -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial frills and padded feet | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk. | Heat-Shed (`at_hand_flappers.heat_shed`) | Defence | The creature settles down and fans its thermoregulatory frills to vent excess heat, causing its skin to stiffen and making it far more resilient to attacks while it rests. | Frills collapse if dehydrated; requires frequent water access. |
 
 ### at_hand_flappers.c1: Flag-like hand-wings & splayed perching legs
 
 Trait ← Maximize visual display surface without structural stress -> ground adaptation after flight became metabolically unsustainable -> 0.88g gravity with 22% oxygen and 1.1 bar pressure limit sustained flight envelope ← F5, F7, F8
 
-- **Skill:** Ritual Strut (Social): Unfolds flag-hands and performs a rhythmic dance, boosting party morale by 20% and stunning rivals for 1 turn.
+- **Skill:** Ritual Strut (Social): The creature spreads its flag-like hand-wings and performs a lively, rhythmic dance that strongly lifts the spirits of nearby allies and stuns opponents for a short while.
 - **Weakness:** Completely immobile during display; vulnerable to ambush predators.
 - **Observe:**
   1. Wing membranes reduced to frayed, ribbon-like hands
@@ -47,7 +47,7 @@ Trait ← Maximize visual display surface without structural stress -> ground ad
 
 Trait ← High aerobic metabolism without flight -> 22% O2 and 1.1 bar pressure support elevated baseline heat -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial frills and padded feet ← F5, F7, F8
 
-- **Skill:** Heat-Shed (Defence): Reduces incoming damage by 15% during rest turns by venting excess thermal load through frill vasculature.
+- **Skill:** Heat-Shed (Defence): The creature settles down and fans its thermoregulatory frills to vent excess heat, causing its skin to stiffen and making it far more resilient to attacks while it rests.
 - **Weakness:** Frills collapse if dehydrated; requires frequent water access.
 - **Observe:**
   1. Collapsible dermal flaps along the neck

@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Upper troposphere (2–5 km), within ring-shadow bands and magnetic valleys",
+    "habitat": "Upper troposphere (2–5 km), within ring-shadow bands and magnetic valleys. Also, in the council's sketch (no such creature in this world yet): Polvo-Vivo, anillo-Sangre is the apex predator of the ring-rain filter-feeder community; Polvo-Vivo graze on the same dust but cannot harvest static charge, making them easy prey for the Anillo-Sangre's arc",
     "diet": "Electro-autotrophy (static charge harvest), chemosynthetic CO₂ fixation, particulate ring-dust",
     "active": "Continuous, but peaks during atmospheric tide shear and eclipse thermal contraction",
     "predators": []
@@ -34,7 +34,7 @@
           "en": "Strain-Drive"
         },
         "role": "Basic",
-        "effect": "Grants +30% movement speed and stamina regen when body is flexed by wind gusts or player actions that pull/stretch it",
+        "effect": "When wind gusts or the player pull and stretch its body, the creature moves swiftly and quickly recovers its energy.",
         "numbers": {}
       },
       "weakness": "Rigidity: Coating in resin or freezing immobilizes filaments, cutting power source and halting regeneration",
@@ -90,7 +90,7 @@
           "en": "Arc-Whip"
         },
         "role": "Poke",
-        "effect": "Deals 8 damage and stuns target for 3 seconds; charge required, depletes internal capacitor",
+        "effect": "After gathering energy, the creature lashes out with an electric whip that briefly stuns nearby targets, draining its stored power.",
         "numbers": {}
       },
       "weakness": "Grounding: Standing in conductive mud or water shorts the cuticle, instantly draining charge and paralyzing the creature",
@@ -202,7 +202,7 @@
           "en": "Flux-Sense"
         },
         "role": "Control",
-        "effect": "Marks magnetic valleys on map for 30 seconds; player can command Anillo-Sangre to lead to these safe zones for radiation shielding",
+        "effect": "The creature senses and reveals hidden magnetic valleys, allowing the player to direct it toward these sheltered areas for protection.",
         "numbers": {}
       },
       "weakness": "Magnetic Dead Zones: In regions of null field, the creature loses navigation, panics, and drifts randomly, becoming vulnerable",
@@ -241,13 +241,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Polvo-Vivo",
-      "kind": "cousin",
-      "note": "(council kind 'Predator-Prey') Anillo-Sangre is the apex predator of the ring-rain filter-feeder community; Polvo-Vivo graze on the same dust but cannot harvest static charge, making them easy prey for the Anillo-Sangre's arc"
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

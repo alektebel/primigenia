@@ -35,7 +35,7 @@
           "en": "Iron Shell"
         },
         "role": "Defence",
-        "effect": "Reduces incoming damage by 40% but reduces movement speed by 20%",
+        "effect": "The creature's heavy iron shell shields it from harm but makes it move heavily and slowly.",
         "numbers": {}
       },
       "weakness": "Soft ventral membrane between plates is unarmoured and highly vulnerable",
@@ -49,13 +49,24 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 5
-        },
+        "summary": "Describe 'Iron Shell' (Defence) only as the animal bracing and curling so its overlapping FeS plates take the blow, with mobility cost stated in words; drop all percentages and numbers. Specify imbricated plates with unarmoured ventral flexure rather than a solid carapace.",
+        "fixes": [
+          "Describe 'Iron Shell' (Defence) only as the animal bracing and curling so its overlapping FeS plates take the blow, with mobility cost stated in words; drop all percentages and numbers. Specify imbricated plates with unarmoured ventral flexure rather than a solid carapace."
+        ],
         "analogues": [
+          {
+            "organism": "Chrysomallon squamiferum, the scaly-foot vent snail, armours its foot with iron-sulfide scales over a soft body; the same mineral is laid down as plates, not metal.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_chrysomallon"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -63,7 +74,11 @@
               "waren_2003_chrysomallon"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -91,7 +106,7 @@
           "en": "Scrape"
         },
         "role": "Basic",
-        "effect": "Deals 30 damage and harvests iron resource; extra damage against rocky terrain",
+        "effect": "It rasps its magnetite mouth against surfaces to chip away material and gather iron, working especially well on stone.",
         "numbers": {}
       },
       "weakness": "Magnetite wears down; requires iron-rich diet to maintain sharpness, weakens without Fe²⁺",
@@ -105,13 +120,24 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 7
-        },
+        "summary": "Keep 'Scrape' (Basic) as a plain description of rasping away crust to expose fresh iron-oxidizing biofilm; remove numeric damage and harvest values. If the magnetic-anomaly curiosity stays as a befriend or secret mechanic, add a separate magnetite-chain sensory organ rather than attributing it to the mouth. Note: the supplied species record is truncated after 'harvests iron resource; e...', so any further chains could not be refereed from the given text.",
+        "fixes": [
+          "Keep 'Scrape' (Basic) as a plain description of rasping away crust to expose fresh iron-oxidizing biofilm; remove numeric damage and harvest values. If the magnetic-anomaly curiosity stays as a befriend or secret mechanic, add a separate magnetite-chain sensory organ rather than attributing it to the mouth. Note: the supplied species record is truncated after 'harvests iron resource; e...', so any further chains could not be refereed from the given text."
+        ],
         "analogues": [
+          {
+            "organism": "Chiton radulae whose tooth cusps are capped with magnetite, a wear-resistant biomineral; magnetotactic bacteria orient using chains of intracellular magnetite crystals.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lowenstam_1962_magnetite"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -119,7 +145,11 @@
               "lowenstam_1962_magnetite"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -159,14 +189,20 @@
         "en": "It carries a compass inside its flesh."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 4
         },
         "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "blakemore_1975_magnetotactic"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -202,7 +238,7 @@
           "en": "Iron-Digest"
         },
         "role": "Passive",
-        "effect": "Passive: Converts ingested iron resource into 10% health over 3 turns",
+        "effect": "After consuming iron, its gut symbionts slowly convert the metal into nourishment, gradually mending its wounds.",
         "numbers": {}
       },
       "weakness": "Symbionts fail if gut pH drops below 4.0 during acid fog events",
@@ -215,11 +251,10 @@
         "en": "The rock feeds the bacteria; the bacteria feed the beast."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 6
         }
       },
@@ -254,6 +289,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

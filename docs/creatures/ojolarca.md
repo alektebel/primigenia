@@ -10,6 +10,7 @@
 - **Diet:** Thermally active vertebrates, canopy insects, mineral-rich nectar
 - **Active:** Diurnal & crepuscular
 - **Predators:** none
+- **Prey:** Cieloscopa
 
 ## Body
 
@@ -21,16 +22,16 @@ Streamlined aerodynamic frame, massive compound eyes with fused corneal lenses, 
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ojolarca.c1 | Massive, fused-cornea visual array spanning UV to thermal bands | Broadband resolution requires large aperture diameter ← Diffraction limit scales linearly with wavelength ← Thin atmosphere delivers unfiltered 210–5000 nm flux ← Transparent spectral window & F-type stellar SED | **F1** F5V main-sequence primary delivers peak irradiance at ~480 nm with bolometric luminosity 1.35 L☉.; **F9** Transparent spectral window from 210 nm to 5000 nm. | Spectral Lock (`ojolarca.spectral_lock`) | Basic | Highlights prey, mineral deposits, and thermal vents across 210–5000 nm for 8 seconds, revealing hidden paths or weaknesses | Large corneal mass causes rapid aerodynamic drag and metabolic heat buildup during M-dwarf flares |
-| ojolarca.c2 | Dorsal polarization-sensitive ommatidia for celestial compass use | Rayleigh scattering creates predictable zenith polarization patterns ← Low aerosol loading preserves high contrast polarization vectors ← Sparse cloud cover & thin atmosphere maintain stable sky maps ← Atmospheric transparency & low particulate loading | **F9** Transparent spectral window from 210 nm to 5000 nm.; **F11** Strong Rayleigh polarization patterns preserved to ground. | Sky Compass (`ojolarca.sky_compass`) | Control | Aligns flight path with polarization vectors to navigate rift valleys with 92% accuracy, ignoring magnetic drift | Overcast or ash-choked skies scramble polarization maps, causing disorientation |
-| ojolarca.c3 | Paired infrared pit organs flanking the snout for heat mapping | Long-wave IR requires thermal differential detection, not photon capture ← 900 nm NIR bias lacks thermal contrast for retinal imaging ← TRPA1 channels detect ambient heat maps via membrane deformation ← Binary star NIR output & atmospheric transparency | **F2** M3V red dwarf companion provides steady thermal baseline with frequent optical/UV flare spikes.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F15** Infrared vision relies on bolometric pit organs sensing ~10 μm thermal differentials, not retinal imaging. | Heat Trace (`ojolarca.heat_trace`) | Engage | Marks warm targets and geothermal vents within 15 m, enabling ambush strikes or safe resting zones | Pit organs suffer thermal noise from direct sunlight; must use shadows or burrow to reset baseline |
-| ojolarca.c4 | Dermal melanin-analogues and rapid photolyase enzyme cycling | High UV-B/C flux causes rapid thymine dimering in DNA ← Cross-linked polymers scatter UV while dissipating heat as IR ← Enzymatic repair consumes metabolic budget proportional to flare frequency ← F-star SED & thin ozone column | **F1** F5V main-sequence primary delivers peak irradiance at ~480 nm with bolometric luminosity 1.35 L☉.; **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F17** Dermal melanin-analogues and sterol-reinforced membranes with rapid photolyase cycling. | Solar Shield (`ojolarca.solar_shield`) | Defence | Activates dermal UV-scattering polymers to reduce flare damage by 70% for 12 seconds, at the cost of 30% movement speed | Prolonged flare activity depletes photolyase reserves, leaving tissues vulnerable to mutation and fatigue |
+| ojolarca.c1 | Massive, fused-cornea visual array spanning UV to thermal bands | Broadband resolution requires large aperture diameter ← Diffraction limit scales linearly with wavelength ← Thin atmosphere delivers unfiltered 210–5000 nm flux ← Transparent spectral window & F-type stellar SED | **F1** F5V main-sequence primary delivers peak irradiance at ~480 nm with bolometric luminosity 1.35 L☉.; **F9** Transparent spectral window from 210 nm to 5000 nm. | Spectral Lock (`ojolarca.spectral_lock`) | Basic | The creature's broad-spectrum vision sweeps across its surroundings, revealing hidden prey, mineral deposits, and thermal vents. This brief clarity exposes concealed paths and vulnerabilities to nearby observers. | Large corneal mass causes rapid aerodynamic drag and metabolic heat buildup during M-dwarf flares |
+| ojolarca.c2 | Dorsal polarization-sensitive ommatidia for celestial compass use | Rayleigh scattering creates predictable zenith polarization patterns ← Low aerosol loading preserves high contrast polarization vectors ← Sparse cloud cover & thin atmosphere maintain stable sky maps ← Atmospheric transparency & low particulate loading | **F9** Transparent spectral window from 210 nm to 5000 nm.; **F11** Strong Rayleigh polarization patterns preserved to ground. | Sky Compass (`ojolarca.sky_compass`) | Control | The creature reads polarized light patterns to steer its flight, gliding smoothly through narrow rift valleys without losing its way. It completely ignores magnetic interference while navigating. | Overcast or ash-choked skies scramble polarization maps, causing disorientation |
+| ojolarca.c3 | Paired infrared pit organs flanking the snout for heat mapping | Long-wave IR requires thermal differential detection, not photon capture ← 900 nm NIR bias lacks thermal contrast for retinal imaging ← TRPA1 channels detect ambient heat maps via membrane deformation ← Binary star NIR output & atmospheric transparency | **F2** M3V red dwarf companion provides steady thermal baseline with frequent optical/UV flare spikes.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F15** Infrared vision relies on bolometric pit organs sensing ~10 μm thermal differentials, not retinal imaging. | Heat Trace (`ojolarca.heat_trace`) | Engage | The creature's infrared pits detect nearby warmth, pinpointing living targets and geothermal vents. This allows it to launch sudden ambushes or locate secure resting spots. | Pit organs suffer thermal noise from direct sunlight; must use shadows or burrow to reset baseline |
+| ojolarca.c4 | Dermal melanin-analogues and rapid photolyase enzyme cycling | High UV-B/C flux causes rapid thymine dimering in DNA ← Cross-linked polymers scatter UV while dissipating heat as IR ← Enzymatic repair consumes metabolic budget proportional to flare frequency ← F-star SED & thin ozone column | **F1** F5V main-sequence primary delivers peak irradiance at ~480 nm with bolometric luminosity 1.35 L☉.; **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F17** Dermal melanin-analogues and sterol-reinforced membranes with rapid photolyase cycling. | Solar Shield (`ojolarca.solar_shield`) | Defence | The creature activates specialized skin polymers that scatter intense sunlight, greatly reducing the impact of solar flares. While this protection holds, its movements become noticeably slower. | Prolonged flare activity depletes photolyase reserves, leaving tissues vulnerable to mutation and fatigue |
 
 ### ojolarca.c1: Massive, fused-cornea visual array spanning UV to thermal bands
 
 Trait ← Broadband resolution requires large aperture diameter ← Diffraction limit scales linearly with wavelength ← Thin atmosphere delivers unfiltered 210–5000 nm flux ← Transparent spectral window & F-type stellar SED ← F1, F9
 
-- **Skill:** Spectral Lock (Basic): Highlights prey, mineral deposits, and thermal vents across 210–5000 nm for 8 seconds, revealing hidden paths or weaknesses
+- **Skill:** Spectral Lock (Basic): The creature's broad-spectrum vision sweeps across its surroundings, revealing hidden prey, mineral deposits, and thermal vents. This brief clarity exposes concealed paths and vulnerabilities to nearby observers.
 - **Weakness:** Large corneal mass causes rapid aerodynamic drag and metabolic heat buildup during M-dwarf flares
 - **Observe:**
   1. Corneal curvature shifts from blue to amber under flare
@@ -49,7 +50,7 @@ Trait ← Broadband resolution requires large aperture diameter ← Diffraction 
 
 Trait ← Rayleigh scattering creates predictable zenith polarization patterns ← Low aerosol loading preserves high contrast polarization vectors ← Sparse cloud cover & thin atmosphere maintain stable sky maps ← Atmospheric transparency & low particulate loading ← F9, F11
 
-- **Skill:** Sky Compass (Control): Aligns flight path with polarization vectors to navigate rift valleys with 92% accuracy, ignoring magnetic drift
+- **Skill:** Sky Compass (Control): The creature reads polarized light patterns to steer its flight, gliding smoothly through narrow rift valleys without losing its way. It completely ignores magnetic interference while navigating.
 - **Weakness:** Overcast or ash-choked skies scramble polarization maps, causing disorientation
 - **Observe:**
   1. Dorsal eye facets rotate independently to track zenith
@@ -67,7 +68,7 @@ Trait ← Rayleigh scattering creates predictable zenith polarization patterns �
 
 Trait ← Long-wave IR requires thermal differential detection, not photon capture ← 900 nm NIR bias lacks thermal contrast for retinal imaging ← TRPA1 channels detect ambient heat maps via membrane deformation ← Binary star NIR output & atmospheric transparency ← F2, F9, F15
 
-- **Skill:** Heat Trace (Engage): Marks warm targets and geothermal vents within 15 m, enabling ambush strikes or safe resting zones
+- **Skill:** Heat Trace (Engage): The creature's infrared pits detect nearby warmth, pinpointing living targets and geothermal vents. This allows it to launch sudden ambushes or locate secure resting spots.
 - **Weakness:** Pit organs suffer thermal noise from direct sunlight; must use shadows or burrow to reset baseline
 - **Observe:**
   1. Snout tilts downward to scan ground heat signatures
@@ -86,7 +87,7 @@ Trait ← Long-wave IR requires thermal differential detection, not photon captu
 
 Trait ← High UV-B/C flux causes rapid thymine dimering in DNA ← Cross-linked polymers scatter UV while dissipating heat as IR ← Enzymatic repair consumes metabolic budget proportional to flare frequency ← F-star SED & thin ozone column ← F1, F14, F17
 
-- **Skill:** Solar Shield (Defence): Activates dermal UV-scattering polymers to reduce flare damage by 70% for 12 seconds, at the cost of 30% movement speed
+- **Skill:** Solar Shield (Defence): The creature activates specialized skin polymers that scatter intense sunlight, greatly reducing the impact of solar flares. While this protection holds, its movements become noticeably slower.
 - **Weakness:** Prolonged flare activity depletes photolyase reserves, leaving tissues vulnerable to mutation and fatigue
 - **Observe:**
   1. Skin shifts from iridescent blue to matte gray under flares
@@ -99,12 +100,6 @@ Trait ← High UV-B/C flux causes rapid thymine dimering in DNA ← Cross-linked
   - Analogue: Cyanobacteria and plants with photolyase + UV-screening pigments; reptiles and birds with epidermal melanin and behavioural shade-seeking under high UV.: as named by the judge; no mechanism or reference recorded
   - Fix: If lineage is framed as mammal-like aerial vertebrate, note placental mammals largely lack photolyase (rely on NER)—either invoke avian/reptilian biochemistry for Ojolarca or add 'photolyase-retaining' highly speculative deep ancestry.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Cieloscopa | cousin |  | (council kind 'predator-prey') Ojolarca hunts Cieloscopa near rift edges but spares mature individuals that signal mutualistic nectar exchange |
 
 ## Journal
 

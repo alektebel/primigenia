@@ -98,7 +98,7 @@
           "en": "Dorsal Scan"
         },
         "role": "Poke",
-        "effect": "Gains +2 perception against overhead threats within 40m",
+        "effect": "The creature constantly tilts its face upward, keeping a sharp watch on the sky. This keen awareness lets it easily spot any threat drawing near from overhead.",
         "numbers": {}
       },
       "weakness": "Cannot track fast-moving prey at ground level without turning",

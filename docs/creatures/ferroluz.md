@@ -21,70 +21,82 @@ Flattened, eel-like torso with parallel dermal electrocyte folds; copper-chelati
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ferroluz.c1 | Parallel dermal electrocyte folds | Generates directional 300V stun pulses ← Brackish water conducts well but shorts in full brine ← World salinity gradients and conductivity limits | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Arc Stun (`ferroluz.arc_stun`) | Poke | Releases 15m radius pulse, stuns targets for 2s | Voltage collapses in open brine pools (>3 S/m) |
-| ferroluz.c2 | Vacuolar metallothionein crystals | Sequesters toxic free Cu2+/Zn2+ ions ← Sulfide weathering releases dissolved metals into lagoons ← High environmental metal load and toxicity threshold | **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface.; **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals. | Chelate Cache (`ferroluz.chelate_cache`) | Defence | Absorbs 10% chemical damage, converts to 5 HP regen | Cannot molt quickly if chelation load exceeds 3 charges |
-| ferroluz.c3 | Red-shifted lateral eye pigments | Sees through orange hematite haze ← Blue light scattered by suspended iron-oxide dust ← K-star spectrum filtered by atmospheric aerosols | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.; **F22** Primary production is red-shifted photoautotrophy in shallow seas plus chemolithotrophy at vents. | Haze Gaze (`ferroluz.haze_gaze`) | Passive | +20% detection range in low-contrast environments | Blinded by sudden flare brightening or lightning strikes |
-| ferroluz.c4 | Electrolytic ion siphon mouth | Extracts dissolved Fe2+/Fe3+ from prey tissue ← Metabolism relies on iron-redox cycling for energy ← Oxidative stress in metal-rich water demands rapid uptake | **F20** Primary energy sources are starlight, sulfide and iron oxidation, vent heat, and salinity gradients.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes. | Ion Siphon (`ferroluz.ion_siphon`) | Basic | Heals 5 HP/sec while feeding on dead prey | Immobile and vulnerable during the 4s feeding window |
+| ferroluz.c1 | Parallel dermal electrocyte folds | Generates directional 300V stun pulses ← Brackish water conducts well but shorts in full brine ← World salinity gradients and conductivity limits | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Arc Stun (`ferroluz.arc_stun`) | Poke | The creature discharges a crackling electrical pulse that knocks nearby foes unconscious for a short while. | Voltage collapses in open brine pools (>3 S/m) |
+| ferroluz.c2 | Vacuolar metallothionein crystals | Sequesters toxic free Cu2+/Zn2+ ions ← Sulfide weathering releases dissolved metals into lagoons ← High environmental metal load and toxicity threshold | **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface.; **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals. | Chelate Cache (`ferroluz.chelate_cache`) | Defence | The creature absorbs incoming chemical attacks and draws strength from them, slowly recovering its vitality. | Cannot molt quickly if chelation load exceeds 3 charges |
+| ferroluz.c3 | Red-shifted lateral eye pigments | Sees through orange hematite haze ← Blue light scattered by suspended iron-oxide dust ← K-star spectrum filtered by atmospheric aerosols | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.; **F22** Primary production is red-shifted photoautotrophy in shallow seas plus chemolithotrophy at vents. | Haze Gaze (`ferroluz.haze_gaze`) | Passive | Its keen eyes pierce through thick mist and dim lighting, allowing it to spot hidden movements that others would miss. | Blinded by sudden flare brightening or lightning strikes |
+| ferroluz.c4 | Electrolytic ion siphon mouth | Extracts dissolved Fe2+/Fe3+ from prey tissue ← Metabolism relies on iron-redox cycling for energy ← Oxidative stress in metal-rich water demands rapid uptake | **F20** Primary energy sources are starlight, sulfide and iron oxidation, vent heat, and salinity gradients.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes. | Ion Siphon (`ferroluz.ion_siphon`) | Basic | The creature feeds upon fallen prey, drawing sustenance from their remains to slowly mend its own wounds. | Immobile and vulnerable during the 4s feeding window |
 
 ### ferroluz.c1: Parallel dermal electrocyte folds
 
 Trait ← Generates directional 300V stun pulses ← Brackish water conducts well but shorts in full brine ← World salinity gradients and conductivity limits ← F16, F26
 
-- **Skill:** Arc Stun (Poke): Releases 15m radius pulse, stuns targets for 2s
+- **Skill:** Arc Stun (Poke): The creature discharges a crackling electrical pulse that knocks nearby foes unconscious for a short while.
 - **Weakness:** Voltage collapses in open brine pools (>3 S/m)
 - **Observe:**
   1. Dermal folds ripple in rhythmic waves before strike
   2. Water crackles blue-white along flanks
   3. Prey freezes mid-swim, gills clamped shut
 - **Journal:** It doesn't chase. It simply decides the water belongs to it.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep 300 V as canon F26, but describe a short-range body-axis discharge used only at contact after the flank-ripple warning; make the metabolic/oxygen cost and recharge time the real weakness, and delete all stat numbers.
   - scores: astrobio 6, skeptic 5
+  - Analogue: Electric eel (Electrophorus electricus) uses high-voltage pulses in low-conductivity fresh water; torpedo rays use low-voltage, high-current discharges in seawater — conductivity sets the design.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
+  - Fix: Keep 300 V as canon F26, but describe a short-range body-axis discharge used only at contact after the flank-ripple warning; make the metabolic/oxygen cost and recharge time the real weakness, and delete all stat numbers.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ferroluz.c2: Vacuolar metallothionein crystals
 
 Trait ← Sequesters toxic free Cu2+/Zn2+ ions ← Sulfide weathering releases dissolved metals into lagoons ← High environmental metal load and toxicity threshold ← F19, F24
 
-- **Skill:** Chelate Cache (Defence): Absorbs 10% chemical damage, converts to 5 HP regen
+- **Skill:** Chelate Cache (Defence): The creature absorbs incoming chemical attacks and draws strength from them, slowly recovering its vitality.
 - **Weakness:** Cannot molt quickly if chelation load exceeds 3 charges
 - **Observe:**
   1. Gills filter metallic glints from passing water
   2. Liver tissue glows faint green under vent light
   3. Molting crust falls to silt in layered sheets
 - **Journal:** It drinks poison and wears it as armor.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Rename the trait to metal-thiolate/phytochelatin-like granules in vacuoles; keep the 'drinks poison and wears it as armor' behaviour and drop all stat numbers.
   - scores: astrobio 6, skeptic 8
+  - Analogue: Metal-hyperaccumulator plants such as Noccaea caerulescens sequester Ni/Zn in vacuoles; mussels and crustaceans induce metallothionein when exposed to dissolved metals.: as named by the judge; no mechanism or reference recorded
+  - Fix: Rename the trait to metal-thiolate/phytochelatin-like granules in vacuoles; keep the 'drinks poison and wears it as armor' behaviour and drop all stat numbers.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ferroluz.c3: Red-shifted lateral eye pigments
 
 Trait ← Sees through orange hematite haze ← Blue light scattered by suspended iron-oxide dust ← K-star spectrum filtered by atmospheric aerosols ← F14, F22
 
-- **Skill:** Haze Gaze (Passive): +20% detection range in low-contrast environments
+- **Skill:** Haze Gaze (Passive): Its keen eyes pierce through thick mist and dim lighting, allowing it to spot hidden movements that others would miss.
 - **Weakness:** Blinded by sudden flare brightening or lightning strikes
 - **Observe:**
   1. Eyes reflect dull orange instead of silver
   2. Pupils narrow sharply in open water
   3. Tracks prey through thick dust clouds effortlessly
 - **Journal:** The world is orange, but it sees the dark.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Tune the pigment to orange dusk light and surface glints, keep the flare/lightning weakness, remove effortless tracking through dust clouds while submerged, and delete all stat numbers.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Turbid-water fishes shift visual-pigment sensitivity toward longer wavelengths; deep-sea fishes with red-sensitive pigments use the same trick at the other extreme.: as named by the judge; no mechanism or reference recorded
+  - Fix: Tune the pigment to orange dusk light and surface glints, keep the flare/lightning weakness, remove effortless tracking through dust clouds while submerged, and delete all stat numbers.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ferroluz.c4: Electrolytic ion siphon mouth
 
 Trait ← Extracts dissolved Fe2+/Fe3+ from prey tissue ← Metabolism relies on iron-redox cycling for energy ← Oxidative stress in metal-rich water demands rapid uptake ← F20, F21
 
-- **Skill:** Ion Siphon (Basic): Heals 5 HP/sec while feeding on dead prey
+- **Skill:** Ion Siphon (Basic): The creature feeds upon fallen prey, drawing sustenance from their remains to slowly mend its own wounds.
 - **Weakness:** Immobile and vulnerable during the 4s feeding window
 - **Observe:**
   1. Mouth flares like a bellows over the carcass
   2. Water bubbles and acid-fog forms near the wound
   3. Gills pulse rhythmically as ions flow inward
 - **Journal:** It doesn't just eat flesh. It eats the rust inside it.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** implausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Reframe the siphon as an iron-scavenging organ supplying heme/Fe-S cofactors, with chemosynthetic symbionts supplying the ATP; keep 'it eats the rust inside its prey' as micronutrient harvesting, remove the wound-side acid fog, and delete the healing stat.
+  - scores: astrobio 3, skeptic 5
+  - Analogue: Vent symbioses — giant tube worms with sulfur-oxidizing bacteria, and iron-oxidizing bacteria such as Gallionella: microbes do the redox, the animal houses or harvests them.: as named by the judge; no mechanism or reference recorded
+  - Fix: Reframe the siphon as an iron-scavenging organ supplying heme/Fe-S cofactors, with chemosynthetic symbionts supplying the ATP; keep 'it eats the rust inside its prey' as micronutrient harvesting, remove the wound-side acid fog, and delete the healing stat.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -116,4 +128,6 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 autoloop: removed rejected references from analogues
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues

@@ -21,24 +21,24 @@ Flattened eel-like torso, conductive electro-ports along flanks, iron-rich circu
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| galvanar.c1 | Iron-hemocyanin blood with high ion conductivity | Blood transports charge with low resistance ← Transmits shock through brackish water ← Needs to discharge in low-salinity estuaries ← Brackish lagoons have 1.5 S/m conductivity vs brine | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes. | Conduction (`galvanar.conduction`) | Engage | Attacks spread to all enemies within 5m in brackish zones; deals 20 damage per target | Blood viscosity increases in cold; movement slows by 30% in cold brackish water |
-| galvanar.c2 | Stacked electrocyte organs | Organs generate high voltage discharge ← Stuns prey in low-visibility haze ← Hunting in metal-haze waters with short visibility ← F26 electrocytes can produce 300V in brackish water | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Brackish Shock (`galvanar.brackish_shock`) | Poke | Deals 60 damage and stuns for 3 turns; only functional in brackish water | Discharge shorts and fails in high-salinity brine pools; risk of self-damage |
-| galvanar.c3 | Electroreceptive pores along flanks | Pores detect bio-electric signals ← Hunts prey hiding in conductive mud ← Turbid metal-haze waters blind vision ← F14 haze removes blue light and lowers contrast | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility. | Sense Current (`galvanar.sense_current`) | Social | Reveals hidden enemies within 20m and predicts their movement vector for 2 turns | Pores clog with suspended hematite dust; requires grooming or shedding |
+| galvanar.c1 | Iron-hemocyanin blood with high ion conductivity | Blood transports charge with low resistance ← Transmits shock through brackish water ← Needs to discharge in low-salinity estuaries ← Brackish lagoons have 1.5 S/m conductivity vs brine | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes. | Conduction (`galvanar.conduction`) | Engage | When striking in brackish zones, its electrical attacks leap to nearby foes, crackling through the water to strike multiple targets at once. | Blood viscosity increases in cold; movement slows by 30% in cold brackish water |
+| galvanar.c2 | Stacked electrocyte organs | Organs generate high voltage discharge ← Stuns prey in low-visibility haze ← Hunting in metal-haze waters with short visibility ← F26 electrocytes can produce 300V in brackish water | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Brackish Shock (`galvanar.brackish_shock`) | Poke | In brackish water, it releases a powerful electrical burst that leaves nearby foes paralyzed for a short while. | Discharge shorts and fails in high-salinity brine pools; risk of self-damage |
+| galvanar.c3 | Electroreceptive pores along flanks | Pores detect bio-electric signals ← Hunts prey hiding in conductive mud ← Turbid metal-haze waters blind vision ← F14 haze removes blue light and lowers contrast | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility. | Sense Current (`galvanar.sense_current`) | Social | Its sensitive flank pores detect faint electrical traces, allowing it to spot concealed foes nearby and anticipate their next movements. | Pores clog with suspended hematite dust; requires grooming or shedding |
 | galvanar.c4 | Vacuolar metal-chelation crystals | Crystals sequester toxic Cu/Zn ions ← Prevents protein denaturation from hyperaccumulation ← Diet includes metal-hyperaccumulator prey and runoff ← F24 free Cu²⁺ and Zn²⁺ are toxic above 1 µM | **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals. | Metal-Lock (`galvanar.metal_lock`) | Defence | Passive: Immunity to metal-toxicity damage and environmental corrosion | Crystals must be shed during growth; shedding leaves temporary toxic vulnerability and weakness |
 
 ### galvanar.c1: Iron-hemocyanin blood with high ion conductivity
 
 Trait ← Blood transports charge with low resistance ← Transmits shock through brackish water ← Needs to discharge in low-salinity estuaries ← Brackish lagoons have 1.5 S/m conductivity vs brine ← F16, F21
 
-- **Skill:** Conduction (Engage): Attacks spread to all enemies within 5m in brackish zones; deals 20 damage per target
+- **Skill:** Conduction (Engage): When striking in brackish zones, its electrical attacks leap to nearby foes, crackling through the water to strike multiple targets at once.
 - **Weakness:** Blood viscosity increases in cold; movement slows by 30% in cold brackish water
 - **Observe:**
   1. Water ripples with micro-currents around body
   2. Skin sheen of dissolved metal ions
   3. Blood visible through thin skin is dark and reflective
 - **Journal:** Lightning wrapped in salt and iron-blood.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 3
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 3
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
@@ -46,15 +46,15 @@ Trait ← Blood transports charge with low resistance ← Transmits shock throug
 
 Trait ← Organs generate high voltage discharge ← Stuns prey in low-visibility haze ← Hunting in metal-haze waters with short visibility ← F26 electrocytes can produce 300V in brackish water ← F14, F26
 
-- **Skill:** Brackish Shock (Poke): Deals 60 damage and stuns for 3 turns; only functional in brackish water
+- **Skill:** Brackish Shock (Poke): In brackish water, it releases a powerful electrical burst that leaves nearby foes paralyzed for a short while.
 - **Weakness:** Discharge shorts and fails in high-salinity brine pools; risk of self-damage
 - **Observe:**
   1. Prey jerking without visible contact
   2. Arcs of blue-white light between electro-ports
   3. Rapid muscle contractions before discharge
 - **Journal:** It strikes without moving.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 5
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
@@ -62,15 +62,15 @@ Trait ← Organs generate high voltage discharge ← Stuns prey in low-visibilit
 
 Trait ← Pores detect bio-electric signals ← Hunts prey hiding in conductive mud ← Turbid metal-haze waters blind vision ← F14 haze removes blue light and lowers contrast ← F14
 
-- **Skill:** Sense Current (Social): Reveals hidden enemies within 20m and predicts their movement vector for 2 turns
+- **Skill:** Sense Current (Social): Its sensitive flank pores detect faint electrical traces, allowing it to spot concealed foes nearby and anticipate their next movements.
 - **Weakness:** Pores clog with suspended hematite dust; requires grooming or shedding
 - **Observe:**
   1. Pulsing sensation around pores when prey is near
   2. Head tilting to scan electric fields
   3. Grooming behavior rubbing against conductive rocks
 - **Journal:** It sees the heartbeat of the mud.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 5
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### galvanar.c4: Vacuolar metal-chelation crystals
@@ -84,8 +84,8 @@ Trait ← Crystals sequester toxic Cu/Zn ions ← Prevents protein denaturation 
   2. Shedding skin revealing shiny crystals
   3. Avoiding metal-rich sludge while shedding
 - **Journal:** Shedding crystals is the only time it bleeds.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 6
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
@@ -117,4 +117,6 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 autoloop: removed rejected references from analogues
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues

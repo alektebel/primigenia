@@ -247,6 +247,15 @@ def profiles(names=None, final=None):
 
 
 # ---- SPECIATE (new creatures from physics) --------------------------------------------------------------------
+def _complete(gen, out):
+    """The referee must cover every chain of every species (a truncated answer used to leave chains unreviewed): raise so cached() retries."""
+    if not (isinstance(gen, list) and isinstance(out, list)): return
+    got = {str(x.get("name", "")).lower(): len(x.get("chains") or []) for x in out if isinstance(x, dict)}
+    for sp in gen:
+        if isinstance(sp, dict) and sp.get("name") and isinstance(sp.get("chains"), list) and got.get(str(sp["name"]).lower(), 0) < len(sp["chains"]):
+            raise ValueError(f"referee answer incomplete for {sp['name']}")
+
+
 def speciate(seed, n=3, base=None):
     tag = re.sub(r"\W+", "_", seed or "niches")[:40]
     sdir = os.path.join(OUT, "species")
@@ -264,10 +273,14 @@ def speciate(seed, n=3, base=None):
     sc = cached(f"6_species_{tag}_review.json", lambda: jparse(ask("skeptic", ADV["skeptic"] + "\n\n" + BASE,
         f"Check these new species against the world canon and the existing creatures:\n{json.dumps(gen, ensure_ascii=False)}\n"
         'Output ONLY JSON: [{"name": str, "chains": [{"trait": str, "score": 1-10, "fix": str}]}]', temp=0.2, max_tokens=6000)), base=sdir)
-    bio = cached(f"6_species_{tag}_astrobio.json", lambda: jparse(ask("astrobio", persona("astrobio") + "\n\n" + BASE,
+    def bio_ask():
+        out = jparse(ask("astrobio", persona("astrobio") + "\n\n" + BASE,
         f"Referee these new species for biological plausibility in THIS world (say 'highly speculative' where true):\n{json.dumps(gen, ensure_ascii=False)}\n"
         'Output ONLY JSON: [{"name": str, "chains": [{"trait": str, "verdict": "plausible|fixable|implausible", "why": str, '
-        '"analogue": str, "reference": str (author/year or textbook, or "from memory, unverified"), "fix": str}]}]')), base=sdir)
+        '"analogue": str, "reference": str (author/year or textbook, or "from memory, unverified"), "fix": str}]}]'))
+        _complete(gen, out)
+        return out
+    bio = cached(f"6_species_{tag}_astrobio.json", bio_ask, base=sdir)
     return {"species": gen, "review": sc, "astrobio": bio}
 
 

@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Hyphal overburden & karst exhalation zones where network source-sink dynamics concentrate resources
+- **Habitat:** Hyphal overburden & karst exhalation zones where network source-sink dynamics concentrate resources. Also, in the council's sketch (no such creature in this world yet): Siltfilter, siltfilter grazes on the same benthic detritus, inadvertently clearing hyphal paths; Sustrisoma rides the siltfilter’s gill rakers to reach higher nutrient fronts.
 - **Diet:** Chemoautotrophic symbiont; digests fungal exudates, ion gradients, and spore dust via external enzymatic hydrolysis. 'Wants' network stability and spore dispersal over personal reproduction.
 - **Active:** Nocturnal and crepuscular; activity pulses match chemical diffusion cycles (hours to days)
 - **Predators:** none
@@ -21,16 +21,16 @@ Ribbon-like, segmented chitin-glucan carapace with melanin streaks; ventral cili
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sustrisoma.c1 | Reads fungal chemical gradients | High receptor density ← Slow diffusion limits signal range ← 2.0 bar atmosphere increases gas viscosity | **F6** Surface pressure; **F9** Sound propagation speed | Chemoreflex Pulse (`sustrisoma.chemoreflex_pulse`) | Passive | Reveals hidden resource paths within an 8m radius | Sudden VOC bursts blind receptors for 2 turns |
-| sustrisoma.c2 | Crawls at network flow speed | Bradykinetic locomotion ← Hyphal traction requires moisture ← Dense aerosol haze traps ground heat | **F8** Mean visibility range | Hyphal Sync (`sustrisoma.hyphal_sync`) | Social | Shares movement speed with allies, reducing stamina drain by 40% | Desiccates if exposed to bare rock for >3 turns |
-| sustrisoma.c3 | Secretes alkaloid neutralizers | Alkaloid tolerance ← Gut microbiome specialization ← Fungal antibiotic competition | **F13** Primary structural and metabolic polymers; **F15** Network topology and emergent behavior | Symbiotic Shield (`sustrisoma.symbiotic_shield`) | Defence | Converts incoming toxin damage into network resistance boost (+3 for 2 turns) | Melanin-rich zones denature gut enzymes permanently |
-| sustrisoma.c4 | Mirrors continental resource shifts | Pigment migration ← Seasonal carbon redistribution ← K2V luminosity & 600-day orbit | **F1** Stellar classification and luminosity; **F2** Orbital period; **F19** Hyphal signalling timescale table | Network Resonance (`sustrisoma.network_resonance`) | Control | Plays VOC/electrical patch to redirect network flow by 15% over 3 turns, drains 20 stamina | Sensitive to sudden pressure drops from frontal systems |
+| sustrisoma.c1 | Reads fungal chemical gradients | High receptor density ← Slow diffusion limits signal range ← 2.0 bar atmosphere increases gas viscosity | **F6** Surface pressure; **F9** Sound propagation speed | Chemoreflex Pulse (`sustrisoma.chemoreflex_pulse`) | Passive | The creature senses chemical trails in the air and reveals hidden resource paths nearby. | Sudden VOC bursts blind receptors for 2 turns |
+| sustrisoma.c2 | Crawls at network flow speed | Bradykinetic locomotion ← Hyphal traction requires moisture ← Dense aerosol haze traps ground heat | **F8** Mean visibility range | Hyphal Sync (`sustrisoma.hyphal_sync`) | Social | It syncs its movement with nearby creatures, allowing them to travel together at a steady pace without tiring quickly. | Desiccates if exposed to bare rock for >3 turns |
+| sustrisoma.c3 | Secretes alkaloid neutralizers | Alkaloid tolerance ← Gut microbiome specialization ← Fungal antibiotic competition | **F13** Primary structural and metabolic polymers; **F15** Network topology and emergent behavior | Symbiotic Shield (`sustrisoma.symbiotic_shield`) | Defence | It secretes a protective substance that absorbs harmful chemicals and strongly fortifies the surrounding fungal network for a short while. | Melanin-rich zones denature gut enzymes permanently |
+| sustrisoma.c4 | Mirrors continental resource shifts | Pigment migration ← Seasonal carbon redistribution ← K2V luminosity & 600-day orbit | **F1** Stellar classification and luminosity; **F2** Orbital period; **F19** Hyphal signalling timescale table | Network Resonance (`sustrisoma.network_resonance`) | Control | It emits chemical and electrical signals to steer the flow of resources nearby, though the effort tires it out. | Sensitive to sudden pressure drops from frontal systems |
 
 ### sustrisoma.c1: Reads fungal chemical gradients
 
 Trait ← High receptor density ← Slow diffusion limits signal range ← 2.0 bar atmosphere increases gas viscosity ← F6, F9
 
-- **Skill:** Chemoreflex Pulse (Passive): Reveals hidden resource paths within an 8m radius
+- **Skill:** Chemoreflex Pulse (Passive): The creature senses chemical trails in the air and reveals hidden resource paths nearby.
 - **Weakness:** Sudden VOC bursts blind receptors for 2 turns
 - **Observe:**
   1. Ciliated ripples along flanks
@@ -49,7 +49,7 @@ Trait ← High receptor density ← Slow diffusion limits signal range ← 2.0 b
 
 Trait ← Bradykinetic locomotion ← Hyphal traction requires moisture ← Dense aerosol haze traps ground heat ← F8
 
-- **Skill:** Hyphal Sync (Social): Shares movement speed with allies, reducing stamina drain by 40%
+- **Skill:** Hyphal Sync (Social): It syncs its movement with nearby creatures, allowing them to travel together at a steady pace without tiring quickly.
 - **Weakness:** Desiccates if exposed to bare rock for >3 turns
 - **Observe:**
   1. Leaves damp trace marks
@@ -67,7 +67,7 @@ Trait ← Bradykinetic locomotion ← Hyphal traction requires moisture ← Dens
 
 Trait ← Alkaloid tolerance ← Gut microbiome specialization ← Fungal antibiotic competition ← F13, F15
 
-- **Skill:** Symbiotic Shield (Defence): Converts incoming toxin damage into network resistance boost (+3 for 2 turns)
+- **Skill:** Symbiotic Shield (Defence): It secretes a protective substance that absorbs harmful chemicals and strongly fortifies the surrounding fungal network for a short while.
 - **Weakness:** Melanin-rich zones denature gut enzymes permanently
 - **Observe:**
   1. Foams bitter sap when stressed
@@ -86,7 +86,7 @@ Trait ← Alkaloid tolerance ← Gut microbiome specialization ← Fungal antibi
 
 Trait ← Pigment migration ← Seasonal carbon redistribution ← K2V luminosity & 600-day orbit ← F1, F2, F19
 
-- **Skill:** Network Resonance (Control): Plays VOC/electrical patch to redirect network flow by 15% over 3 turns, drains 20 stamina
+- **Skill:** Network Resonance (Control): It emits chemical and electrical signals to steer the flow of resources nearby, though the effort tires it out.
 - **Weakness:** Sensitive to sudden pressure drops from frontal systems
 - **Observe:**
   1. Veins darken before rain
@@ -100,12 +100,6 @@ Trait ← Pigment migration ← Seasonal carbon redistribution ← K2V luminosit
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Control = timed local VOC/enzyme perturbation on one patch with days-long feedback (F19–F20), at most biasing nearby source–sink, not steering continental flow. Pigment mirroring encodes historical starvation (secret/lore) rather than real-time steering; flag electrical secrets highly speculative.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Siltfilter | cousin |  | (council kind 'commensal') Siltfilter grazes on the same benthic detritus, inadvertently clearing hyphal paths; Sustrisoma rides the siltfilter’s gill rakers to reach higher nutrient fronts. |
 
 ## Journal
 

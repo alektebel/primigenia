@@ -12,7 +12,9 @@
     "habitat": "2–10 m below ice shell (polar & equatorial zones)",
     "diet": "Chemoautotrophic biofilms & radiolytic precipitates",
     "active": "Continuous, peaks during tidal flexure & ice-quakes",
-    "predators": []
+    "predators": [
+      "Thermarctus ferox"
+    ]
   },
   "body": "Flat disc with ciliary fringes, ventral rasping mouth, dorsal crystalline plates",
   "chains": [
@@ -34,7 +36,7 @@
           "en": "Adhere & Scrape"
         },
         "role": "Basic",
-        "effect": "Deals 2 damage to biofilm mats and grants +1 mobility on ice.",
+        "effect": "It scrapes away thick biofilm mats and glides effortlessly across icy terrain.",
         "numbers": {}
       },
       "weakness": "Dislodged by sudden pressure waves that break adhesion.",
@@ -94,7 +96,7 @@
           "en": "Current Sense"
         },
         "role": "Poke",
-        "effect": "Reveals hidden vents and prey paths within 15m.",
+        "effect": "It senses hidden vents and prey trails nearby, making them clearly visible.",
         "numbers": {}
       },
       "weakness": "Overloaded by thermal plume surges.",
@@ -150,7 +152,7 @@
           "en": "Oxidant Cache"
         },
         "role": "Defence",
-        "effect": "Absorbs 3 damage and heals 2 HP on impact.",
+        "effect": "Its crystalline plates absorb heavy blows, allowing it to recover strongly after taking a hit.",
         "numbers": {}
       },
       "weakness": "Plates shatter under direct impact.",
@@ -210,7 +212,7 @@
           "en": "Signal Pulse"
         },
         "role": "Social",
-        "effect": "Calms allies and reveals stealth enemies within 10m.",
+        "effect": "It pulses with a calming light that pacifies nearby allies and exposes hidden enemies.",
         "numbers": {}
       },
       "weakness": "Attracts larger predators.",
@@ -258,11 +260,6 @@
       "with": "stratiforma_velum",
       "kind": "cousin",
       "note": "(council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons."
-    },
-    {
-      "with": "Thermarctus ferox",
-      "kind": "cousin",
-      "note": "(council kind 'Prey') Vent-stalkers occasionally snatch them off the ice when plumes rise."
     },
     {
       "with": "stratiforma_velum",

@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "10–22 km altitude, within convective storm anvils and fair-weather electrostatic layers",
+    "habitat": "10–22 km altitude, within convective storm anvils and fair-weather electrostatic layers. Also, in the council's sketch (no such creature in this world yet): Ochre-grazer, cleans ectoparasites using conductive shock; grazers follow storm tracks for safety.",
     "diet": "Chemosynthetic sulfate aerosols, lightning-ionized nitrates, electrochemical metabolites",
     "active": "Dusk-to-dawn, storm-peak active",
     "predators": []
@@ -34,7 +34,7 @@
           "en": "Charge Leap"
         },
         "role": "Control",
-        "effect": "leaps 8m vertically by shedding decoy, costs 15 stamina",
+        "effect": "The creature sheds a decoy from its rear and launches itself high into the air, leaving the false form behind to draw attention.",
         "numbers": {}
       },
       "weakness": "Grounded by heavy rain or low-humidity air; decoy drifts away and must be regrown over 3 days",
@@ -90,7 +90,7 @@
           "en": "Conduct Path"
         },
         "role": "Engage",
-        "effect": "routes ambient lightning current to stun prey/allies within 6m, deals 12 damage",
+        "effect": "Arcs of lightning travel along its iron-rich body and crackle outward, jolting nearby creatures and leaving them strongly disoriented.",
         "numbers": {}
       },
       "weakness": "Poor insulation in calm air; slow recharge without storm proximity, easily disrupted by water",
@@ -146,7 +146,7 @@
           "en": "Signal Flash"
         },
         "role": "Social",
-        "effect": "flashes 480nm light to mark territory or calm rivals, 10m radius",
+        "effect": "A soft blue-green glow pulses from its body, casting a visible aura that claims the area or soothes approaching rivals.",
         "numbers": {}
       },
       "weakness": "Useless in thick fog or direct sunlight; attracts photo-sensitive predators and competitors",
@@ -242,13 +242,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Ochre-grazer",
-      "kind": "cousin",
-      "note": "(council kind 'commensal') Cleans ectoparasites using conductive shock; grazers follow storm tracks for safety."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

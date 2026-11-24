@@ -6,10 +6,11 @@
 
 ## Niche
 
-- **Habitat:** Volcanic rift margins and brackish lagoon edges
+- **Habitat:** Volcanic rift margins and brackish lagoon edges. Also, in the council's sketch (no such creature in this world yet): Sinter-Dweller Filter-Sponge, ferrisca prys open sinter mats, exposing bacterial films the sponge colonizes; the sponge's chitin-like proteins reinforce Ferrisca's gill rakers.
 - **Diet:** Chemosynthetic bacteria, sulfide sinter crusts, hyperaccumulating flora, detritus
 - **Active:** Crepuscular (avoids peak 30 m/s dust storms)
 - **Predators:** none
+- **Prey:** Acid-Fog Drifter
 
 ## Body
 
@@ -21,54 +22,61 @@ Lophophorate-grade bilateral ancestor independently armored with iron-sulfide pl
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ferrisca.c1 | Broad, flattened iron-sulfide carapace | Low-contrast orange haze (F14) flattens visual targeting ← 1.7x tidal surges (F7) require low-drag clinging ← Abrasive hematite dust (F15) abrades soft tissue ← Iron-oxidizing enzymes precipitate FeS plates (F25) | **F7** One moon, Pell, has radius 0.20 R⊕, a 16-day orbit, and raises tides 1.7 times Earth's.; **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.; **F15** Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.; **F25** Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal. | Low Scurry (`ferrisca.low_scurry`) | Basic | Dash 8m along walls or ground, ignoring friction penalties for 1 turn. | Vulnerable to venting steam bursts that lift and tumble them. |
-| ferrisca.c2 | Lateral gait with jointed walking legs | Narrow rift topography (F15) restricts forward retreat ← Lateral compression aligns legs with crevice axes ← Jointed margin articulation enables side-stepping ← Low-frequency sound (F13) favors parallel-threat posture; convergence on crab form is highly speculative but physically forced | **F13** Sound speed is 330 m/s at 285 K; low frequencies carry for kilometres.; **F15** Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.; **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface. | Carcinised Step (`ferrisca.carcinised_step`) | Control | Move 6m laterally in a straight line, ignoring terrain penalties for 1 turn. | Cannot turn quickly; blind spot directly behind the tucked abdomen. |
-| ferrisca.c3 | Ventral shield covering gill cavity and brood pouch | Acidic dry-basin runoff (pH 4) (F17) corrodes exposed flesh ← Sulfide fog (F15) attacks gill membranes ← Ventral abdomen tucks beneath carapace rim ← Hydrostatic flexion seals plates against acid | **F15** Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.; **F17** Open-sea pH is 6.5; dry basins fall to pH 4 as sulfide oxidation produces sulfuric acid.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes.; **F25** Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal. | Iron Fold (`ferrisca.iron_fold`) | Defence | Tuck abdomen, reducing incoming damage by 40% for 2 turns, but cannot move. | Tightly sealed shield traps heat; prolonged use risks thermal stress. |
+| ferrisca.c1 | Broad, flattened iron-sulfide carapace | Low-contrast orange haze (F14) flattens visual targeting ← 1.7x tidal surges (F7) require low-drag clinging ← Abrasive hematite dust (F15) abrades soft tissue ← Iron-oxidizing enzymes precipitate FeS plates (F25) | **F7** One moon, Pell, has radius 0.20 R⊕, a 16-day orbit, and raises tides 1.7 times Earth's.; **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.; **F15** Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.; **F25** Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal. | Low Scurry (`ferrisca.low_scurry`) | Basic | The creature scurries rapidly across walls and ground, gliding smoothly without being slowed by rough or slippery surfaces for a short while. | Vulnerable to venting steam bursts that lift and tumble them. |
+| ferrisca.c2 | Lateral gait with jointed walking legs | Narrow rift topography (F15) restricts forward retreat ← Lateral compression aligns legs with crevice axes ← Jointed margin articulation enables side-stepping ← Low-frequency sound (F13) favors parallel-threat posture; convergence on crab form is highly speculative but physically forced | **F13** Sound speed is 330 m/s at 285 K; low frequencies carry for kilometres.; **F15** Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.; **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface. | Carcinised Step (`ferrisca.carcinised_step`) | Control | It steps swiftly sideways in a straight line, easily crossing over rough or obstructive ground without slowing down for a brief moment. | Cannot turn quickly; blind spot directly behind the tucked abdomen. |
+| ferrisca.c3 | Ventral shield covering gill cavity and brood pouch | Acidic dry-basin runoff (pH 4) (F17) corrodes exposed flesh ← Sulfide fog (F15) attacks gill membranes ← Ventral abdomen tucks beneath carapace rim ← Hydrostatic flexion seals plates against acid | **F15** Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.; **F17** Open-sea pH is 6.5; dry basins fall to pH 4 as sulfide oxidation produces sulfuric acid.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes.; **F25** Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal. | Iron Fold (`ferrisca.iron_fold`) | Defence | The creature tucks its abdomen into a tight shield, becoming highly resistant to attacks while remaining completely still. | Tightly sealed shield traps heat; prolonged use risks thermal stress. |
 | ferrisca.c4 | Asymmetrical iron-sulfide crushing and slicing claws | Sinter mats concentrate sulfide ore (F27) ← Chemolithotrophic bacteria feed inside crusts ← Fe-S redox metabolism powers high-torque joints (F21) ← Metallothionein chelation (F24) hardens claw tips | **F17** Open-sea pH is 6.5; dry basins fall to pH 4 as sulfide oxidation produces sulfuric acid.; **F18** Heat flow is 1.8 times Earth's, with a thin lithosphere, rifts, and hydrothermal vent fields fed by radiogenic U/Th/K enrichment.; **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes.; **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals.; **F27** Sinter mats precipitate and concentrate sulfide ore, but organismal smelting is fantasy; reducing ore to metal requires a kiln.; **F28** Slagroot and related plants accumulate more than 1,000 µg/g Ni in dry leaves. | Ore Breaker (`ferrisca.ore_breaker`) | Poke | Deal 15 piercing damage to mineral-armor foes or harvest 3 resource units from sinter beds. | Claw tips degrade in high-salinity brine (conductivity 10 S/m) due to galvanic corrosion. |
 
 ### ferrisca.c1: Broad, flattened iron-sulfide carapace
 
 Trait ← Low-contrast orange haze (F14) flattens visual targeting ← 1.7x tidal surges (F7) require low-drag clinging ← Abrasive hematite dust (F15) abrades soft tissue ← Iron-oxidizing enzymes precipitate FeS plates (F25) ← F7, F14, F15, F25
 
-- **Skill:** Low Scurry (Basic): Dash 8m along walls or ground, ignoring friction penalties for 1 turn.
+- **Skill:** Low Scurry (Basic): The creature scurries rapidly across walls and ground, gliding smoothly without being slowed by rough or slippery surfaces for a short while.
 - **Weakness:** Vulnerable to venting steam bursts that lift and tumble them.
 - **Observe:**
   1. Dorsal rust plating
   2. Lateral compression
   3. Hemispherical eye stalks
 - **Journal:** Carapace pressed like a pancake, because in this haze, being thin is the only way to disappear.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Make F7 the primary cause of the pancake shape (low-drag clinging in surge) and F15/F25 the cause of the plates; demote F14 to 'haze makes cheap concealment possible', not the driver. Replace the stat text with a plain behaviour: a low, gripping scurry along walls and ground, with steam bursts as the honest weakness. State that plates are biologically deposited sulfides, not smelted metal.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Scaly-foot snail Chrysomallon squamiferum grows iron-sulfide sclerites; limpets and chitons armour exposed surfaces with mineralised plates and teeth.: as named by the judge; no mechanism or reference recorded
+  - Fix: Make F7 the primary cause of the pancake shape (low-drag clinging in surge) and F15/F25 the cause of the plates; demote F14 to 'haze makes cheap concealment possible', not the driver. Replace the stat text with a plain behaviour: a low, gripping scurry along walls and ground, with steam bursts as the honest weakness. State that plates are biologically deposited sulfides, not smelted metal.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ferrisca.c2: Lateral gait with jointed walking legs
 
 Trait ← Narrow rift topography (F15) restricts forward retreat ← Lateral compression aligns legs with crevice axes ← Jointed margin articulation enables side-stepping ← Low-frequency sound (F13) favors parallel-threat posture; convergence on crab form is highly speculative but physically forced ← F13, F15, F19
 
-- **Skill:** Carcinised Step (Control): Move 6m laterally in a straight line, ignoring terrain penalties for 1 turn.
+- **Skill:** Carcinised Step (Control): It steps swiftly sideways in a straight line, easily crossing over rough or obstructive ground without slowing down for a brief moment.
 - **Weakness:** Cannot turn quickly; blind spot directly behind the tucked abdomen.
 - **Observe:**
   1. Outward-facing leg joints
   2. Wide lateral stance
   3. Ventral gill plumes
 - **Journal:** They walk sideways because the rifts are narrow and the fog is thick, and evolution keeps filing down the ends until only the crab shape survives.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep the crab-like silhouette and sideways gait as convergence on tight crevices (F15), but replace 'jointed' with six muscular, mineral-tipped lobes, or change the ancestor to a motile protostome grazer with a muscular foot and scleritome. Rename 'gill rakers' as magnetite-capped scraping spines if a radula-like organ exists, and drop the sound-to-posture claim: sound is for sensing, crevices are for orientation. Strip '6m' from the skill: describe a low side-step that holds the body inside the crevice. Label the whole package highly speculative in the journal.
   - scores: astrobio 6, skeptic 4
+  - Analogue: Carcinisation into crab-like form in decapod crustaceans (porcelain, king and hermit crabs); chiton radular teeth tipped with magnetite; byssal attachment of mussels in surge.: as named by the judge; no mechanism or reference recorded
+  - Fix: Keep the crab-like silhouette and sideways gait as convergence on tight crevices (F15), but replace 'jointed' with six muscular, mineral-tipped lobes, or change the ancestor to a motile protostome grazer with a muscular foot and scleritome. Rename 'gill rakers' as magnetite-capped scraping spines if a radula-like organ exists, and drop the sound-to-posture claim: sound is for sensing, crevices are for orientation. Strip '6m' from the skill: describe a low side-step that holds the body inside the crevice. Label the whole package highly speculative in the journal.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ferrisca.c3: Ventral shield covering gill cavity and brood pouch
 
 Trait ← Acidic dry-basin runoff (pH 4) (F17) corrodes exposed flesh ← Sulfide fog (F15) attacks gill membranes ← Ventral abdomen tucks beneath carapace rim ← Hydrostatic flexion seals plates against acid ← F15, F17, F21, F25
 
-- **Skill:** Iron Fold (Defence): Tuck abdomen, reducing incoming damage by 40% for 2 turns, but cannot move.
+- **Skill:** Iron Fold (Defence): The creature tucks its abdomen into a tight shield, becoming highly resistant to attacks while remaining completely still.
 - **Weakness:** Tightly sealed shield traps heat; prolonged use risks thermal stress.
 - **Observe:**
   1. Overlapping ventral plates
   2. Gill filtration tufts
   3. Brood chamber aperture
 - **Journal:** The belly is hidden not for modesty, but because acid fog melts flesh and the ocean keeps its secrets under the ribs.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 6
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Warén 2003 [unverified])
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Warén 2003 [unverified])
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
@@ -83,8 +91,9 @@ Trait ← Sinter mats concentrate sulfide ore (F27) ← Chemolithotrophic bacter
   2. Serrated inner margin
   3. Dark metallothionein deposits
 - **Journal:** They don't hunt meat so much as crack open the earth's crust, tasting the bacteria that live in the iron.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 5
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Brooks 1977 [unverified])
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Brooks 1977 [unverified])
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
@@ -92,8 +101,6 @@ Trait ← Sinter mats concentrate sulfide ore (F27) ← Chemolithotrophic bacter
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Sinter-Dweller Filter-Sponge | cousin |  | (council kind 'Commensalism') Ferrisca prys open sinter mats, exposing bacterial films the sponge colonizes; the sponge's chitin-like proteins reinforce Ferrisca's gill rakers. |
-| Acid-Fog Drifter | cousin |  | (council kind 'Predation') Ferrisca ambushes Drifters in brackish shallows; the Drifter's electrocyte bursts (F26) can short-circuit Ferrisca's nervous system if the crab fails to fold quickly. |
 | carapaz | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | carmesa | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | crang_lira | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
@@ -123,3 +130,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
 - 2026-11-24 autoloop: carcinisation links to 6 creature(s)
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

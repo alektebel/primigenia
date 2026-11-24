@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_bone_crushers.c1 | Enormous scavenging beaks & vicious thumb claws | Crack calcified bone and rip carrion hides -> seasonal drought cycles create episodic die-offs across alkaline prairies -> 18° axial tilt driving predictable resource pulses and seasonal droughts | **F2** Moderate axial tilt enforces cyclical resource pulses and seasonal droughts.; **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F12** Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests. | Bone Snap (`at_bone_crushers.bone_snap`) | Poke | Shatters bones to access marrow, dealing 25% damage and applying a 15% vulnerability buff to targets for 2 turns. | Beak becomes brittle and prone to fracture if diet lacks sufficient calcium cycling. |
-| at_bone_crushers.c2 | Thermoregulatory snouts & carrion-scent glands | High caloric requirement for bone processing -> 22% O2 and 1.1 bar pressure support high aerobic output -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial glands and vascularized snouts | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk. | Carrion Screech (`at_bone_crushers.carrion_screech`) | Signature | -20% enemy aggression within 50m; marks territory and deters rivals via chemical and auditory display. | High caloric requirement; starves rapidly if large kills are older than 3 days. |
+| at_bone_crushers.c1 | Enormous scavenging beaks & vicious thumb claws | Crack calcified bone and rip carrion hides -> seasonal drought cycles create episodic die-offs across alkaline prairies -> 18° axial tilt driving predictable resource pulses and seasonal droughts | **F2** Moderate axial tilt enforces cyclical resource pulses and seasonal droughts.; **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F12** Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests. | Bone Snap (`at_bone_crushers.bone_snap`) | Poke | The creature cracks open sturdy hides with its beak and claws to reach the marrow, leaving nearby foes weak and easily harmed for a short while. | Beak becomes brittle and prone to fracture if diet lacks sufficient calcium cycling. |
+| at_bone_crushers.c2 | Thermoregulatory snouts & carrion-scent glands | High caloric requirement for bone processing -> 22% O2 and 1.1 bar pressure support high aerobic output -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial glands and vascularized snouts | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk. | Carrion Screech (`at_bone_crushers.carrion_screech`) | Signature | It lets out a piercing cry and releases a heavy carrion stench to mark its territory, strongly deterring nearby rivals and calming their aggression for a short while. | High caloric requirement; starves rapidly if large kills are older than 3 days. |
 
 ### at_bone_crushers.c1: Enormous scavenging beaks & vicious thumb claws
 
 Trait ← Crack calcified bone and rip carrion hides -> seasonal drought cycles create episodic die-offs across alkaline prairies -> 18° axial tilt driving predictable resource pulses and seasonal droughts ← F2, F5, F12
 
-- **Skill:** Bone Snap (Poke): Shatters bones to access marrow, dealing 25% damage and applying a 15% vulnerability buff to targets for 2 turns.
+- **Skill:** Bone Snap (Poke): The creature cracks open sturdy hides with its beak and claws to reach the marrow, leaving nearby foes weak and easily harmed for a short while.
 - **Weakness:** Beak becomes brittle and prone to fracture if diet lacks sufficient calcium cycling.
 - **Observe:**
   1. Three-meter hairy frame casting long shadows
@@ -47,7 +47,7 @@ Trait ← Crack calcified bone and rip carrion hides -> seasonal drought cycles 
 
 Trait ← High caloric requirement for bone processing -> 22% O2 and 1.1 bar pressure support high aerobic output -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial glands and vascularized snouts ← F5, F7, F8
 
-- **Skill:** Carrion Screech (Signature): -20% enemy aggression within 50m; marks territory and deters rivals via chemical and auditory display.
+- **Skill:** Carrion Screech (Signature): It lets out a piercing cry and releases a heavy carrion stench to mark its territory, strongly deterring nearby rivals and calming their aggression for a short while.
 - **Weakness:** High caloric requirement; starves rapidly if large kills are older than 3 days.
 - **Observe:**
   1. Vascularized, sweat-pore-rich snout

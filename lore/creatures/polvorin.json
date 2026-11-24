@@ -36,7 +36,7 @@
           "en": "Crystalline Carapace"
         },
         "role": "Defence",
-        "effect": "Player gains +50% damage reduction and immunity to terrain hazards for 5 turns.",
+        "effect": "The silicate armor hardens around nearby allies, strongly deflecting strikes and shielding them from ground hazards for a short while.",
         "numbers": {}
       },
       "weakness": "Heavy armor reduces movement speed and agility.",
@@ -94,7 +94,7 @@
           "en": "Thaw Injection"
         },
         "role": "Engage",
-        "effect": "Heals 3 health and restores 2 solvent to player; freezes enemy terrain for 2 turns.",
+        "effect": "The creature injects a warming brine that mends wounds and restores vitality, while its exhaled vapors strongly freeze the ground beneath nearby foes.",
         "numbers": {}
       },
       "weakness": "Heat sources cause rapid evaporation of brine.",
@@ -156,7 +156,7 @@
           "en": "Jet Push"
         },
         "role": "Poke",
-        "effect": "Launch player 5m in a straight line; leaves a chemical trail that confuses enemies for 2 turns.",
+        "effect": "The creature vents a powerful chemical blast that strongly propels nearby allies forward, leaving a lingering mist that disorients pursuing foes.",
         "numbers": {}
       },
       "weakness": "Venting leaves player vulnerable during launch animation.",
@@ -214,7 +214,7 @@
           "en": "Deep Memory"
         },
         "role": "Passive",
-        "effect": "Reveals hidden paths and past events on the world map; reduces stasis recovery time by 20%.",
+        "effect": "The crystalline lobes pulse with ancient knowledge, strongly revealing hidden paths and past events on the map while sharpening the mind to break free from stasis quickly.",
         "numbers": {}
       },
       "weakness": "Memory lobes are brittle; damage causes information loss.",

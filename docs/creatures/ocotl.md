@@ -21,71 +21,83 @@ Spherical/ovoid, spiny exoskeleton, internal clathrate reservoirs
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ocotl.c1 | Internal methane clathrate reservoirs control buoyancy | Brine density reaches 1.2 g/cm3 near 4km ← Neutral buoyancy requires precise volume displacement ← Calcium chloride saturation stabilizes heavy fluid | **F13** Pore fluid is a 3-6 M CaCl2 brine with density near 1.2 g/cm3 and residence times of 1e6-1e9 years. | Clathrate Rise (`ocotl.clathrate_rise`) | Basic | Ascends 5m instantly by dissociating bladder, costs stamina | Violent bubble release alerts prey and scavengers |
-| ocotl.c2 | Radiolytic oxygen burst organs deliver one-shot attacks | Strict anaerobes cannot tolerate free O2 long-term ← Radiolysis hoards H2 and O2 in same pore ← Metabolic explosion poisons cell after one use | **F22** Radiolytic oxygen can be hoarded in vesicles and spent in one metabolic burst before it poisons the cell. | Oxygen Spike (`ocotl.oxygen_spike`) | Poke | Deals 30 damage burst, then 2-turn stun as cell detoxifies | Leaves them metabolically inactive until detox complete |
-| ocotl.c3 | Spiny thermal-insulating carapace survives near 118°C | Protein denaturation sets hard ceiling near 122°C ← Repair mechanisms fail above thermal limit ← Local isotherm lies at about 4km depth | **F20** Protein denaturation sets a hard ceiling near 122 C; the local isotherm lies at about 4 km, and playable organisms stop at 118 C. | Heat Shell (`ocotl.heat_shell`) | Defence | Reduces thermal damage by 40% and slows decay | Carapace limits flexibility in narrow cracks |
-| ocotl.c4 | Seismic vibration receptors hunt via low-frequency tremors | Chemical diffusion moves scent only 1 cm/day ← Sound travels 3000 m/s in solid rock ← Fracture networks act as planetary acoustic waveguides | **F10** Sound travels about 242 m/s in the cold 0.45 bar air, 1,480 m/s in water and 3,000-6,000 m/s in rock, so rock is the long-range channel.; **F11** At a molecular diffusion coefficient near 1e-9 m2/s, a scent molecule moves only about 1 cm per day, so chemical signals are local unless carried by flow. | Quake Sense (`ocotl.quake_sense`) | Passive | Reveals hidden creatures in adjacent tiles within 3m | Deaf to high-frequency vibrations and sudden cracks |
+| ocotl.c1 | Internal methane clathrate reservoirs control buoyancy | Brine density reaches 1.2 g/cm3 near 4km ← Neutral buoyancy requires precise volume displacement ← Calcium chloride saturation stabilizes heavy fluid | **F13** Pore fluid is a 3-6 M CaCl2 brine with density near 1.2 g/cm3 and residence times of 1e6-1e9 years. | Clathrate Rise (`ocotl.clathrate_rise`) | Basic | The creature rapidly releases gas from its bladders to shoot upward, leaving a trail of bubbles as it rises. It expends its stored energy to make the sudden ascent. | Violent bubble release alerts prey and scavengers |
+| ocotl.c2 | Radiolytic oxygen burst organs deliver one-shot attacks | Strict anaerobes cannot tolerate free O2 long-term ← Radiolysis hoards H2 and O2 in same pore ← Metabolic explosion poisons cell after one use | **F22** Radiolytic oxygen can be hoarded in vesicles and spent in one metabolic burst before it poisons the cell. | Oxygen Spike (`ocotl.oxygen_spike`) | Poke | The creature violently expels a concentrated burst of oxygen that shocks nearby targets. It then falls still and spasms as its cells work to purge the toxic byproducts. | Leaves them metabolically inactive until detox complete |
+| ocotl.c3 | Spiny thermal-insulating carapace survives near 118°C | Protein denaturation sets hard ceiling near 122°C ← Repair mechanisms fail above thermal limit ← Local isotherm lies at about 4km depth | **F20** Protein denaturation sets a hard ceiling near 122 C; the local isotherm lies at about 4 km, and playable organisms stop at 118 C. | Heat Shell (`ocotl.heat_shell`) | Defence | The creature braces its spiny carapace against the intense heat, shimmering as it absorbs the thermal energy. Its tough outer shell resists melting and holds its shape against the scorching environment. | Carapace limits flexibility in narrow cracks |
+| ocotl.c4 | Seismic vibration receptors hunt via low-frequency tremors | Chemical diffusion moves scent only 1 cm/day ← Sound travels 3000 m/s in solid rock ← Fracture networks act as planetary acoustic waveguides | **F10** Sound travels about 242 m/s in the cold 0.45 bar air, 1,480 m/s in water and 3,000-6,000 m/s in rock, so rock is the long-range channel.; **F11** At a molecular diffusion coefficient near 1e-9 m2/s, a scent molecule moves only about 1 cm per day, so chemical signals are local unless carried by flow. | Quake Sense (`ocotl.quake_sense`) | Passive | The creature tilts its head and listens to the ground, sensing faint tremors through its specialized receptors. Hidden movements nearby become apparent as it tracks the subtle vibrations. | Deaf to high-frequency vibrations and sudden cracks |
 
 ### ocotl.c1: Internal methane clathrate reservoirs control buoyancy
 
 Trait ← Brine density reaches 1.2 g/cm3 near 4km ← Neutral buoyancy requires precise volume displacement ← Calcium chloride saturation stabilizes heavy fluid ← F13
 
-- **Skill:** Clathrate Rise (Basic): Ascends 5m instantly by dissociating bladder, costs stamina
+- **Skill:** Clathrate Rise (Basic): The creature rapidly releases gas from its bladders to shoot upward, leaving a trail of bubbles as it rises. It expends its stored energy to make the sudden ascent.
 - **Weakness:** Violent bubble release alerts prey and scavengers
 - **Observe:**
   1. Iridescent bladder panels beneath carapace
   2. Rapid ascent leaves trailing ice crystals
   3. Pressure sensors twitch before movement
 - **Journal:** They carry their own ice to ride the dark.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** implausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Move the clathrate bladder into the shallow liquid shell (roughly the 0.9-1.2 km band where F21 allows it) or, if the predator must stay at 2.8-3.5 km, replace it with a compressible gas/lipid reservoir or regulated brine-density change. Keep the rapid-rise and noisy-release mechanic; drop the ice-chip secret at depth.
+  - scores: astrobio 3
+  - Analogue: Methane hydrate is stable in cold, high-pressure shallow sediments and in the upper few hundred metres of permafrost, not in hot deep crustal brines.: as named by the judge; no mechanism or reference recorded
+  - Fix: Move the clathrate bladder into the shallow liquid shell (roughly the 0.9-1.2 km band where F21 allows it) or, if the predator must stay at 2.8-3.5 km, replace it with a compressible gas/lipid reservoir or regulated brine-density change. Keep the rapid-rise and noisy-release mechanic; drop the ice-chip secret at depth.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ocotl.c2: Radiolytic oxygen burst organs deliver one-shot attacks
 
 Trait ← Strict anaerobes cannot tolerate free O2 long-term ← Radiolysis hoards H2 and O2 in same pore ← Metabolic explosion poisons cell after one use ← F22
 
-- **Skill:** Oxygen Spike (Poke): Deals 30 damage burst, then 2-turn stun as cell detoxifies
+- **Skill:** Oxygen Spike (Poke): The creature violently expels a concentrated burst of oxygen that shocks nearby targets. It then falls still and spasms as its cells work to purge the toxic byproducts.
 - **Weakness:** Leaves them metabolically inactive until detox complete
 - **Observe:**
   1. Gill slits vent pale vapor post-attack
   2. Muscle fibers contract in violent spasms
   3. Skin flushed red, then grey as O2 clears
 - **Journal:** They breathe poison to strike.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Make the attack a concentrated oxidant/reactive-oxygen squirt that burns prey tissue and forces the host into detox afterwards; keep the silence-and-recovery weakness. Replace the boiling-brine image with a pale chemical plume, and keep the recharge tied to slow radiolytic accumulation.
+  - scores: astrobio 6
+  - Analogue: Desulforudis audaxviator lives on radiolysis-derived oxidants and reductants in a closed deep fracture; oxygen-storing detox systems exist in anaerobes such as стрептococci and in the oxygen-tolerant nitrogenase systems of some microbes.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
+  - Fix: Make the attack a concentrated oxidant/reactive-oxygen squirt that burns prey tissue and forces the host into detox afterwards; keep the silence-and-recovery weakness. Replace the boiling-brine image with a pale chemical plume, and keep the recharge tied to slow radiolytic accumulation.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ocotl.c3: Spiny thermal-insulating carapace survives near 118°C
 
 Trait ← Protein denaturation sets hard ceiling near 122°C ← Repair mechanisms fail above thermal limit ← Local isotherm lies at about 4km depth ← F20
 
-- **Skill:** Heat Shell (Defence): Reduces thermal damage by 40% and slows decay
+- **Skill:** Heat Shell (Defence): The creature braces its spiny carapace against the intense heat, shimmering as it absorbs the thermal energy. Its tough outer shell resists melting and holds its shape against the scorching environment.
 - **Weakness:** Carapace limits flexibility in narrow cracks
 - **Observe:**
   1. Spines arranged in insulating air pockets
   2. Scales crackle when approaching 110°C threshold
   3. Metabolic rate drops as temperature rises
 - **Journal:** They wear the crust’s fever as armor.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep the spines as defence/sensing, but move thermal tolerance into heat-shock proteins and thermostable biochemistry with a deliberately low metabolic rate; describe the near-ceiling torpor instead of thermal insulation.
+  - scores: astrobio 6
+  - Analogue: Thermus thermophilus and other hot-spring microbes keep proteins stable with thermostable enzymes and heat-shock systems; vent animals rely on symbionts and behaviour rather than thick insulation.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
+  - Fix: Keep the spines as defence/sensing, but move thermal tolerance into heat-shock proteins and thermostable biochemistry with a deliberately low metabolic rate; describe the near-ceiling torpor instead of thermal insulation.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### ocotl.c4: Seismic vibration receptors hunt via low-frequency tremors
 
 Trait ← Chemical diffusion moves scent only 1 cm/day ← Sound travels 3000 m/s in solid rock ← Fracture networks act as planetary acoustic waveguides ← F10, F11
 
-- **Skill:** Quake Sense (Passive): Reveals hidden creatures in adjacent tiles within 3m
+- **Skill:** Quake Sense (Passive): The creature tilts its head and listens to the ground, sensing faint tremors through its specialized receptors. Hidden movements nearby become apparent as it tracks the subtle vibrations.
 - **Weakness:** Deaf to high-frequency vibrations and sudden cracks
 - **Observe:**
   1. Head cups channel low rumbles
   2. Antennae quiver to distant tectonic shifts
   3. Pupils dilate when rock hums
 - **Journal:** They listen to the world’s heartbeat.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - No physics change needed: keep the skill and the high-frequency deafness. Replace the pupil-dilation cue with a whole-body freeze, a body-wall colour flush or a change in posture/antenna tension.
+  - scores: astrobio 6
+  - Analogue: Blind mole rats (Spalax) and elephants use ground-borne low-frequency vibration for orientation and communication; snakes pick up substrate vibration through the jaw and skeleton.: as named by the judge; no mechanism or reference recorded
+  - Fix: No physics change needed: keep the skill and the high-frequency deafness. Replace the pupil-dilation cue with a whole-body freeze, a body-wall colour flush or a change in posture/antenna tension.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -118,4 +130,6 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 autoloop: removed rejected references from analogues
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues

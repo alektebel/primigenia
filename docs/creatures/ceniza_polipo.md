@@ -9,7 +9,7 @@
 - **Habitat:** 20–25 km redox layer; persistent volcanic plumes; high-altitude convective bands
 - **Diet:** Atmospheric H2S, SO2, CH4, and photochemical oxidants via epidermal symbionts
 - **Active:** Continuous drift; foraging bursts during storms and dusk
-- **Predators:** none
+- **Predators:** Aero-Wasp
 
 ## Body
 
@@ -21,16 +21,16 @@ Wide, rigid sail membrane reinforced by silica spicules; dense iron-sulfur core;
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ceniza_polipo.c1 | Wide, silica-reinforced sail drifts on dense air | High gravity (1.36 g) demands maximum lift efficiency ← Dense atmosphere (2.5 kg/m³) enables drag-based lift ← Volcanic emissions supply abundant silica aerosols ← Colony incorporates silica into membrane skeleton to catch wind and filter particles simultaneously | **F4** The planet is a 1.8 Mearth, 1.15 Rearth super-Earth with surface gravity 1.36 g and mean density near 6.5 g/cm3 (1.18x Earth's), implying a large iron core.; **F9** Air density is about 2.5 kg/m3 (2.1x Earth's) and acoustic impedance about 2.1x Earth's.; **F17** Volcanism resurfaces the planet at about 3.2 km3/yr and is sulfur-rich, so sulfide and sulfate dominate the chemical budget. | Aerodynamic Drift (`ceniza_polipo.aerodynamic_drift`) | Passive | Glides 25m without energy cost when in updrafts or dense air pockets. | Grounded by still air; cannot climb without thermal or wind uplift. |
-| ceniza_polipo.c2 | Epidermal symbionts oxidize H2S into metabolic energy | Low O2 (6%) limits aerobic respiration efficiency ← Redox layer provides high flux of H2S and SO2 ← Symbionts use H2S/O2 or H2S/oxidant couples for high-energy thioester chemistry ← Colony integrates sulfide-scavenging bacteria into epidermal pores to feed directly from air | **F13** Between 20 and 25 km altitude a persistent aerosol redox layer (the sky reef) supports chemosynthetic life on volcanic SO2, H2S and CH4 plus photochemically produced oxidants.; **F17** Volcanism resurfaces the planet at about 3.2 km3/yr and is sulfur-rich, so sulfide and sulfate dominate the chemical budget.; **F24** The 6% O2 and 5% CO2 are a steady state: volcanic CO2 and H2S enter, silicate weathering and organic carbon burial remove carbon, NIR phototrophs produce O2 while weathering and anoxic respiration consume it, and hydrogen escape is negligible. | Chemosynthetic Feed (`ceniza_polipo.chemosynthetic_feed`) | Basic | Heals 8 HP/s and generates 5% O2 for allies when near volcanic vents or storm outflow. | Starves rapidly if H2S/SO2 supply is blocked; symbionts die in clean air. |
-| ceniza_polipo.c3 | Sharp spines act as lightning rods and charge sensors | Frequent lightning (15 flashes/km²/yr) creates local electric fields ← Fair-weather 150 V/m rises to 1–3 kV/m under cells ← Colony evolves conductive spines to sense voltage gradients and ride updrafts ← Spines also discharge stored charge to stun predators and attract prey to bio-lights | **F11** Lightning strikes about 15 times per km2 per year, roughly 3x continental Earth, concentrated in the humid convective belts.; **F12** The fair-weather electric field is about 150 V/m and rises to 1–3 kV/m under active cells, enough for corona discharge at sharp points. | Corona Lash (`ceniza_polipo.corona_lash`) | Engage | Electrifies all targets within 15m for 4s; pulls enemies toward colony and disarms ranged attacks. | Spines attract destructive lightning strikes; players can use grounded rods to redirect bolts. |
-| ceniza_polipo.c4 | Iron-rich core stores spores and provides ballast | High gravity pulls spores fast; ballast needed for controlled descent ← Iron core provides mass for spore dispersal to ground ← Iron and sulfides shield sensitive spores from high background radiation (0.01 mSv/h) ← Colony releases spores in bursts when injured or at end of life cycle | **F4** The planet is a 1.8 Mearth, 1.15 Rearth super-Earth with surface gravity 1.36 g and mean density near 6.5 g/cm3 (1.18x Earth's), implying a large iron core.; **F6** Surface dose is about 0.01 mSv/h (0.09 Sv/yr, roughly 30x Earth's background), dominated by crustal uranium, thorium and potassium, radon daughters and secondary neutrons, with cosmic rays a minor term.; **F13** Between 20 and 25 km altitude a persistent aerosol redox layer (the sky reef) supports chemosynthetic life on volcanic SO2, H2S and CH4 plus photochemically produced oxidants. | Spore Bomb (`ceniza_polipo.spore_bomb`) | Poke | Drops iron-core spore cloud; damages and blinds area for 6s; spores linger for 10s. | Core damage is fatal; piercing attacks or sonic resonance can crack the core. |
+| ceniza_polipo.c1 | Wide, silica-reinforced sail drifts on dense air | High gravity (1.36 g) demands maximum lift efficiency ← Dense atmosphere (2.5 kg/m³) enables drag-based lift ← Volcanic emissions supply abundant silica aerosols ← Colony incorporates silica into membrane skeleton to catch wind and filter particles simultaneously | **F4** The planet is a 1.8 Mearth, 1.15 Rearth super-Earth with surface gravity 1.36 g and mean density near 6.5 g/cm3 (1.18x Earth's), implying a large iron core.; **F9** Air density is about 2.5 kg/m3 (2.1x Earth's) and acoustic impedance about 2.1x Earth's.; **F17** Volcanism resurfaces the planet at about 3.2 km3/yr and is sulfur-rich, so sulfide and sulfate dominate the chemical budget. | Aerodynamic Drift (`ceniza_polipo.aerodynamic_drift`) | Passive | The creature effortlessly glides on rising winds and thick air currents. | Grounded by still air; cannot climb without thermal or wind uplift. |
+| ceniza_polipo.c2 | Epidermal symbionts oxidize H2S into metabolic energy | Low O2 (6%) limits aerobic respiration efficiency ← Redox layer provides high flux of H2S and SO2 ← Symbionts use H2S/O2 or H2S/oxidant couples for high-energy thioester chemistry ← Colony integrates sulfide-scavenging bacteria into epidermal pores to feed directly from air | **F13** Between 20 and 25 km altitude a persistent aerosol redox layer (the sky reef) supports chemosynthetic life on volcanic SO2, H2S and CH4 plus photochemically produced oxidants.; **F17** Volcanism resurfaces the planet at about 3.2 km3/yr and is sulfur-rich, so sulfide and sulfate dominate the chemical budget.; **F24** The 6% O2 and 5% CO2 are a steady state: volcanic CO2 and H2S enter, silicate weathering and organic carbon burial remove carbon, NIR phototrophs produce O2 while weathering and anoxic respiration consume it, and hydrogen escape is negligible. | Chemosynthetic Feed (`ceniza_polipo.chemosynthetic_feed`) | Basic | When near volcanic vents or storm runoff, the creature absorbs harsh gases to sustain itself and shares vitality with nearby allies. | Starves rapidly if H2S/SO2 supply is blocked; symbionts die in clean air. |
+| ceniza_polipo.c3 | Sharp spines act as lightning rods and charge sensors | Frequent lightning (15 flashes/km²/yr) creates local electric fields ← Fair-weather 150 V/m rises to 1–3 kV/m under cells ← Colony evolves conductive spines to sense voltage gradients and ride updrafts ← Spines also discharge stored charge to stun predators and attract prey to bio-lights | **F11** Lightning strikes about 15 times per km2 per year, roughly 3x continental Earth, concentrated in the humid convective belts.; **F12** The fair-weather electric field is about 150 V/m and rises to 1–3 kV/m under active cells, enough for corona discharge at sharp points. | Corona Lash (`ceniza_polipo.corona_lash`) | Engage | The creature crackles with stored electricity, drawing nearby foes inward and disrupting their strikes. | Spines attract destructive lightning strikes; players can use grounded rods to redirect bolts. |
+| ceniza_polipo.c4 | Iron-rich core stores spores and provides ballast | High gravity pulls spores fast; ballast needed for controlled descent ← Iron core provides mass for spore dispersal to ground ← Iron and sulfides shield sensitive spores from high background radiation (0.01 mSv/h) ← Colony releases spores in bursts when injured or at end of life cycle | **F4** The planet is a 1.8 Mearth, 1.15 Rearth super-Earth with surface gravity 1.36 g and mean density near 6.5 g/cm3 (1.18x Earth's), implying a large iron core.; **F6** Surface dose is about 0.01 mSv/h (0.09 Sv/yr, roughly 30x Earth's background), dominated by crustal uranium, thorium and potassium, radon daughters and secondary neutrons, with cosmic rays a minor term.; **F13** Between 20 and 25 km altitude a persistent aerosol redox layer (the sky reef) supports chemosynthetic life on volcanic SO2, H2S and CH4 plus photochemically produced oxidants. | Spore Bomb (`ceniza_polipo.spore_bomb`) | Poke | The creature releases a heavy cloud of iron-rich spores that obscures vision and settles over the ground. | Core damage is fatal; piercing attacks or sonic resonance can crack the core. |
 
 ### ceniza_polipo.c1: Wide, silica-reinforced sail drifts on dense air
 
 Trait ← High gravity (1.36 g) demands maximum lift efficiency ← Dense atmosphere (2.5 kg/m³) enables drag-based lift ← Volcanic emissions supply abundant silica aerosols ← Colony incorporates silica into membrane skeleton to catch wind and filter particles simultaneously ← F4, F9, F17
 
-- **Skill:** Aerodynamic Drift (Passive): Glides 25m without energy cost when in updrafts or dense air pockets.
+- **Skill:** Aerodynamic Drift (Passive): The creature effortlessly glides on rising winds and thick air currents.
 - **Weakness:** Grounded by still air; cannot climb without thermal or wind uplift.
 - **Observe:**
   1. Membrane holds rigid convex shape against wind
@@ -48,7 +48,7 @@ Trait ← High gravity (1.36 g) demands maximum lift efficiency ← Dense atmosp
 
 Trait ← Low O2 (6%) limits aerobic respiration efficiency ← Redox layer provides high flux of H2S and SO2 ← Symbionts use H2S/O2 or H2S/oxidant couples for high-energy thioester chemistry ← Colony integrates sulfide-scavenging bacteria into epidermal pores to feed directly from air ← F13, F17, F24
 
-- **Skill:** Chemosynthetic Feed (Basic): Heals 8 HP/s and generates 5% O2 for allies when near volcanic vents or storm outflow.
+- **Skill:** Chemosynthetic Feed (Basic): When near volcanic vents or storm runoff, the creature absorbs harsh gases to sustain itself and shares vitality with nearby allies.
 - **Weakness:** Starves rapidly if H2S/SO2 supply is blocked; symbionts die in clean air.
 - **Observe:**
   1. Porous skin hisses faintly as gas exchanges
@@ -66,7 +66,7 @@ Trait ← Low O2 (6%) limits aerobic respiration efficiency ← Redox layer prov
 
 Trait ← Frequent lightning (15 flashes/km²/yr) creates local electric fields ← Fair-weather 150 V/m rises to 1–3 kV/m under cells ← Colony evolves conductive spines to sense voltage gradients and ride updrafts ← Spines also discharge stored charge to stun predators and attract prey to bio-lights ← F11, F12
 
-- **Skill:** Corona Lash (Engage): Electrifies all targets within 15m for 4s; pulls enemies toward colony and disarms ranged attacks.
+- **Skill:** Corona Lash (Engage): The creature crackles with stored electricity, drawing nearby foes inward and disrupting their strikes.
 - **Weakness:** Spines attract destructive lightning strikes; players can use grounded rods to redirect bolts.
 - **Observe:**
   1. Sparks jump between spines during storms
@@ -84,7 +84,7 @@ Trait ← Frequent lightning (15 flashes/km²/yr) creates local electric fields 
 
 Trait ← High gravity pulls spores fast; ballast needed for controlled descent ← Iron core provides mass for spore dispersal to ground ← Iron and sulfides shield sensitive spores from high background radiation (0.01 mSv/h) ← Colony releases spores in bursts when injured or at end of life cycle ← F4, F6, F13
 
-- **Skill:** Spore Bomb (Poke): Drops iron-core spore cloud; damages and blinds area for 6s; spores linger for 10s.
+- **Skill:** Spore Bomb (Poke): The creature releases a heavy cloud of iron-rich spores that obscures vision and settles over the ground.
 - **Weakness:** Core damage is fatal; piercing attacks or sonic resonance can crack the core.
 - **Observe:**
   1. Descent is heavy and metallic
@@ -97,12 +97,6 @@ Trait ← High gravity pulls spores fast; ballast needed for controlled descent 
   - Analogue: Magnetotactic bacteria (intracellular magnetite chains); fungal and plant spores with mineral coats; submarine/ballast logic (dense payload, buoyant superstructure).: as named by the judge; no mechanism or reference recorded
   - Fix: Specify core as compact spore cyst with magnetite–pyrite matrix, not bulk metallic heart; spore release on senescence/injury is plausible, “sonic crack core” is **highly speculative**—prefer thermal or desiccation cracking at dusk cooling tied to F3 weak seasons + altitude temperature swing.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Aero-Wasp | cousin |  | (council kind 'Parasite') Aero-Wasp larvae tunnel into the iron core to mine ballast material, causing the colony to sink and starve. Players can lure wasps to damage reefs or harvest larvae to craft ballast-weights. |
 
 ## Journal
 

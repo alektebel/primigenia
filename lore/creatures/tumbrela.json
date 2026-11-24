@@ -34,7 +34,7 @@
           "en": "Seismic Tap"
         },
         "role": "Control",
-        "effect": "Calls allies from 40m and calms hostile fracture-dwellers (+2 control)",
+        "effect": "The creature strikes the ground, drawing nearby allies to its side and soothing aggressive fracture-dwellers into a calm state.",
         "numbers": {}
       },
       "weakness": "Deaf to high-frequency gas bubbles, so venting CO2 startles them",
@@ -48,13 +48,24 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 4
-        },
+        "summary": "Keep the array as a low-frequency seismic receiver, add inverse-piezo tapping or limb-striking as the sender, call the plates siliceous rather than pure quartz, replace the glint with trembling and orientation cues, swap in a piezo/biomechanics source, and reduce the skill to a plain 'low call that gathers allies and calms nearby dwellers'.",
+        "fixes": [
+          "Keep the array as a low-frequency seismic receiver, add inverse-piezo tapping or limb-striking as the sender, call the plates siliceous rather than pure quartz, replace the glint with trembling and orientation cues, swap in a piezo/biomechanics source, and reduce the skill to a plain 'low call that gathers allies and calms nearby dwellers'."
+        ],
         "analogues": [
+          {
+            "organism": "Elephants and blind mole rats tracking substrate vibrations; piezoelectricity in bone and collagen; quartz transducers (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chivian_2008_desulforudis"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -62,7 +73,11 @@
               "chivian_2008_desulforudis"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -89,7 +104,7 @@
           "en": "Brine Drift"
         },
         "role": "Basic",
-        "effect": "Moves vertically 10m in 30s using hydrate dissociation (+10m/30s)",
+        "effect": "The creature expands its buoyancy bladders to drift swiftly upward through the water.",
         "numbers": {}
       },
       "weakness": "Rapid depressurization causes explosive gas expansion, rupturing bladders",
@@ -103,8 +118,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Confine the bladders to the 0.9-1.5 km upper shell where F21 holds, or switch to a lipid/gas bladder at 1.5-3 km; make movement slow and passive, treat dissociation as a one-shot emergency ascent, and strip the numeric movement values.",
+        "fixes": [
+          "Confine the bladders to the 0.9-1.5 km upper shell where F21 holds, or switch to a lipid/gas bladder at 1.5-3 km; make movement slow and passive, treat dissociation as a one-shot emergency ascent, and strip the numeric movement values."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish swim bladders and cuttlefish buoyancy regulation; methane clathrate in shallow sediments (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -135,7 +160,7 @@
           "en": "Oxygen Flash"
         },
         "role": "Poke",
-        "effect": "Doubles movement speed and damage for 5s, then enters 10s cooldown (+2x speed/dmg)",
+        "effect": "The creature releases stored oxygen to move and strike strongly before settling down to recover.",
         "numbers": {}
       },
       "weakness": "Leaves them completely anaerobic and sluggish until they recharge",
@@ -149,18 +174,26 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 5
-        },
+        "summary": "Keep one rare stored-oxygen burst for escape or a lunge followed by a long refractory period, delete the numbers, replace external gills with internal vesicles or a pigment sac if the colour cue matters, and tie recharge to local U/Th-rich rock rather than ambient water.",
+        "fixes": [
+          "Keep one rare stored-oxygen burst for escape or a lunge followed by a long refractory period, delete the numbers, replace external gills with internal vesicles or a pigment sac if the colour cue matters, and tie recharge to local U/Th-rich rock rather than ambient water."
+        ],
         "analogues": [
+          {
+            "organism": "The radiolysis-fed Desulforudis community; oxygen-detoxifying anaerobes and pigment-backed oxygen stores in annelids (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -187,7 +220,7 @@
           "en": "Wall Grip"
         },
         "role": "Defence",
-        "effect": "Anchors to terrain, grants +50% damage resistance against knockback",
+        "effect": "The creature extends its limbs to lock firmly against the rock, bracing itself so it cannot be pushed back.",
         "numbers": {}
       },
       "weakness": "Cannot reposition quickly if pinned by calcite precipitation",
@@ -200,11 +233,21 @@
         "en": "Still as the crust itself, waiting for the chemical tide."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the trait; reframe the weakness as long-term sealing and burial when flow stalls, or use sudden flow reversal dislodging the suckers as an in-play weakness, and strip the numeric resistance value.",
+        "fixes": [
+          "Keep the trait; reframe the weakness as long-term sealing and burial when flow stalls, or use sudden flow reversal dislodging the suckers as an in-play weakness, and strip the numeric resistance value."
+        ],
+        "analogues": [
+          {
+            "organism": "Barnacles, mussel byssal attachment, clingfish and remora suction discs, hydrothermal-vent tubeworm anchoring (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 8,
           "skeptic": 6
         }
       },
@@ -218,7 +261,7 @@
   ],
   "relations": [
     {
-      "with": "Cascavel",
+      "with": "cascabel",
       "kind": "cousin",
       "note": "(council kind 'competitor') Shares fracture space but avoids direct contact through vertical zoning; Tumbrela holds the mid-fracture, Cascavel hunts deeper."
     }
@@ -234,6 +277,16 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

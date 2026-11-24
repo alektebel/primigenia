@@ -22,9 +22,9 @@ Buoyant gas bladder, thin membranous wings, streamlined neck
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
 | brumascara.c1 | Bladder filled with H2 and CH4 | Low molecular weight gas provides lift ← Dense hydrogen atmosphere enables buoyancy ← Primordial H2 envelope exceeds escape velocity | **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F3** 3.0 M⊕ mass with ~1.40 R⊕ radius provides sufficient gravity to retain a thick primordial hydrogen atmosphere.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Gas Float (`brumascara.gas_float`) | Basic | Reduces fall damage to zero, enables passive altitude maintenance | Vulnerable to puncture wounds releasing lift gas |
-| brumascara.c2 | Wings span four meters to ride thermals | High gravity requires large lift area ← 1.53g increases structural load limits ← Mantle convection creates thermal plumes | **F4** Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding.; **F3** 3.0 M⊕ mass with ~1.40 R⊕ radius provides sufficient gravity to retain a thick primordial hydrogen atmosphere.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Thermal Soar (`brumascara.thermal_soar`) | Engage | Rides updrafts for unlimited stamina, gains 10m altitude per second | Helpless in calm, stagnant air pockets |
+| brumascara.c2 | Wings span four meters to ride thermals | High gravity requires large lift area ← 1.53g increases structural load limits ← Mantle convection creates thermal plumes | **F4** Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding.; **F3** 3.0 M⊕ mass with ~1.40 R⊕ radius provides sufficient gravity to retain a thick primordial hydrogen atmosphere.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Thermal Soar (`brumascara.thermal_soar`) | Engage | The creature catches rising air currents to soar effortlessly through the sky, climbing steadily higher without tiring. | Helpless in calm, stagnant air pockets |
 | brumascara.c3 | Sensory cilia detect chemical plumes | Tracks geothermal vents from altitude ← Vent gases disperse in dense air ← High pressure slows molecular diffusion | **F13** Focused hydrothermal vent flux of 0.38 W/m² creates redox-rich plumes with steep chemical gradients.; **F10** Low molecular weight H₂ and high pressure transmit acoustic waves at ~1,200 m/s.; **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming. | Scent Track (`brumascara.scent_track`) | Control | Highlights vent sources on map, attracts friendly specimens | Overwhelmed by mixed chemical signals near complex fissures |
-| brumascara.c4 | Membrane seals against H2 diffusion | Prevents gas loss in high partial pressure ← 11 bar H2 environment drives diffusion ← Piezophilic membranes resist gas dissolution | **F14** High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.; **F14** High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.; **F18** Piezophilic membranes use branched ether-lipids and rigid sterol-like rings to resist crushing pressure and gas dissolution. | Seal Bladder (`brumascara.seal_bladder`) | Defence | Blocks gas leakage for 20s, restores 50% bladder capacity | Sealing mechanism consumes extra oxygen during flight |
+| brumascara.c4 | Membrane seals against H2 diffusion | Prevents gas loss in high partial pressure ← 11 bar H2 environment drives diffusion ← Piezophilic membranes resist gas dissolution | **F14** High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.; **F14** High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.; **F18** Piezophilic membranes use branched ether-lipids and rigid sterol-like rings to resist crushing pressure and gas dissolution. | Seal Bladder (`brumascara.seal_bladder`) | Defence | The creature tightly seals its outer membrane to strongly trap gases inside, replenishing its reserves for a short while. | Sealing mechanism consumes extra oxygen during flight |
 
 ### brumascara.c1: Bladder filled with H2 and CH4
 
@@ -48,7 +48,7 @@ Trait ← Low molecular weight gas provides lift ← Dense hydrogen atmosphere e
 
 Trait ← High gravity requires large lift area ← 1.53g increases structural load limits ← Mantle convection creates thermal plumes ← F4, F3, F1
 
-- **Skill:** Thermal Soar (Engage): Rides updrafts for unlimited stamina, gains 10m altitude per second
+- **Skill:** Thermal Soar (Engage): The creature catches rising air currents to soar effortlessly through the sky, climbing steadily higher without tiring.
 - **Weakness:** Helpless in calm, stagnant air pockets
 - **Observe:**
   1. Wings locked in thermal capture
@@ -84,7 +84,7 @@ Trait ← Tracks geothermal vents from altitude ← Vent gases disperse in dense
 
 Trait ← Prevents gas loss in high partial pressure ← 11 bar H2 environment drives diffusion ← Piezophilic membranes resist gas dissolution ← F14, F14, F18
 
-- **Skill:** Seal Bladder (Defence): Blocks gas leakage for 20s, restores 50% bladder capacity
+- **Skill:** Seal Bladder (Defence): The creature tightly seals its outer membrane to strongly trap gases inside, replenishing its reserves for a short while.
 - **Weakness:** Sealing mechanism consumes extra oxygen during flight
 - **Observe:**
   1. Glossy cuticle sheen
@@ -97,12 +97,6 @@ Trait ← Prevents gas loss in high partial pressure ← 11 bar H2 environment d
   - Analogue: Piezophile and methanogen membrane adaptations limiting gas flux; nylon/H2-barrier engineering analog (synthetic)—biology never reaches perfect barrier.: as named by the judge; no mechanism or reference recorded
   - Fix: Seal skill = partial permeability reduction plus rapid bladder turnover, cost paid as ATP/reducing-equivalent budget, not O2. Fluorescent cilia barometer (secret) stays speculative but fine if tied to radiolytic peroxides F12/F15, not O2 breathing.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| none | cousin |  | (council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers. |
 
 ## Journal
 

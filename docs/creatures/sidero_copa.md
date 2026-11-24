@@ -21,39 +21,45 @@ Plant-like, vascular stems, radial leaves, vacuolar metal crystals, metallothion
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sidero_copa.c1 | Vacuoles store copper/zinc as crystals. | Crystals sequester free ions ← Prevents protein denaturation ← High free Cu/Zn toxicity | **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals. | Metal Shield (`sidero_copa.metal_shield`) | Passive | +40% resistance to heavy metal damage; immune to metal poisoning. | Growth tax: Slow growth rate due to metal sequestration cost. |
-| sidero_copa.c2 | Leaves hoard nickel above 1000 µg/g. | Hoarding exceeds herbivore tolerance ← Deters grazing and chewing ← Metal-rich soil and herbivore pressure | **F28** Slagroot and related plants accumulate more than 1,000 µg/g Ni in dry leaves. | Toxic Bloom (`sidero_copa.toxic_bloom`) | Defence | Damages attackers with 10 damage; applies metal poisoning. | Nutrient lock: Cannot release metals easily; poor fertilizer for others. |
+| sidero_copa.c1 | Vacuoles store copper/zinc as crystals. | Crystals sequester free ions ← Prevents protein denaturation ← High free Cu/Zn toxicity | **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals. | Metal Shield (`sidero_copa.metal_shield`) | Passive | The creature's crystalline shell strongly deflects heavy metal attacks, leaving it completely unaffected by metal toxins. | Growth tax: Slow growth rate due to metal sequestration cost. |
+| sidero_copa.c2 | Leaves hoard nickel above 1000 µg/g. | Hoarding exceeds herbivore tolerance ← Deters grazing and chewing ← Metal-rich soil and herbivore pressure | **F28** Slagroot and related plants accumulate more than 1,000 µg/g Ni in dry leaves. | Toxic Bloom (`sidero_copa.toxic_bloom`) | Defence | When struck, the creature releases a sharp metallic backlash that harms nearby attackers and coats them in lingering metal toxins. | Nutrient lock: Cannot release metals easily; poor fertilizer for others. |
 | sidero_copa.c3 | Metallothioneins bind free metals. | Proteins chelate toxic ions ← Survives in high metal environments ← Metal toxicity in soil and water | **F24** Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals. | Chelation (`sidero_copa.chelation`) | Social | Can befrend metal-sensitive creatures; grants antidote effect to allies. | Metabolic cost: High energy required for chelation; weak in low nutrient areas. |
-| sidero_copa.c4 | Pigments absorb red/orange light. | Red-shifted absorption matches star ← Efficient photosynthesis under K-star ← K-dwarf spectrum and starlight | **F1** Ord is a 6 Gyr-old K1V orange dwarf with 0.85 M☉, 0.45 L☉, and an effective temperature of 5100 K. | Red Shift (`sidero_copa.red_shift`) | Basic | Efficient photo in low light; +30% energy gain under orange/red light. | Blue blind: Inefficient under blue light; reduced growth in high blue environments. |
+| sidero_copa.c4 | Pigments absorb red/orange light. | Red-shifted absorption matches star ← Efficient photosynthesis under K-star ← K-dwarf spectrum and starlight | **F1** Ord is a 6 Gyr-old K1V orange dwarf with 0.85 M☉, 0.45 L☉, and an effective temperature of 5100 K. | Red Shift (`sidero_copa.red_shift`) | Basic | The organism thrives in dim environments, drawing nourishment strongly from any orange or red light that washes over it. | Blue blind: Inefficient under blue light; reduced growth in high blue environments. |
 
 ### sidero_copa.c1: Vacuoles store copper/zinc as crystals.
 
 Trait ← Crystals sequester free ions ← Prevents protein denaturation ← High free Cu/Zn toxicity ← F24
 
-- **Skill:** Metal Shield (Passive): +40% resistance to heavy metal damage; immune to metal poisoning.
+- **Skill:** Metal Shield (Passive): The creature's crystalline shell strongly deflects heavy metal attacks, leaving it completely unaffected by metal toxins.
 - **Weakness:** Growth tax: Slow growth rate due to metal sequestration cost.
 - **Observe:**
   1. Leaves contain glittering crystals
   2. Thrives in toxic soil
   3. Slow leaf growth compared to others
 - **Journal:** It drinks poison and turns it into jewels.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Say metal-organic complexes and crystalline deposits in vacuoles, keep the growth cost, and use highly tolerant rather than immune.
   - scores: astrobio 6, skeptic 7
+  - Analogue: Noccaea or Thlaspi caerulescens for Zn/Cd and Alyssum for Ni; metallothionein and phytochelatin chelation.: as named by the judge; no mechanism or reference recorded
+  - Fix: Say metal-organic complexes and crystalline deposits in vacuoles, keep the growth cost, and use highly tolerant rather than immune.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### sidero_copa.c2: Leaves hoard nickel above 1000 µg/g.
 
 Trait ← Hoarding exceeds herbivore tolerance ← Deters grazing and chewing ← Metal-rich soil and herbivore pressure ← F28
 
-- **Skill:** Toxic Bloom (Defence): Damages attackers with 10 damage; applies metal poisoning.
+- **Skill:** Toxic Bloom (Defence): When struck, the creature releases a sharp metallic backlash that harms nearby attackers and coats them in lingering metal toxins.
 - **Weakness:** Nutrient lock: Cannot release metals easily; poor fertilizer for others.
 - **Observe:**
   1. Leaves heavy with nickel
   2. Herbivores avoid the plant
   3. Soil around roots enriched with metals
 - **Journal:** A garden of needles; nothing eats the sidero-copa but the patient.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Flip the observation: available metal is depleted near roots and returned in metal-rich litter. Keep the grazing deterrent.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Hyperaccumulator plants such as Alyssum and Noccaea; elemental defence against herbivores in hyperaccumulators.: as named by the judge; no mechanism or reference recorded
+  - Fix: Flip the observation: available metal is depleted near roots and returned in metal-rich litter. Keep the grazing deterrent.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### sidero_copa.c3: Metallothioneins bind free metals.
@@ -67,23 +73,29 @@ Trait ← Proteins chelate toxic ions ← Survives in high metal environments �
   2. Attracts metal-sensitive symbionts
   3. Sweats metal-rich dew
 - **Journal:** It binds the poison in its heart and shares the cure.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Frame the Social move as sap that binds dietary metals so animals feeding near it take up less, make the dew a metal-poor chelating solution, and keep the metabolic-cost weakness.
   - scores: astrobio 6, skeptic 3
+  - Analogue: Plant metallothioneins and phytochelatins; mammalian metallothionein binding Cd/Zn; root exudate chelation.: as named by the judge; no mechanism or reference recorded
+  - Fix: Frame the Social move as sap that binds dietary metals so animals feeding near it take up less, make the dew a metal-poor chelating solution, and keep the metabolic-cost weakness.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### sidero_copa.c4: Pigments absorb red/orange light.
 
 Trait ← Red-shifted absorption matches star ← Efficient photosynthesis under K-star ← K-dwarf spectrum and starlight ← F1
 
-- **Skill:** Red Shift (Basic): Efficient photo in low light; +30% energy gain under orange/red light.
+- **Skill:** Red Shift (Basic): The organism thrives in dim environments, drawing nourishment strongly from any orange or red light that washes over it.
 - **Weakness:** Blue blind: Inefficient under blue light; reduced growth in high blue environments.
 - **Observe:**
   1. Leaves are deep red/black
   2. Thrives under orange sky
   3. Droops in bright blue light
 - **Journal:** It drinks the orange sun and spits out iron.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 7
+- **Plausibility:** plausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - No change needed; optionally root the trait in F22 as well as F1 and keep the atmospheric speculation flagged.
+  - scores: astrobio 8, skeptic 7
+  - Analogue: Red algae with phycobilins; cyanobacteria using chlorophyll d or f for far-red light; purple bacteria using bacteriochlorophylls.: as named by the judge; no mechanism or reference recorded
+  - Fix: No change needed; optionally root the trait in F22 as well as F1 and keep the atmospheric speculation flagged.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -110,3 +122,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

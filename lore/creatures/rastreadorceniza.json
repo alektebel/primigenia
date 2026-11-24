@@ -12,7 +12,10 @@
     "habitat": "Erosional valleys and flood-basalt plains (0-2 km altitude)",
     "diet": "Lichen, fungal hyphae, and chemosynthetic bacterial mats on rock faces",
     "active": "Crepuscular, follows heat gradients",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Brisacoral"
+    ]
   },
   "body": "Segmented hydrostatic torso; armored carapace; shovel-like forelimbs; vibrational sensory pits",
   "chains": [
@@ -34,7 +37,7 @@
           "en": "Pressure Crush"
         },
         "role": "Engage",
-        "effect": "Grapples and deals 25% more damage to armored or burrowing foes.",
+        "effect": "It locks onto its target with a crushing grip and strikes with overwhelming force against heavily shielded or hidden enemies.",
         "numbers": {}
       },
       "weakness": "Slow movement speed; vulnerable to fast melee strikes that bypass armor.",
@@ -90,7 +93,7 @@
           "en": "Burrow"
         },
         "role": "Basic",
-        "effect": "Moves underground, granting cover and +15% movement speed for 2 turns.",
+        "effect": "It digs beneath the earth to vanish from sight, moving swiftly through the tunnels before resurfacing nearby.",
         "numbers": {}
       },
       "weakness": "Cannot turn quickly while digging; rear is exposed when emerging.",
@@ -146,7 +149,7 @@
           "en": "Ground Sense"
         },
         "role": "Passive",
-        "effect": "Reveals nearby enemies through terrain and reduces ambush penalty by 50%.",
+        "effect": "It constantly monitors the ground, sensing vibrations to reveal hidden foes through solid terrain and staying alert to sudden attacks.",
         "numbers": {}
       },
       "weakness": "Easily distracted by seismic tremors or heavy footsteps; loses focus temporarily.",
@@ -202,7 +205,7 @@
           "en": "Oxidised Shell"
         },
         "role": "Defence",
-        "effect": "Reduces elemental damage by 35% and reflects 10% fire damage back to attacker.",
+        "effect": "Its weathered carapace absorbs harsh elemental forces and shimmers with heat, sending a portion of incoming fire back toward the attacker.",
         "numbers": {}
       },
       "weakness": "Heavy armor reduces stamina regeneration; slow recovery after combat.",
@@ -246,11 +249,6 @@
       "with": "soplilloalado",
       "kind": "predation",
       "note": "Rarely falls prey to ash-plows during sudden updrafts; relies on altitude."
-    },
-    {
-      "with": "Brisacoral",
-      "kind": "predation",
-      "note": "Digging forces coral larvae ash; RastreadorCeniza consumes them when stranded."
     },
     {
       "with": "soplilloalado",

@@ -21,16 +21,16 @@ Low-slung, plate-armored siloxane carapace with broad ventral rasping pads and I
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| escarchon.c1 | Broad ventral rasping pads | Scrapes fluoride-etched cryo-glass for reactive silicon ← HF volcanic gases break inert Si–O bonds in reducing air ← F13 | **F13** Fluoride-rich cryo-volcanic gases temporarily break Si–O bonds, enabling silicon recycling. | Glass Grind (`escarchon.glass_grind`) | Basic | Degrades enemy silicate armor by 15% over 3s, releasing H2 fuel for allies | Pad joints stiffen below 60 K, slowing attack speed by 40% |
-| escarchon.c2 | Low-slung, plate-armored carapace | Distributes mechanical stress across brittle siloxane plates ← Low gravity permits larger exoskeletal frames without collapse ← F4 | **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass. | Frost Plate (`escarchon.frost_plate`) | Defence | Shields party from one thermal shock, reflecting 20% heat damage back | High-frequency sounds fracture plate seams, causing stagger |
-| escarchon.c3 | Flank IR thermal pits | Detects subtle heat differentials in perpetual fog ← Dense N₂/CH₄ atmosphere and low visible flux blind optical sight ← F10 | **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄.; **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking. | Thermal Track (`escarchon.thermal_track`) | Engage | Marks hidden enemies within 30m, increasing ally accuracy by 25% | Blinded by uniform ambient heat sources (e.g., thermal vents) |
-| escarchon.c4 | Slow grinding locomotion | Metabolic cycles span days to weeks at cryogenic temperatures ← Arrhenius kinetics at 80 K reduce reaction rates by orders of magnitude ← F15 | **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes. | Enduring Pace (`escarchon.enduring_pace`) | Passive | Reduces stamina drain by 30%, but movement speed is capped at 2 m/s | Cannot evade rapid strikes or sudden environmental shifts |
+| escarchon.c1 | Broad ventral rasping pads | Scrapes fluoride-etched cryo-glass for reactive silicon ← HF volcanic gases break inert Si–O bonds in reducing air ← F13 | **F13** Fluoride-rich cryo-volcanic gases temporarily break Si–O bonds, enabling silicon recycling. | Glass Grind (`escarchon.glass_grind`) | Basic | The creature rasps against enemy armor, wearing it down over a short while and releasing a steady stream of fuel for nearby allies. | Pad joints stiffen below 60 K, slowing attack speed by 40% |
+| escarchon.c2 | Low-slung, plate-armored carapace | Distributes mechanical stress across brittle siloxane plates ← Low gravity permits larger exoskeletal frames without collapse ← F4 | **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass. | Frost Plate (`escarchon.frost_plate`) | Defence | It raises its heavy carapace to block a sudden burst of heat, reflecting the energy strongly back toward the source. | High-frequency sounds fracture plate seams, causing stagger |
+| escarchon.c3 | Flank IR thermal pits | Detects subtle heat differentials in perpetual fog ← Dense N₂/CH₄ atmosphere and low visible flux blind optical sight ← F10 | **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄.; **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking. | Thermal Track (`escarchon.thermal_track`) | Engage | It scans the surroundings with its thermal pits, revealing concealed foes and sharpening the aim of nearby allies. | Blinded by uniform ambient heat sources (e.g., thermal vents) |
+| escarchon.c4 | Slow grinding locomotion | Metabolic cycles span days to weeks at cryogenic temperatures ← Arrhenius kinetics at 80 K reduce reaction rates by orders of magnitude ← F15 | **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes. | Enduring Pace (`escarchon.enduring_pace`) | Passive | It moves with a slow, grinding rhythm that conserves its energy, trading swift strides for steady, enduring motion. | Cannot evade rapid strikes or sudden environmental shifts |
 
 ### escarchon.c1: Broad ventral rasping pads
 
 Trait ← Scrapes fluoride-etched cryo-glass for reactive silicon ← HF volcanic gases break inert Si–O bonds in reducing air ← F13 ← F13
 
-- **Skill:** Glass Grind (Basic): Degrades enemy silicate armor by 15% over 3s, releasing H2 fuel for allies
+- **Skill:** Glass Grind (Basic): The creature rasps against enemy armor, wearing it down over a short while and releasing a steady stream of fuel for nearby allies.
 - **Weakness:** Pad joints stiffen below 60 K, slowing attack speed by 40%
 - **Observe:**
   1. Pale striations on vent rocks
@@ -48,7 +48,7 @@ Trait ← Scrapes fluoride-etched cryo-glass for reactive silicon ← HF volcani
 
 Trait ← Distributes mechanical stress across brittle siloxane plates ← Low gravity permits larger exoskeletal frames without collapse ← F4 ← F4
 
-- **Skill:** Frost Plate (Defence): Shields party from one thermal shock, reflecting 20% heat damage back
+- **Skill:** Frost Plate (Defence): It raises its heavy carapace to block a sudden burst of heat, reflecting the energy strongly back toward the source.
 - **Weakness:** High-frequency sounds fracture plate seams, causing stagger
 - **Observe:**
   1. Geometric plate overlap
@@ -66,7 +66,7 @@ Trait ← Distributes mechanical stress across brittle siloxane plates ← Low g
 
 Trait ← Detects subtle heat differentials in perpetual fog ← Dense N₂/CH₄ atmosphere and low visible flux blind optical sight ← F10 ← F10, F18
 
-- **Skill:** Thermal Track (Engage): Marks hidden enemies within 30m, increasing ally accuracy by 25%
+- **Skill:** Thermal Track (Engage): It scans the surroundings with its thermal pits, revealing concealed foes and sharpening the aim of nearby allies.
 - **Weakness:** Blinded by uniform ambient heat sources (e.g., thermal vents)
 - **Observe:**
   1. Clustered dark pits along flanks
@@ -84,7 +84,7 @@ Trait ← Detects subtle heat differentials in perpetual fog ← Dense N₂/CH�
 
 Trait ← Metabolic cycles span days to weeks at cryogenic temperatures ← Arrhenius kinetics at 80 K reduce reaction rates by orders of magnitude ← F15 ← F15
 
-- **Skill:** Enduring Pace (Passive): Reduces stamina drain by 30%, but movement speed is capped at 2 m/s
+- **Skill:** Enduring Pace (Passive): It moves with a slow, grinding rhythm that conserves its energy, trading swift strides for steady, enduring motion.
 - **Weakness:** Cannot evade rapid strikes or sudden environmental shifts
 - **Observe:**
   1. Deliberate, rhythmic step placement

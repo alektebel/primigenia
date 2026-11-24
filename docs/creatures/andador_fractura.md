@@ -21,16 +21,16 @@ Modular defect clusters that separate and rejoin, ~1.0 μm fragmented
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| andador_fractura.c1 | Rides phonon shockwaves from crustal fractures | Glitch unpinning releases massive phonon bursts ← Modular clusters couple resonantly to strain waves ← Sound speeds near 0.004c transport momentum efficiently | **F6** Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing.; **F10** Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter. | Shock-Ride (`andador_fractura.shock_ride`) | Basic | Surf a phonon front, moving 0.5μm instantly and gaining +30% evasion against lattice-based attacks. | Lands hard; sudden stoppage causes self-fracture. |
-| andador_fractura.c2 | Identifies fresh neutron-rich ejecta by weak-interaction decay signatures | Beta-decay cycles emit characteristic neutrinos/photons ← Defect complexes tune sensitivity to specific weak-interaction cross-sections ← Metabolism relies on weak-interaction cycles | **F12** Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield. | Decay-Taste (`andador_fractura.decay_taste`) | Poke | Senses metabolic heat of nearby enemies, dealing 20% damage via targeted weak-interaction disruption. | Ineffective against non-decaying inorganic debris. |
-| andador_fractura.c3 | Aggregates during aftershocks to share topological information | Lattice conjugation requires intimate contact ← Aftershocks bring fractured clusters together ← Resonant tunneling at shared interfaces enables defect exchange | **F16** Reproduction occurs through lattice conjugation, where adjacent defect complexes exchange nuclear fragments and share adaptive isotopic traits across the degenerate medium via resonant tunneling at shared interfaces. | Conjugation-Huddle (`andador_fractura.conjugation_huddle`) | Social | Links 3 allies, sharing 20% of adaptive isotopic traits and reducing mutation risk by 35% for 100μs. | Prolonged contact increases susceptibility to shared proton-contamination. |
-| andador_fractura.c4 | Seals defect fractures using rapid electron tunneling before cooling locks the lattice | Glitch ejects cool matter rapidly ← Electron Fermi velocity approaches c ← Relativistic tunneling enables instant lattice repair | **F11** Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust.; **F10** Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter. | Flash-Suture (`andador_fractura.flash_suture`) | Defence | Restores 30% lattice integrity to self or ally within 1μs, preventing structural failure. | Tunneling drains metabolic reserves; overuse causes temporary quiescence. |
+| andador_fractura.c1 | Rides phonon shockwaves from crustal fractures | Glitch unpinning releases massive phonon bursts ← Modular clusters couple resonantly to strain waves ← Sound speeds near 0.004c transport momentum efficiently | **F6** Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing.; **F10** Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter. | Shock-Ride (`andador_fractura.shock_ride`) | Basic | The creature rides a crackling wave of energy, darting swiftly across the battlefield. It shimmers and slips away, making it very hard for lattice-based attacks to track it. | Lands hard; sudden stoppage causes self-fracture. |
+| andador_fractura.c2 | Identifies fresh neutron-rich ejecta by weak-interaction decay signatures | Beta-decay cycles emit characteristic neutrinos/photons ← Defect complexes tune sensitivity to specific weak-interaction cross-sections ← Metabolism relies on weak-interaction cycles | **F12** Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield. | Decay-Taste (`andador_fractura.decay_taste`) | Poke | It tunes into the faint thermal glow of nearby foes and targets them with a precise disruptive pulse. The affected enemies shudder and weaken as the creature's focused energy unravels their structure. | Ineffective against non-decaying inorganic debris. |
+| andador_fractura.c3 | Aggregates during aftershocks to share topological information | Lattice conjugation requires intimate contact ← Aftershocks bring fractured clusters together ← Resonant tunneling at shared interfaces enables defect exchange | **F16** Reproduction occurs through lattice conjugation, where adjacent defect complexes exchange nuclear fragments and share adaptive isotopic traits across the degenerate medium via resonant tunneling at shared interfaces. | Conjugation-Huddle (`andador_fractura.conjugation_huddle`) | Social | It weaves a shimmering bond with nearby allies, passing along their resilient traits. This shared connection stabilizes their forms, shielding them from harmful mutations for a short while. | Prolonged contact increases susceptibility to shared proton-contamination. |
+| andador_fractura.c4 | Seals defect fractures using rapid electron tunneling before cooling locks the lattice | Glitch ejects cool matter rapidly ← Electron Fermi velocity approaches c ← Relativistic tunneling enables instant lattice repair | **F11** Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust.; **F10** Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter. | Flash-Suture (`andador_fractura.flash_suture`) | Defence | The creature rapidly channels energy to mend fractures in itself or a nearby ally. Glowing seams of material flow into the cracks, reinforcing the structure and preventing it from shattering. | Tunneling drains metabolic reserves; overuse causes temporary quiescence. |
 
 ### andador_fractura.c1: Rides phonon shockwaves from crustal fractures
 
 Trait ← Glitch unpinning releases massive phonon bursts ← Modular clusters couple resonantly to strain waves ← Sound speeds near 0.004c transport momentum efficiently ← F6, F10
 
-- **Skill:** Shock-Ride (Basic): Surf a phonon front, moving 0.5μm instantly and gaining +30% evasion against lattice-based attacks.
+- **Skill:** Shock-Ride (Basic): The creature rides a crackling wave of energy, darting swiftly across the battlefield. It shimmers and slips away, making it very hard for lattice-based attacks to track it.
 - **Weakness:** Lands hard; sudden stoppage causes self-fracture.
 - **Observe:**
   1. Defects detach and slide along planes
@@ -49,7 +49,7 @@ Trait ← Glitch unpinning releases massive phonon bursts ← Modular clusters c
 
 Trait ← Beta-decay cycles emit characteristic neutrinos/photons ← Defect complexes tune sensitivity to specific weak-interaction cross-sections ← Metabolism relies on weak-interaction cycles ← F12
 
-- **Skill:** Decay-Taste (Poke): Senses metabolic heat of nearby enemies, dealing 20% damage via targeted weak-interaction disruption.
+- **Skill:** Decay-Taste (Poke): It tunes into the faint thermal glow of nearby foes and targets them with a precise disruptive pulse. The affected enemies shudder and weaken as the creature's focused energy unravels their structure.
 - **Weakness:** Ineffective against non-decaying inorganic debris.
 - **Observe:**
   1. Defects tilt toward heat sources
@@ -67,7 +67,7 @@ Trait ← Beta-decay cycles emit characteristic neutrinos/photons ← Defect com
 
 Trait ← Lattice conjugation requires intimate contact ← Aftershocks bring fractured clusters together ← Resonant tunneling at shared interfaces enables defect exchange ← F16
 
-- **Skill:** Conjugation-Huddle (Social): Links 3 allies, sharing 20% of adaptive isotopic traits and reducing mutation risk by 35% for 100μs.
+- **Skill:** Conjugation-Huddle (Social): It weaves a shimmering bond with nearby allies, passing along their resilient traits. This shared connection stabilizes their forms, shielding them from harmful mutations for a short while.
 - **Weakness:** Prolonged contact increases susceptibility to shared proton-contamination.
 - **Observe:**
   1. Defects cluster tightly
@@ -85,7 +85,7 @@ Trait ← Lattice conjugation requires intimate contact ← Aftershocks bring fr
 
 Trait ← Glitch ejects cool matter rapidly ← Electron Fermi velocity approaches c ← Relativistic tunneling enables instant lattice repair ← F11, F10
 
-- **Skill:** Flash-Suture (Defence): Restores 30% lattice integrity to self or ally within 1μs, preventing structural failure.
+- **Skill:** Flash-Suture (Defence): The creature rapidly channels energy to mend fractures in itself or a nearby ally. Glowing seams of material flow into the cracks, reinforcing the structure and preventing it from shattering.
 - **Weakness:** Tunneling drains metabolic reserves; overuse causes temporary quiescence.
 - **Observe:**
   1. Fissures glow briefly

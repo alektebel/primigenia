@@ -221,7 +221,7 @@
           "en": "Steal"
         },
         "role": "Engage",
-        "effect": "Snatches fruit from Rondo or Zanco herds; interrupts their eating; +15% intimidation.",
+        "effect": "The creature swoops down to snatch fruit directly from nearby Rondo or Zanco herds, stopping them from eating for a short while. This bold theft makes it appear strongly intimidating to onlookers.",
         "numbers": {}
       },
       "weakness": "Rondo spits can hit glider; Garfio may raid Alula's cache.",

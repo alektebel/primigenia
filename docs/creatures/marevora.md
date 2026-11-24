@@ -21,16 +21,16 @@ Low-slung carapace with hinged thermal vents and capacitor-joints; six limb-arms
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| marevora.c1 | Capacitor-limbs crackle and assist movement during tidal flex | Lithospheric strain from tidal heating ← Organic piezoelectric crystals in joint matrix store charge ← Mechanical stress releases stored ATP and kinetic assist | **F6** Solid-body tidal flexing generates an internal heat flux of 2.5 times Earth's radiogenic baseline. | Strain Burst (`marevora.strain_burst`) | Engage | Converts environmental tidal stress into a burst of movement speed (150%) and a shock attack dealing 12 damage; drains charge over 5 turns. | Discharges quickly in calm water or during thermal tides; immobile without stored strain. |
-| marevora.c2 | Veins flush carotenoid-symbionts during stellar flare events | High-energy proton precipitation from magnetosphere ← Melanin-carotenoid symbionts capture radiolytic electrons ← Radical scavenging prevents DNA breaks and fuels repair | **F8** Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys. | Rad-Sync (`marevora.rad_sync`) | Passive | Reduces radiation damage by 80% and heals 2 HP per turn during flare events; symbionts shed 5% max HP in clean water. | Symbionts die in low-radiation zones; shedding leaves it vulnerable to infection. |
-| marevora.c3 | Carapace splits open during eclipse umbra to vent heat | Rapid thermal contraction during 40-minute total eclipse ← Shell stress exceeds fracture threshold of hinge joints ← Fissures open to release superheated steam and mating pheromones | **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Eclipse Bloom (`marevora.eclipse_bloom`) | Social | At eclipse onset, splits shell to heal 20 HP, release pheromones (befriend all grazers within 50m), and gain 'Heat Shield' (+5 Defence) but is Vulnerable to area attacks for 3 turns. | Completely exposed and immobile during the bloom; cannot act until eclipse ends. |
-| marevora.c4 | Ciliated ridges filter vent plumes for direct chemosynthetic absorption | Hydrothermal effluents rich in H2S and CH4 ← Ciliated filtration membranes trap chemolithotrophic biomass ← Enzymatic breakdown provides direct carbon and energy | **F14** Hydrothermal vent networks cover approximately 0.5% of the seafloor, concentrated along tectonic ridge axes. | Vent Siphon (`marevora.vent_siphon`) | Basic | Target within 30m near a vent; absorbs 8 HP and applies 'Chem-Burn' (2 damage/turn) to target for 4 turns; heals Marevora for 30% of damage dealt. | Blind to visual cues; ineffective far from vent plumes. |
+| marevora.c1 | Capacitor-limbs crackle and assist movement during tidal flex | Lithospheric strain from tidal heating ← Organic piezoelectric crystals in joint matrix store charge ← Mechanical stress releases stored ATP and kinetic assist | **F6** Solid-body tidal flexing generates an internal heat flux of 2.5 times Earth's radiogenic baseline. | Strain Burst (`marevora.strain_burst`) | Engage | The creature crackles with stored energy and surges forward with a sudden burst of speed, delivering a sharp shock to nearby foes. It slowly recharges its limbs afterward. | Discharges quickly in calm water or during thermal tides; immobile without stored strain. |
+| marevora.c2 | Veins flush carotenoid-symbionts during stellar flare events | High-energy proton precipitation from magnetosphere ← Melanin-carotenoid symbionts capture radiolytic electrons ← Radical scavenging prevents DNA breaks and fuels repair | **F8** Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys. | Rad-Sync (`marevora.rad_sync`) | Passive | During stellar flares, its veins flush with glowing symbionts that shield it from harmful radiation and slowly mend its wounds. When it enters clean water, the symbionts gently detach and drift away. | Symbionts die in low-radiation zones; shedding leaves it vulnerable to infection. |
+| marevora.c3 | Carapace splits open during eclipse umbra to vent heat | Rapid thermal contraction during 40-minute total eclipse ← Shell stress exceeds fracture threshold of hinge joints ← Fissures open to release superheated steam and mating pheromones | **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Eclipse Bloom (`marevora.eclipse_bloom`) | Social | As darkness falls, its carapace splits open to vent excess heat, releasing a calming scent that draws nearby grazers close. The exposed shell leaves it temporarily open to harm, but the sudden bloom quickly restores its strength. | Completely exposed and immobile during the bloom; cannot act until eclipse ends. |
+| marevora.c4 | Ciliated ridges filter vent plumes for direct chemosynthetic absorption | Hydrothermal effluents rich in H2S and CH4 ← Ciliated filtration membranes trap chemolithotrophic biomass ← Enzymatic breakdown provides direct carbon and energy | **F14** Hydrothermal vent networks cover approximately 0.5% of the seafloor, concentrated along tectonic ridge axes. | Vent Siphon (`marevora.vent_siphon`) | Basic | Near a thermal vent, it extends its ciliated ridges to filter the plumes, siphoning nourishment while searing a nearby target with a lingering chemical burn. The absorbed energy quickly knits its wounds back together. | Blind to visual cues; ineffective far from vent plumes. |
 
 ### marevora.c1: Capacitor-limbs crackle and assist movement during tidal flex
 
 Trait ← Lithospheric strain from tidal heating ← Organic piezoelectric crystals in joint matrix store charge ← Mechanical stress releases stored ATP and kinetic assist ← F6
 
-- **Skill:** Strain Burst (Engage): Converts environmental tidal stress into a burst of movement speed (150%) and a shock attack dealing 12 damage; drains charge over 5 turns.
+- **Skill:** Strain Burst (Engage): The creature crackles with stored energy and surges forward with a sudden burst of speed, delivering a sharp shock to nearby foes. It slowly recharges its limbs afterward.
 - **Weakness:** Discharges quickly in calm water or during thermal tides; immobile without stored strain.
 - **Observe:**
   1. Skin glows faint blue at joints before movement.
@@ -49,7 +49,7 @@ Trait ← Lithospheric strain from tidal heating ← Organic piezoelectric cryst
 
 Trait ← High-energy proton precipitation from magnetosphere ← Melanin-carotenoid symbionts capture radiolytic electrons ← Radical scavenging prevents DNA breaks and fuels repair ← F8
 
-- **Skill:** Rad-Sync (Passive): Reduces radiation damage by 80% and heals 2 HP per turn during flare events; symbionts shed 5% max HP in clean water.
+- **Skill:** Rad-Sync (Passive): During stellar flares, its veins flush with glowing symbionts that shield it from harmful radiation and slowly mend its wounds. When it enters clean water, the symbionts gently detach and drift away.
 - **Weakness:** Symbionts die in low-radiation zones; shedding leaves it vulnerable to infection.
 - **Observe:**
   1. Flushing red along vascular ridges before M-class flare alerts.
@@ -68,7 +68,7 @@ Trait ← High-energy proton precipitation from magnetosphere ← Melanin-carote
 
 Trait ← Rapid thermal contraction during 40-minute total eclipse ← Shell stress exceeds fracture threshold of hinge joints ← Fissures open to release superheated steam and mating pheromones ← F12
 
-- **Skill:** Eclipse Bloom (Social): At eclipse onset, splits shell to heal 20 HP, release pheromones (befriend all grazers within 50m), and gain 'Heat Shield' (+5 Defence) but is Vulnerable to area attacks for 3 turns.
+- **Skill:** Eclipse Bloom (Social): As darkness falls, its carapace splits open to vent excess heat, releasing a calming scent that draws nearby grazers close. The exposed shell leaves it temporarily open to harm, but the sudden bloom quickly restores its strength.
 - **Weakness:** Completely exposed and immobile during the bloom; cannot act until eclipse ends.
 - **Observe:**
   1. Shells crack with audible pops exactly at shadow-line.
@@ -87,7 +87,7 @@ Trait ← Rapid thermal contraction during 40-minute total eclipse ← Shell str
 
 Trait ← Hydrothermal effluents rich in H2S and CH4 ← Ciliated filtration membranes trap chemolithotrophic biomass ← Enzymatic breakdown provides direct carbon and energy ← F14
 
-- **Skill:** Vent Siphon (Basic): Target within 30m near a vent; absorbs 8 HP and applies 'Chem-Burn' (2 damage/turn) to target for 4 turns; heals Marevora for 30% of damage dealt.
+- **Skill:** Vent Siphon (Basic): Near a thermal vent, it extends its ciliated ridges to filter the plumes, siphoning nourishment while searing a nearby target with a lingering chemical burn. The absorbed energy quickly knits its wounds back together.
 - **Weakness:** Blind to visual cues; ineffective far from vent plumes.
 - **Observe:**
   1. Drifts suspended near black smoker plumes.

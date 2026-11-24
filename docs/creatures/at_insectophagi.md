@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_insectophagi.c1 | Leathery facial plates & worm-like tongues | Harvest dense insect colonies without injury -> balmy humid understories where fungal and insect decomposition overlap -> 15°C mean temperature and stratocumulus humidity trapping sustain year-round microbial activity | **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Mound Lick (`at_insectophagi.mound_lick`) | Basic | Scoops insect biomass, healing 10 HP and granting a 10% movement speed boost for 2 turns. | Slow, deliberate movements make them easy targets for aerial predators. |
-| at_insectophagi.c2 | Ruminant gut & coprophagic recycling | Nutrient-poor alkaline loams select for rapid biomass processing -> digestive symbiosis maximizes nitrogen extraction -> shallow prairie soils and moderate tectonics limit phosphorus availability -> coprophagy closes the nutrient loop | **F12** Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests.; **F13** Tectonic activity is moderate, recycling phosphorus without disrupting garden stability.; **F18** Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams. | Ferment-Gut (`at_insectophagi.ferment_gut`) | Passive | +25% resource extraction from soil and mounds; unearths hidden nutrient caches. | Vulnerable to gut parasites; requires frequent defecation cycles. |
+| at_insectophagi.c1 | Leathery facial plates & worm-like tongues | Harvest dense insect colonies without injury -> balmy humid understories where fungal and insect decomposition overlap -> 15°C mean temperature and stratocumulus humidity trapping sustain year-round microbial activity | **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Mound Lick (`at_insectophagi.mound_lick`) | Basic | The creature extends its long tongue to scoop up insects, swallowing them to recover its strength and move swiftly for a short while. | Slow, deliberate movements make them easy targets for aerial predators. |
+| at_insectophagi.c2 | Ruminant gut & coprophagic recycling | Nutrient-poor alkaline loams select for rapid biomass processing -> digestive symbiosis maximizes nitrogen extraction -> shallow prairie soils and moderate tectonics limit phosphorus availability -> coprophagy closes the nutrient loop | **F12** Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests.; **F13** Tectonic activity is moderate, recycling phosphorus without disrupting garden stability.; **F18** Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams. | Ferment-Gut (`at_insectophagi.ferment_gut`) | Passive | The creature churns its digestive gut to break down soil and mound matter, steadily gathering nourishment and revealing hidden nutrient deposits nearby. | Vulnerable to gut parasites; requires frequent defecation cycles. |
 
 ### at_insectophagi.c1: Leathery facial plates & worm-like tongues
 
 Trait ← Harvest dense insect colonies without injury -> balmy humid understories where fungal and insect decomposition overlap -> 15°C mean temperature and stratocumulus humidity trapping sustain year-round microbial activity ← F10, F25
 
-- **Skill:** Mound Lick (Basic): Scoops insect biomass, healing 10 HP and granting a 10% movement speed boost for 2 turns.
+- **Skill:** Mound Lick (Basic): The creature extends its long tongue to scoop up insects, swallowing them to recover its strength and move swiftly for a short while.
 - **Weakness:** Slow, deliberate movements make them easy targets for aerial predators.
 - **Observe:**
   1. Leathery, plate-like facial armor
@@ -45,7 +45,7 @@ Trait ← Harvest dense insect colonies without injury -> balmy humid understori
 
 Trait ← Nutrient-poor alkaline loams select for rapid biomass processing -> digestive symbiosis maximizes nitrogen extraction -> shallow prairie soils and moderate tectonics limit phosphorus availability -> coprophagy closes the nutrient loop ← F12, F13, F18
 
-- **Skill:** Ferment-Gut (Passive): +25% resource extraction from soil and mounds; unearths hidden nutrient caches.
+- **Skill:** Ferment-Gut (Passive): The creature churns its digestive gut to break down soil and mound matter, steadily gathering nourishment and revealing hidden nutrient deposits nearby.
 - **Weakness:** Vulnerable to gut parasites; requires frequent defecation cycles.
 - **Observe:**
   1. Distended, segmented abdomen

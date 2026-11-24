@@ -34,7 +34,7 @@
           "en": "Stride"
         },
         "role": "Basic",
-        "effect": "Walking a steady 1.5 m s^-1 (20 m in about 13 s) refills the stamina bar instead of draining it, with both hands free to carry up to 15 kg; only sprinting, up to 5 m s^-1, burns stamina fast.",
+        "effect": "Walking steadily restores the creature's energy and leaves both hands free to carry supplies, while sprinting strongly drains that same energy.",
         "numbers": {}
       },
       "weakness": "The bowl pelvis is both hip joint and birth canal: a hip hit halves move speed and caps carried load at 5 kg until it heals, wide loads will not fit through gaps it must pass, and every birth costs the group a rest day - aim for the hips, or wait for a labour.",
@@ -97,7 +97,7 @@
           "en": "Midday Push"
         },
         "role": "Passive",
-        "effect": "Ignore heat exhaustion for 45 minutes of hard work, and keep tracking a scent trail at running pace under full sun.",
+        "effect": "The creature powers through intense labor under the blazing sun for a short while without tiring, and can maintain a running pace while following a scent trail.",
         "numbers": {}
       },
       "weakness": "Every minute of that cooling is paid in water: after 45 minutes it needs about 1.5 L or takes a dehydration penalty, and salt loss makes it slower to heal.",
@@ -224,7 +224,7 @@
           "en": "Hearth"
         },
         "role": "Signature",
-        "effect": "A maintained fire repels predators within 30 m all night and cooks tubers or tough meat for about +40% net calories (fatty food gains little), one watch per catch; smoke drifts downwind as a visible, scented cone that can mask the camp's scent or deliberately signal allies.",
+        "effect": "A steady campfire keeps nearby predators at bay and thoroughly cooks gathered food, while its smoke drifts downwind in a visible, scented plume that can hide the camp's presence or send signals to allies.",
         "numbers": {}
       },
       "weakness": "The flame dies without dry fuel or below about 16% O2, so rain, a soaked woodpile or thin air ends cooking and night defence, and anything downwind can follow the smoke cone straight to the camp.",
@@ -290,7 +290,7 @@
           "en": "Name the plan"
         },
         "role": "Social",
-        "effect": "Share a 3-step plan with allies out of line of sight to about 150 m in open air (roughly half that in scrub); the murmur variant reaches only ~75 m but cannot be intercepted by enemies.",
+        "effect": "The creature clearly communicates a strategy to distant allies across open ground, and can whisper a secure version that remains hidden from enemies despite covering a shorter distance.",
         "numbers": {}
       },
       "weakness": "Every shout is loud and honest: enemies in earshot hear the plan too and can ambush whoever answers, and the murmur variant covers only ~75 m, so a patient scout can slip inside it.",

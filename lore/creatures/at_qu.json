@@ -37,7 +37,7 @@
           "en": "Wind-Sync Mapping"
         },
         "role": "Control",
-        "effect": "Aligns player to pyramid acoustic nodes, revealing hidden Qu drone paths and structural weak points (30m radius).",
+        "effect": "Kilometric pyramids channel strong winds that carry echoes, highlighting nearby drone routes and fragile structures so you can spot hidden paths and weak points.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden high-frequency sonic bursts that disrupt atmospheric coupling.",
@@ -101,7 +101,7 @@
           "en": "Scan Terraforming Signatures"
         },
         "role": "Basic",
-        "effect": "Reveals hidden nanite hotspots and Qu drone flight paths within 30m.",
+        "effect": "Nanite-saturated soil and geometric wind funnels stir the ground, exposing nearby drone flight routes and hidden energy concentrations for you to observe.",
         "numbers": {}
       },
       "weakness": "Disoriented by localized magnetic anomalies near basalt foundations.",

@@ -111,7 +111,7 @@
           "en": "Diplomatic Probe"
         },
         "role": "Engage",
-        "effect": "Extends manipulator to share data/chemical signatures, +25% trust with non-hostile factions.",
+        "effect": "The creature extends a manipulator from its base to share chemical signatures and information, strongly increasing the trust of nearby non-hostile factions.",
         "numbers": {}
       },
       "weakness": "Extended manipulator is highly vulnerable to vacuum shear and rapid decompression events.",

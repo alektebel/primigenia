@@ -35,7 +35,7 @@
           "en": "Elastic Sprint"
         },
         "role": "Basic",
-        "effect": "Increases movement range by 50% on open ground for 1 turn.",
+        "effect": "The creature sprints across open ground, covering a greatly extended distance in a short while.",
         "numbers": {}
       },
       "weakness": "Cannot turn quickly; momentum carries them straight, making them vulnerable to flank attacks on slopes.",
@@ -97,7 +97,7 @@
           "en": "Herd Instinct"
         },
         "role": "Passive",
-        "effect": "Herd movement reduces predator aggro range by 10% for adjacent allies.",
+        "effect": "Moving as a tight group, the creature and nearby allies strongly avoid drawing predator attention.",
         "numbers": {}
       },
       "weakness": "Cannot be taught tools or tricks; confused by non-patterned traps and isolated from the herd.",

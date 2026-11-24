@@ -34,7 +34,7 @@
           "en": "Twist Anchor"
         },
         "role": "Control",
-        "effect": "Tangles in a 20m radius, halting enemy movement for 3s",
+        "effect": "The creature coils tightly around nearby foes, wrapping them in a thick knot that holds them fast for a short while.",
         "numbers": {}
       },
       "weakness": "Exposed to Alfvénic resonance; high-frequency waves shatter its braid",
@@ -90,7 +90,7 @@
           "en": "Flare Shield"
         },
         "role": "Defence",
-        "effect": "Redirects 50% of incoming energy burst, storing it for 5s",
+        "effect": "Its shimmering skin deflects incoming energy blasts, catching the scattered light and storing it strongly for a short while.",
         "numbers": {}
       },
       "weakness": "Lattice gaps close in high-density plasma; suffocates if it dives into the chromosphere",
@@ -146,7 +146,7 @@
           "en": "Siphon Burst"
         },
         "role": "Poke",
-        "effect": "Drains 30% of target charge, healing self for 4s",
+        "effect": "The creature extends a glowing tendril to draw power from a nearby target, absorbing the stolen energy to mend its own wounds.",
         "numbers": {}
       },
       "weakness": "Overcharge triggers uncontrolled reconnection; self-cannibalizes if fed too rapidly",
@@ -201,7 +201,7 @@
           "en": "Field Call"
         },
         "role": "Social",
-        "effect": "Summons 3 allies within 500m along the same flux tube",
+        "effect": "It sends out a resonant pulse that draws nearby allies along the same magnetic path, pulling them swiftly to its side.",
         "numbers": {}
       },
       "weakness": "Requires magnetically closed tubes; breaks in open solar wind",

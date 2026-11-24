@@ -38,7 +38,7 @@
           "en": "Tide stride"
         },
         "role": "Signature",
-        "effect": "Wades 1.2 m deep for 20 s behind a 3 m bow wave; leaves the islet only at spring low, when the 3.2 m shelf tide uncovers the causeway.",
+        "effect": "The giant wades through the water, pushing a large wave ahead as it moves. It only departs the island when the tide recedes enough to reveal a dry path.",
         "numbers": {}
       },
       "weakness": "Deep water and high tide: lure it onto the flat as the tide turns and it is cut off for a full 14.9 d cycle, turning its back on you.",
@@ -96,7 +96,7 @@
           "en": "Canopy reach"
         },
         "role": "Basic",
-        "effect": "Eats leaves or fruit up to 4 m without lowering its guard; fruit gifts offered at head height count +15 instead of +8.",
+        "effect": "The creature stretches its long neck to browse high branches without breaking its defensive stance. Offering fruit at head height yields a much stronger effect.",
         "numbers": {}
       },
       "weakness": "Blind under its own chin: lure it beneath a rock arch and strike the neck from the far side; it cannot turn its head fast at close range.",
@@ -214,7 +214,7 @@
           "en": "Earth stomp"
         },
         "role": "Engage",
-        "effect": "6 m radius, knocks down creatures under 200 kg for 2 s and cracks rock armour; 3 s recovery between stomps.",
+        "effect": "It slams its massive feet into the ground, knocking over nearby lighter creatures and cracking stone defenses. The giant pauses for a short while between each powerful impact.",
         "numbers": {}
       },
       "weakness": "It needs dry footing: lure it into the shallows or onto wet kelp and its own mass sinks and slides, and it cannot stomp while wading.",

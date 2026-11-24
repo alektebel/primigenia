@@ -12,7 +12,10 @@
     "habitat": "Verrin's Ring Shear-Lanes (1.4–1.6 Rv), preferring density waves and resonance edges where orbital shear is highest.",
     "diet": "Water ice, hydrogen peroxide frost, grazers, reaction-mass exhaust plumes.",
     "active": "Continuous diurnal activity; hunting peaks during Kessler cascade events when debris density spikes.",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Ring Grazer"
+    ]
   },
   "body": "Asymmetric body: central clathrate-brain core protected by 1 mm skin; magenta-hinged reflective sail on port side for radiation pressure; starboard cluster of sublimation nozzles; shifted-amber photoreceptor array for Doppler sensing; fine debris-tracking filaments extendable from flanks.",
   "chains": [
@@ -36,7 +39,7 @@
           "en": "Phase Lock"
         },
         "role": "Engage",
-        "effect": "Locks onto prey's orbital period, predicting position for 5 turns. +50% hit chance on predicted intercept.",
+        "effect": "The creature tracks the prey's orbit and anticipates where it will move next. Aiming at that predicted path makes strikes land with remarkable accuracy.",
         "numbers": {}
       },
       "weakness": "Blind to optical phasing during eclipse; sensors rely on reflected light.",
@@ -50,8 +53,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the predictive skill but change the sense: an amber (585 nm) star-and-ring tracker that measures prey angular displacement across successive sightings and eclipse clocks (F8, F12, F14) to fit an orbit. Drop the shifted-spectrum glow and lock beam; show anticipation instead. A literal spectral shift would need a narrow-band emitter this canon does not supply.",
+        "fixes": [
+          "Keep the predictive skill but change the sense: an amber (585 nm) star-and-ring tracker that measures prey angular displacement across successive sightings and eclipse clocks (F8, F12, F14) to fit an orbit. Drop the shifted-spectrum glow and lock beam; show anticipation instead. A literal spectral shift would need a narrow-band emitter this canon does not supply."
+        ],
+        "analogues": [
+          {
+            "organism": "A dragonfly intercepting another fly by angular image motion and time-to-contact, not by colour. CF-FM bats compensate Doppler shift in echolocation, but that works because they emit a narrow-band call, which reflected sunlight is not.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 4
@@ -84,7 +97,7 @@
           "en": "Impulse Burn"
         },
         "role": "Basic",
-        "effect": "Burns ice and peroxide, delivering 15 m/s delta-v. Can change semi-major axis for Hohmann transfers.",
+        "effect": "The creature ignites chemical bladders to propel itself swiftly through the void. It can shift its trajectory to cut across the battlefield and reposition near targets.",
         "numbers": {}
       },
       "weakness": "High peroxide use risks internal poisoning; 10% chance of self-damage if burn exceeds capacity.",
@@ -98,8 +111,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Line each bladder with a peroxide-impermeable clathrate or ceramic membrane separate from the 1 mm pressure skin, feed ring ice in as expendable mass, and vent a cold collimated ice-vapour jet through the starboard nozzles. Replace 'white gas with visible heat haze' with 'a brief frosty sparkle as grains catch starlight'. Leave any self-poisoning chance to the game numbers, not the lore.",
+        "fixes": [
+          "Line each bladder with a peroxide-impermeable clathrate or ceramic membrane separate from the 1 mm pressure skin, feed ring ice in as expendable mass, and vent a cold collimated ice-vapour jet through the starboard nozzles. Replace 'white gas with visible heat haze' with 'a brief frosty sparkle as grains catch starlight'. Leave any self-poisoning chance to the game numbers, not the lore."
+        ],
+        "analogues": [
+          {
+            "organism": "Bombardier beetle (Brachinus) stores hydrogen peroxide and catalytically decomposes it into a hot defensive spray; hydrogen-peroxide monopropellant thrusters are flown on spacecraft.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -145,8 +168,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make the sail a micron-thick radiation-toughened organic film on a light frame, not the pressure skin; gimbal the hinge through the centre of mass or add counter-rotating ballast nozzles. Let a small magenta pigment patch harvest F21 photosynthesis at the cost of a slight thrust penalty. Keep the outward-only spiral, the eclipse downtime and the journal line.",
+        "fixes": [
+          "Make the sail a micron-thick radiation-toughened organic film on a light frame, not the pressure skin; gimbal the hinge through the centre of mass or add counter-rotating ballast nozzles. Let a small magenta pigment patch harvest F21 photosynthesis at the cost of a slight thrust penalty. Keep the outward-only spiral, the eclipse downtime and the journal line."
+        ],
+        "analogues": [
+          {
+            "organism": "Solar sails such as IKAROS and NanoSail-D climb with photon pressure and no propellant; ring grains feel the related Poynting-Robertson effect.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 6
@@ -178,7 +211,7 @@
           "en": "Cascade Hunt"
         },
         "role": "Signature",
-        "effect": "In debris fields, detects panic burns of prey. +75% capture chance; reveals hidden grazers.",
+        "effect": "Amidst floating wreckage, the creature senses frantic escape attempts and tracks them effortlessly. It easily secures fleeing prey and exposes those trying to hide.",
         "numbers": {}
       },
       "weakness": "Filaments can snag on large debris fragments; movement restricted in dense debris.",
@@ -192,8 +225,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Describe the filaments as short-range whiskers that vibrate or taste when plume grains strike them, useful in the last metres of an intercept, and as impact hazards in dense debris. Change the secret from 'triggers a Kessler cascade' to 'kicks loose frost into a crossing orbit to flush grazers', preserving the chaos-hunting fun without breaking the energy budget.",
+        "fixes": [
+          "Describe the filaments as short-range whiskers that vibrate or taste when plume grains strike them, useful in the last metres of an intercept, and as impact hazards in dense debris. Change the secret from 'triggers a Kessler cascade' to 'kicks loose frost into a crossing orbit to flush grazers', preserving the chaos-hunting fun without breaking the energy budget."
+        ],
+        "analogues": [
+          {
+            "organism": "Spider trichobothria and insect antennae sense airflow and particles by direct mechanical interception; spacecraft dust detectors register single grain impacts by ionisation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 4
@@ -207,13 +250,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Ring Grazer",
-      "kind": "cousin",
-      "note": "(council kind 'Predator-Prey') Specialist hunter of grazers; uses Kessler cascades to flush prey and force mass expenditure, leaving them vulnerable to phasing strikes."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-24",
     "by": [
@@ -225,6 +262,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

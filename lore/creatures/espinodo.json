@@ -45,7 +45,7 @@
           "en": "Spine Volley"
         },
         "role": "Poke",
-        "effect": "Flicks 4 spines in a 90° flank/rear arc via elastic recoil; honest reach 2.5 m, beyond tumbles for 1 dmg; re-cock telegraphed by spine-tension shimmer; full magazine (10–12) regrows at bone/carcass sites over 8–12 days.",
+        "effect": "The creature snaps loose spines from its flanks in a wide arc, with the flick telegraphed by a shimmering tension in its back. It slowly regrows its supply by feeding on nearby bones or carcasses.",
         "numbers": {}
       },
       "weakness": "Sockets aim sideways/back; face head-on to dodge. Two volleys empty magazine; dark empty sockets mean defenceless until bone-fed. Sidestep on shimmer wind-up.",
@@ -108,7 +108,7 @@
           "en": "Spine Wall"
         },
         "role": "Defence",
-        "effect": "Hunker: crouch, tuck head, present keeled shoulder; 60% less front damage while stamina drains (~10 s); attackers biting in take 3 bleed from seam spines; rear stays open.",
+        "effect": "It crouches and tucks its head to present a heavily armored shoulder, sharply reducing incoming blows to the front while it drains stamina. Any attacker biting into its side suffers from the sharp seam spines, though its back remains exposed.",
         "numbers": {}
       },
       "weakness": "Hunkering turns slowly; heavy footfalls telegraph shifts. Circle to rear, no plate/bleed. Full spine magazine = thin pale plates; bide time until seams are spent.",
@@ -166,7 +166,7 @@
           "en": "Pose-off"
         },
         "role": "Control",
-        "effect": "Hold lateral pose 3 s: smaller or unowned Espinodo stands down, resident wins ties; hungry or storm-battered one charges after 1 s socket-creak cue.",
+        "effect": "It holds a rigid lateral stance, causing smaller or unowned rivals to stand down while it claims dominance. If a hungry or weary opponent refuses to yield, it prepares a sudden charge after hearing a distinct creak from its joints.",
         "numbers": {}
       },
       "weakness": "Sockets creak same for bluff/re-cock; learn pulse rate. Storm wind (F19) or mid-meal ignores pose; watch wind particles and hunched feeding, back away.",
@@ -228,7 +228,7 @@
           "en": "Bone Feast"
         },
         "role": "Engage",
-        "effect": "Consume meat/bone/grit: restores stamina; bone/grit grants +1 armour for 1 day, meat grants stamina only.",
+        "effect": "It deliberately gnaws on scavenged bones, grit, and salt spray to restore its energy. Chewing on hardened bone and grit temporarily toughens its hide, while fresh meat simply replenishes its vigor.",
         "numbers": {}
       },
       "weakness": "Digestion slows movement by 15% for 10 s; vulnerable while chewing. Must seek specific licks for armour; meat alone leaves it soft.",
@@ -288,7 +288,7 @@
           "en": "Fog Lurk"
         },
         "role": "Basic",
-        "effect": "Motionless at crossing: detection radius -50% (ears only), first strike +40%; breath-mist visual vanishes; ambush ends when fog lifts.",
+        "effect": "It remains perfectly still at narrow crossings, its breath mist fading into the air to avoid detection. It waits patiently for prey to pass, launching a sudden strike before the fog clears and reveals its position.",
         "numbers": {}
       },
       "weakness": "Cannot localise a sharp whistle in fog — puff one and it freezes, listening; startle call warns neighbours. Must sit downwind; cross on clear middays or read wind lean at spring.",

@@ -37,7 +37,7 @@
           "en": "Pipe Crawl"
         },
         "role": "Engage",
-        "effect": "Navigates complex 3D structures and ground-vibration networks, revealing hidden paths and acoustic signals (60m radius).",
+        "effect": "The creature navigates through intricate tunnels and reads ground vibrations to uncover hidden paths and acoustic signals nearby.",
         "numbers": {}
       },
       "weakness": "Poor balance on open flat ground (agoraphobia); high copper toxicity risk in metal-rich soils.",
@@ -97,7 +97,7 @@
           "en": "Seismic Harmony"
         },
         "role": "Signature",
-        "effect": "Reads ground vibrations to predict enemy movement and calm allies in tight spaces for 3 turns.",
+        "effect": "The creature reads ground vibrations to anticipate enemy movements and soothes nearby allies in confined areas for a short while.",
         "numbers": {}
       },
       "weakness": "Agoraphobic reflexes cause disorientation in open plazas without overhead cover.",

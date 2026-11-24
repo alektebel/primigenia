@@ -35,7 +35,7 @@
           "en": "Aegis Plate"
         },
         "role": "Defence",
-        "effect": "Negates 60% vertical shear damage when anchored to ice-hail.",
+        "effect": "When pressed against ice or hail, its flattened shell presses firmly into the surface to deflect downward force. The creature braces itself strongly against the ground, shielding its body from crushing impacts.",
         "numbers": {}
       },
       "weakness": "Vulnerable to dorsal piercing strikes",
@@ -98,7 +98,7 @@
           "en": "Jetstep"
         },
         "role": "Engage",
-        "effect": "Dash 15m laterally, ignoring wind drag for 1 turn.",
+        "effect": "It scuttles swiftly sideways across the terrain, moving with such sudden speed that the wind cannot slow it down. The creature darts laterally in a blur, briefly brushing past the air currents without resistance.",
         "numbers": {}
       },
       "weakness": "Cannot face threats directly; blind spot straight ahead",
@@ -155,7 +155,7 @@
           "en": "Gaslock"
         },
         "role": "Passive",
-        "effect": "Tuck bladder to reduce drag by 40% during dives.",
+        "effect": "It tucks a hidden gas sac beneath its abdomen to streamline its descent. The creature folds its underbelly inward, allowing it to plummet through the air with minimal resistance.",
         "numbers": {}
       },
       "weakness": "Lung Pierce: Target ventral soft tissue; drops buoyancy and forces exhausting ascent.",
@@ -211,7 +211,7 @@
           "en": "Oath Strike"
         },
         "role": "Signature",
-        "effect": "Ritualized clash: 80% damage, but both take 20% recoil; forces parry or yield.",
+        "effect": "It raises its mismatched claws to engage in a ritualized clash, locking them firmly against an opponent. The impact sends a heavy shock through both combatants, forcing the adversary to either brace against the blow or step back.",
         "numbers": {}
       },
       "weakness": "Overextended commitment; leaves flanks open if parried",
@@ -256,12 +256,12 @@
   ],
   "relations": [
     {
-      "with": "Air Whales",
+      "with": "air_whales",
       "kind": "cousin",
       "note": "(council kind 'Commensal') Rides thermal updrafts from their massive filter-maws to reach higher cloud layers without metabolic cost."
     },
     {
-      "with": "Jet Hunters",
+      "with": "jet_hunters",
       "kind": "cousin",
       "note": "(council kind 'Predator') Target carapace seams; Carmesa's lateral armor leaves dorsal soft tissue exposed to dive-bombing strikes."
     },

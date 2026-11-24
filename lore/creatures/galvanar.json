@@ -35,7 +35,7 @@
           "en": "Conduction"
         },
         "role": "Engage",
-        "effect": "Attacks spread to all enemies within 5m in brackish zones; deals 20 damage per target",
+        "effect": "When striking in brackish zones, its electrical attacks leap to nearby foes, crackling through the water to strike multiple targets at once.",
         "numbers": {}
       },
       "weakness": "Blood viscosity increases in cold; movement slows by 30% in cold brackish water",
@@ -48,11 +48,10 @@
         "en": "Lightning wrapped in salt and iron-blood."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 3
         },
         "analogues": [
@@ -88,7 +87,7 @@
           "en": "Brackish Shock"
         },
         "role": "Poke",
-        "effect": "Deals 60 damage and stuns for 3 turns; only functional in brackish water",
+        "effect": "In brackish water, it releases a powerful electrical burst that leaves nearby foes paralyzed for a short while.",
         "numbers": {}
       },
       "weakness": "Discharge shorts and fails in high-salinity brine pools; risk of self-damage",
@@ -101,11 +100,10 @@
         "en": "It strikes without moving."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 5
         },
         "analogues": [
@@ -140,7 +138,7 @@
           "en": "Sense Current"
         },
         "role": "Social",
-        "effect": "Reveals hidden enemies within 20m and predicts their movement vector for 2 turns",
+        "effect": "Its sensitive flank pores detect faint electrical traces, allowing it to spot concealed foes nearby and anticipate their next movements.",
         "numbers": {}
       },
       "weakness": "Pores clog with suspended hematite dust; requires grooming or shedding",
@@ -153,11 +151,10 @@
         "en": "It sees the heartbeat of the mud."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 5
         }
       },
@@ -199,11 +196,10 @@
         "en": "Shedding crystals is the only time it bleeds."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 6
         },
         "analogues": [
@@ -244,6 +240,16 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

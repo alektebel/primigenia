@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_hosts.c1 | Dense vascular fur patches on lumbar region | High O2 partial pressure (F7) drives rapid host metabolism ← Saturated humidity (F8) traps convective heat near the body ← Parasite attachment sites require stable thermoregulation ← Vascular fur acts as a biological heat-sink and saddle | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers. | Symbiotic Bond (`at_hosts.symbiotic_bond`) | Social | Share 15% stamina with paired parasite over 3 turns | Fur mats absorb moisture, slowing movement in dry seasons |
-| at_hosts.c2 | Enlarged nasal turbinates for chemical steering | Dense humid air (F8) preserves volatile scent plumes ← High pressure (F6) extends odor travel distance ← Parasite navigation replaces host motor control ← Enlarged turbinates track chemical leashes for pathfinding | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers. | Scent Trail (`at_hosts.scent_trail`) | Control | leads host or ally 50m along chemical path | Vulnerable to strong olfactory masking agents; loses navigation |
+| at_hosts.c1 | Dense vascular fur patches on lumbar region | High O2 partial pressure (F7) drives rapid host metabolism ← Saturated humidity (F8) traps convective heat near the body ← Parasite attachment sites require stable thermoregulation ← Vascular fur acts as a biological heat-sink and saddle | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers. | Symbiotic Bond (`at_hosts.symbiotic_bond`) | Social | The creature's vascular fur pulses as it steadily transfers vitality to its paired parasite, sustaining them both for a short while. | Fur mats absorb moisture, slowing movement in dry seasons |
+| at_hosts.c2 | Enlarged nasal turbinates for chemical steering | Dense humid air (F8) preserves volatile scent plumes ← High pressure (F6) extends odor travel distance ← Parasite navigation replaces host motor control ← Enlarged turbinates track chemical leashes for pathfinding | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers. | Scent Trail (`at_hosts.scent_trail`) | Control | The creature exhales a strong chemical mist that lingers in the air, steadily guiding a nearby host or ally along the path. | Vulnerable to strong olfactory masking agents; loses navigation |
 
 ### at_hosts.c1: Dense vascular fur patches on lumbar region
 
 Trait ← High O2 partial pressure (F7) drives rapid host metabolism ← Saturated humidity (F8) traps convective heat near the body ← Parasite attachment sites require stable thermoregulation ← Vascular fur acts as a biological heat-sink and saddle ← F7, F8
 
-- **Skill:** Symbiotic Bond (Social): Share 15% stamina with paired parasite over 3 turns
+- **Skill:** Symbiotic Bond (Social): The creature's vascular fur pulses as it steadily transfers vitality to its paired parasite, sustaining them both for a short while.
 - **Weakness:** Fur mats absorb moisture, slowing movement in dry seasons
 - **Observe:**
   1. Pulsing vascular skin under fur
@@ -46,7 +46,7 @@ Trait ← High O2 partial pressure (F7) drives rapid host metabolism ← Saturat
 
 Trait ← Dense humid air (F8) preserves volatile scent plumes ← High pressure (F6) extends odor travel distance ← Parasite navigation replaces host motor control ← Enlarged turbinates track chemical leashes for pathfinding ← F6, F8
 
-- **Skill:** Scent Trail (Control): leads host or ally 50m along chemical path
+- **Skill:** Scent Trail (Control): The creature exhales a strong chemical mist that lingers in the air, steadily guiding a nearby host or ally along the path.
 - **Weakness:** Vulnerable to strong olfactory masking agents; loses navigation
 - **Observe:**
   1. Dilated nasal apertures

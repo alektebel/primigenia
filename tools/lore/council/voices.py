@@ -20,4 +20,4 @@ def on_cooldown(runs_dir, voice):
 
 # plausibility referee: Cursor's composer-2.5 first (owner rule); when the Cursor plan rejects the model (Free plan: "Model unavailable on Free")
 # or it keeps failing, fall back to this opencode model instead of silently scoring every chain 6/"fixable" (A102.2).
-REFEREE_FALLBACK = "opencode/big-pickle"
+REFEREE_FALLBACK = os.environ.get("LORE_REFEREE_FALLBACK", "opencode/big-pickle")

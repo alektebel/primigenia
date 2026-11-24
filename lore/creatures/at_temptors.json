@@ -33,7 +33,7 @@
           "en": "Mound Command"
         },
         "role": "Control",
-        "effect": "Releases pheromone cloud, directing nearby male Temptors to gather resources or defend for 3 turns.",
+        "effect": "The creature releases a strong pheromone cloud that guides nearby male Temptors to either gather supplies or stand guard for a short while.",
         "numbers": {}
       },
       "weakness": "Sessile females cannot flee; ground-penetrating attacks bypass their pheromone shields.",
@@ -94,7 +94,7 @@
           "en": "Scent-Track"
         },
         "role": "Basic",
-        "effect": "+30% movement speed when following pheromone trails; reveals hidden male drones.",
+        "effect": "The creature moves swiftly along pheromone trails and makes hidden male drones visible to the eye.",
         "numbers": {}
       },
       "weakness": "Easily confused by synthetic chemicals or strong winds.",

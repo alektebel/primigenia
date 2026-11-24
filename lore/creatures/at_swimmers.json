@@ -36,7 +36,7 @@
           "en": "Hidden Grip"
         },
         "role": "Engage",
-        "effect": "Grab prey or objects with hands inside flippers; +20% control on aquatic targets.",
+        "effect": "The creature slips its hidden hands from beneath its flippers to firmly seize prey or nearby objects. It holds onto aquatic targets strongly.",
         "numbers": {}
       },
       "weakness": "Hands are slow to deploy; vulnerable to ambush by fast-swimming flankers.",
@@ -103,7 +103,7 @@
           "en": "Tidal Call"
         },
         "role": "Social",
-        "effect": "Summons 1 ally from water within 40m, grants +2 dive speed.",
+        "effect": "The creature emits a resonant call that draws a companion from the depths nearby. The summoned ally moves strongly through the water.",
         "numbers": {}
       },
       "weakness": "Cannot understand complex commands or tool instructions.",

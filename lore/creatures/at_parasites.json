@@ -34,7 +34,7 @@
           "en": "Nociceptor Dampening"
         },
         "role": "Passive",
-        "effect": "Reduce host agitation by 40%, allowing safe extraction of nutrients without combat",
+        "effect": "The creature secretes a numbing fluid that quietly calms the host, allowing it to feed peacefully without provoking a struggle.",
         "numbers": {}
       },
       "weakness": "Salivary enzymes are thermally unstable; high surface temperatures degrade secretion efficiency",

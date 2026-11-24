@@ -33,7 +33,7 @@
           "en": "Strain Burst"
         },
         "role": "Engage",
-        "effect": "Converts environmental tidal stress into a burst of movement speed (150%) and a shock attack dealing 12 damage; drains charge over 5 turns.",
+        "effect": "The creature crackles with stored energy and surges forward with a sudden burst of speed, delivering a sharp shock to nearby foes. It slowly recharges its limbs afterward.",
         "numbers": {}
       },
       "weakness": "Discharges quickly in calm water or during thermal tides; immobile without stored strain.",
@@ -92,7 +92,7 @@
           "en": "Rad-Sync"
         },
         "role": "Passive",
-        "effect": "Reduces radiation damage by 80% and heals 2 HP per turn during flare events; symbionts shed 5% max HP in clean water.",
+        "effect": "During stellar flares, its veins flush with glowing symbionts that shield it from harmful radiation and slowly mend its wounds. When it enters clean water, the symbionts gently detach and drift away.",
         "numbers": {}
       },
       "weakness": "Symbionts die in low-radiation zones; shedding leaves it vulnerable to infection.",
@@ -151,7 +151,7 @@
           "en": "Eclipse Bloom"
         },
         "role": "Social",
-        "effect": "At eclipse onset, splits shell to heal 20 HP, release pheromones (befriend all grazers within 50m), and gain 'Heat Shield' (+5 Defence) but is Vulnerable to area attacks for 3 turns.",
+        "effect": "As darkness falls, its carapace splits open to vent excess heat, releasing a calming scent that draws nearby grazers close. The exposed shell leaves it temporarily open to harm, but the sudden bloom quickly restores its strength.",
         "numbers": {}
       },
       "weakness": "Completely exposed and immobile during the bloom; cannot act until eclipse ends.",
@@ -213,7 +213,7 @@
           "en": "Vent Siphon"
         },
         "role": "Basic",
-        "effect": "Target within 30m near a vent; absorbs 8 HP and applies 'Chem-Burn' (2 damage/turn) to target for 4 turns; heals Marevora for 30% of damage dealt.",
+        "effect": "Near a thermal vent, it extends its ciliated ridges to filter the plumes, siphoning nourishment while searing a nearby target with a lingering chemical burn. The absorbed energy quickly knits its wounds back together.",
         "numbers": {}
       },
       "weakness": "Blind to visual cues; ineffective far from vent plumes.",

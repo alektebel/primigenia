@@ -34,7 +34,7 @@
           "en": "Kiln Plate"
         },
         "role": "Control",
-        "effect": "Places 2m radius armored zone, grants +30% defence to allies",
+        "effect": "The creature vents a protective heat wave that coats the ground, wrapping nearby allies in a shimmering barrier that strongly deflects incoming strikes.",
         "numbers": {}
       },
       "weakness": "Takes 10s to construct; vulnerable mid-build",
@@ -48,13 +48,24 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 4
-        },
+        "summary": "Rewrite the chambers as mixing/templating surfaces where vent fluid meets cool seawater, with heat-shock proteins shielding the lining; the armor is precipitated sulfide/oxide, never native metal. Keep 'it cements the vent itself' and delete all stat numbers.",
+        "fixes": [
+          "Rewrite the chambers as mixing/templating surfaces where vent fluid meets cool seawater, with heat-shock proteins shielding the lining; the armor is precipitated sulfide/oxide, never native metal. Keep 'it cements the vent itself' and delete all stat numbers."
+        ],
         "analogues": [
+          {
+            "organism": "The scaly-foot snail deposits iron-sulfide plates at vents; hot-spring microbial sinter mats concentrate minerals without smelting them.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_squamiferous"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -62,7 +73,11 @@
               "waren_2003_squamiferous"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -89,7 +104,7 @@
           "en": "Thermal Lure"
         },
         "role": "Engage",
-        "effect": "Draws chemolithotrophs into feeding zone, +10% harvest rate",
+        "effect": "The creature radiates a warm, inviting scent that draws nearby chemolithotrophs into a gathering pool, where they linger and yield their bounty more readily.",
         "numbers": {}
       },
       "weakness": "Overheats and loses symbionts if displaced to shallow water",
@@ -103,8 +118,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make the plates passive thermal dampers that keep symbionts inside their tolerance; any red is reflected light, not incandescence; change the weakness to loss of vent chemistry and gradient, not overheating in shallow water.",
+        "fixes": [
+          "Make the plates passive thermal dampers that keep symbionts inside their tolerance; any red is reflected light, not incandescence; change the weakness to loss of vent chemistry and gradient, not overheating in shallow water."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant tube worms hold sulfur-oxidizing symbionts at a narrow fluid/seawater interface; fish show regional endothermy, but nothing lives at reactor temperatures.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 5
@@ -148,14 +173,25 @@
         "en": "It swallows the mountain's blood and spits out crystal."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 7
-        },
+        "summary": "Say 'metal-sulfide/phosphate granules', not smelted crystal; 'spits out crystal' becomes shedding loaded granules, and crafting stats go.",
+        "fixes": [
+          "Say 'metal-sulfide/phosphate granules', not smelted crystal; 'spits out crystal' becomes shedding loaded granules, and crafting stats go."
+        ],
         "analogues": [
+          {
+            "organism": "Hyperaccumulator plants and metal-tolerant fungi/algae pack metals into vacuolar granules; some crabs store metals in hepatopancreatic granules.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_hyperaccumulation"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -163,7 +199,11 @@
               "brooks_1977_hyperaccumulation"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -190,7 +230,7 @@
           "en": "Plume Track"
         },
         "role": "Basic",
-        "effect": "Highlights thermal/acid plumes on minimap for 5s",
+        "effect": "The creature's sensors flare, causing glowing thermal and acid plumes to shimmer across the terrain and map for a short while.",
         "numbers": {}
       },
       "weakness": "Confused by lightning-induced pH swings or dust storms",
@@ -204,8 +244,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep 'it reads the water's sour notes'; change the weakness to plume turbulence, acid-fog pulses and dust contamination, and remove the minimap stat.",
+        "fixes": [
+          "Keep 'it reads the water's sour notes'; change the weakness to plume turbulence, acid-fog pulses and dust contamination, and remove the minimap stat."
+        ],
+        "analogues": [
+          {
+            "organism": "Bacterial chemotaxis toward pH/sulfide optima, and vent-invertebrate larvae settling on chemical cues from their habitat.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 6
@@ -242,6 +292,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

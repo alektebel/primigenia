@@ -21,16 +21,16 @@ Broad flat fibrous sheet with alternating conductive and insulating bands
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| soplomanta.c1 | Broad flat membrane | Maximize surface area ← Capture wind shear ← Harvest triboelectric charge | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Static Glide (`soplomanta.static_glide`) | Control | Glides 2x distance using wind, ignores 10% drag. | Calm zones starve it; damp air kills triboelectric effect. |
-| soplomanta.c2 | Alternating charge bands | Separate electron flow ← Create dipole moment ← Enable electrostatic propulsion | **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Repulsion Push (`soplomanta.repulsion_push`) | Basic | Pushes target or self away, dealing 8 damage and 2m displacement. | Reversing bands causes confusion and loss of control. |
-| soplomanta.c3 | Electrostatic propulsion | Move without metabolic burn ← Counter 2.6g gravity ← Exploit low density gas | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Charge Levitation (`soplomanta.charge_levitation`) | Passive | Reduces fall speed by 50%, allowing safe descent. | Requires constant charge; drains if wind stops. |
-| soplomanta.c4 | Infrasound resonance | Detect shear boundaries ← Travel far in H2 ← Avoid jet collapse | **F8** Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.; **F4** 9.8-hour rotation period with 2.5° axial tilt drives persistent zonal jets and weak seasonal variation. | Shear Sense (`soplomanta.shear_sense`) | Engage | Reveals hidden wind currents and enemies within 40m for 5 seconds. | High frequencies mask its resonance; deafening noise disorients. |
+| soplomanta.c1 | Broad flat membrane | Maximize surface area ← Capture wind shear ← Harvest triboelectric charge | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Static Glide (`soplomanta.static_glide`) | Control | The creature catches strong wind currents to soar far across the sky, gliding smoothly without being slowed by the air. | Calm zones starve it; damp air kills triboelectric effect. |
+| soplomanta.c2 | Alternating charge bands | Separate electron flow ← Create dipole moment ← Enable electrostatic propulsion | **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Repulsion Push (`soplomanta.repulsion_push`) | Basic | The creature releases a sudden burst of energy that shoves either itself or a nearby foe backward, knocking them off balance. | Reversing bands causes confusion and loss of control. |
+| soplomanta.c3 | Electrostatic propulsion | Move without metabolic burn ← Counter 2.6g gravity ← Exploit low density gas | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Charge Levitation (`soplomanta.charge_levitation`) | Passive | The creature hovers gently through the air, drifting downward at a slow and controlled pace to land safely. | Requires constant charge; drains if wind stops. |
+| soplomanta.c4 | Infrasound resonance | Detect shear boundaries ← Travel far in H2 ← Avoid jet collapse | **F8** Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.; **F4** 9.8-hour rotation period with 2.5° axial tilt drives persistent zonal jets and weak seasonal variation. | Shear Sense (`soplomanta.shear_sense`) | Engage | The creature senses shifting air patterns, making nearby wind currents and hidden foes briefly visible in the mist. | High frequencies mask its resonance; deafening noise disorients. |
 
 ### soplomanta.c1: Broad flat membrane
 
 Trait ← Maximize surface area ← Capture wind shear ← Harvest triboelectric charge ← F7
 
-- **Skill:** Static Glide (Control): Glides 2x distance using wind, ignores 10% drag.
+- **Skill:** Static Glide (Control): The creature catches strong wind currents to soar far across the sky, gliding smoothly without being slowed by the air.
 - **Weakness:** Calm zones starve it; damp air kills triboelectric effect.
 - **Observe:**
   1. Fluttering without wings
@@ -49,7 +49,7 @@ Trait ← Maximize surface area ← Capture wind shear ← Harvest triboelectric
 
 Trait ← Separate electron flow ← Create dipole moment ← Enable electrostatic propulsion ← F5, F7
 
-- **Skill:** Repulsion Push (Basic): Pushes target or self away, dealing 8 damage and 2m displacement.
+- **Skill:** Repulsion Push (Basic): The creature releases a sudden burst of energy that shoves either itself or a nearby foe backward, knocking them off balance.
 - **Weakness:** Reversing bands causes confusion and loss of control.
 - **Observe:**
   1. Bands glowing different colors
@@ -67,7 +67,7 @@ Trait ← Separate electron flow ← Create dipole moment ← Enable electrostat
 
 Trait ← Move without metabolic burn ← Counter 2.6g gravity ← Exploit low density gas ← F3, F7
 
-- **Skill:** Charge Levitation (Passive): Reduces fall speed by 50%, allowing safe descent.
+- **Skill:** Charge Levitation (Passive): The creature hovers gently through the air, drifting downward at a slow and controlled pace to land safely.
 - **Weakness:** Requires constant charge; drains if wind stops.
 - **Observe:**
   1. Floating motionless in gale
@@ -85,7 +85,7 @@ Trait ← Move without metabolic burn ← Counter 2.6g gravity ← Exploit low d
 
 Trait ← Detect shear boundaries ← Travel far in H2 ← Avoid jet collapse ← F8, F4
 
-- **Skill:** Shear Sense (Engage): Reveals hidden wind currents and enemies within 40m for 5 seconds.
+- **Skill:** Shear Sense (Engage): The creature senses shifting air patterns, making nearby wind currents and hidden foes briefly visible in the mist.
 - **Weakness:** High frequencies mask its resonance; deafening noise disorients.
 - **Observe:**
   1. Vibrating membrane at low pitch

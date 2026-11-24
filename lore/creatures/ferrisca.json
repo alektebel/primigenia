@@ -9,10 +9,13 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Volcanic rift margins and brackish lagoon edges",
+    "habitat": "Volcanic rift margins and brackish lagoon edges. Also, in the council's sketch (no such creature in this world yet): Sinter-Dweller Filter-Sponge, ferrisca prys open sinter mats, exposing bacterial films the sponge colonizes; the sponge's chitin-like proteins reinforce Ferrisca's gill rakers.",
     "diet": "Chemosynthetic bacteria, sulfide sinter crusts, hyperaccumulating flora, detritus",
     "active": "Crepuscular (avoids peak 30 m/s dust storms)",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Acid-Fog Drifter"
+    ]
   },
   "body": "Lophophorate-grade bilateral ancestor independently armored with iron-sulfide plates, magnetite-reinforced gill rakers, and laterally jointed limbs",
   "chains": [
@@ -37,7 +40,7 @@
           "en": "Low Scurry"
         },
         "role": "Basic",
-        "effect": "Dash 8m along walls or ground, ignoring friction penalties for 1 turn.",
+        "effect": "The creature scurries rapidly across walls and ground, gliding smoothly without being slowed by rough or slippery surfaces for a short while.",
         "numbers": {}
       },
       "weakness": "Vulnerable to venting steam bursts that lift and tumble them.",
@@ -51,8 +54,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make F7 the primary cause of the pancake shape (low-drag clinging in surge) and F15/F25 the cause of the plates; demote F14 to 'haze makes cheap concealment possible', not the driver. Replace the stat text with a plain behaviour: a low, gripping scurry along walls and ground, with steam bursts as the honest weakness. State that plates are biologically deposited sulfides, not smelted metal.",
+        "fixes": [
+          "Make F7 the primary cause of the pancake shape (low-drag clinging in surge) and F15/F25 the cause of the plates; demote F14 to 'haze makes cheap concealment possible', not the driver. Replace the stat text with a plain behaviour: a low, gripping scurry along walls and ground, with steam bursts as the honest weakness. State that plates are biologically deposited sulfides, not smelted metal."
+        ],
+        "analogues": [
+          {
+            "organism": "Scaly-foot snail Chrysomallon squamiferum grows iron-sulfide sclerites; limpets and chitons armour exposed surfaces with mineralised plates and teeth.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 6
@@ -85,7 +98,7 @@
           "en": "Carcinised Step"
         },
         "role": "Control",
-        "effect": "Move 6m laterally in a straight line, ignoring terrain penalties for 1 turn.",
+        "effect": "It steps swiftly sideways in a straight line, easily crossing over rough or obstructive ground without slowing down for a brief moment.",
         "numbers": {}
       },
       "weakness": "Cannot turn quickly; blind spot directly behind the tucked abdomen.",
@@ -99,8 +112,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the crab-like silhouette and sideways gait as convergence on tight crevices (F15), but replace 'jointed' with six muscular, mineral-tipped lobes, or change the ancestor to a motile protostome grazer with a muscular foot and scleritome. Rename 'gill rakers' as magnetite-capped scraping spines if a radula-like organ exists, and drop the sound-to-posture claim: sound is for sensing, crevices are for orientation. Strip '6m' from the skill: describe a low side-step that holds the body inside the crevice. Label the whole package highly speculative in the journal.",
+        "fixes": [
+          "Keep the crab-like silhouette and sideways gait as convergence on tight crevices (F15), but replace 'jointed' with six muscular, mineral-tipped lobes, or change the ancestor to a motile protostome grazer with a muscular foot and scleritome. Rename 'gill rakers' as magnetite-capped scraping spines if a radula-like organ exists, and drop the sound-to-posture claim: sound is for sensing, crevices are for orientation. Strip '6m' from the skill: describe a low side-step that holds the body inside the crevice. Label the whole package highly speculative in the journal."
+        ],
+        "analogues": [
+          {
+            "organism": "Carcinisation into crab-like form in decapod crustaceans (porcelain, king and hermit crabs); chiton radular teeth tipped with magnetite; byssal attachment of mussels in surge.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 4
@@ -134,7 +157,7 @@
           "en": "Iron Fold"
         },
         "role": "Defence",
-        "effect": "Tuck abdomen, reducing incoming damage by 40% for 2 turns, but cannot move.",
+        "effect": "The creature tucks its abdomen into a tight shield, becoming highly resistant to attacks while remaining completely still.",
         "numbers": {}
       },
       "weakness": "Tightly sealed shield traps heat; prolonged use risks thermal stress.",
@@ -147,14 +170,20 @@
         "en": "The belly is hidden not for modesty, but because acid fog melts flesh and the ocean keeps its secrets under the ribs."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 6
         },
         "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_scaly"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -207,14 +236,20 @@
         "en": "They don't hunt meat so much as crack open the earth's crust, tasting the bacteria that live in the iron."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 5
         },
         "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_metallophytes"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -233,16 +268,6 @@
     }
   ],
   "relations": [
-    {
-      "with": "Sinter-Dweller Filter-Sponge",
-      "kind": "cousin",
-      "note": "(council kind 'Commensalism') Ferrisca prys open sinter mats, exposing bacterial films the sponge colonizes; the sponge's chitin-like proteins reinforce Ferrisca's gill rakers."
-    },
-    {
-      "with": "Acid-Fog Drifter",
-      "kind": "cousin",
-      "note": "(council kind 'Predation') Ferrisca ambushes Drifters in brackish shallows; the Drifter's electrocyte bursts (F26) can short-circuit Ferrisca's nervous system if the crab fails to fold quickly."
-    },
     {
       "with": "carapaz",
       "kind": "convergent",
@@ -296,6 +321,11 @@
       "date": "2026-11-24",
       "who": "autoloop",
       "what": "carcinisation links to 6 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "carcinised": true,

@@ -35,7 +35,7 @@
           "en": "Thermal Soak"
         },
         "role": "Engage",
-        "effect": "recover 20% stamina in direct sunlight over 1 turn",
+        "effect": "The creature basks in direct sunlight, slowly drawing warmth into its muscles to renew its vigor over a short while.",
         "numbers": {}
       },
       "weakness": "Cold environments or night combat cause metabolic slowdown; -50% action economy",
@@ -94,7 +94,7 @@
           "en": "Jaw Snap"
         },
         "role": "Signature",
-        "effect": "piercing attack, ignores 30% armor, 2x damage on first turn",
+        "effect": "The creature snaps its jaws shut strongly, easily tearing through armor and delivering a crushing initial strike.",
         "numbers": {}
       },
       "weakness": "Jaw hinge stress fractures under high-g or sudden impact; Defence required",

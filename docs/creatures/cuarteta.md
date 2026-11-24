@@ -21,16 +21,16 @@ Translucent gelatinous bell, 0.8 m diameter, four thick oral arms trailing benea
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cuarteta.c1 | Radial symmetry with four sweeping arms | Arms intercept drifting food from any angle ← drifting body lacks a turning radius ← turbid shallows hide directional cues ← F20 volcanic sediment and plankton choke visibility | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Drift Pulse (`cuarteta.drift_pulse`) | Basic | Surges forward 15m along a straight arc, ignoring terrain drag | Wide turn radius makes its path predictable, easy to dodge |
-| cuarteta.c2 | Bioluminescent cnidocytes line the oral arms | Stinging cells paralyze floating prey instantly ← high metabolic cost to maintain neurotoxin ← 1.6× oxygen makes costly cellular weapons affordable ← F5 high pO₂ and F24 porphyrin biochemistry | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Sting Lash (`cuarteta.sting_lash`) | Engage | Releases a 2m shockwave of toxins, draining 12% target HP and slowing movement by 40% | Glow betrays position in dark water; cooldown leaves arms bare |
-| cuarteta.c3 | Hydrostatic bell pulsing drives jet propulsion | Bell contraction forces water rearward ← thrust equals drag in dense stratified water ← heavy air drives convection storms that mix shallow water ← F4 dense atmosphere and F8 evening convection | **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Jet Burst (`cuarteta.jet_burst`) | Control | Forces a 20m backward dash, creating a pressure wake that disrupts enemy balance by 25% | Loud pressure wave attracts larger predators and triggers nearby prey flight |
-| cuarteta.c4 | Radial electroreceptor and chemosensory rings | Sensory hairs line each arm uniformly ← detect electric fields and dissolved proteins ← sight fails in sediment-choked shallows ← F20 reliance on pressure, touch, and electric sense | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Sensory Ring (`cuarteta.sensory_ring`) | Passive | Reveals hidden prey and traps within 10m, increasing first-attack hit chance by 30% | Hypersensitive to lightning strikes during evening storms, causing disorientation |
+| cuarteta.c1 | Radial symmetry with four sweeping arms | Arms intercept drifting food from any angle ← drifting body lacks a turning radius ← turbid shallows hide directional cues ← F20 volcanic sediment and plankton choke visibility | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Drift Pulse (`cuarteta.drift_pulse`) | Basic | The creature surges forward in a sweeping arc, gliding smoothly over obstacles and rough terrain without slowing down. | Wide turn radius makes its path predictable, easy to dodge |
+| cuarteta.c2 | Bioluminescent cnidocytes line the oral arms | Stinging cells paralyze floating prey instantly ← high metabolic cost to maintain neurotoxin ← 1.6× oxygen makes costly cellular weapons affordable ← F5 high pO₂ and F24 porphyrin biochemistry | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Sting Lash (`cuarteta.sting_lash`) | Engage | The creature lashes out with a burst of glowing toxins that wash over nearby foes, leaving them sluggish and noticeably weakened. | Glow betrays position in dark water; cooldown leaves arms bare |
+| cuarteta.c3 | Hydrostatic bell pulsing drives jet propulsion | Bell contraction forces water rearward ← thrust equals drag in dense stratified water ← heavy air drives convection storms that mix shallow water ← F4 dense atmosphere and F8 evening convection | **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Jet Burst (`cuarteta.jet_burst`) | Control | The creature forcefully jets backward, sending a strongly rippling pressure wave that knocks nearby enemies off balance. | Loud pressure wave attracts larger predators and triggers nearby prey flight |
+| cuarteta.c4 | Radial electroreceptor and chemosensory rings | Sensory hairs line each arm uniformly ← detect electric fields and dissolved proteins ← sight fails in sediment-choked shallows ← F20 reliance on pressure, touch, and electric sense | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Sensory Ring (`cuarteta.sensory_ring`) | Passive | The creature's sensory rings constantly scan the area, making hidden prey and concealed traps visible, while its strikes land with strong accuracy. | Hypersensitive to lightning strikes during evening storms, causing disorientation |
 
 ### cuarteta.c1: Radial symmetry with four sweeping arms
 
 Trait ← Arms intercept drifting food from any angle ← drifting body lacks a turning radius ← turbid shallows hide directional cues ← F20 volcanic sediment and plankton choke visibility ← F20, F13
 
-- **Skill:** Drift Pulse (Basic): Surges forward 15m along a straight arc, ignoring terrain drag
+- **Skill:** Drift Pulse (Basic): The creature surges forward in a sweeping arc, gliding smoothly over obstacles and rough terrain without slowing down.
 - **Weakness:** Wide turn radius makes its path predictable, easy to dodge
 - **Observe:**
   1. bell ripples without rotation
@@ -48,7 +48,7 @@ Trait ← Arms intercept drifting food from any angle ← drifting body lacks a 
 
 Trait ← Stinging cells paralyze floating prey instantly ← high metabolic cost to maintain neurotoxin ← 1.6× oxygen makes costly cellular weapons affordable ← F5 high pO₂ and F24 porphyrin biochemistry ← F5, F24
 
-- **Skill:** Sting Lash (Engage): Releases a 2m shockwave of toxins, draining 12% target HP and slowing movement by 40%
+- **Skill:** Sting Lash (Engage): The creature lashes out with a burst of glowing toxins that wash over nearby foes, leaving them sluggish and noticeably weakened.
 - **Weakness:** Glow betrays position in dark water; cooldown leaves arms bare
 - **Observe:**
   1. pulsed blue flash
@@ -66,7 +66,7 @@ Trait ← Stinging cells paralyze floating prey instantly ← high metabolic cos
 
 Trait ← Bell contraction forces water rearward ← thrust equals drag in dense stratified water ← heavy air drives convection storms that mix shallow water ← F4 dense atmosphere and F8 evening convection ← F4, F8
 
-- **Skill:** Jet Burst (Control): Forces a 20m backward dash, creating a pressure wake that disrupts enemy balance by 25%
+- **Skill:** Jet Burst (Control): The creature forcefully jets backward, sending a strongly rippling pressure wave that knocks nearby enemies off balance.
 - **Weakness:** Loud pressure wave attracts larger predators and triggers nearby prey flight
 - **Observe:**
   1. bell compresses fully
@@ -84,7 +84,7 @@ Trait ← Bell contraction forces water rearward ← thrust equals drag in dense
 
 Trait ← Sensory hairs line each arm uniformly ← detect electric fields and dissolved proteins ← sight fails in sediment-choked shallows ← F20 reliance on pressure, touch, and electric sense ← F20
 
-- **Skill:** Sensory Ring (Passive): Reveals hidden prey and traps within 10m, increasing first-attack hit chance by 30%
+- **Skill:** Sensory Ring (Passive): The creature's sensory rings constantly scan the area, making hidden prey and concealed traps visible, while its strikes land with strong accuracy.
 - **Weakness:** Hypersensitive to lightning strikes during evening storms, causing disorientation
 - **Observe:**
   1. arm tips twitch independently

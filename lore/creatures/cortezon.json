@@ -92,7 +92,7 @@
           "en": "Cold Resilience"
         },
         "role": "Defence",
-        "effect": "Reduces frostbite and cold damage by 60%",
+        "effect": "The creature's frost-resistant hide glistens as it moves through freezing conditions without slowing or stumbling.",
         "numbers": {}
       },
       "weakness": "Thermal insulation traps metabolic heat in warm zones",
@@ -206,7 +206,7 @@
           "en": "Grip Anchor"
         },
         "role": "Control",
-        "effect": "Immobilizes target for 8 seconds, prevents knockback",
+        "effect": "The creature's radial arms anchor deeply into the ice, locking it firmly in place so it cannot be pushed or dragged away.",
         "numbers": {}
       },
       "weakness": "Requires solid surface to plant arms; fails in water",
@@ -245,13 +245,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "none",
-      "kind": "cousin",
-      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

@@ -110,7 +110,7 @@
           "en": "Deep Archive"
         },
         "role": "Defence",
-        "effect": "Safely retrieves intact specimens from unstable ruins, +40% resistance to collapse damage.",
+        "effect": "The creature carefully gathers specimens from crumbling ruins. It shields itself from falling debris and moves steadily through the unstable terrain.",
         "numbers": {}
       },
       "weakness": "Information retrieval is slow; Author cannot react quickly to sudden threats while accessing data.",

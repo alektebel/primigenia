@@ -21,16 +21,16 @@ Camouflaged silica-moss skin, venomous barbs, wide-angled binocular eyes, low-pr
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sombria.c1 | Cryptic silica-moss integument skin | Amber daylight makes bright colors conspicuous ← Dull iron-silica pigments match substrate ← Visual selection favors cryptic patterns | **F8** Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm).; **F13** High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions. | Moss Hide (`sombria.moss_hide`) | Control | +40% stealth in shallow water | Useless in murky water |
-| sombria.c2 | Venomous dorsal barbs near spine | Trace O2 pockets allow high metabolism ← Fast strikes needed in low-oxygen zones ← Burst energy enables quick subduing | **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches.; **F5** The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing. | Paralytic Strike (`sombria.paralytic_strike`) | Poke | Immobilizes target, +20% damage | Barb regeneration takes 12s |
-| sombria.c3 | Wide-angled binocular eyes on head | Nocturnal hunting requires max light capture ← Retinal analogs stack for sensitivity ← Low-flux red light drives eye shape | **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches.; **F8** Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm). | Twilight Sight (`sombria.twilight_sight`) | Basic | Reveals hidden enemies, +30% accuracy in low light | Loses effectiveness in full daylight |
-| sombria.c4 | Low streamlined body profile | Shallow shelves have strong tidal currents ← Drag reduction conserves oxygen ← Sustained swimming enabled by hydrodynamics | **F10** Global oceans cover 71% of the surface with a mean depth of 3.6 km, featuring shallow epeiric shelves and deep abyssal plains.; **F9** High atmospheric heat capacity, CO₂ greenhouse forcing, and haze albedo dampen diurnal temperature swings, maintaining a mean surface temperature of 288 K. | Tidal Glide (`sombria.tidal_glide`) | Engage | Dashes through currents, +25% speed | Cannot roll on its back, exposed belly |
+| sombria.c1 | Cryptic silica-moss integument skin | Amber daylight makes bright colors conspicuous ← Dull iron-silica pigments match substrate ← Visual selection favors cryptic patterns | **F8** Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm).; **F13** High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions. | Moss Hide (`sombria.moss_hide`) | Control | The creature's mossy skin blends seamlessly with the riverbed, rendering it nearly invisible in shallow waters. It drifts silently among the reeds, forcing observers to strain their eyes to locate it. | Useless in murky water |
+| sombria.c2 | Venomous dorsal barbs near spine | Trace O2 pockets allow high metabolism ← Fast strikes needed in low-oxygen zones ← Burst energy enables quick subduing | **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches.; **F5** The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing. | Paralytic Strike (`sombria.paralytic_strike`) | Poke | The creature lashes out with venomous dorsal barbs, instantly paralyzing its target. The potent venom leaves the victim completely helpless and strongly vulnerable to further strikes. | Barb regeneration takes 12s |
+| sombria.c3 | Wide-angled binocular eyes on head | Nocturnal hunting requires max light capture ← Retinal analogs stack for sensitivity ← Low-flux red light drives eye shape | **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches.; **F8** Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm). | Twilight Sight (`sombria.twilight_sight`) | Basic | Its wide-set eyes adjust instantly to the gloom, piercing through shadows and darkness. The creature spots concealed foes with ease, tracking their every movement in the dim light. | Loses effectiveness in full daylight |
+| sombria.c4 | Low streamlined body profile | Shallow shelves have strong tidal currents ← Drag reduction conserves oxygen ← Sustained swimming enabled by hydrodynamics | **F10** Global oceans cover 71% of the surface with a mean depth of 3.6 km, featuring shallow epeiric shelves and deep abyssal plains.; **F9** High atmospheric heat capacity, CO₂ greenhouse forcing, and haze albedo dampen diurnal temperature swings, maintaining a mean surface temperature of 288 K. | Tidal Glide (`sombria.tidal_glide`) | Engage | Its sleek, low-profile body cuts effortlessly through the water, riding the currents with remarkable velocity. It surges forward in a blur, closing distances before opponents can react. | Cannot roll on its back, exposed belly |
 
 ### sombria.c1: Cryptic silica-moss integument skin
 
 Trait ← Amber daylight makes bright colors conspicuous ← Dull iron-silica pigments match substrate ← Visual selection favors cryptic patterns ← F8, F13
 
-- **Skill:** Moss Hide (Control): +40% stealth in shallow water
+- **Skill:** Moss Hide (Control): The creature's mossy skin blends seamlessly with the riverbed, rendering it nearly invisible in shallow waters. It drifts silently among the reeds, forcing observers to strain their eyes to locate it.
 - **Weakness:** Useless in murky water
 - **Observe:**
   1. Skin blends with reef fragments
@@ -48,7 +48,7 @@ Trait ← Amber daylight makes bright colors conspicuous ← Dull iron-silica pi
 
 Trait ← Trace O2 pockets allow high metabolism ← Fast strikes needed in low-oxygen zones ← Burst energy enables quick subduing ← F14, F5
 
-- **Skill:** Paralytic Strike (Poke): Immobilizes target, +20% damage
+- **Skill:** Paralytic Strike (Poke): The creature lashes out with venomous dorsal barbs, instantly paralyzing its target. The potent venom leaves the victim completely helpless and strongly vulnerable to further strikes.
 - **Weakness:** Barb regeneration takes 12s
 - **Observe:**
   1. Barbs flash red before striking
@@ -66,7 +66,7 @@ Trait ← Trace O2 pockets allow high metabolism ← Fast strikes needed in low-
 
 Trait ← Nocturnal hunting requires max light capture ← Retinal analogs stack for sensitivity ← Low-flux red light drives eye shape ← F14, F8
 
-- **Skill:** Twilight Sight (Basic): Reveals hidden enemies, +30% accuracy in low light
+- **Skill:** Twilight Sight (Basic): Its wide-set eyes adjust instantly to the gloom, piercing through shadows and darkness. The creature spots concealed foes with ease, tracking their every movement in the dim light.
 - **Weakness:** Loses effectiveness in full daylight
 - **Observe:**
   1. Eyes reflect the dim horizon
@@ -85,7 +85,7 @@ Trait ← Nocturnal hunting requires max light capture ← Retinal analogs stack
 
 Trait ← Shallow shelves have strong tidal currents ← Drag reduction conserves oxygen ← Sustained swimming enabled by hydrodynamics ← F10, F9
 
-- **Skill:** Tidal Glide (Engage): Dashes through currents, +25% speed
+- **Skill:** Tidal Glide (Engage): Its sleek, low-profile body cuts effortlessly through the water, riding the currents with remarkable velocity. It surges forward in a blur, closing distances before opponents can react.
 - **Weakness:** Cannot roll on its back, exposed belly
 - **Observe:**
   1. Body lies flat against sand

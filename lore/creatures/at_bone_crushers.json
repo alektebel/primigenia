@@ -33,7 +33,7 @@
           "en": "Bone Snap"
         },
         "role": "Poke",
-        "effect": "Shatters bones to access marrow, dealing 25% damage and applying a 15% vulnerability buff to targets for 2 turns.",
+        "effect": "The creature cracks open sturdy hides with its beak and claws to reach the marrow, leaving nearby foes weak and easily harmed for a short while.",
         "numbers": {}
       },
       "weakness": "Beak becomes brittle and prone to fracture if diet lacks sufficient calcium cycling.",
@@ -94,7 +94,7 @@
           "en": "Carrion Screech"
         },
         "role": "Signature",
-        "effect": "-20% enemy aggression within 50m; marks territory and deters rivals via chemical and auditory display.",
+        "effect": "It lets out a piercing cry and releases a heavy carrion stench to mark its territory, strongly deterring nearby rivals and calming their aggression for a short while.",
         "numbers": {}
       },
       "weakness": "High caloric requirement; starves rapidly if large kills are older than 3 days.",

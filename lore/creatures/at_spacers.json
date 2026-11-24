@@ -40,7 +40,7 @@
           "en": "Aerodynamic Drift"
         },
         "role": "Control",
-        "effect": "Expels localized air pressure to reposition allies or enemies by 15 meters, creating temporary vacuum pockets that disrupt jet-based movement.",
+        "effect": "The creature strongly expels air from its joints, shoving nearby allies or enemies away and leaving behind vacuum pockets that disrupt movement for a short while.",
         "numbers": {}
       },
       "weakness": "Sudden atmospheric depressurization depletes thruster reaction mass, leaving them drifting and vulnerable for 2 turns.",
@@ -93,7 +93,7 @@
           "en": "Atmospheric Burst"
         },
         "role": "Basic",
-        "effect": "Propels entity 8m in target direction, expelling 0.5 bar local pressure",
+        "effect": "The creature strongly releases a burst of air from its vents, propelling itself swiftly in the chosen direction and displacing the surrounding atmosphere.",
         "numbers": {}
       },
       "weakness": "Rapid pressure depletion causes hypoxia and drift in adjacent arks",

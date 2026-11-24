@@ -36,7 +36,7 @@
           "en": "Flash Burn"
         },
         "role": "Defence",
-        "effect": "Reflects radiation burst; deals 10 heat damage to nearby enemies, costs 10% health",
+        "effect": "The creature's reflective scales bounce back incoming radiation, scorching nearby foes with intense heat while leaving the creature slightly weakened.",
         "numbers": {}
       },
       "weakness": "Overheat risk; flash reduces own insulation temporarily",
@@ -50,8 +50,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Specify a selective reflector: high visible reflectance, high mid-IR emissivity. Make the flash an aimed sunlight glance that temporarily sacrifices insulation, and hide or shed scales during cascades; describe the move qualitatively.",
+        "fixes": [
+          "Specify a selective reflector: high visible reflectance, high mid-IR emissivity. Make the flash an aimed sunlight glance that temporarily sacrifices insulation, and hide or shed scales during cascades; describe the move qualitatively."
+        ],
+        "analogues": [
+          {
+            "organism": "Cephalopod and fish iridophores; Saharan Cataglyphis reflective hairs; spacecraft selective solar-reflector/IR-emitter coatings.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -95,14 +105,25 @@
         "en": "Love is a calculated orbit in the dark."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 5
-        },
+        "summary": "Keep the launch physics; change the origin to ejecta-descended colonists of the Ledge and delete any plume-to-orbit claim (F16: 300 m/s cannot reach Coth's 3.7 km/s escape). Describe the move qualitatively with no numeric effect.",
+        "fixes": [
+          "Keep the launch physics; change the origin to ejecta-descended colonists of the Ledge and delete any plume-to-orbit claim (F16: 300 m/s cannot reach Coth's 3.7 km/s escape). Describe the move qualitatively with no numeric effect."
+        ],
         "analogues": [
+          {
+            "organism": "Ballistospore discharge in fungi; flea/resilin catapults; tardigrade cryptobiosis for the spore itself.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jonsson_2008_tardigrades"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -110,7 +131,11 @@
               "jonsson_2008_tardigrades"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -137,7 +162,7 @@
           "en": "Crack & Burn"
         },
         "role": "Poke",
-        "effect": "Fractures target; deals 8 damage and releases 5 ice mass to attacker",
+        "effect": "The creature's powerful jaws crack the target's defenses, shattering them while releasing a burst of cold ice that drifts toward the attacker.",
         "numbers": {}
       },
       "weakness": "Slow processing; unable to crack large silicate chunks quickly",
@@ -151,8 +176,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Add an adhesive ventral pad or harpoon anchor, and frame the move as anchored wedge-and-scavenge; describe it qualitatively with no numeric effect.",
+        "fixes": [
+          "Add an adhesive ventral pad or harpoon anchor, and frame the move as anchored wedge-and-scavenge; describe it qualitatively with no numeric effect."
+        ],
+        "analogues": [
+          {
+            "organism": "Seed-cracking finches and rodents; wood-boring beetle mandibles; sea stars wedging bivalves.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 7
@@ -198,8 +233,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep amber for navigation, grazers against planet-shine, and frost texture via UV/polarization; either add a separate bolometric/IR sense for heat or change the effect to reveal silhouettes, so thermal cloaking still works. Describe the move qualitatively.",
+        "fixes": [
+          "Keep amber for navigation, grazers against planet-shine, and frost texture via UV/polarization; either add a separate bolometric/IR sense for heat or change the effect to reveal silhouettes, so thermal cloaking still works. Describe the move qualitatively."
+        ],
+        "analogues": [
+          {
+            "organism": "Firefly Photinus spectral matching; honeybee UV/polarization vision; retinal photopigments in microbes.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 5
@@ -236,6 +281,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

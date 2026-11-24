@@ -36,7 +36,7 @@
           "en": "Sail Burn"
         },
         "role": "Basic",
-        "effect": "Consumes 5% mass to gain 0.2 km/s delta-v inward or outward",
+        "effect": "The creature flares its broad photonic sail and sheds a small amount of mass to push itself strongly inward or outward. You see it surge away from the center or drift toward the edges.",
         "numbers": {}
       },
       "weakness": "Mass depletion; prolonged sail use starves sublimation reserves",
@@ -50,8 +50,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Separate the sail from the body: an ultra-thin membrane near 10 g/m², with the clathrate body too massive to sail. Let photons give anti-solar drift and let a retrograde ice jet pay for inward moves; call the clock lap-entrained, not circadian; describe the move qualitatively with no numeric effect.",
+        "fixes": [
+          "Separate the sail from the body: an ultra-thin membrane near 10 g/m², with the clathrate body too massive to sail. Let photons give anti-solar drift and let a retrograde ice jet pay for inward moves; call the clock lap-entrained, not circadian; describe the move qualitatively with no numeric effect."
+        ],
+        "analogues": [
+          {
+            "organism": "IKAROS solar sail (2010); Poynting-Robertson drift of dust; dandelion pappus.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -96,11 +106,21 @@
         "en": "The ring is food and fuel, ground to one."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "No biological change; state the move qualitatively as grip-grind-vent and let the sail supply energy.",
+        "fixes": [
+          "No biological change; state the move qualitatively as grip-grind-vent and let the sail supply energy."
+        ],
+        "analogues": [
+          {
+            "organism": "Cometary outgassing jets; Enceladus plumes; granivorous birds and rodents cracking seeds.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 8,
           "skeptic": 5
         }
       },
@@ -131,7 +151,7 @@
           "en": "Weave Shell"
         },
         "role": "Defence",
-        "effect": "Increases radiation resistance by 40% for 2 laps; costs 15% mass",
+        "effect": "The creature deploys its silicate-trap filtration nets, weaving a dense shield that strongly blocks harmful radiation for a short while. You see it shed a small amount of mass as the protective mesh settles around its body.",
         "numbers": {}
       },
       "weakness": "Slow build time; vulnerable during net extension",
@@ -145,18 +165,26 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 2
-        },
+        "summary": "Make nets trap silicate grit embedded in a water-ammonia clathrate matrix for toughness, not silicate polymerization; get dose reduction from locally thicker ice and hiding inside ring grains, trading against sail mass (a seasonal or caste shell). Correct the citation and describe the move qualitatively.",
+        "fixes": [
+          "Make nets trap silicate grit embedded in a water-ammonia clathrate matrix for toughness, not silicate polymerization; get dose reduction from locally thicker ice and hiding inside ring grains, trading against sail mass (a seasonal or caste shell). Correct the citation and describe the move qualitatively."
+        ],
         "analogues": [
+          {
+            "organism": "Diatom and radiolarian silica skeletons; methane clathrate in marine sediments; water shielding in radiation biology.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -184,7 +212,7 @@
           "en": "Peroxide Surge"
         },
         "role": "Signature",
-        "effect": "Converts peroxide to 200% thrust burst; risk of overdose if ice-poor",
+        "effect": "The creature's gut flora rapidly converts nearby peroxide into a powerful thrust burst, sending it surging forward. If the environment lacks sufficient ice, you may notice it falter as the chemical reaction becomes unstable.",
         "numbers": {}
       },
       "weakness": "Overdose risk; peroxide >10 mM damages gut flora",
@@ -197,11 +225,21 @@
         "en": "Poison is just fuel misunderstood."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "No chain fix; describe the surge qualitatively as buffered detoxification that vents heated water/oxygen, keep the overdose consequence from F22, and use frost crystals or chemiluminescence instead of a glowing reservoir.",
+        "fixes": [
+          "No chain fix; describe the surge qualitatively as buffered detoxification that vents heated water/oxygen, keep the overdose consequence from F22, and use frost crystals or chemiluminescence instead of a glowing reservoir."
+        ],
+        "analogues": [
+          {
+            "organism": "Catalase/peroxidase in aerobic microbes and liver; hydrogen-oxidizing bacteria.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 8,
           "skeptic": 5
         }
       },
@@ -236,6 +274,16 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

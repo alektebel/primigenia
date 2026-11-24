@@ -35,7 +35,7 @@
           "en": "Ride"
         },
         "role": "Basic",
-        "effect": "while the lift indicator shows rising air, gliding legs cost 90% less stamina and the raven can commute 40 km per rest cycle, spotting carrion from 3 km mid-glide without spending a search action",
+        "effect": "The raven catches rising air to glide effortlessly over the terrain, covering long distances between rests. It spots carrion from afar while soaring, marking the location for you to follow.",
         "numbers": {}
       },
       "weakness": "no sun, no lift: under overcast or rain the indicator goes dark and range halves, and at night it is a slow flapper on the ground where anything can reach it",
@@ -108,7 +108,7 @@
           "en": "Pilfer"
         },
         "role": "Signature",
-        "effect": "locates any hidden cache within 50 m, including the player's own stash, and relocates its own hoard so that scrying shows the old site",
+        "effect": "The raven quickly locates nearby hidden caches, even those belonging to you, and carries them away. When watched, it shifts its own stash to a new location, causing tracking spells to point to empty ground.",
         "numbers": {}
       },
       "weakness": "its memory is landmark-bound: move the stones and it loses its own hoard, and if it knows it is being watched it abandons a good cache, so a visible observer costs it food",
@@ -181,7 +181,7 @@
           "en": "Play"
         },
         "role": "Social",
-        "effect": "one safe turn with no damage: bonds one ally (+1 loyalty) and, as explicit game magic rather than biology, reveals one hidden item or trap within 10m; either bird may break play for 1 turn to gain alertness and a 20% speed boost for the next 2 turns",
+        "effect": "The raven engages in playful beak-wrestling with a nearby ally, strongly reinforcing their bond and revealing any hidden items or traps in the immediate area. If either bird breaks off the game, they become sharply alert and move with sudden speed for a short while.",
         "numbers": {}
       },
       "weakness": "play is loud, slow and conspicuous: a playing pair is distracted and will not flee mid-game, so a stalking predator or player catches both; breaking play costs a turn, so timing it wrong still leaves an opening",

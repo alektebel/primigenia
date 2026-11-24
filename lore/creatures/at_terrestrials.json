@@ -43,7 +43,7 @@
           "en": "Gravity Anchor"
         },
         "role": "Basic",
-        "effect": "Uses planetary mass to ground attacks and stabilize allies in combat, granting +2 to balance checks and reducing knockback distance by 4 meters for 3 turns.",
+        "effect": "The creature plants its heavy frame firmly into the earth, bracing itself and nearby allies against being pushed back. This steady posture makes it much harder to knock them off balance.",
         "numbers": {}
       },
       "weakness": "Immune to microgravity; become sluggish and disoriented in void environments, suffering disadvantage on agility checks until they find mass to brace against.",
@@ -95,7 +95,7 @@
           "en": "Grav-Adapt"
         },
         "role": "Basic",
-        "effect": "Stabilizes stance and increases melee damage by 25% when on planetary surfaces (≥0.8g)",
+        "effect": "When standing on solid ground, the creature locks its reinforced joints and strikes with heavy, focused force. Its grounded stance makes every blow land with greater impact.",
         "numbers": {}
       },
       "weakness": "Prolonged microgravity exposure causes rapid osteopenia and joint instability",

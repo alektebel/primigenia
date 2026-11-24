@@ -43,7 +43,7 @@
           "en": "Cognitive Molding"
         },
         "role": "Control",
-        "effect": "+50% skill acquisition speed, adapts to unfamiliar gravity/atmosphere within 2 encounters",
+        "effect": "Its mind strongly adapts to unfamiliar gravitational and atmospheric conditions, rapidly mastering new techniques within a short while.",
         "numbers": {}
       },
       "weakness": "Neural overload in chaotic information environments; -40% accuracy under cognitive stress",
@@ -107,7 +107,7 @@
           "en": "Vault Bloom"
         },
         "role": "Signature",
-        "effect": "Instantly spawn 3 allied units in a 5m radius; cooldown 120s. Costs 40% current biomass.",
+        "effect": "The creature instantly releases allied forms from its cryogenic vaults to bolster nearby ranks. It draws upon its stored vitality to fuel the emergence, requiring a long rest before it can bloom again.",
         "numbers": {}
       },
       "weakness": "Vaults require stable cryo-thermal regulation; power loss causes mass germline apoptosis",

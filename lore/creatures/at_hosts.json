@@ -35,7 +35,7 @@
           "en": "Symbiotic Bond"
         },
         "role": "Social",
-        "effect": "Share 15% stamina with paired parasite over 3 turns",
+        "effect": "The creature's vascular fur pulses as it steadily transfers vitality to its paired parasite, sustaining them both for a short while.",
         "numbers": {}
       },
       "weakness": "Fur mats absorb moisture, slowing movement in dry seasons",
@@ -94,7 +94,7 @@
           "en": "Scent Trail"
         },
         "role": "Control",
-        "effect": "leads host or ally 50m along chemical path",
+        "effect": "The creature exhales a strong chemical mist that lingers in the air, steadily guiding a nearby host or ally along the path.",
         "numbers": {}
       },
       "weakness": "Vulnerable to strong olfactory masking agents; loses navigation",

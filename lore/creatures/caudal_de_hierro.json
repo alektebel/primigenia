@@ -34,7 +34,7 @@
           "en": "Magnetic Ride"
         },
         "role": "Control",
-        "effect": "Ride the local magnetic gradient for 10s, +50% speed, immune to magnetic disorientation.",
+        "effect": "The creature rides invisible magnetic currents, moving strongly and swiftly while completely ignoring any magnetic interference, allowing it to navigate freely.",
         "numbers": {}
       },
       "weakness": "Magnetic shear tears it apart if the field reverses abruptly.",
@@ -47,14 +47,25 @@
         "en": "A ghost woven from iron and thought."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 5
-        },
+        "summary": "Either file it explicitly as a non-living dynamo pattern (F23 fantasy tier) that the player observes or avoids as a hazard, never commands, or move the grazer into the fracture aquifer (0.9-4 km, F12, F20): rebuild it as a colony of magnetotactic iron-sulfur microbes with encoded magnetosomes, rooted in F6 plus F15 redox below 118 C. Keep the fun as 'Magnetic Ride' (Control): a field-aligned glide that gathers the colony and steadies its compass. Weakness: an abrupt field reversal scrambles the magnetosomes.",
+        "fixes": [
+          "Either file it explicitly as a non-living dynamo pattern (F23 fantasy tier) that the player observes or avoids as a hazard, never commands, or move the grazer into the fracture aquifer (0.9-4 km, F12, F20): rebuild it as a colony of magnetotactic iron-sulfur microbes with encoded magnetosomes, rooted in F6 plus F15 redox below 118 C. Keep the fun as 'Magnetic Ride' (Control): a field-aligned glide that gathers the colony and steadies its compass. Weakness: an abrupt field reversal scrambles the magnetosomes."
+        ],
         "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (e.g., Magnetospirillum) orient in Earth's field using intracellular magnetite magnetosomes — a real solution, but it requires a cell, water and metabolism; nothing analogous survives core conditions.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "moffatt_1978_magnetic"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -62,7 +73,11 @@
               "moffatt_1978_magnetic"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 5
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -89,7 +104,7 @@
           "en": "Entropy Siphon"
         },
         "role": "Poke",
-        "effect": "Extract thermal energy from flow, dealing 2 damage, heals 1 HP.",
+        "effect": "The creature draws warmth from the surrounding currents, sapping strength from nearby targets while restoring its own vitality, leaving a visible trail of condensed heat.",
         "numbers": {}
       },
       "weakness": "Starves in laminar flow regions; cannot persist without shear.",
@@ -102,11 +117,21 @@
         "en": "It eats the wind of the world's heart."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Re-root it as a chemosynthetic grazer at a redox interface in the aquifer (F15, F19, F20, at or below 118 C): it harvests H2 / Fe(II)-sulfate disequilibrium, with Darcy flow (F12) and calcite sealing (F16) deciding where the interface sits. Keep the luminous, shape-shifting look as filaments brightest where mixing is fastest. 'Entropy Siphon' (Poke): a single burst of stored radiolytic oxygen (F22) spent on one feeding strike. Weakness: in stagnant brine the redux front is sealed by calcite and it starves. If it stays in the core, call it a pattern, not a feeder — drop consume/heal verbs entirely.",
+        "fixes": [
+          "Re-root it as a chemosynthetic grazer at a redox interface in the aquifer (F15, F19, F20, at or below 118 C): it harvests H2 / Fe(II)-sulfate disequilibrium, with Darcy flow (F12) and calcite sealing (F16) deciding where the interface sits. Keep the luminous, shape-shifting look as filaments brightest where mixing is fastest. 'Entropy Siphon' (Poke): a single burst of stored radiolytic oxygen (F22) spent on one feeding strike. Weakness: in stagnant brine the redux front is sealed by calcite and it starves. If it stays in the core, call it a pattern, not a feeder — drop consume/heal verbs entirely."
+        ],
+        "analogues": [
+          {
+            "organism": "No organism metabolises entropy or shear. Vent chemoautotrophs (e.g., the symbionts of Riftia pachyptila) exploit chemical disequilibrium, and bacteria sense flow through mechanosensitive channels, but both are aqueous, low-temperature chemistry — the opposite of core matter.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 3,
           "skeptic": 5
         }
       },
@@ -135,7 +160,7 @@
           "en": "Tidal Pulse"
         },
         "role": "Basic",
-        "effect": "Attack deals +20% damage during the player's 'tidal' phase.",
+        "effect": "The creature strikes strongly with amplified force whenever it senses the player entering a specific rhythm, making its attacks noticeably more powerful.",
         "numbers": {}
       },
       "weakness": "Disoriented during the 'slack' tide; attack chance -50%.",
@@ -148,11 +173,10 @@
         "en": "The planet's heartbeat is its clock."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 4
         }
       },
@@ -194,11 +218,10 @@
         "en": "A choir of iron singing in the dark."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "unreviewed",
+        "judge": "none",
         "date": "2026-11-24",
         "scores": {
-          "astrobio": 6,
           "skeptic": 3
         }
       },
@@ -221,6 +244,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

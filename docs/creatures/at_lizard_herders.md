@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_lizard_herders.c1 | Instinctive herding & grooming behavior | No apex predators selected for vigilance ← Stable K-dwarf light & low axial tilt lock biomass ← Qu-engineered cerebellar stunting prevents heuristic learning return | **F1** Host stars are K2V to G2V main-sequence dwarfs (0.6–1.0 L⊙) with stable photosynthetic output and age-dependent flare activity.; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Herder's Call (`at_lizard_herders.herder_s_call`) | Control | Calms large herbivore mounts within 20m and grants +2 stamina to ride | Freezes when startled by sudden motion; cannot learn new evasion tactics |
-| at_lizard_herders.c2 | Enlarged foregut & blank-eyed browsing | Energy reallocated from visual cortex to slow fermentation ← Nutrient-rich tropical understory requires minimal foraging ← Baseline Earth-analogue planetary mass & stable climate | **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.; **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Instinctive Groom (`at_lizard_herders.instinctive_groom`) | Basic | Restores 3 HP on allied mounts and reduces stress by 25% | Vulnerable to sudden environmental shifts requiring problem-solving |
+| at_lizard_herders.c1 | Instinctive herding & grooming behavior | No apex predators selected for vigilance ← Stable K-dwarf light & low axial tilt lock biomass ← Qu-engineered cerebellar stunting prevents heuristic learning return | **F1** Host stars are K2V to G2V main-sequence dwarfs (0.6–1.0 L⊙) with stable photosynthetic output and age-dependent flare activity.; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Herder's Call (`at_lizard_herders.herder_s_call`) | Control | The herder's call reaches nearby large herbivores, causing them to settle down and become much easier to mount and ride. | Freezes when startled by sudden motion; cannot learn new evasion tactics |
+| at_lizard_herders.c2 | Enlarged foregut & blank-eyed browsing | Energy reallocated from visual cortex to slow fermentation ← Nutrient-rich tropical understory requires minimal foraging ← Baseline Earth-analogue planetary mass & stable climate | **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.; **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Instinctive Groom (`at_lizard_herders.instinctive_groom`) | Basic | The mount gently grooms its companion, easing their anxiety and helping them recover from minor injuries. | Vulnerable to sudden environmental shifts requiring problem-solving |
 
 ### at_lizard_herders.c1: Instinctive herding & grooming behavior
 
 Trait ← No apex predators selected for vigilance ← Stable K-dwarf light & low axial tilt lock biomass ← Qu-engineered cerebellar stunting prevents heuristic learning return ← F1, F2, F3
 
-- **Skill:** Herder's Call (Control): Calms large herbivore mounts within 20m and grants +2 stamina to ride
+- **Skill:** Herder's Call (Control): The herder's call reaches nearby large herbivores, causing them to settle down and become much easier to mount and ride.
 - **Weakness:** Freezes when startled by sudden motion; cannot learn new evasion tactics
 - **Observe:**
   1. Blank, unblinking stare
@@ -47,7 +47,7 @@ Trait ← No apex predators selected for vigilance ← Stable K-dwarf light & lo
 
 Trait ← Energy reallocated from visual cortex to slow fermentation ← Nutrient-rich tropical understory requires minimal foraging ← Baseline Earth-analogue planetary mass & stable climate ← F3, F6, F20
 
-- **Skill:** Instinctive Groom (Basic): Restores 3 HP on allied mounts and reduces stress by 25%
+- **Skill:** Instinctive Groom (Basic): The mount gently grooms its companion, easing their anxiety and helping them recover from minor injuries.
 - **Weakness:** Vulnerable to sudden environmental shifts requiring problem-solving
 - **Observe:**
   1. Flat, pupil-less eyes lacking depth perception

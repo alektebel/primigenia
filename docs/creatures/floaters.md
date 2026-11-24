@@ -22,17 +22,17 @@ Translucent, balloon-like sacs tethered to swept-back hydrofoil wings. They meta
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| floaters.c1 | Metabolic hydrogen production bladders for neutral buoyancy | 2.6 g gravity demands high gas displacement ← H₂ atmosphere provides exceptionally low density ← Metabolize trace CO₂ and NH₃ to yield H₂ ← Fill internal bladders to regulate vertical position | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Thermal Lift (`floaters.thermal_lift`) | Engage | Ascends 20 m/s while generating a 10 wind-damage shield for allies | Leaves a distinct H₂ chemical signature detectable by hunters |
-| floaters.c2 | Asymmetric hydrofoil membranes to catch zonal jets | 100 m/s zonal wind shear rips passive targets ← Low Reynolds number in thin gas demands active lift ← Rigid asymmetric edges generate aerodynamic force ← Steer and lock onto moving cloud highways | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Jet Ride (`floaters.jet_ride`) | Control | Grants 30 m/s horizontal boost and 25% evasion along wind bands | Cannot brake quickly when crossing opposing wind layers |
-| floaters.c3 | Flexible internal hydrostatic chambers for pressure equalization | Pressure doubles every 25 km descent ← External crush forces rise exponentially ← Internal fluid chambers compress passively ← Matches ambient pressure to prevent tissue collapse | **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.; **F20** Hydrostatic pressure equalization mechanisms prevent tissue collapse during vertical migration, turning altitude changes into tactical risk/reward loops. | Iso-Dive (`floaters.iso_dive`) | Defence | Nullifies pressure damage and grants 15% movement speed in deep clouds | Slow to equilibrate when ascending rapidly into low pressure |
-| floaters.c4 | Thermal buoyancy regulation via metabolic heat | Expand gas volume via metabolic heat ← Ideal gas law links heat to lift ← Scale height allows vertical maneuverability ← Enables rapid altitude shifts without chemical byproducts | **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km. | Steam Rise (`floaters.steam_rise`) | Control | Ignore 3m wind, ascend 8m | Overheat causes burn damage |
+| floaters.c1 | Metabolic hydrogen production bladders for neutral buoyancy | 2.6 g gravity demands high gas displacement ← H₂ atmosphere provides exceptionally low density ← Metabolize trace CO₂ and NH₃ to yield H₂ ← Fill internal bladders to regulate vertical position | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Thermal Lift (`floaters.thermal_lift`) | Engage | The creature rises swiftly through the air, wrapping nearby allies in a sturdy barrier that strongly deflects gusts, allowing them to advance safely. | Leaves a distinct H₂ chemical signature detectable by hunters |
+| floaters.c2 | Asymmetric hydrofoil membranes to catch zonal jets | 100 m/s zonal wind shear rips passive targets ← Low Reynolds number in thin gas demands active lift ← Rigid asymmetric edges generate aerodynamic force ← Steer and lock onto moving cloud highways | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Jet Ride (`floaters.jet_ride`) | Control | It surges forward along the wind currents, slipping past attacks with remarkable agility, giving allies a clear path to follow. | Cannot brake quickly when crossing opposing wind layers |
+| floaters.c3 | Flexible internal hydrostatic chambers for pressure equalization | Pressure doubles every 25 km descent ← External crush forces rise exponentially ← Internal fluid chambers compress passively ← Matches ambient pressure to prevent tissue collapse | **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.; **F20** Hydrostatic pressure equalization mechanisms prevent tissue collapse during vertical migration, turning altitude changes into tactical risk/reward loops. | Iso-Dive (`floaters.iso_dive`) | Defence | The creature glides effortlessly through dense atmospheric layers, shrugging off crushing forces as it moves strongly through the deep clouds, revealing safe routes ahead. | Slow to equilibrate when ascending rapidly into low pressure |
+| floaters.c4 | Thermal buoyancy regulation via metabolic heat | Expand gas volume via metabolic heat ← Ideal gas law links heat to lift ← Scale height allows vertical maneuverability ← Enables rapid altitude shifts without chemical byproducts | **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km. | Steam Rise (`floaters.steam_rise`) | Control | It pushes through moderate gusts and drifts steadily upward into the open sky, drawing the eye toward higher ground. | Overheat causes burn damage |
 | floaters.c5 | Azotosome membrane fluidity across pressure swings | Maintain integrity across pressure swings ← Vertical migration changes external pressure ← Exponential pressure gradient stresses tissues ← Selects for flexible, solvent-compatible boundaries | **F13** Hydrocarbon-amine amphiphiles or azotosome-like membranes maintain fluidity and solvent compatibility in low-temperature, reduced conditions.; **F20** Hydrostatic pressure equalization mechanisms prevent tissue collapse during vertical migration, turning altitude changes into tactical risk/reward loops.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km. | Pressure Equalize (`floaters.pressure_equalize`) | Passive | Resist 3 pressure damage, ignore 1 debuff | Fails against instant vacuum |
 
 ### floaters.c1: Metabolic hydrogen production bladders for neutral buoyancy
 
 Trait ← 2.6 g gravity demands high gas displacement ← H₂ atmosphere provides exceptionally low density ← Metabolize trace CO₂ and NH₃ to yield H₂ ← Fill internal bladders to regulate vertical position ← F3, F5, F16
 
-- **Skill:** Thermal Lift (Engage): Ascends 20 m/s while generating a 10 wind-damage shield for allies
+- **Skill:** Thermal Lift (Engage): The creature rises swiftly through the air, wrapping nearby allies in a sturdy barrier that strongly deflects gusts, allowing them to advance safely.
 - **Weakness:** Leaves a distinct H₂ chemical signature detectable by hunters
 - **Observe:**
   1. Translucent gas bladders
@@ -47,7 +47,7 @@ Trait ← 2.6 g gravity demands high gas displacement ← H₂ atmosphere provid
 
 Trait ← 100 m/s zonal wind shear rips passive targets ← Low Reynolds number in thin gas demands active lift ← Rigid asymmetric edges generate aerodynamic force ← Steer and lock onto moving cloud highways ← F7, F17
 
-- **Skill:** Jet Ride (Control): Grants 30 m/s horizontal boost and 25% evasion along wind bands
+- **Skill:** Jet Ride (Control): It surges forward along the wind currents, slipping past attacks with remarkable agility, giving allies a clear path to follow.
 - **Weakness:** Cannot brake quickly when crossing opposing wind layers
 - **Observe:**
   1. Stiff, curved membrane edges
@@ -62,7 +62,7 @@ Trait ← 100 m/s zonal wind shear rips passive targets ← Low Reynolds number 
 
 Trait ← Pressure doubles every 25 km descent ← External crush forces rise exponentially ← Internal fluid chambers compress passively ← Matches ambient pressure to prevent tissue collapse ← F9, F20
 
-- **Skill:** Iso-Dive (Defence): Nullifies pressure damage and grants 15% movement speed in deep clouds
+- **Skill:** Iso-Dive (Defence): The creature glides effortlessly through dense atmospheric layers, shrugging off crushing forces as it moves strongly through the deep clouds, revealing safe routes ahead.
 - **Weakness:** Slow to equilibrate when ascending rapidly into low pressure
 - **Observe:**
   1. Inflating and deflating internal sacs
@@ -77,7 +77,7 @@ Trait ← Pressure doubles every 25 km descent ← External crush forces rise ex
 
 Trait ← Expand gas volume via metabolic heat ← Ideal gas law links heat to lift ← Scale height allows vertical maneuverability ← Enables rapid altitude shifts without chemical byproducts ← F16, F9
 
-- **Skill:** Steam Rise (Control): Ignore 3m wind, ascend 8m
+- **Skill:** Steam Rise (Control): It pushes through moderate gusts and drifts steadily upward into the open sky, drawing the eye toward higher ground.
 - **Weakness:** Overheat causes burn damage
 - **Observe:**
   1. Translucent skin

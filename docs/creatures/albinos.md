@@ -22,17 +22,17 @@ Lacking cuticular detox enzymes and heavy melanin, translucent pink hide and pal
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| albinos.c1 | Translucent pink hide; sunburns in open sun. | Melanin mutation blocks UV absorption ← High UV at altitude causes sunburn and cancer ← Survival restricted to shade and caves | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Shade Dash (`albinos.shade_dash`) | Defence | Flee to nearest shadow; gain 20% evasion for 5s. | Sunlight deals damage over time; cannot fight in open. |
-| albinos.c2 | Large, sensitive eyes; poor contrast vision. | No pigment in retina scatters light ← High sensitivity but low contrast resolution ← Relies on glints and movement over shape | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F17** Sky: deep blue zenith, milky horizon, copper sunsets (1.6× Rayleigh depth) | Glint Sight (`albinos.glint_sight`) | Poke | Reveal hidden metallic parts or water sources; +15% accuracy on glinting targets. | Blind to slow, dark prey; misses camouflaged foes. |
+| albinos.c1 | Translucent pink hide; sunburns in open sun. | Melanin mutation blocks UV absorption ← High UV at altitude causes sunburn and cancer ← Survival restricted to shade and caves | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Shade Dash (`albinos.shade_dash`) | Defence | The creature quickly darts into the nearest shade and moves with a fleeting, hard-to-hit grace for a short while. | Sunlight deals damage over time; cannot fight in open. |
+| albinos.c2 | Large, sensitive eyes; poor contrast vision. | No pigment in retina scatters light ← High sensitivity but low contrast resolution ← Relies on glints and movement over shape | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F17** Sky: deep blue zenith, milky horizon, copper sunsets (1.6× Rayleigh depth) | Glint Sight (`albinos.glint_sight`) | Poke | Its large eyes lock onto shimmering surfaces, clearly highlighting hidden metal or water while its strikes land with remarkable precision. | Blind to slow, dark prey; misses camouflaged foes. |
 | albinos.c3 | Pale skin; lacks cuticular detox enzymes. | Tyrosinase mutation halts phenoloxidase, thinning the epidermal barrier. ← Unpigmented skin absorbs phototoxic furanocoumarins from F25 red-veined plants. ← Thin barrier lets F23 heavy metals and alkaloids hit nerves faster. | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles | Toxin Vomit (`albinos.toxin_vomit`) | Engage | Force-regurgitate acidic bile; damages self slightly, poisons target. | Dies quickly if eats toxic plants; avoids mineral licks with poisons. |
-| albinos.c4 | Pale fur; rapid heat exchange. | Melanin-free guard hairs reflect solar IR, preventing passive basking. ← High-conductance coat and thin fat layer let core temp track ambient fast. ← Cold fog (F8) and shade trigger thermoregulatory stress, spiking adrenaline. | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Thermal Surge (`albinos.thermal_surge`) | Basic | Sprint for 2s after brief sun exposure; gains 20% speed but loses heat fast in fog/shade. | Sluggish in fog/shade (F8); speed fades if not in direct light. |
-| albinos.c5 | Distinctive white coat; outcast from herd. | White coat breaks herd camouflage ← Predators spot him first ← Relies on herd defense; weak when isolated | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard | Desperate Bleat (`albinos.desperate_bleat`) | Control | Summons nearby herd members to aggro; costs 30% health. | Isolation makes him weak; if herd dies, he flees or dies. |
+| albinos.c4 | Pale fur; rapid heat exchange. | Melanin-free guard hairs reflect solar IR, preventing passive basking. ← High-conductance coat and thin fat layer let core temp track ambient fast. ← Cold fog (F8) and shade trigger thermoregulatory stress, spiking adrenaline. | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Thermal Surge (`albinos.thermal_surge`) | Basic | After basking briefly in the sun, the creature sprints forward with burst-like speed, though it quickly cools and slows when entering fog or shade. | Sluggish in fog/shade (F8); speed fades if not in direct light. |
+| albinos.c5 | Distinctive white coat; outcast from herd. | White coat breaks herd camouflage ← Predators spot him first ← Relies on herd defense; weak when isolated | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard | Desperate Bleat (`albinos.desperate_bleat`) | Control | The creature lets out a loud, desperate cry that draws nearby herd members to attack, while its own vitality visibly fades during the call. | Isolation makes him weak; if herd dies, he flees or dies. |
 
 ### albinos.c1: Translucent pink hide; sunburns in open sun.
 
 Trait ← Melanin mutation blocks UV absorption ← High UV at altitude causes sunburn and cancer ← Survival restricted to shade and caves ← F14, F25
 
-- **Skill:** Shade Dash (Defence): Flee to nearest shadow; gain 20% evasion for 5s.
+- **Skill:** Shade Dash (Defence): The creature quickly darts into the nearest shade and moves with a fleeting, hard-to-hit grace for a short while.
 - **Weakness:** Sunlight deals damage over time; cannot fight in open.
 - **Observe:**
   1. Pink skin and red eyes
@@ -48,7 +48,7 @@ Trait ← Melanin mutation blocks UV absorption ← High UV at altitude causes s
 
 Trait ← No pigment in retina scatters light ← High sensitivity but low contrast resolution ← Relies on glints and movement over shape ← F14, F17
 
-- **Skill:** Glint Sight (Poke): Reveal hidden metallic parts or water sources; +15% accuracy on glinting targets.
+- **Skill:** Glint Sight (Poke): Its large eyes lock onto shimmering surfaces, clearly highlighting hidden metal or water while its strikes land with remarkable precision.
 - **Weakness:** Blind to slow, dark prey; misses camouflaged foes.
 - **Observe:**
   1. Wide, watery eyes
@@ -84,7 +84,7 @@ Trait ← Tyrosinase mutation halts phenoloxidase, thinning the epidermal barrie
 
 Trait ← Melanin-free guard hairs reflect solar IR, preventing passive basking. ← High-conductance coat and thin fat layer let core temp track ambient fast. ← Cold fog (F8) and shade trigger thermoregulatory stress, spiking adrenaline. ← F14, F8, F15
 
-- **Skill:** Thermal Surge (Basic): Sprint for 2s after brief sun exposure; gains 20% speed but loses heat fast in fog/shade.
+- **Skill:** Thermal Surge (Basic): After basking briefly in the sun, the creature sprints forward with burst-like speed, though it quickly cools and slows when entering fog or shade.
 - **Weakness:** Sluggish in fog/shade (F8); speed fades if not in direct light.
 - **Observe:**
   1. Basking on warm rocks
@@ -102,7 +102,7 @@ Trait ← Melanin-free guard hairs reflect solar IR, preventing passive basking.
 
 Trait ← White coat breaks herd camouflage ← Predators spot him first ← Relies on herd defense; weak when isolated ← F14
 
-- **Skill:** Desperate Bleat (Control): Summons nearby herd members to aggro; costs 30% health.
+- **Skill:** Desperate Bleat (Control): The creature lets out a loud, desperate cry that draws nearby herd members to attack, while its own vitality visibly fades during the call.
 - **Weakness:** Isolation makes him weak; if herd dies, he flees or dies.
 - **Observe:**
   1. White coat standing out

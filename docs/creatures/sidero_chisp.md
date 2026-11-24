@@ -21,69 +21,81 @@ Eel-like, conductive surface tissue, stacked electrocytes, ampullary sensory org
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sidero_chisp.c1 | Electrocytes produce 300V shock in brackish water. | Stacked electrocytes generate high voltage ← Stuns prey in low-conductivity water ← Brackish conductivity and electrocyte biology | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Brackish Bolt (`sidero_chisp.brackish_bolt`) | Basic | Deals 20 damage and stuns target for 2 turns. | Shock range drops by 70% in high salinity. |
-| sidero_chisp.c2 | Electrocytes short-circuit in full brine. | High ion concentration causes current leak ← Cannot discharge weapon in brine ← Brine conductivity and electrocyte limits | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Brine Vulnerability (`sidero_chisp.brine_vulnerability`) | Passive | Cannot use electric attacks in full brine; -50% defense. | Trapped in brine pools without attack options. |
-| sidero_chisp.c3 | Ampullae detect bio-electric fields. | Sensors sense muscle currents ← Finds hidden prey in murky water ← Low visibility and electroreception biology | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility. | Electro-locate (`sidero_chisp.electro_locate`) | Poke | Reveals stealthed targets within 30m; +40% hit chance. | Sensitivity overloaded by lightning; stunned for 1 turn. |
-| sidero_chisp.c4 | Dorsal scales match hematite rust color. | Pigments produce rust hue ← Camouflage against hematite haze ← Hematite dust and visual ecology | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility. | Rust Cloak (`sidero_chisp.rust_cloak`) | Defence | +25% stealth in brackish; enemies roll with disadvantage on first sight. | Obvious against blue/green backgrounds (rare but possible). |
+| sidero_chisp.c1 | Electrocytes produce 300V shock in brackish water. | Stacked electrocytes generate high voltage ← Stuns prey in low-conductivity water ← Brackish conductivity and electrocyte biology | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Brackish Bolt (`sidero_chisp.brackish_bolt`) | Basic | The creature lashes out with a sharp electric shock that briefly stuns its target. Nearby enemies in brackish water feel the sudden jolt and freeze in place for a short while. | Shock range drops by 70% in high salinity. |
+| sidero_chisp.c2 | Electrocytes short-circuit in full brine. | High ion concentration causes current leak ← Cannot discharge weapon in brine ← Brine conductivity and electrocyte limits | **F16** Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.; **F26** Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine. | Brine Vulnerability (`sidero_chisp.brine_vulnerability`) | Passive | When surrounded by thick brine, its electrical organs short-circuit and it cannot unleash any electric attacks. Its defenses weaken noticeably, leaving it more exposed to incoming strikes. | Trapped in brine pools without attack options. |
+| sidero_chisp.c3 | Ampullae detect bio-electric fields. | Sensors sense muscle currents ← Finds hidden prey in murky water ← Low visibility and electroreception biology | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility. | Electro-locate (`sidero_chisp.electro_locate`) | Poke | The creature senses faint bio-electric fields and reveals any hidden targets nearby. Its strikes land with greater accuracy against those it detects. | Sensitivity overloaded by lightning; stunned for 1 turn. |
+| sidero_chisp.c4 | Dorsal scales match hematite rust color. | Pigments produce rust hue ← Camouflage against hematite haze ← Hematite dust and visual ecology | **F14** A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility. | Rust Cloak (`sidero_chisp.rust_cloak`) | Defence | Its rust-colored scales blend seamlessly with the murky brackish water, making it nearly invisible at first glance. Enemies struggle to spot it until it moves or attacks. | Obvious against blue/green backgrounds (rare but possible). |
 
 ### sidero_chisp.c1: Electrocytes produce 300V shock in brackish water.
 
 Trait ← Stacked electrocytes generate high voltage ← Stuns prey in low-conductivity water ← Brackish conductivity and electrocyte biology ← F16, F26
 
-- **Skill:** Brackish Bolt (Basic): Deals 20 damage and stuns target for 2 turns.
+- **Skill:** Brackish Bolt (Basic): The creature lashes out with a sharp electric shock that briefly stuns its target. Nearby enemies in brackish water feel the sudden jolt and freeze in place for a short while.
 - **Weakness:** Shock range drops by 70% in high salinity.
 - **Observe:**
   1. Water sparkles violet near body
   2. Jumps out to strike
   3. Avoids brine pools
 - **Journal:** A serpent of lightning that fears the deep salt.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep the voltage as a short close-range pulse from a large electric organ with a recovery cost, label the lineage highly speculative, and make sure the shock fails in brine as the next chain says.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Electric eels and knifefish, electric catfish and torpedo rays, independent evolutions of electrocytes; electric eels adjust discharge to water conductivity.: as named by the judge; no mechanism or reference recorded
+  - Fix: Keep the voltage as a short close-range pulse from a large electric organ with a recovery cost, label the lineage highly speculative, and make sure the shock fails in brine as the next chain says.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### sidero_chisp.c2: Electrocytes short-circuit in full brine.
 
 Trait ← High ion concentration causes current leak ← Cannot discharge weapon in brine ← Brine conductivity and electrocyte limits ← F16, F26
 
-- **Skill:** Brine Vulnerability (Passive): Cannot use electric attacks in full brine; -50% defense.
+- **Skill:** Brine Vulnerability (Passive): When surrounded by thick brine, its electrical organs short-circuit and it cannot unleash any electric attacks. Its defenses weaken noticeably, leaving it more exposed to incoming strikes.
 - **Weakness:** Trapped in brine pools without attack options.
 - **Observe:**
   1. Retreats when salinity rises
   2. Body twitches but no spark in brine
   3. Hides under lagoon edges
 - **Journal:** The salt steals their fire; they are powerless in the deep brine.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 2
+- **Plausibility:** plausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - No biological fix needed; phrase the penalty as lost offence plus a brief exposed twitch while current shunts, rather than literal loss of armour.
+  - scores: astrobio 8, skeptic 2
+  - Analogue: Electric fish lose discharge effectiveness as water conductivity rises and tune their output to the medium.: as named by the judge; no mechanism or reference recorded
+  - Fix: No biological fix needed; phrase the penalty as lost offence plus a brief exposed twitch while current shunts, rather than literal loss of armour.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### sidero_chisp.c3: Ampullae detect bio-electric fields.
 
 Trait ← Sensors sense muscle currents ← Finds hidden prey in murky water ← Low visibility and electroreception biology ← F14
 
-- **Skill:** Electro-locate (Poke): Reveals stealthed targets within 30m; +40% hit chance.
+- **Skill:** Electro-locate (Poke): The creature senses faint bio-electric fields and reveals any hidden targets nearby. Its strikes land with greater accuracy against those it detects.
 - **Weakness:** Sensitivity overloaded by lightning; stunned for 1 turn.
 - **Observe:**
   1. Snout twitches toward hidden prey
   2. Strikes before seeing movement
   3. Sensors glow faint blue
 - **Journal:** They see the spark of life itself, blind to the world.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Add F16 as a co-root, explain the glow as a symbiont or reflecting structure if you want to keep it, and keep lightning as a genuine overload.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Sharks' and rays' ampullae of Lorenzini; electric fish use electroreception for prey detection and jamming avoidance.: as named by the judge; no mechanism or reference recorded
+  - Fix: Add F16 as a co-root, explain the glow as a symbiont or reflecting structure if you want to keep it, and keep lightning as a genuine overload.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### sidero_chisp.c4: Dorsal scales match hematite rust color.
 
 Trait ← Pigments produce rust hue ← Camouflage against hematite haze ← Hematite dust and visual ecology ← F14
 
-- **Skill:** Rust Cloak (Defence): +25% stealth in brackish; enemies roll with disadvantage on first sight.
+- **Skill:** Rust Cloak (Defence): Its rust-colored scales blend seamlessly with the murky brackish water, making it nearly invisible at first glance. Enemies struggle to spot it until it moves or attacks.
 - **Weakness:** Obvious against blue/green backgrounds (rare but possible).
 - **Observe:**
   1. Scales blend perfectly with mud
   2. Ambushes prey that walk right by
   3. Rests half-buried in rust silt
 - **Journal:** A shadow that wears the color of the sky.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** plausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Add F16/F17 as co-roots for rusty silt and acid basins; no biological change needed.
+  - scores: astrobio 8, skeptic 5
+  - Analogue: Cryptic colour matching in flatfish and other sediment-dwelling fish; animals matching iron-rich soils.: as named by the judge; no mechanism or reference recorded
+  - Fix: Add F16/F17 as co-roots for rusty silt and acid basins; no biological change needed.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -110,3 +122,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

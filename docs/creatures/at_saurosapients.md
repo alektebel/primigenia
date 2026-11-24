@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_saurosapients.c1 | Ectothermic muscle bundles with low metabolic rate | Tropical garden stable diurnal temps (F20) ← High humidity (F8) traps ambient warmth ← External heat pays the metabolic tab ← Slow deliberate movements conserve energy for cognitive bursts | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Thermal Soak (`at_saurosapients.thermal_soak`) | Engage | recover 20% stamina in direct sunlight over 1 turn | Cold environments or night combat cause metabolic slowdown; -50% action economy |
-| at_saurosapients.c2 | Vertical jaw strike for cranial mass | Apex hunting requires depth perception and bite force ← High O2 partial pressure (F7) sustains dense muscle tissue ← Vertical mandible hinge maximizes cranial leverage ← Piercing attack ignores armor on first strike | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Jaw Snap (`at_saurosapients.jaw_snap`) | Signature | piercing attack, ignores 30% armor, 2x damage on first turn | Jaw hinge stress fractures under high-g or sudden impact; Defence required |
+| at_saurosapients.c1 | Ectothermic muscle bundles with low metabolic rate | Tropical garden stable diurnal temps (F20) ← High humidity (F8) traps ambient warmth ← External heat pays the metabolic tab ← Slow deliberate movements conserve energy for cognitive bursts | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Thermal Soak (`at_saurosapients.thermal_soak`) | Engage | The creature basks in direct sunlight, slowly drawing warmth into its muscles to renew its vigor over a short while. | Cold environments or night combat cause metabolic slowdown; -50% action economy |
+| at_saurosapients.c2 | Vertical jaw strike for cranial mass | Apex hunting requires depth perception and bite force ← High O2 partial pressure (F7) sustains dense muscle tissue ← Vertical mandible hinge maximizes cranial leverage ← Piercing attack ignores armor on first strike | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Jaw Snap (`at_saurosapients.jaw_snap`) | Signature | The creature snaps its jaws shut strongly, easily tearing through armor and delivering a crushing initial strike. | Jaw hinge stress fractures under high-g or sudden impact; Defence required |
 
 ### at_saurosapients.c1: Ectothermic muscle bundles with low metabolic rate
 
 Trait ← Tropical garden stable diurnal temps (F20) ← High humidity (F8) traps ambient warmth ← External heat pays the metabolic tab ← Slow deliberate movements conserve energy for cognitive bursts ← F8, F20
 
-- **Skill:** Thermal Soak (Engage): recover 20% stamina in direct sunlight over 1 turn
+- **Skill:** Thermal Soak (Engage): The creature basks in direct sunlight, slowly drawing warmth into its muscles to renew its vigor over a short while.
 - **Weakness:** Cold environments or night combat cause metabolic slowdown; -50% action economy
 - **Observe:**
   1. Flat basking postures
@@ -46,7 +46,7 @@ Trait ← Tropical garden stable diurnal temps (F20) ← High humidity (F8) trap
 
 Trait ← Apex hunting requires depth perception and bite force ← High O2 partial pressure (F7) sustains dense muscle tissue ← Vertical mandible hinge maximizes cranial leverage ← Piercing attack ignores armor on first strike ← F7, F21
 
-- **Skill:** Jaw Snap (Signature): piercing attack, ignores 30% armor, 2x damage on first turn
+- **Skill:** Jaw Snap (Signature): The creature snaps its jaws shut strongly, easily tearing through armor and delivering a crushing initial strike.
 - **Weakness:** Jaw hinge stress fractures under high-g or sudden impact; Defence required
 - **Observe:**
   1. Upward-gaping mandibles

@@ -22,16 +22,16 @@ Stilt-wading legs with splayed toes distribute weight across soft tidal mud, pre
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| zancuda.c1 | Stilt-wading legs with splayed toes | Tides expose mudflats twice daily ← Long legs keep body dry ← Splayed toes spread weight on soft mud | **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Stilt Wade (`zancuda.stilt_wade`) | Basic | Crosses 0.6m water or mud at 2m/s with no stamina drain. | Spring tides flood the flats; catch it at high water. |
-| zancuda.c2 | Long, flexible neck for surface viewing | Shallows are turbid, visibility under 10m ← Eyes underwater are nearly useless ← Long neck lifts eyes above the surface | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Periscope (`zancuda.periscope`) | Passive | See over reeds and water to 60m; +20% detect hidden creatures. | Wind pushes the neck; gusts above 8m/s force it down for 5s. |
-| zancuda.c3 | Spear-strike beak and neck | Fish hide in turbid water ← A strike from above needs reach, not pursuit ← A miss tangles the long neck | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Spear (`zancuda.spear`) | Engage | 10 dmg, 2.5m reach, 1.5s cooldown; a miss costs 2s. | Bait two misses; the neck tangles and it cannot strike for 4s. |
+| zancuda.c1 | Stilt-wading legs with splayed toes | Tides expose mudflats twice daily ← Long legs keep body dry ← Splayed toes spread weight on soft mud | **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Stilt Wade (`zancuda.stilt_wade`) | Basic | The creature strides effortlessly across shallow water and thick mud without tiring. You can safely follow it through wetlands. | Spring tides flood the flats; catch it at high water. |
+| zancuda.c2 | Long, flexible neck for surface viewing | Shallows are turbid, visibility under 10m ← Eyes underwater are nearly useless ← Long neck lifts eyes above the surface | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Periscope (`zancuda.periscope`) | Passive | It raises its long neck to peer over reeds and water, strongly spotting hidden creatures. You can notice concealed threats that would otherwise go unnoticed. | Wind pushes the neck; gusts above 8m/s force it down for 5s. |
+| zancuda.c3 | Spear-strike beak and neck | Fish hide in turbid water ← A strike from above needs reach, not pursuit ← A miss tangles the long neck | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Spear (`zancuda.spear`) | Engage | It lunges forward with a sharp beak strike at nearby targets. If it misses, it remains exposed for a short while before recovering its stance. | Bait two misses; the neck tangles and it cannot strike for 4s. |
 | zancuda.c4 | Muscular, braced neck structure | Drag on neck selects for bracing ← High drag increases structural stress ← 1.6 bar air density loads neck structure | **F4** Dense air: 1.6 bar | Neck Strike (`zancuda.neck_strike`) | Control | Range grab; pull enemy close or break their stance. | Neck vulnerable to direct bite if caught. |
 
 ### zancuda.c1: Stilt-wading legs with splayed toes
 
 Trait ← Tides expose mudflats twice daily ← Long legs keep body dry ← Splayed toes spread weight on soft mud ← F13, F20
 
-- **Skill:** Stilt Wade (Basic): Crosses 0.6m water or mud at 2m/s with no stamina drain.
+- **Skill:** Stilt Wade (Basic): The creature strides effortlessly across shallow water and thick mud without tiring. You can safely follow it through wetlands.
 - **Weakness:** Spring tides flood the flats; catch it at high water.
 - **Observe:**
   1. three-toe prints
@@ -49,7 +49,7 @@ Trait ← Tides expose mudflats twice daily ← Long legs keep body dry ← Spla
 
 Trait ← Shallows are turbid, visibility under 10m ← Eyes underwater are nearly useless ← Long neck lifts eyes above the surface ← F20
 
-- **Skill:** Periscope (Passive): See over reeds and water to 60m; +20% detect hidden creatures.
+- **Skill:** Periscope (Passive): It raises its long neck to peer over reeds and water, strongly spotting hidden creatures. You can notice concealed threats that would otherwise go unnoticed.
 - **Weakness:** Wind pushes the neck; gusts above 8m/s force it down for 5s.
 - **Observe:**
   1. neck above reeds
@@ -65,7 +65,7 @@ Trait ← Shallows are turbid, visibility under 10m ← Eyes underwater are near
 
 Trait ← Fish hide in turbid water ← A strike from above needs reach, not pursuit ← A miss tangles the long neck ← F20
 
-- **Skill:** Spear (Engage): 10 dmg, 2.5m reach, 1.5s cooldown; a miss costs 2s.
+- **Skill:** Spear (Engage): It lunges forward with a sharp beak strike at nearby targets. If it misses, it remains exposed for a short while before recovering its stance.
 - **Weakness:** Bait two misses; the neck tangles and it cannot strike for 4s.
 - **Observe:**
   1. head cocked

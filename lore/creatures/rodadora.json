@@ -9,10 +9,12 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Flat salt pans near brine seeps and geothermal vents; avoids dunes.",
+    "habitat": "Flat salt pans near brine seeps and geothermal vents; avoids dunes. Also, in the council's sketch (no such creature in this world yet): Karrow, karrow uses dead keratin tyres; Rodadora uses living symbiont. Karrow is faster on pure Lanes, but Rodadora can feed its wheel at brine seeps where Karrow starves.",
     "diet": "Host grazes crustose lichens and chemosynthetic mats; symbiont metabolizes iron/sulfur from brine seeps.",
     "active": "Diurnal; peaks at midday when thermal winds stabilize.",
-    "predators": []
+    "predators": [
+      "Tucket"
+    ]
   },
   "body": "Bipedal posture with two short walking legs and two manipulator arms. Dorsal body houses a massive, exposed wheel-organ enclosed in a fleshy collar. The wheel is not solid keratin but a pulsating, iridescent mat of tissue that shifts viscosity.",
   "chains": [
@@ -37,7 +39,7 @@
           "en": "Bio-Fuel"
         },
         "role": "Engage",
-        "effect": "Pump nutrient slurry into the wheel colony. Speed increases by 60% for 4 seconds, but host HP drains steadily due to metabolic cost.",
+        "effect": "The wheel colony rapidly consumes injected nutrients to surge forward at a greatly increased pace. This frantic movement visibly drains vitality from the host as the symbionts burn through their reserves.",
         "numbers": {}
       },
       "weakness": "Symbiont Starvation: If the host cannot feed the wheel (e.g., in barren zones), the wheel slows and eventually ceases rotation, forcing the Rodadora to walk at a quarter speed.",
@@ -51,11 +53,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Drop metabolically independent: say metabolically autonomous but water- and micronutrient-subsidised. Grow a dead keratin-mineral core (F18/F23) under a thin living iridescent film and feed that film by a collar fluid brushed onto the inner rim, with no conduit across the axle. Mount the wheel low by the limb pivot instead of dorsally, keep it light, and re-skin Bio-Fuel as spending stored water and micronutrients rather than host HP.",
+        "fixes": [
+          "Drop metabolically independent: say metabolically autonomous but water- and micronutrient-subsidised. Grow a dead keratin-mineral core (F18/F23) under a thin living iridescent film and feed that film by a collar fluid brushed onto the inner rim, with no conduit across the axle. Mount the wheel low by the limb pivot instead of dorsally, keep it light, and re-skin Bio-Fuel as spending stored water and micronutrients rather than host HP."
+        ],
+        "analogues": [
+          {
+            "organism": "Lichen as a composite fungus-plus-photobiont surface, sloth-fur algae trading moisture and micronutrients, echinoderm mutable collagenous tissue for stiffness change; the bacterial flagellar motor is the only true rotary axle biology has built.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 4
         }
       },
       "provenance": {
@@ -86,7 +98,7 @@
           "en": "Resonance Turn"
         },
         "role": "Control",
-        "effect": "Emit a sharp hum burst to lock one side of the wheel rim. Instant sharp turn (radius < 2m) at cost of 15% symbiont stability.",
+        "effect": "A sharp acoustic pulse locks one side of the rim, forcing the wheel to swivel sharply in place. The abrupt maneuver strains the symbiont network, causing visible instability along the spinning structure.",
         "numbers": {}
       },
       "weakness": "Deaf to high pitches: The Rodadora relies on low hums. A high-frequency whistle or sonic crack can scramble the symbiont's response, causing the wheel to lock or spin wildly.",
@@ -100,11 +112,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Route the cue through the stationary collar and differential rim-friction pads instead of through the axle, and make it a graded yaw bias that tightens F21's turn only at low-to-moderate speed, never a snap at full speed. Keep the 40-90 Hz call and the whistle startle; add the cost that a continuous hum advertises the grazer to F27 skirls.",
+        "fixes": [
+          "Route the cue through the stationary collar and differential rim-friction pads instead of through the axle, and make it a graded yaw bias that tightens F21's turn only at low-to-moderate speed, never a snap at full speed. Keep the 40-90 Hz call and the whistle startle; add the cost that a continuous hum advertises the grazer to F27 skirls."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric-fish jamming-avoidance and cricket phonotaxis: animals that steer by low-frequency pattern rather than brute force; F25's own hum niche is the direct anchor.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 2
         }
       },
       "provenance": {
@@ -135,7 +157,7 @@
           "en": "Hard Stop"
         },
         "role": "Defence",
-        "effect": "Instantly stop from full speed. Wheel crystallizes (treated as ice). Host takes minor cold damage. Cooldown: 10s.",
+        "effect": "The wheel abruptly halts its momentum as a freezing agent rapidly crystallizes across its surface. The sudden freeze chills the host while leaving the hardened rim frozen in place.",
         "numbers": {}
       },
       "weakness": "Crystal Lock: If the braking agent is overused or contaminated, the wheel may crystallize permanently until the host spends time to dissolve it, leaving the Rodadora stranded.",
@@ -149,11 +171,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make the exopolymer a crystalline film that shears off along the rim, converting motion into shed grit plus F20 evaporative cooling over a finite stopping distance and leaving a faint sparkling, damp, smelly track. Delete instant, ice, cold damage and the missing heat; if the film is spent or contaminated it must be regrown through F23, which preserves Crystal Lock as a weakness.",
+        "fixes": [
+          "Make the exopolymer a crystalline film that shears off along the rim, converting motion into shed grit plus F20 evaporative cooling over a finite stopping distance and leaving a faint sparkling, damp, smelly track. Delete instant, ice, cold damage and the missing heat; if the film is spent or contaminated it must be regrown through F23, which preserves Crystal Lock as a weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Trehalose vitrification in desiccation-tolerant tardigrades and yeasts for a glassy protective film, and ice-nucleating proteins that trigger crystallisation on cue; neither erases momentum.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 3
         }
       },
       "provenance": {
@@ -197,11 +229,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Let a dead core (F18) carry the shear and redefine Phase Lock as ciliary and matrix cohesion of the thin living film, maintained by collar contact and substrate vibration, with the low hum as a behaviour signal rather than glue. Rival hums can still break ciliary grip and produce a visible wobble and slowdown; keep the passive role and the sonic-dissonance weakness.",
+        "fixes": [
+          "Let a dead core (F18) carry the shear and redefine Phase Lock as ciliary and matrix cohesion of the thin living film, maintained by collar contact and substrate vibration, with the low hum as a behaviour signal rather than glue. Rival hums can still break ciliary grip and produce a visible wobble and slowdown; keep the passive role and the sonic-dissonance weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Metachronal ciliary waves in ciliates and mucociliary epithelia, coordinated by hydrodynamic coupling rather than by sound.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 3
         }
       },
       "provenance": {
@@ -212,18 +254,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Karrow",
-      "kind": "cousin",
-      "note": "(council kind 'Competitor') Karrow uses dead keratin tyres; Rodadora uses living symbiont. Karrow is faster on pure Lanes, but Rodadora can feed its wheel at brine seeps where Karrow starves."
-    },
-    {
-      "with": "Tucket",
-      "kind": "cousin",
-      "note": "(council kind 'Predator') Tuckets can ball-roll into Rodadoras, but Rodadora's hard crystalline braking can shatter tucket shells if timed well."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-24",
     "by": [
@@ -235,6 +266,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Persistent fog banks and anticyclone edges (3-5 km altitude)
+- **Habitat:** Persistent fog banks and anticyclone edges (3-5 km altitude). Also, in the council's sketch (no such creature in this world yet): Brisacoral, both filter the same aerosol layer; SoplilloAlado dominates the upper canopy.
 - **Diet:** Aerosolized microbes, spores, and organic condensates
 - **Active:** Diurnal, follows thermal updrafts
 - **Predators:** none
@@ -21,16 +21,16 @@ Broad, porous membrane wings; low-mass gas-filled skeleton; ciliated oral groove
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| soplilloalado.c1 | Porous, lace-like wing membranes | High air density allows low-Reynolds flight ← Selects for passive lift over muscular flapping ← Porosity adds surface area for particle capture without drag | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F12** Sluggish convection, massive anticyclones, and persistent low-altitude fog. | Sky Weave (`soplilloalado.sky_weave`) | Passive | Drifts on thermal currents, reducing stamina cost by 40% while airborne. | Vulnerable to sudden downdrafts in anticyclone edges; forced to land. |
+| soplilloalado.c1 | Porous, lace-like wing membranes | High air density allows low-Reynolds flight ← Selects for passive lift over muscular flapping ← Porosity adds surface area for particle capture without drag | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F12** Sluggish convection, massive anticyclones, and persistent low-altitude fog. | Sky Weave (`soplilloalado.sky_weave`) | Passive | The creature drifts smoothly on rising air currents, staying aloft with barely any effort. It can remain airborne for a long time without tiring. | Vulnerable to sudden downdrafts in anticyclone edges; forced to land. |
 | soplilloalado.c2 | Ciliated oral grooves for particle capture | Dense air suspends organic condensates ← Gravity cannot precipitate fine aerosols quickly ← Cilia sweep particles into digestive tract at low energy cost | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F19** Peak photosynthetic photon flux at 700–780 nm with haze optical depth of 0.8 at 550 nm. | Mist Strainer (`soplilloalado.mist_strainer`) | Basic | Automatically gathers nutrients while moving, grants +5 stamina regen per turn. | Cilia clog instantly in dry, volcanic ash storms; requires grooming cooldown. |
-| soplilloalado.c3 | Low-density, gas-filled skeletal chambers | 1.85g gravity demands lightweight structural support ← Metabolic gases offset skeletal mass ← Internal chambers diffuse atmospheric pressure to equalize load | **F4** Surface gravity of 1.85 g.; **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Buoyancy Shell (`soplilloalado.buoyancy_shell`) | Defence | Reduces damage taken while airborne by 30% and negates all fall damage. | Rapid pressure changes cause decompression sickness; movement speed halved until stabilized. |
-| soplilloalado.c4 | Copper-rich hemolymph that turns azure | 18% O2 at 10 bar fouls iron-based carriers ← Copper complexes bind oxygen efficiently under high pO2 ← Vascular exchange uses blue hemolymph for thermal regulation | **F9** Composition: 78% N₂, 18% O₂, 3% CO₂, 1% Ar, 0.5% H₂O.; **F21** Copper-based hemocyanin analogs for O₂ transport. | Copper Rush (`soplilloalado.copper_rush`) | Engage | Boosts attack speed by 20% for 3 turns, but overheats if used consecutively. | Blood is highly visible in murky fog; predators track the blue gleam. |
+| soplilloalado.c3 | Low-density, gas-filled skeletal chambers | 1.85g gravity demands lightweight structural support ← Metabolic gases offset skeletal mass ← Internal chambers diffuse atmospheric pressure to equalize load | **F4** Surface gravity of 1.85 g.; **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Buoyancy Shell (`soplilloalado.buoyancy_shell`) | Defence | The creature floats lightly in the air, easily shrugging off strikes. It lands softly without any injury from drops. | Rapid pressure changes cause decompression sickness; movement speed halved until stabilized. |
+| soplilloalado.c4 | Copper-rich hemolymph that turns azure | 18% O2 at 10 bar fouls iron-based carriers ← Copper complexes bind oxygen efficiently under high pO2 ← Vascular exchange uses blue hemolymph for thermal regulation | **F9** Composition: 78% N₂, 18% O₂, 3% CO₂, 1% Ar, 0.5% H₂O.; **F21** Copper-based hemocyanin analogs for O₂ transport. | Copper Rush (`soplilloalado.copper_rush`) | Engage | The creature strikes rapidly for a short while, moving with fierce speed. It must pause afterward, as using the ability again too soon causes it to overheat. | Blood is highly visible in murky fog; predators track the blue gleam. |
 
 ### soplilloalado.c1: Porous, lace-like wing membranes
 
 Trait ← High air density allows low-Reynolds flight ← Selects for passive lift over muscular flapping ← Porosity adds surface area for particle capture without drag ← F8, F12
 
-- **Skill:** Sky Weave (Passive): Drifts on thermal currents, reducing stamina cost by 40% while airborne.
+- **Skill:** Sky Weave (Passive): The creature drifts smoothly on rising air currents, staying aloft with barely any effort. It can remain airborne for a long time without tiring.
 - **Weakness:** Vulnerable to sudden downdrafts in anticyclone edges; forced to land.
 - **Observe:**
   1. Wings shimmer with trapped moisture
@@ -66,7 +66,7 @@ Trait ← Dense air suspends organic condensates ← Gravity cannot precipitate 
 
 Trait ← 1.85g gravity demands lightweight structural support ← Metabolic gases offset skeletal mass ← Internal chambers diffuse atmospheric pressure to equalize load ← F4, F8
 
-- **Skill:** Buoyancy Shell (Defence): Reduces damage taken while airborne by 30% and negates all fall damage.
+- **Skill:** Buoyancy Shell (Defence): The creature floats lightly in the air, easily shrugging off strikes. It lands softly without any injury from drops.
 - **Weakness:** Rapid pressure changes cause decompression sickness; movement speed halved until stabilized.
 - **Observe:**
   1. Body floats unnaturally still when resting
@@ -84,7 +84,7 @@ Trait ← 1.85g gravity demands lightweight structural support ← Metabolic gas
 
 Trait ← 18% O2 at 10 bar fouls iron-based carriers ← Copper complexes bind oxygen efficiently under high pO2 ← Vascular exchange uses blue hemolymph for thermal regulation ← F9, F21
 
-- **Skill:** Copper Rush (Engage): Boosts attack speed by 20% for 3 turns, but overheats if used consecutively.
+- **Skill:** Copper Rush (Engage): The creature strikes rapidly for a short while, moving with fierce speed. It must pause afterward, as using the ability again too soon causes it to overheat.
 - **Weakness:** Blood is highly visible in murky fog; predators track the blue gleam.
 - **Observe:**
   1. Underbelly glows faint blue during exertion
@@ -103,7 +103,6 @@ Trait ← 18% O2 at 10 bar fouls iron-based carriers ← Copper complexes bind o
 | With | Kind | Via | Note |
 |---|---|---|---|
 | rastreadorceniza | predation |  | Rarely falls prey to ash-plows during sudden updrafts; relies on altitude. |
-| Brisacoral | cousin |  | (council kind 'competition') Both filter the same aerosol layer; SoplilloAlado dominates the upper canopy. |
 | rastreadorceniza | cousin |  | (council kind 'competition') Both harvest ground-level organics; RastreadorCeniza dominates the soil layer. |
 
 ## Journal

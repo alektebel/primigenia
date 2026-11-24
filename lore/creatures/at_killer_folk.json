@@ -45,7 +45,7 @@
           "en": "Precision Grasp"
         },
         "role": "Basic",
-        "effect": "Tool handling accuracy +25% in complex environments; enables rapid weapon switching and leverage-based strikes.",
+        "effect": "Its twisted fingers grip tools and weapons with practiced ease, allowing it to swap between them swiftly and strike with heavy leverage. You can watch it maneuver through tight spaces with fluid, precise movements.",
         "numbers": {}
       },
       "weakness": "Disarmed, grip torque drops sharply on improvised tools; specialized thenar muscles lack raw crushing force.",
@@ -113,7 +113,7 @@
           "en": "Tremor Sight"
         },
         "role": "Passive",
-        "effect": "Reads ground vibrations up to 80m to predict prey pathing and ambush angles; +15% detection in ruins.",
+        "effect": "It presses its ears to the earth to feel distant footsteps, silently calculating where you will step before springing from the shadows. In crumbling ruins, it moves with an unsettling awareness, always knowing your exact position.",
         "numbers": {}
       },
       "weakness": "Reliant on low-frequency communication; high-pitched acoustic jammers or sudden structural collapses disrupt targeting and cause disorientation.",
@@ -171,7 +171,7 @@
           "en": "Ritual Intimidation"
         },
         "role": "Social",
-        "effect": "Allies gain +2 morale; Enemies hesitate, reducing attack speed by 20%.",
+        "effect": "It bares its massive fangs in a silent, ritualistic display that strikes fear into nearby foes, causing them to pause and falter in their attacks. Its companions draw strength from the display, standing taller and fighting with renewed courage.",
         "numbers": {}
       },
       "weakness": "Teeth are brittle; a direct bite against hard armor or stone shatters them, leaving the individual vulnerable.",

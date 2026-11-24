@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_blind_folk.c1 | Smooth eye-patches & enlarged auditory pavilions | Complete ocular regression and auditory hypertrophy ← Perpetual darkness in kilometre-high shelter caves ← Karst aquifer networks with isothermal microclimates | **F13** Karst aquifers and lava-tube networks maintain isothermal microclimates of 15–27 °C.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Cave Echo (`at_blind_folk.cave_echo`) | Poke | Reveals hidden enemies within 30m and deals 2 psychic damage to disoriented foes | Blind to high-frequency whistles and sudden visual cues |
-| at_blind_folk.c2 | Adult freeze & infant banshee screams | Reversed predator-evasion strategy for high-reverb environments ← Saturated boundary layer attenuates high frequencies ← Dense atmospheric convection and karst waveguides | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F23** Cave acoustic ecology drives narrowband sonar: banshee screams = focused pulses in reverberant karst. | Banshee Wail (`at_blind_folk.banshee_wail`) | Engage | Stuns sonic predators within 25m for 2 turns | Sudden silence causes panic and loss of orientation |
+| at_blind_folk.c1 | Smooth eye-patches & enlarged auditory pavilions | Complete ocular regression and auditory hypertrophy ← Perpetual darkness in kilometre-high shelter caves ← Karst aquifer networks with isothermal microclimates | **F13** Karst aquifers and lava-tube networks maintain isothermal microclimates of 15–27 °C.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Cave Echo (`at_blind_folk.cave_echo`) | Poke | The creature emits sharp echoes that uncover hidden foes nearby and mentally disorient them, leaving them vulnerable to follow-up strikes. | Blind to high-frequency whistles and sudden visual cues |
+| at_blind_folk.c2 | Adult freeze & infant banshee screams | Reversed predator-evasion strategy for high-reverb environments ← Saturated boundary layer attenuates high frequencies ← Dense atmospheric convection and karst waveguides | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F23** Cave acoustic ecology drives narrowband sonar: banshee screams = focused pulses in reverberant karst. | Banshee Wail (`at_blind_folk.banshee_wail`) | Engage | The infant unleashes a piercing scream that freezes nearby sonic predators in place, halting their movements for a short while. | Sudden silence causes panic and loss of orientation |
 
 ### at_blind_folk.c1: Smooth eye-patches & enlarged auditory pavilions
 
 Trait ← Complete ocular regression and auditory hypertrophy ← Perpetual darkness in kilometre-high shelter caves ← Karst aquifer networks with isothermal microclimates ← F13, F21
 
-- **Skill:** Cave Echo (Poke): Reveals hidden enemies within 30m and deals 2 psychic damage to disoriented foes
+- **Skill:** Cave Echo (Poke): The creature emits sharp echoes that uncover hidden foes nearby and mentally disorient them, leaving them vulnerable to follow-up strikes.
 - **Weakness:** Blind to high-frequency whistles and sudden visual cues
 - **Observe:**
   1. Flared nostrils and twitching whiskers
@@ -45,7 +45,7 @@ Trait ← Complete ocular regression and auditory hypertrophy ← Perpetual dark
 
 Trait ← Reversed predator-evasion strategy for high-reverb environments ← Saturated boundary layer attenuates high frequencies ← Dense atmospheric convection and karst waveguides ← F8, F23
 
-- **Skill:** Banshee Wail (Engage): Stuns sonic predators within 25m for 2 turns
+- **Skill:** Banshee Wail (Engage): The infant unleashes a piercing scream that freezes nearby sonic predators in place, halting their movements for a short while.
 - **Weakness:** Sudden silence causes panic and loss of orientation
 - **Observe:**
   1. Adults standing perfectly still mid-stride

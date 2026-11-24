@@ -21,16 +21,16 @@ Asymmetric armored thorax with silicate plates; internal ammonia-brine circulati
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| polvorin.c1 | Silicate-armored thorax | Deflects hypervelocity dust impacts ← No atmosphere to burn micrometeoroids ← Accumulated silicate inclusions form armor plates ← Porosity allows shock absorption in microgravity | **F9** Ambient pressure ~10⁻¹¹ Pa (hard vacuum).; **F10** Gas mean free path exceeds 10⁴ km, preventing continuous fluid flow or gaseous sound propagation.; **F13** Subsurface consists of porous ice matrix with silicate inclusions and clathrate hydrates. | Crystalline Carapace (`polvorin.crystalline_carapace`) | Defence | Player gains +50% damage reduction and immunity to terrain hazards for 5 turns. | Heavy armor reduces movement speed and agility. |
-| polvorin.c2 | Ammonia-brine internal circulation | Prevents water ice crystallization ← Ammonia lowers freezing point to 176 K ← Radiogenic heat maintains liquid phase in fractures ← Internal pumps move fluid through thermal gradients | **F14** Pressurized ammonia-water eutectic pockets (30:70 mass ratio, freezing point ~176 K) persist in deep fractures.; **F7** No intrinsic magnetic field; interior is frozen and too small to sustain a dynamo.; **F18** Metabolism operates on chemolithotrophy and radiolytic redox gradients; active growth is restricted to subsurface brine pockets. | Thaw Injection (`polvorin.thaw_injection`) | Engage | Heals 3 health and restores 2 solvent to player; freezes enemy terrain for 2 turns. | Heat sources cause rapid evaporation of brine. |
-| polvorin.c3 | Chemical blowhole vent | Releases excess radiolytic gases ← Gas expansion provides micro-thrust ← Ballistic gas ejection in vacuum ← Pressure buildup in brine pockets forces venting | **F9** Ambient pressure ~10⁻¹¹ Pa (hard vacuum).; **F11** Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted.; **F14** Pressurized ammonia-water eutectic pockets (30:70 mass ratio, freezing point ~176 K) persist in deep fractures. | Jet Push (`polvorin.jet_push`) | Poke | Launch player 5m in a straight line; leaves a chemical trail that confuses enemies for 2 turns. | Venting leaves player vulnerable during launch animation. |
-| polvorin.c4 | Crystalline memory lobes | Records radiation history over centuries ← Crystal lattice defects store information ← Radiation-induced defect trapping ← High-LET ionization creates stable traps in quartz/magnetite | **F2** Galactic cosmic ray (GCR) flux averages ~2–5 cm⁻² s⁻¹ (E ≳ 1 GeV).; **F8** Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.; **F19** Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps. | Deep Memory (`polvorin.deep_memory`) | Passive | Reveals hidden paths and past events on the world map; reduces stasis recovery time by 20%. | Memory lobes are brittle; damage causes information loss. |
+| polvorin.c1 | Silicate-armored thorax | Deflects hypervelocity dust impacts ← No atmosphere to burn micrometeoroids ← Accumulated silicate inclusions form armor plates ← Porosity allows shock absorption in microgravity | **F9** Ambient pressure ~10⁻¹¹ Pa (hard vacuum).; **F10** Gas mean free path exceeds 10⁴ km, preventing continuous fluid flow or gaseous sound propagation.; **F13** Subsurface consists of porous ice matrix with silicate inclusions and clathrate hydrates. | Crystalline Carapace (`polvorin.crystalline_carapace`) | Defence | The silicate armor hardens around nearby allies, strongly deflecting strikes and shielding them from ground hazards for a short while. | Heavy armor reduces movement speed and agility. |
+| polvorin.c2 | Ammonia-brine internal circulation | Prevents water ice crystallization ← Ammonia lowers freezing point to 176 K ← Radiogenic heat maintains liquid phase in fractures ← Internal pumps move fluid through thermal gradients | **F14** Pressurized ammonia-water eutectic pockets (30:70 mass ratio, freezing point ~176 K) persist in deep fractures.; **F7** No intrinsic magnetic field; interior is frozen and too small to sustain a dynamo.; **F18** Metabolism operates on chemolithotrophy and radiolytic redox gradients; active growth is restricted to subsurface brine pockets. | Thaw Injection (`polvorin.thaw_injection`) | Engage | The creature injects a warming brine that mends wounds and restores vitality, while its exhaled vapors strongly freeze the ground beneath nearby foes. | Heat sources cause rapid evaporation of brine. |
+| polvorin.c3 | Chemical blowhole vent | Releases excess radiolytic gases ← Gas expansion provides micro-thrust ← Ballistic gas ejection in vacuum ← Pressure buildup in brine pockets forces venting | **F9** Ambient pressure ~10⁻¹¹ Pa (hard vacuum).; **F11** Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted.; **F14** Pressurized ammonia-water eutectic pockets (30:70 mass ratio, freezing point ~176 K) persist in deep fractures. | Jet Push (`polvorin.jet_push`) | Poke | The creature vents a powerful chemical blast that strongly propels nearby allies forward, leaving a lingering mist that disorients pursuing foes. | Venting leaves player vulnerable during launch animation. |
+| polvorin.c4 | Crystalline memory lobes | Records radiation history over centuries ← Crystal lattice defects store information ← Radiation-induced defect trapping ← High-LET ionization creates stable traps in quartz/magnetite | **F2** Galactic cosmic ray (GCR) flux averages ~2–5 cm⁻² s⁻¹ (E ≳ 1 GeV).; **F8** Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.; **F19** Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps. | Deep Memory (`polvorin.deep_memory`) | Passive | The crystalline lobes pulse with ancient knowledge, strongly revealing hidden paths and past events on the map while sharpening the mind to break free from stasis quickly. | Memory lobes are brittle; damage causes information loss. |
 
 ### polvorin.c1: Silicate-armored thorax
 
 Trait ← Deflects hypervelocity dust impacts ← No atmosphere to burn micrometeoroids ← Accumulated silicate inclusions form armor plates ← Porosity allows shock absorption in microgravity ← F9, F10, F13
 
-- **Skill:** Crystalline Carapace (Defence): Player gains +50% damage reduction and immunity to terrain hazards for 5 turns.
+- **Skill:** Crystalline Carapace (Defence): The silicate armor hardens around nearby allies, strongly deflecting strikes and shielding them from ground hazards for a short while.
 - **Weakness:** Heavy armor reduces movement speed and agility.
 - **Observe:**
   1. Plates click and shift as it moves.
@@ -48,7 +48,7 @@ Trait ← Deflects hypervelocity dust impacts ← No atmosphere to burn micromet
 
 Trait ← Prevents water ice crystallization ← Ammonia lowers freezing point to 176 K ← Radiogenic heat maintains liquid phase in fractures ← Internal pumps move fluid through thermal gradients ← F14, F7, F18
 
-- **Skill:** Thaw Injection (Engage): Heals 3 health and restores 2 solvent to player; freezes enemy terrain for 2 turns.
+- **Skill:** Thaw Injection (Engage): The creature injects a warming brine that mends wounds and restores vitality, while its exhaled vapors strongly freeze the ground beneath nearby foes.
 - **Weakness:** Heat sources cause rapid evaporation of brine.
 - **Observe:**
   1. Internal fluids swirl with visible bubbles.
@@ -67,7 +67,7 @@ Trait ← Prevents water ice crystallization ← Ammonia lowers freezing point t
 
 Trait ← Releases excess radiolytic gases ← Gas expansion provides micro-thrust ← Ballistic gas ejection in vacuum ← Pressure buildup in brine pockets forces venting ← F9, F11, F14
 
-- **Skill:** Jet Push (Poke): Launch player 5m in a straight line; leaves a chemical trail that confuses enemies for 2 turns.
+- **Skill:** Jet Push (Poke): The creature vents a powerful chemical blast that strongly propels nearby allies forward, leaving a lingering mist that disorients pursuing foes.
 - **Weakness:** Venting leaves player vulnerable during launch animation.
 - **Observe:**
   1. Jet of mist shoots out, no sound.
@@ -85,7 +85,7 @@ Trait ← Releases excess radiolytic gases ← Gas expansion provides micro-thru
 
 Trait ← Records radiation history over centuries ← Crystal lattice defects store information ← Radiation-induced defect trapping ← High-LET ionization creates stable traps in quartz/magnetite ← F2, F8, F19
 
-- **Skill:** Deep Memory (Passive): Reveals hidden paths and past events on the world map; reduces stasis recovery time by 20%.
+- **Skill:** Deep Memory (Passive): The crystalline lobes pulse with ancient knowledge, strongly revealing hidden paths and past events on the map while sharpening the mind to break free from stasis quickly.
 - **Weakness:** Memory lobes are brittle; damage causes information loss.
 - **Observe:**
   1. Lobes glow with trapped internal light.

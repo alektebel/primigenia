@@ -21,16 +21,16 @@ Lightweight, expansive membranous wings, silica-reinforced ribs, ventral photore
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| auroran.c1 | Broad membranous wings span 4 meters | Wings harvest airborne Astrophage clumps ← Dense 1.7 bar atmosphere reduces drag ← High N2/CO2 enables lift at low speed | **F5** The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing.; **F7** High CO₂ partial pressure and dense molecular weight increase atmospheric density and absorption, attenuating high frequencies while allowing low-frequency sound to travel efficiently. | Glide Snare (`auroran.glide_snare`) | Basic | Catches falling resources, +15% yield | Vulnerable to sudden thermal turbulence |
-| auroran.c2 | Ventral amber photoreceptive patches | Red-shifted dawn light penetrates haze ← Retinal analogs tuned to 620 nm maximize absorption ← Spectral shift drives visual selection | **F8** Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm).; **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches. | Dawn Pulse (`auroran.dawn_pulse`) | Passive | +20% energy gain during morning phase | Blind to sudden UV flares |
-| auroran.c3 | Hollow silica-reinforced flight bones | Low gravity reduces structural load requirements ← Silica precipitates easily in acidified air ← Iron-silica chemistry replaces calcium shells | **F3** The planet has a mass of 0.94 M⊕, radius of 0.96 R⊕, and surface gravity of 0.97 g.; **F13** High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions. | Featherlight (`auroran.featherlight`) | Defence | -10% damage taken from falls, +5% speed | Cannot molt quickly in high humidity |
-| auroran.c4 | Low-frequency throat resonance chamber | Dense atmosphere transmits bass efficiently ← HF sound absorbs via CO2 collisions ← Long-range calls coordinate flock movements | **F7** High CO₂ partial pressure and dense molecular weight increase atmospheric density and absorption, attenuating high frequencies while allowing low-frequency sound to travel efficiently.; **F5** The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing. | Deep Hum (`auroran.deep_hum`) | Control | Calms nearby fauna, +20m detection radius | Shattered by high-pitched sonic weapons |
+| auroran.c1 | Broad membranous wings span 4 meters | Wings harvest airborne Astrophage clumps ← Dense 1.7 bar atmosphere reduces drag ← High N2/CO2 enables lift at low speed | **F5** The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing.; **F7** High CO₂ partial pressure and dense molecular weight increase atmospheric density and absorption, attenuating high frequencies while allowing low-frequency sound to travel efficiently. | Glide Snare (`auroran.glide_snare`) | Basic | The creature swoops down to catch falling items from the air, gathering a generous amount each time. | Vulnerable to sudden thermal turbulence |
+| auroran.c2 | Ventral amber photoreceptive patches | Red-shifted dawn light penetrates haze ← Retinal analogs tuned to 620 nm maximize absorption ← Spectral shift drives visual selection | **F8** Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm).; **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches. | Dawn Pulse (`auroran.dawn_pulse`) | Passive | During the early hours, the creature strongly resonates with the morning light, radiating a steady stream of vitality. | Blind to sudden UV flares |
+| auroran.c3 | Hollow silica-reinforced flight bones | Low gravity reduces structural load requirements ← Silica precipitates easily in acidified air ← Iron-silica chemistry replaces calcium shells | **F3** The planet has a mass of 0.94 M⊕, radius of 0.96 R⊕, and surface gravity of 0.97 g.; **F13** High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions. | Featherlight (`auroran.featherlight`) | Defence | The creature glides gracefully through the air, landing softly on its padded feet while maintaining a swift pace. | Cannot molt quickly in high humidity |
+| auroran.c4 | Low-frequency throat resonance chamber | Dense atmosphere transmits bass efficiently ← HF sound absorbs via CO2 collisions ← Long-range calls coordinate flock movements | **F7** High CO₂ partial pressure and dense molecular weight increase atmospheric density and absorption, attenuating high frequencies while allowing low-frequency sound to travel efficiently.; **F5** The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing. | Deep Hum (`auroran.deep_hum`) | Control | The creature emits a soothing resonance that pacifies nearby wildlife, allowing it to sense movements across a wide area. | Shattered by high-pitched sonic weapons |
 
 ### auroran.c1: Broad membranous wings span 4 meters
 
 Trait ← Wings harvest airborne Astrophage clumps ← Dense 1.7 bar atmosphere reduces drag ← High N2/CO2 enables lift at low speed ← F5, F7
 
-- **Skill:** Glide Snare (Basic): Catches falling resources, +15% yield
+- **Skill:** Glide Snare (Basic): The creature swoops down to catch falling items from the air, gathering a generous amount each time.
 - **Weakness:** Vulnerable to sudden thermal turbulence
 - **Observe:**
   1. Wing membrane taut against wind
@@ -49,7 +49,7 @@ Trait ← Wings harvest airborne Astrophage clumps ← Dense 1.7 bar atmosphere 
 
 Trait ← Red-shifted dawn light penetrates haze ← Retinal analogs tuned to 620 nm maximize absorption ← Spectral shift drives visual selection ← F8, F14
 
-- **Skill:** Dawn Pulse (Passive): +20% energy gain during morning phase
+- **Skill:** Dawn Pulse (Passive): During the early hours, the creature strongly resonates with the morning light, radiating a steady stream of vitality.
 - **Weakness:** Blind to sudden UV flares
 - **Observe:**
   1. Patches glow faintly orange
@@ -67,7 +67,7 @@ Trait ← Red-shifted dawn light penetrates haze ← Retinal analogs tuned to 62
 
 Trait ← Low gravity reduces structural load requirements ← Silica precipitates easily in acidified air ← Iron-silica chemistry replaces calcium shells ← F3, F13
 
-- **Skill:** Featherlight (Defence): -10% damage taken from falls, +5% speed
+- **Skill:** Featherlight (Defence): The creature glides gracefully through the air, landing softly on its padded feet while maintaining a swift pace.
 - **Weakness:** Cannot molt quickly in high humidity
 - **Observe:**
   1. Ribs click like glass
@@ -85,7 +85,7 @@ Trait ← Low gravity reduces structural load requirements ← Silica precipitat
 
 Trait ← Dense atmosphere transmits bass efficiently ← HF sound absorbs via CO2 collisions ← Long-range calls coordinate flock movements ← F7, F5
 
-- **Skill:** Deep Hum (Control): Calms nearby fauna, +20m detection radius
+- **Skill:** Deep Hum (Control): The creature emits a soothing resonance that pacifies nearby wildlife, allowing it to sense movements across a wide area.
 - **Weakness:** Shattered by high-pitched sonic weapons
 - **Observe:**
   1. Throat pouch inflates

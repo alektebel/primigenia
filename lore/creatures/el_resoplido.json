@@ -35,7 +35,7 @@
           "en": "Thermal Lift"
         },
         "role": "Defence",
-        "effect": "Inflates bladder using body heat or warm rock contact; reduces terminal velocity by 50% and allows gliding on thermals for 8 seconds.",
+        "effect": "The creature warms its dorsal gas bladder against sun-heated rocks or its own body, causing it to swell and drift slowly downward. It then catches rising air currents to glide through the sky for a short while.",
         "numbers": {}
       },
       "weakness": "Wind and cold rapidly cool the bladder, causing immediate loss of lift and a dangerous drop; fire ruptures the bladder.",
@@ -96,7 +96,7 @@
           "en": "Sulfur Crunch"
         },
         "role": "Engage",
-        "effect": "Eat sulfur crusts from environment or carcass; restores 30% health and removes all toxin damage, but risks choking if eaten raw.",
+        "effect": "The creature gnaws on sulfur crusts scraped from the ground or fallen carcasses. This nourishes it and drives out any lingering toxins, though raw chunks sometimes make it cough and choke.",
         "numbers": {}
       },
       "weakness": "Cannot digest raw sulfur quickly; raw sulfur gifts cause choking damage; gut flora crashes if diet lacks sulfur for too long.",

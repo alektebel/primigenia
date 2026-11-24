@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_parasites.c1 | Abdominal suckers & pain-soothing salivary glands | Specialized attachment organs and immunosuppressive secretions ← Qu genetic splitting creating distinct parasitic lineages ← Host immune system driving co-evolutionary arms race | **F14** Baseline biochemistry follows CHNOPS with Qu-modified horizontal gene transfer.; **F17** Electrochemical symbiosis utilizes modified electrocytes and tactile/olfactory dominance for neural interface tissues. | Nociceptor Dampening (`at_parasites.nociceptor_dampening`) | Passive | Reduce host agitation by 40%, allowing safe extraction of nutrients without combat | Salivary enzymes are thermally unstable; high surface temperatures degrade secretion efficiency |
+| at_parasites.c1 | Abdominal suckers & pain-soothing salivary glands | Specialized attachment organs and immunosuppressive secretions ← Qu genetic splitting creating distinct parasitic lineages ← Host immune system driving co-evolutionary arms race | **F14** Baseline biochemistry follows CHNOPS with Qu-modified horizontal gene transfer.; **F17** Electrochemical symbiosis utilizes modified electrocytes and tactile/olfactory dominance for neural interface tissues. | Nociceptor Dampening (`at_parasites.nociceptor_dampening`) | Passive | The creature secretes a numbing fluid that quietly calms the host, allowing it to feed peacefully without provoking a struggle. | Salivary enzymes are thermally unstable; high surface temperatures degrade secretion efficiency |
 | at_parasites.c2 | Womb-infesting endoparasite lineage | Intrauterine development and sterile abortion mimicry ← Qu bioengineering targeting reproductive capacity ← Host learning to burn or drown parasites | **F14** Baseline biochemistry follows CHNOPS with Qu-modified horizontal gene transfer.; **F18** Robust DNA repair and branched fatty-acid phospholipids confer thermal and radiation resilience. | Silent Gestation (`at_parasites.silent_gestation`) | Control | Converts 1 host unit into a temporary parasite carrier with +3 stealth | Hosts that discover infection will violently purge them |
 
 ### at_parasites.c1: Abdominal suckers & pain-soothing salivary glands
 
 Trait ← Specialized attachment organs and immunosuppressive secretions ← Qu genetic splitting creating distinct parasitic lineages ← Host immune system driving co-evolutionary arms race ← F14, F17
 
-- **Skill:** Nociceptor Dampening (Passive): Reduce host agitation by 40%, allowing safe extraction of nutrients without combat
+- **Skill:** Nociceptor Dampening (Passive): The creature secretes a numbing fluid that quietly calms the host, allowing it to feed peacefully without provoking a struggle.
 - **Weakness:** Salivary enzymes are thermally unstable; high surface temperatures degrade secretion efficiency
 - **Observe:**
   1. Circular, muscular suckers lining the ventral surface

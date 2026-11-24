@@ -43,7 +43,7 @@
           "en": "Leaping Drift"
         },
         "role": "Engage",
-        "effect": "+40% vertical leap and +30% fall damage mitigation",
+        "effect": "The creature springs high into the air with its spindly legs, landing softly without trouble. You can watch it bound across the terrain with effortless leaps.",
         "numbers": {}
       },
       "weakness": "Fracture risk exceeds 0.6g; prolonged Earth-side duty causes rapid joint collapse",
@@ -97,7 +97,7 @@
           "en": "Solar Shield"
         },
         "role": "Defence",
-        "effect": "+50% resistance to radiation damage and +10% photosynthetic efficiency from ambient light",
+        "effect": "Its hardened skin shimmers as it absorbs ambient light, shielding it from harmful rays. You see it stand calmly in bright conditions, drawing strength strongly from the surroundings.",
         "numbers": {}
       },
       "weakness": "Pigment absorbs visible light poorly, reducing night vision by 40%",
@@ -153,7 +153,7 @@
           "en": "Toxin Digest"
         },
         "role": "Basic",
-        "effect": "+30% stamina recovery from raw local biomass, identifies safe foraging zones",
+        "effect": "The creature quickly restores its energy by consuming local plants and soil nearby. It moves confidently toward safe foraging patches, leaving behind clearly marked trails.",
         "numbers": {}
       },
       "weakness": "Incompatible with Earth-standard probiotics; causes acute dysentery on diet shift",

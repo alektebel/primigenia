@@ -21,41 +21,49 @@ Ovoid, segmented iron-sulfide carapace, six stout legs, rasping magnetite mouth
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| rocaescama.c1 | Iron-sulfide carapace plates | Plates absorb kinetic impact ← Protection against abrasive crust and predators ← Grazes on hard hydrothermal sulfide deposits ← Thin lithosphere and radiogenic heat drive active vents | **F18** Heat flow is 1.8 times Earth's, with a thin lithosphere, rifts, and hydrothermal vent fields fed by radiogenic U/Th/K enrichment.; **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface. | Iron Shell (`rocaescama.iron_shell`) | Defence | Reduces incoming damage by 40% but reduces movement speed by 20% | Soft ventral membrane between plates is unarmoured and highly vulnerable |
-| rocaescama.c2 | Magnetite-tipped rasping mouth | Teeth wear against armor and crust, self-sharpening ← Rasps iron-oxidizing mats off magnetite-rich substrate ← Diet requires processing low-nutrient chemosynthetic crust ← F19 crust exposed by metal oxidation and hydrothermal activity | **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface.; **F25** Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal. | Scrape (`rocaescama.scrape`) | Basic | Deals 30 damage and harvests iron resource; extra damage against rocky terrain | Magnetite wears down; requires iron-rich diet to maintain sharpness, weakens without Fe²⁺ |
+| rocaescama.c1 | Iron-sulfide carapace plates | Plates absorb kinetic impact ← Protection against abrasive crust and predators ← Grazes on hard hydrothermal sulfide deposits ← Thin lithosphere and radiogenic heat drive active vents | **F18** Heat flow is 1.8 times Earth's, with a thin lithosphere, rifts, and hydrothermal vent fields fed by radiogenic U/Th/K enrichment.; **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface. | Iron Shell (`rocaescama.iron_shell`) | Defence | The creature's heavy iron shell shields it from harm but makes it move heavily and slowly. | Soft ventral membrane between plates is unarmoured and highly vulnerable |
+| rocaescama.c2 | Magnetite-tipped rasping mouth | Teeth wear against armor and crust, self-sharpening ← Rasps iron-oxidizing mats off magnetite-rich substrate ← Diet requires processing low-nutrient chemosynthetic crust ← F19 crust exposed by metal oxidation and hydrothermal activity | **F19** The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface.; **F25** Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal. | Scrape (`rocaescama.scrape`) | Basic | It rasps its magnetite mouth against surfaces to chip away material and gather iron, working especially well on stone. | Magnetite wears down; requires iron-rich diet to maintain sharpness, weakens without Fe²⁺ |
 | rocaescama.c3 | Intracellular magnetite chain alignment | Chains align with planetary field ← Spatial orientation in zero-viscosity vent plumes ← Navigates turbulence and thermal currents on vents ← Planetary magnetic dipole is 1.5x Earth strength | **F8** The magnetic dipole is 1.5 times Earth's, strong enough to hold a magnetosphere. | Mag-Align (`rocaescama.mag_align`) | Passive | Grants immunity to knockback and disorientation effects | Magnetotaxis disrupted by high-frequency electrical noise or magnetic anomalies |
-| rocaescama.c4 | Gut symbionts oxidize Fe²⁺ | Symbionts harvest energy from iron redox ← Extracts calories from ingested Fe²⁺ sulfides ← Crust has high Fe²⁺ but low organic carbon ← F21 metabolism built on Fe²⁺/Fe³⁺ redox couples | **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes.; **F20** Primary energy sources are starlight, sulfide and iron oxidation, vent heat, and salinity gradients. | Iron-Digest (`rocaescama.iron_digest`) | Passive | Passive: Converts ingested iron resource into 10% health over 3 turns | Symbionts fail if gut pH drops below 4.0 during acid fog events |
+| rocaescama.c4 | Gut symbionts oxidize Fe²⁺ | Symbionts harvest energy from iron redox ← Extracts calories from ingested Fe²⁺ sulfides ← Crust has high Fe²⁺ but low organic carbon ← F21 metabolism built on Fe²⁺/Fe³⁺ redox couples | **F21** Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes.; **F20** Primary energy sources are starlight, sulfide and iron oxidation, vent heat, and salinity gradients. | Iron-Digest (`rocaescama.iron_digest`) | Passive | After consuming iron, its gut symbionts slowly convert the metal into nourishment, gradually mending its wounds. | Symbionts fail if gut pH drops below 4.0 during acid fog events |
 
 ### rocaescama.c1: Iron-sulfide carapace plates
 
 Trait ← Plates absorb kinetic impact ← Protection against abrasive crust and predators ← Grazes on hard hydrothermal sulfide deposits ← Thin lithosphere and radiogenic heat drive active vents ← F18, F19
 
-- **Skill:** Iron Shell (Defence): Reduces incoming damage by 40% but reduces movement speed by 20%
+- **Skill:** Iron Shell (Defence): The creature's heavy iron shell shields it from harm but makes it move heavily and slowly.
 - **Weakness:** Soft ventral membrane between plates is unarmoured and highly vulnerable
 - **Observe:**
   1. Scraping hiss as plates rub against rock
   2. Iridescent black plates with greenish sulfur edges
   3. Slow, deliberate walking on hexapod legs
 - **Journal:** It eats the world's bones and wears them as skin.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Describe 'Iron Shell' (Defence) only as the animal bracing and curling so its overlapping FeS plates take the blow, with mobility cost stated in words; drop all percentages and numbers. Specify imbricated plates with unarmoured ventral flexure rather than a solid carapace.
   - scores: astrobio 6, skeptic 5
+  - Analogue: Chrysomallon squamiferum, the scaly-foot vent snail, armours its foot with iron-sulfide scales over a soft body; the same mineral is laid down as plates, not metal.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Warén 2003 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Warén 2003 [unverified])
+  - Fix: Describe 'Iron Shell' (Defence) only as the animal bracing and curling so its overlapping FeS plates take the blow, with mobility cost stated in words; drop all percentages and numbers. Specify imbricated plates with unarmoured ventral flexure rather than a solid carapace.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### rocaescama.c2: Magnetite-tipped rasping mouth
 
 Trait ← Teeth wear against armor and crust, self-sharpening ← Rasps iron-oxidizing mats off magnetite-rich substrate ← Diet requires processing low-nutrient chemosynthetic crust ← F19 crust exposed by metal oxidation and hydrothermal activity ← F19, F25
 
-- **Skill:** Scrape (Basic): Deals 30 damage and harvests iron resource; extra damage against rocky terrain
+- **Skill:** Scrape (Basic): It rasps its magnetite mouth against surfaces to chip away material and gather iron, working especially well on stone.
 - **Weakness:** Magnetite wears down; requires iron-rich diet to maintain sharpness, weakens without Fe²⁺
 - **Observe:**
   1. Mouth rasping reveals white magnetite tips
   2. Molting mouthparts shed as glittering dust
   3. Glossy sheen of oxidized iron around oral cavity
 - **Journal:** Its teeth never dull, only hungry.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep 'Scrape' (Basic) as a plain description of rasping away crust to expose fresh iron-oxidizing biofilm; remove numeric damage and harvest values. If the magnetic-anomaly curiosity stays as a befriend or secret mechanic, add a separate magnetite-chain sensory organ rather than attributing it to the mouth. Note: the supplied species record is truncated after 'harvests iron resource; e...', so any further chains could not be refereed from the given text.
   - scores: astrobio 6, skeptic 7
+  - Analogue: Chiton radulae whose tooth cusps are capped with magnetite, a wear-resistant biomineral; magnetotactic bacteria orient using chains of intracellular magnetite crystals.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Lowenstam 1962 [verified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Lowenstam 1962 [verified])
+  - Fix: Keep 'Scrape' (Basic) as a plain description of rasping away crust to expose fresh iron-oxidizing biofilm; remove numeric damage and harvest values. If the magnetic-anomaly curiosity stays as a befriend or secret mechanic, add a separate magnetite-chain sensory organ rather than attributing it to the mouth. Note: the supplied species record is truncated after 'harvests iron resource; e...', so any further chains could not be refereed from the given text.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### rocaescama.c3: Intracellular magnetite chain alignment
@@ -69,8 +77,9 @@ Trait ← Chains align with planetary field ← Spatial orientation in zero-visc
   2. Glowing faintly under specific magnetic sensors
   3. Stops spinning when magnetic field stabilizes
 - **Journal:** It carries a compass inside its flesh.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 4
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 4
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Blakemore 1975 [verified])
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Blakemore 1975 [verified])
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
@@ -78,15 +87,15 @@ Trait ← Chains align with planetary field ← Spatial orientation in zero-visc
 
 Trait ← Symbionts harvest energy from iron redox ← Extracts calories from ingested Fe²⁺ sulfides ← Crust has high Fe²⁺ but low organic carbon ← F21 metabolism built on Fe²⁺/Fe³⁺ redox couples ← F21, F20
 
-- **Skill:** Iron-Digest (Passive): Passive: Converts ingested iron resource into 10% health over 3 turns
+- **Skill:** Iron-Digest (Passive): After consuming iron, its gut symbionts slowly convert the metal into nourishment, gradually mending its wounds.
 - **Weakness:** Symbionts fail if gut pH drops below 4.0 during acid fog events
 - **Observe:**
   1. Green gas bubbles exhaled after feeding
   2. Distended abdomen glowing faintly from symbiont activity
   3. Avoids eating acidic sludge near pH 4 vents
 - **Journal:** The rock feeds the bacteria; the bacteria feed the beast.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 6
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 6
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -117,3 +126,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

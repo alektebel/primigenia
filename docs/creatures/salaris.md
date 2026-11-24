@@ -21,16 +21,16 @@ Hexapod with a faceted, crystalline carapace and low-profile stance
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| salaris.c1 | Specular UV-mirror carapace | Matches salt UV reflectance ← Avoids detection by UV-hunting predators ← High UV flux drives selection for UV camouflage in open pans ← F-star SED delivers high-energy photons with transparent window | **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Spectral Shroud (`salaris.spectral_shroud`) | Defence | Player gains ability to cloak in UV band; 90% invisibility to UV-sensitive sensors. | Reflection mechanism creates polarization artifact; visible to polarization hunters. |
-| salaris.c2 | Cross-polarization artifact | Crystalline alignment reflects polarized light ← Hypersaline pans produce strong sky polarization ← Low aerosol scattering preserves polarization patterns ← Thin atmosphere and clear zenith create predictable polarization vectors | **F11** Strong Rayleigh polarization patterns preserved to ground.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Polari-Glyph (`salaris.polari_glyph`) | Poke | Player can deploy a polarized foil that mimics Salaris artifact; attracts Salaris for 60s. | Polarization hunters can track Salaris even when UV-camouflaged. |
-| salaris.c3 | Rapid photolyase cycling | Enzymatic repair of thymine dimers ← High UV-B/C flux causes rapid DNA damage ← Transparent window prevents atmospheric filtering ← F-star SED plus low ozone column | **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F9** Transparent spectral window from 210 nm to 5000 nm. | UV Resilience (`salaris.uv_resilience`) | Passive | Player reduces UV damage accumulation by 70% when near Salaris. | Metabolic drain; Salaris must feed constantly, reducing stealth time. |
-| salaris.c4 | Silent chitinous crawl | Crawls without clicking or vibration ← High-frequency sound attenuates rapidly in thin air ← Acoustic signaling is ineffective for coordination ← Low gas density suppresses HF coupling | **F10** High-frequency sound attenuates rapidly; low frequencies carry kilometers.; **F8** Surface pressure 0.65 bar, dominated by N₂ (74%) and O₂ (22%), trace CO₂/H₂O. | Ghost Step (`salaris.ghost_step`) | Basic | Player movement noise reduced by 80%; avoids vibration-sensitive predators. | Silent movement requires precise balance; slips on wet salt. |
+| salaris.c1 | Specular UV-mirror carapace | Matches salt UV reflectance ← Avoids detection by UV-hunting predators ← High UV flux drives selection for UV camouflage in open pans ← F-star SED delivers high-energy photons with transparent window | **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Spectral Shroud (`salaris.spectral_shroud`) | Defence | The creature's mirrored carapace reflects ultraviolet light, allowing you to step into its glow and become nearly invisible to those who track it. | Reflection mechanism creates polarization artifact; visible to polarization hunters. |
+| salaris.c2 | Cross-polarization artifact | Crystalline alignment reflects polarized light ← Hypersaline pans produce strong sky polarization ← Low aerosol scattering preserves polarization patterns ← Thin atmosphere and clear zenith create predictable polarization vectors | **F11** Strong Rayleigh polarization patterns preserved to ground.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Polari-Glyph (`salaris.polari_glyph`) | Poke | You can scatter a shimmering polarized foil that perfectly mimics the creature's artifact, and it will draw the creature strongly toward the spot for a short while. | Polarization hunters can track Salaris even when UV-camouflaged. |
+| salaris.c3 | Rapid photolyase cycling | Enzymatic repair of thymine dimers ← High UV-B/C flux causes rapid DNA damage ← Transparent window prevents atmospheric filtering ← F-star SED plus low ozone column | **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F9** Transparent spectral window from 210 nm to 5000 nm. | UV Resilience (`salaris.uv_resilience`) | Passive | The creature's rapid photolyase cycling naturally absorbs harsh ultraviolet rays, so standing nearby significantly lessens the stinging heat that would otherwise build up on your skin. | Metabolic drain; Salaris must feed constantly, reducing stealth time. |
+| salaris.c4 | Silent chitinous crawl | Crawls without clicking or vibration ← High-frequency sound attenuates rapidly in thin air ← Acoustic signaling is ineffective for coordination ← Low gas density suppresses HF coupling | **F10** High-frequency sound attenuates rapidly; low frequencies carry kilometers.; **F8** Surface pressure 0.65 bar, dominated by N₂ (74%) and O₂ (22%), trace CO₂/H₂O. | Ghost Step (`salaris.ghost_step`) | Basic | The creature moves with a silent, gliding crawl that leaves no audible trace, allowing you to slip past vibration-sensitive hunters without alerting them. | Silent movement requires precise balance; slips on wet salt. |
 
 ### salaris.c1: Specular UV-mirror carapace
 
 Trait ← Matches salt UV reflectance ← Avoids detection by UV-hunting predators ← High UV flux drives selection for UV camouflage in open pans ← F-star SED delivers high-energy photons with transparent window ← F14, F9, F13
 
-- **Skill:** Spectral Shroud (Defence): Player gains ability to cloak in UV band; 90% invisibility to UV-sensitive sensors.
+- **Skill:** Spectral Shroud (Defence): The creature's mirrored carapace reflects ultraviolet light, allowing you to step into its glow and become nearly invisible to those who track it.
 - **Weakness:** Reflection mechanism creates polarization artifact; visible to polarization hunters.
 - **Observe:**
   1. Carapace glints blue-white under direct starlight
@@ -48,7 +48,7 @@ Trait ← Matches salt UV reflectance ← Avoids detection by UV-hunting predato
 
 Trait ← Crystalline alignment reflects polarized light ← Hypersaline pans produce strong sky polarization ← Low aerosol scattering preserves polarization patterns ← Thin atmosphere and clear zenith create predictable polarization vectors ← F11, F9, F13
 
-- **Skill:** Polari-Glyph (Poke): Player can deploy a polarized foil that mimics Salaris artifact; attracts Salaris for 60s.
+- **Skill:** Polari-Glyph (Poke): You can scatter a shimmering polarized foil that perfectly mimics the creature's artifact, and it will draw the creature strongly toward the spot for a short while.
 - **Weakness:** Polarization hunters can track Salaris even when UV-camouflaged.
 - **Observe:**
   1. Movement leaves polarization trail on ground-scanner
@@ -66,7 +66,7 @@ Trait ← Crystalline alignment reflects polarized light ← Hypersaline pans pr
 
 Trait ← Enzymatic repair of thymine dimers ← High UV-B/C flux causes rapid DNA damage ← Transparent window prevents atmospheric filtering ← F-star SED plus low ozone column ← F14, F9
 
-- **Skill:** UV Resilience (Passive): Player reduces UV damage accumulation by 70% when near Salaris.
+- **Skill:** UV Resilience (Passive): The creature's rapid photolyase cycling naturally absorbs harsh ultraviolet rays, so standing nearby significantly lessens the stinging heat that would otherwise build up on your skin.
 - **Weakness:** Metabolic drain; Salaris must feed constantly, reducing stealth time.
 - **Observe:**
   1. Salaris pauses to expose ventral photolyase glands to starlight
@@ -84,7 +84,7 @@ Trait ← Enzymatic repair of thymine dimers ← High UV-B/C flux causes rapid D
 
 Trait ← Crawls without clicking or vibration ← High-frequency sound attenuates rapidly in thin air ← Acoustic signaling is ineffective for coordination ← Low gas density suppresses HF coupling ← F10, F8
 
-- **Skill:** Ghost Step (Basic): Player movement noise reduced by 80%; avoids vibration-sensitive predators.
+- **Skill:** Ghost Step (Basic): The creature moves with a silent, gliding crawl that leaves no audible trace, allowing you to slip past vibration-sensitive hunters without alerting them.
 - **Weakness:** Silent movement requires precise balance; slips on wet salt.
 - **Observe:**
   1. No sound despite rapid leg movement

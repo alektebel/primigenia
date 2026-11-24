@@ -34,7 +34,7 @@
           "en": "Shell Lock"
         },
         "role": "Defence",
-        "effect": "Reduces damage by 80% for 2 laps, costs 5% mass.",
+        "effect": "The creature braces its hardened carapace to strongly deflect incoming attacks for a short while, though it must shed a small portion of its mass to maintain the stance.",
         "numbers": {}
       },
       "weakness": "Immobile while locked, heavy mass drains delta-v.",
@@ -48,8 +48,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Rebuild the trait as a flattened Whipple shell: thin silicate-ice bumper, dust-filled standoff gap, water-ice-rich inner hull of roughly 10 cm water-equivalent. It stops micron-to-mm fragments, not boulders; the animal survives the fine rain of a cascade and hides in shadow or a tun when large fragments fly. Replace flares with belt-dose or torus-plasma spikes. Skill Shell Lock (Defence): tuck limbs under the bumper and hold still, immobile and with costly radial station-keeping because of the ballast; delete the 80%, 2 laps and 5% mass figures. Change deflects a Kessler cascade to survives the fragment rain.",
+        "fixes": [
+          "Rebuild the trait as a flattened Whipple shell: thin silicate-ice bumper, dust-filled standoff gap, water-ice-rich inner hull of roughly 10 cm water-equivalent. It stops micron-to-mm fragments, not boulders; the animal survives the fine rain of a cascade and hides in shadow or a tun when large fragments fly. Replace flares with belt-dose or torus-plasma spikes. Skill Shell Lock (Defence): tuck limbs under the bumper and hold still, immobile and with costly radial station-keeping because of the ballast; delete the 80%, 2 laps and 5% mass figures. Change deflects a Kessler cascade to survives the fragment rain."
+        ],
+        "analogues": [
+          {
+            "organism": "Whipple bumper shield in spacecraft engineering; biological analogues are diatom silica frustules and the cryptobiotic cuticle of tardigrade tuns; low-slung armoured chitons for the low-profile solution",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -80,7 +90,7 @@
           "en": "Skitter"
         },
         "role": "Basic",
-        "effect": "Moves 15 m/s sideways relative to ring, silent and stable.",
+        "effect": "The creature glides swiftly sideways along the surface in complete silence, maintaining a steady and balanced posture.",
         "numbers": {}
       },
       "weakness": "Cannot move radially quickly, easy target for phasing.",
@@ -93,11 +103,21 @@
         "en": ""
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Reframe as shear-surfing: the animal hooks grains on adjacent orbits and trades angular momentum with the ring, drifting at cm/s to m/s relative to its neighbours; that exchange is highly speculative but honest. Any faster dash must be paid for with sublimated ice under F9. Say low collision cross-section instead of conserves orbital energy. Skill Skitter (Basic): a low lateral scuttle aligned with the ring plane, fast relative to neighbours but unable to change radius quickly; delete the 15 m/s figure. Keep silent as a joke about F11, but replace leaves no trail with a brief spatters of ice dust.",
+        "fixes": [
+          "Reframe as shear-surfing: the animal hooks grains on adjacent orbits and trades angular momentum with the ring, drifting at cm/s to m/s relative to its neighbours; that exchange is highly speculative but honest. Any faster dash must be paid for with sublimated ice under F9. Say low collision cross-section instead of conserves orbital energy. Skill Skitter (Basic): a low lateral scuttle aligned with the ring plane, fast relative to neighbours but unable to change radius quickly; delete the 15 m/s figure. Keep silent as a joke about F11, but replace leaves no trail with a brief spatters of ice dust."
+        ],
+        "analogues": [
+          {
+            "organism": "Sidewinding rattlesnake reducing slip on granular sand; ice skater pushing against an edge; orbital momentum-exchange tether as an engineering analogue, highly speculative as biology",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 3,
           "skeptic": 2
         }
       },
@@ -126,7 +146,7 @@
           "en": "Ice Crack"
         },
         "role": "Engage",
-        "effect": "Breaks ice grain, gains +10 delta-v and heals 5% mass.",
+        "effect": "The creature shatters the surrounding ice with its claws to launch itself forward, absorbing the released vapor to restore its strength.",
         "numbers": {}
       },
       "weakness": "Cracking requires proximity, risks exposure to plasma.",
@@ -140,8 +160,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Brace a claw against a grain, crack it to expose fresh ice, heat that ice and vent it through the reaction-mass siphons; the grazer loses mass as it moves, and the recoil can help the stroke. Skill Ice Crack (Engage): fracture a grain and jet its vapour to reposition, requiring contact and therefore exposing the animal to peroxide frost and impact plasma; keep the peroxide-sequestering mouthparts from F22. Delete +10 delta-v and heals 5% mass.",
+        "fixes": [
+          "Brace a claw against a grain, crack it to expose fresh ice, heat that ice and vent it through the reaction-mass siphons; the grazer loses mass as it moves, and the recoil can help the stroke. Skill Ice Crack (Engage): fracture a grain and jet its vapour to reposition, requiring contact and therefore exposing the animal to peroxide frost and impact plasma; keep the peroxide-sequestering mouthparts from F22. Delete +10 delta-v and heals 5% mass."
+        ],
+        "analogues": [
+          {
+            "organism": "Squid and octopus jet propulsion, the same momentum conservation with a different working fluid; a steam or cold-gas thruster in engineering",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 6
@@ -172,7 +202,7 @@
           "en": "Brood Seal"
         },
         "role": "Control",
-        "effect": "Protects 3 offspring for 20 laps, reduces mobility.",
+        "effect": "The creature tucks its abdomen over its young to shield them from harsh radiation, though this protective posture makes it move much slower.",
         "numbers": {}
       },
       "weakness": "Sealed brood emits no heat, invisible to radar, but slow to escape.",
@@ -186,8 +216,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the clathrate-capped brood small and water-shielded, and add passive or magnetic attitude damping to handle the spin-up under F4. Skill Brood Seal (Control): withdraw the abdomen under the cap and spend stored ice to launch spores aimed by orbital phasing, slowed and thermally quiet in the infrared but still visible to radar. Delete protects 3 offspring for 20 laps and keep only the plain behaviour.",
+        "fixes": [
+          "Keep the clathrate-capped brood small and water-shielded, and add passive or magnetic attitude damping to handle the spin-up under F4. Skill Brood Seal (Control): withdraw the abdomen under the cap and spend stored ice to launch spores aimed by orbital phasing, slowed and thermally quiet in the infrared but still visible to radar. Delete protects 3 offspring for 20 laps and keep only the plain behaviour."
+        ],
+        "analogues": [
+          {
+            "organism": "Tardigrade tun cryptobiosis; brooding parents that shield eggs; explosive ballistospore discharge in fungi for the spring-loaded launch",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 4
@@ -222,6 +262,11 @@
       "date": "2026-11-24",
       "who": "autoloop",
       "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "carcinised": true,

@@ -24,15 +24,15 @@ Robust bipedal calcium-skeleton <- 1.0 g gravity + high O2 partial pressure <- E
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_humans.c1 | Robust bipedal calcium-skeleton frame | Continuous gravitational loading ← Trabecular bone reinforcement ← 9.81 m/s² surface acceleration | **F4** Earth surface gravity is 9.81 m/s² while Mars surface gravity is 3.71 m/s². | Sure-footed Stride (`at_humans.sure_footed_stride`) | Basic | +20% movement speed and stability on irregular terrain | Rapid joint degeneration and muscle wasting if relocated to sub-0.5g environments |
-| at_humans.c2 | Broadband vocal tract for mid-frequency speech | Acoustic resonance in elongated larynx ← Efficient coupling with dense gas ← 1.0 bar nitrogen-oxygen envelope | **F7** Earth maintains a ~1.0 bar nitrogen-oxygen atmosphere protected by a stratospheric ozone layer. | Clear Call (`at_humans.clear_call`) | Social | +25 m effective range for diplomatic commands; -15% hostility in local fauna | Vocal folds crackle and fade below 0.3 bar pressure |
-| at_humans.c3 | High-throughput aerobic metabolic engine | Rapid glucose oxidation via mitochondria ← 0.21 bar partial pressure sustains proton gradients ← Stable 21% O₂ atmospheric mix | **F7** Earth maintains a ~1.0 bar nitrogen-oxygen atmosphere protected by a stratospheric ozone layer. | Adrenal Surge (`at_humans.adrenal_surge`) | Engage | 3× burst speed for 4 seconds, consumes 40% stamina | Hypoxia collapse if ambient O₂ drops below 15% for >10 s |
+| at_humans.c1 | Robust bipedal calcium-skeleton frame | Continuous gravitational loading ← Trabecular bone reinforcement ← 9.81 m/s² surface acceleration | **F4** Earth surface gravity is 9.81 m/s² while Mars surface gravity is 3.71 m/s². | Sure-footed Stride (`at_humans.sure_footed_stride`) | Basic | The creature moves swiftly and maintains steady footing across rough and uneven ground. | Rapid joint degeneration and muscle wasting if relocated to sub-0.5g environments |
+| at_humans.c2 | Broadband vocal tract for mid-frequency speech | Acoustic resonance in elongated larynx ← Efficient coupling with dense gas ← 1.0 bar nitrogen-oxygen envelope | **F7** Earth maintains a ~1.0 bar nitrogen-oxygen atmosphere protected by a stratospheric ozone layer. | Clear Call (`at_humans.clear_call`) | Social | Its resonant voice carries clearly across the landscape, reaching nearby creatures and strongly calming their aggressive instincts. | Vocal folds crackle and fade below 0.3 bar pressure |
+| at_humans.c3 | High-throughput aerobic metabolic engine | Rapid glucose oxidation via mitochondria ← 0.21 bar partial pressure sustains proton gradients ← Stable 21% O₂ atmospheric mix | **F7** Earth maintains a ~1.0 bar nitrogen-oxygen atmosphere protected by a stratospheric ozone layer. | Adrenal Surge (`at_humans.adrenal_surge`) | Engage | The creature suddenly bursts into a rapid sprint, covering ground swiftly for a short while before its energy quickly fades. | Hypoxia collapse if ambient O₂ drops below 15% for >10 s |
 
 ### at_humans.c1: Robust bipedal calcium-skeleton frame
 
 Trait ← Continuous gravitational loading ← Trabecular bone reinforcement ← 9.81 m/s² surface acceleration ← F4
 
-- **Skill:** Sure-footed Stride (Basic): +20% movement speed and stability on irregular terrain
+- **Skill:** Sure-footed Stride (Basic): The creature moves swiftly and maintains steady footing across rough and uneven ground.
 - **Weakness:** Rapid joint degeneration and muscle wasting if relocated to sub-0.5g environments
 - **Observe:**
   1. Thickened femoral necks visible in gait
@@ -49,7 +49,7 @@ Trait ← Continuous gravitational loading ← Trabecular bone reinforcement ←
 
 Trait ← Acoustic resonance in elongated larynx ← Efficient coupling with dense gas ← 1.0 bar nitrogen-oxygen envelope ← F7
 
-- **Skill:** Clear Call (Social): +25 m effective range for diplomatic commands; -15% hostility in local fauna
+- **Skill:** Clear Call (Social): Its resonant voice carries clearly across the landscape, reaching nearby creatures and strongly calming their aggressive instincts.
 - **Weakness:** Vocal folds crackle and fade below 0.3 bar pressure
 - **Observe:**
   1. Elongated larynx position
@@ -65,7 +65,7 @@ Trait ← Acoustic resonance in elongated larynx ← Efficient coupling with den
 
 Trait ← Rapid glucose oxidation via mitochondria ← 0.21 bar partial pressure sustains proton gradients ← Stable 21% O₂ atmospheric mix ← F7
 
-- **Skill:** Adrenal Surge (Engage): 3× burst speed for 4 seconds, consumes 40% stamina
+- **Skill:** Adrenal Surge (Engage): The creature suddenly bursts into a rapid sprint, covering ground swiftly for a short while before its energy quickly fades.
 - **Weakness:** Hypoxia collapse if ambient O₂ drops below 15% for >10 s
 - **Observe:**
   1. Flaring nostrils

@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Photospheric flux tubes anchoring in umbrae; extends into granular upflows
+- **Habitat:** Photospheric flux tubes anchoring in umbrae; extends into granular upflows. Also, in the council's sketch (no such creature in this world yet): Remo de Plasma, remo steals Astrophage from Trenza's filaments using speed; Trenza occasionally traps Remo in siphon-grasps.
 - **Diet:** Astrophage swarms and kinetic energy from granular plasma currents
 - **Active:** Constant; anchors deeply and filters the boiling photosphere
 - **Predators:** none
@@ -21,16 +21,16 @@ A self-organized helical plasma braid (Tsytovich & Morfill 2007) with lattice-re
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| trenza_de_fuego.c1 | Helical, braided plasma body | Resists magnetic shear and torsion ← Differential rotation winds flux tubes over time ← Photospheric hydrodynamics and MHD ← F4 ← F21 | **F4** Equatorial rotation period is ~25.4 days with differential rotation extending to ~34.5 days at the poles.; **F21** Playable life is primarily restricted to magnetic flux tubes, spot umbrae, and prominence cavities, where partial shielding mitigates extreme radiation and thermal loads. | Braid Lock (`trenza_de_fuego.braid_lock`) | Defence | Reduces所受 damage by 60% and resists displacement for 5s by tightening the helix against the flux tube. | Slow to reconfigure; rapid magnetic reorganization can snap the braid if anchored too tightly. |
-| trenza_de_fuego.c2 | Grasping plasma filaments in upflows | Absorb kinetic energy from convective plumes ← Granular convection cells provide buoyant upflows ← Radiative energy transport via plasma plumes ← F8 ← F21 | **F8** Solar granulation consists of ~1000 km convective cells with a turnover time of 5–10 minutes and upflow velocities of ~1 km/s.; **F21** Playable life is primarily restricted to magnetic flux tubes, spot umbrae, and prominence cavities, where partial shielding mitigates extreme radiation and thermal loads. | Siphon Grasp (`trenza_de_fuego.siphon_grasp`) | Basic | Drain 15 HP/s from a target in an upflow and heal self for 10 HP. | Filaments lose cohesion in dead-zone downflows; cannot harvest in low-velocity regions. |
-| trenza_de_fuego.c3 | Dusty plasma lattice skin | Withstand 63 MW/m² radiative flux ← Photospheric radiative load requires scattering ← Stefan-Boltzmann law at 5800 K ← F6 ← F21 | **F6** Photospheric radiative flux is ~63 MW/m², with coronal temperatures reaching ~10⁶ K.; **F21** Playable life is primarily restricted to magnetic flux tubes, spot umbrae, and prominence cavities, where partial shielding mitigates extreme radiation and thermal loads. | Lattice Scatter (`trenza_de_fuego.lattice_scatter`) | Defence | Reflect 50% of incoming energy attacks back at the source for 3s. | Lattice is disrupted by high-energy particle storms; effectiveness drops during flares. |
-| trenza_de_fuego.c4 | Alfvénic resonance organs | Tune to field vibrations for sensing ← MHD waves propagate along flux tubes ← Alfvén speed depends on B and density ← F20 ← F7 | **F20** Alfvén-wave communication propagates along magnetically connected field lines at ~1000 km/s, with range limited by frequency-dependent damping and line-tying.; **F7** Magnetoacoustic wave speed is ~7–10 km/s in the photosphere, transitioning to Alfvén wave speeds ~1000 km/s in the corona. | Resonance Hum (`trenza_de_fuego.resonance_hum`) | Control | Emit an Alfvén wave pulse (range 80m) that slows all enemies on the same flux tube by 40% for 4s. | Requires magnetically connected targets; useless across field gaps. |
+| trenza_de_fuego.c1 | Helical, braided plasma body | Resists magnetic shear and torsion ← Differential rotation winds flux tubes over time ← Photospheric hydrodynamics and MHD ← F4 ← F21 | **F4** Equatorial rotation period is ~25.4 days with differential rotation extending to ~34.5 days at the poles.; **F21** Playable life is primarily restricted to magnetic flux tubes, spot umbrae, and prominence cavities, where partial shielding mitigates extreme radiation and thermal loads. | Braid Lock (`trenza_de_fuego.braid_lock`) | Defence | The creature tightly coils its plasma body around the flux tube, making its form rigid and strongly resisting any attempt to push it away. | Slow to reconfigure; rapid magnetic reorganization can snap the braid if anchored too tightly. |
+| trenza_de_fuego.c2 | Grasping plasma filaments in upflows | Absorb kinetic energy from convective plumes ← Granular convection cells provide buoyant upflows ← Radiative energy transport via plasma plumes ← F8 ← F21 | **F8** Solar granulation consists of ~1000 km convective cells with a turnover time of 5–10 minutes and upflow velocities of ~1 km/s.; **F21** Playable life is primarily restricted to magnetic flux tubes, spot umbrae, and prominence cavities, where partial shielding mitigates extreme radiation and thermal loads. | Siphon Grasp (`trenza_de_fuego.siphon_grasp`) | Basic | Its grasping plasma filaments wrap around a nearby target caught in an upflow, steadily siphoning vitality from it to nourish itself. | Filaments lose cohesion in dead-zone downflows; cannot harvest in low-velocity regions. |
+| trenza_de_fuego.c3 | Dusty plasma lattice skin | Withstand 63 MW/m² radiative flux ← Photospheric radiative load requires scattering ← Stefan-Boltzmann law at 5800 K ← F6 ← F21 | **F6** Photospheric radiative flux is ~63 MW/m², with coronal temperatures reaching ~10⁶ K.; **F21** Playable life is primarily restricted to magnetic flux tubes, spot umbrae, and prominence cavities, where partial shielding mitigates extreme radiation and thermal loads. | Lattice Scatter (`trenza_de_fuego.lattice_scatter`) | Defence | Its dusty plasma lattice skin shimmers and redirects incoming energy strikes back toward their origin. | Lattice is disrupted by high-energy particle storms; effectiveness drops during flares. |
+| trenza_de_fuego.c4 | Alfvénic resonance organs | Tune to field vibrations for sensing ← MHD waves propagate along flux tubes ← Alfvén speed depends on B and density ← F20 ← F7 | **F20** Alfvén-wave communication propagates along magnetically connected field lines at ~1000 km/s, with range limited by frequency-dependent damping and line-tying.; **F7** Magnetoacoustic wave speed is ~7–10 km/s in the photosphere, transitioning to Alfvén wave speeds ~1000 km/s in the corona. | Resonance Hum (`trenza_de_fuego.resonance_hum`) | Control | The creature vibrates its resonance organs to send a pulsing wave along the flux tube, causing all nearby foes to move sluggishly. | Requires magnetically connected targets; useless across field gaps. |
 
 ### trenza_de_fuego.c1: Helical, braided plasma body
 
 Trait ← Resists magnetic shear and torsion ← Differential rotation winds flux tubes over time ← Photospheric hydrodynamics and MHD ← F4 ← F21 ← F4, F21
 
-- **Skill:** Braid Lock (Defence): Reduces所受 damage by 60% and resists displacement for 5s by tightening the helix against the flux tube.
+- **Skill:** Braid Lock (Defence): The creature tightly coils its plasma body around the flux tube, making its form rigid and strongly resisting any attempt to push it away.
 - **Weakness:** Slow to reconfigure; rapid magnetic reorganization can snap the braid if anchored too tightly.
 - **Observe:**
   1. The creature forms a distinct right-handed helix.
@@ -49,7 +49,7 @@ Trait ← Resists magnetic shear and torsion ← Differential rotation winds flu
 
 Trait ← Absorb kinetic energy from convective plumes ← Granular convection cells provide buoyant upflows ← Radiative energy transport via plasma plumes ← F8 ← F21 ← F8, F21
 
-- **Skill:** Siphon Grasp (Basic): Drain 15 HP/s from a target in an upflow and heal self for 10 HP.
+- **Skill:** Siphon Grasp (Basic): Its grasping plasma filaments wrap around a nearby target caught in an upflow, steadily siphoning vitality from it to nourish itself.
 - **Weakness:** Filaments lose cohesion in dead-zone downflows; cannot harvest in low-velocity regions.
 - **Observe:**
   1. Filaments glow brighter where they touch a rising granule.
@@ -67,7 +67,7 @@ Trait ← Absorb kinetic energy from convective plumes ← Granular convection c
 
 Trait ← Withstand 63 MW/m² radiative flux ← Photospheric radiative load requires scattering ← Stefan-Boltzmann law at 5800 K ← F6 ← F21 ← F6, F21
 
-- **Skill:** Lattice Scatter (Defence): Reflect 50% of incoming energy attacks back at the source for 3s.
+- **Skill:** Lattice Scatter (Defence): Its dusty plasma lattice skin shimmers and redirects incoming energy strikes back toward their origin.
 - **Weakness:** Lattice is disrupted by high-energy particle storms; effectiveness drops during flares.
 - **Observe:**
   1. Skin shimmers with a crystalline Yukawa lattice pattern.
@@ -86,7 +86,7 @@ Trait ← Withstand 63 MW/m² radiative flux ← Photospheric radiative load req
 
 Trait ← Tune to field vibrations for sensing ← MHD waves propagate along flux tubes ← Alfvén speed depends on B and density ← F20 ← F7 ← F20, F7
 
-- **Skill:** Resonance Hum (Control): Emit an Alfvén wave pulse (range 80m) that slows all enemies on the same flux tube by 40% for 4s.
+- **Skill:** Resonance Hum (Control): The creature vibrates its resonance organs to send a pulsing wave along the flux tube, causing all nearby foes to move sluggishly.
 - **Weakness:** Requires magnetically connected targets; useless across field gaps.
 - **Observe:**
   1. Organ vibrates at the local Alfvén frequency.
@@ -105,7 +105,6 @@ Trait ← Tune to field vibrations for sensing ← MHD waves propagate along flu
 | With | Kind | Via | Note |
 |---|---|---|---|
 | Astrophage | cousin |  | (council kind 'Predator') Trenza filters and consumes Astrophage swarms to prevent overgrowth on its filaments; the Astrophage gain mobility by riding Trenza's updrafts. |
-| Remo de Plasma | cousin |  | (council kind 'Competitor') Remo steals Astrophage from Trenza's filaments using speed; Trenza occasionally traps Remo in siphon-grasps. |
 
 ## Journal
 

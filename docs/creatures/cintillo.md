@@ -21,24 +21,27 @@ Asymmetric teardrop, spring-loaded spore capsules, reflective dorsal scale
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cintillo.c1 | Reflective dorsal iridophores | Iridophores reflect starlight and radiation ← Prevents cell damage above 260 K ← High flux at 0.575 AU raises thermal load ← Radiation pressure also exerts thermal stress | **F22** Food is ice, peroxide frost, UV-processed organics such as formaldehyde and methanol, and other organisms; poisons are peroxide above 10 mM, free oxygen, heat above 260 K, ammonia above 20% and impact plasma.; **F10** Radiation pressure at 0.575 AU is 9 micropascals on a reflector; a 10 g/m2 living sail accelerates near 1 mm/s2, enough to spiral outward, never inward.; **F2** Verrin orbits at 0.575 AU with e = 0.03 and 1.5 degrees inclination: a 176-day year and 1,360 W/m2 at the ring. | Flash Burn (`cintillo.flash_burn`) | Defence | Reflects radiation burst; deals 10 heat damage to nearby enemies, costs 10% health | Overheat risk; flash reduces own insulation temporarily |
+| cintillo.c1 | Reflective dorsal iridophores | Iridophores reflect starlight and radiation ← Prevents cell damage above 260 K ← High flux at 0.575 AU raises thermal load ← Radiation pressure also exerts thermal stress | **F22** Food is ice, peroxide frost, UV-processed organics such as formaldehyde and methanol, and other organisms; poisons are peroxide above 10 mM, free oxygen, heat above 260 K, ammonia above 20% and impact plasma.; **F10** Radiation pressure at 0.575 AU is 9 micropascals on a reflector; a 10 g/m2 living sail accelerates near 1 mm/s2, enough to spiral outward, never inward.; **F2** Verrin orbits at 0.575 AU with e = 0.03 and 1.5 degrees inclination: a 176-day year and 1,360 W/m2 at the ring. | Flash Burn (`cintillo.flash_burn`) | Defence | The creature's reflective scales bounce back incoming radiation, scorching nearby foes with intense heat while leaving the creature slightly weakened. | Overheat risk; flash reduces own insulation temporarily |
 | cintillo.c2 | Spring-loaded spore capsules | Capsules launch gametes with mechanical force ← No sedimentation in microgravity ← Gametes must be aimed by orbital phasing ← Spring mechanism ensures initial delta-v | **F23** Reproduction is budding plus spring-loaded spore shells; tuns survive vacuum and kilogray doses, and gamete meeting in free fall must be aimed by orbital phasing, not by falling. | Phasing Spawn (`cintillo.phasing_spawn`) | Social | Launches spores to ally orbit; heals 15 mass and adjusts ally inclination by 0.1° | Aiming error; miss can waste spores or hit enemies |
-| cintillo.c3 | Silicate-cracker jaws | Jaws fracture silicate and ice matrix ← Silicates provide structural material for shell ← Ring composition is 8% silicates ← Cracking releases trapped organics and ice | **F18** The ring is 92% water ice and 8% silicate plus organics; at 221 K ice sublimes, and belt electrons radiolyse the top millimetre into hydrogen peroxide and hydrogen. | Crack & Burn (`cintillo.crack_burn`) | Poke | Fractures target; deals 8 damage and releases 5 ice mass to attacker | Slow processing; unable to crack large silicate chunks quickly |
+| cintillo.c3 | Silicate-cracker jaws | Jaws fracture silicate and ice matrix ← Silicates provide structural material for shell ← Ring composition is 8% silicates ← Cracking releases trapped organics and ice | **F18** The ring is 92% water ice and 8% silicate plus organics; at 221 K ice sublimes, and belt electrons radiolyse the top millimetre into hydrogen peroxide and hydrogen. | Crack & Burn (`cintillo.crack_burn`) | Poke | The creature's powerful jaws crack the target's defenses, shattering them while releasing a burst of cold ice that drifts toward the attacker. | Slow processing; unable to crack large silicate chunks quickly |
 | cintillo.c4 | Amber-absorption retina | Retina tuned to 585 nm absorption ← Matches K2V star peak spectrum ← Star is K2V dwarf with 4950 K photosphere ← Amber light drives primary photosynthesis | **F21** Primary production uses amber-light photosynthesis with magenta bacteriorhodopsin-like pigments peaked near 585 nm, the hydrogen/peroxide couple at about -340 kJ/mol, and direct electron capture from the torus.; **F1** Iora is a K2V dwarf, 0.82 M_sun, 0.33 L_sun, 4,950 K, 3.9 Gyr, rotating every 34 d, with no superflare in 2 Gyr. | Spectrum Sight (`cintillo.spectrum_sight`) | Basic | Detects peroxide frost and heat signatures; reveals hidden grazers | Blind to IR; thermal cloaking is effective |
 
 ### cintillo.c1: Reflective dorsal iridophores
 
 Trait ← Iridophores reflect starlight and radiation ← Prevents cell damage above 260 K ← High flux at 0.575 AU raises thermal load ← Radiation pressure also exerts thermal stress ← F22, F10, F2
 
-- **Skill:** Flash Burn (Defence): Reflects radiation burst; deals 10 heat damage to nearby enemies, costs 10% health
+- **Skill:** Flash Burn (Defence): The creature's reflective scales bounce back incoming radiation, scorching nearby foes with intense heat while leaving the creature slightly weakened.
 - **Weakness:** Overheat risk; flash reduces own insulation temporarily
 - **Observe:**
   1. Mirror-like flash from dorsal scale
   2. Heat warning shimmer
   3. Radiation deflecting off surface
 - **Journal:** Survival is a matter of reflecting the fire.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Specify a selective reflector: high visible reflectance, high mid-IR emissivity. Make the flash an aimed sunlight glance that temporarily sacrifices insulation, and hide or shed scales during cascades; describe the move qualitatively.
   - scores: astrobio 6, skeptic 3
+  - Analogue: Cephalopod and fish iridophores; Saharan Cataglyphis reflective hairs; spacecraft selective solar-reflector/IR-emitter coatings.: as named by the judge; no mechanism or reference recorded
+  - Fix: Specify a selective reflector: high visible reflectance, high mid-IR emissivity. Make the flash an aimed sunlight glance that temporarily sacrifices insulation, and hide or shed scales during cascades; describe the move qualitatively.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### cintillo.c2: Spring-loaded spore capsules
@@ -52,24 +55,31 @@ Trait ← Capsules launch gametes with mechanical force ← No sedimentation in 
   2. Spore trajectory calculated against shear
   3. Phasing shift in ally orbit
 - **Journal:** Love is a calculated orbit in the dark.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** plausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep the launch physics; change the origin to ejecta-descended colonists of the Ledge and delete any plume-to-orbit claim (F16: 300 m/s cannot reach Coth's 3.7 km/s escape). Describe the move qualitatively with no numeric effect.
+  - scores: astrobio 8, skeptic 5
+  - Analogue: Ballistospore discharge in fungi; flea/resilin catapults; tardigrade cryptobiosis for the spore itself.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Jonsson 2008 [verified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Jonsson 2008 [verified])
+  - Fix: Keep the launch physics; change the origin to ejecta-descended colonists of the Ledge and delete any plume-to-orbit claim (F16: 300 m/s cannot reach Coth's 3.7 km/s escape). Describe the move qualitatively with no numeric effect.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### cintillo.c3: Silicate-cracker jaws
 
 Trait ← Jaws fracture silicate and ice matrix ← Silicates provide structural material for shell ← Ring composition is 8% silicates ← Cracking releases trapped organics and ice ← F18
 
-- **Skill:** Crack & Burn (Poke): Fractures target; deals 8 damage and releases 5 ice mass to attacker
+- **Skill:** Crack & Burn (Poke): The creature's powerful jaws crack the target's defenses, shattering them while releasing a burst of cold ice that drifts toward the attacker.
 - **Weakness:** Slow processing; unable to crack large silicate chunks quickly
 - **Observe:**
   1. Jaws grinding against hard grains
   2. Silicate dust and ice release
   3. Mass gain after fracture
 - **Journal:** The rock is the skeleton of the sky.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Add an adhesive ventral pad or harpoon anchor, and frame the move as anchored wedge-and-scavenge; describe it qualitatively with no numeric effect.
   - scores: astrobio 6, skeptic 7
+  - Analogue: Seed-cracking finches and rodents; wood-boring beetle mandibles; sea stars wedging bivalves.: as named by the judge; no mechanism or reference recorded
+  - Fix: Add an adhesive ventral pad or harpoon anchor, and frame the move as anchored wedge-and-scavenge; describe it qualitatively with no numeric effect.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### cintillo.c4: Amber-absorption retina
@@ -83,8 +93,11 @@ Trait ← Retina tuned to 585 nm absorption ← Matches K2V star peak spectrum �
   2. Target lock on peroxide crystals
   3. Heat map overlay
 - **Journal:** In the amber light, the invisible becomes visible.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep amber for navigation, grazers against planet-shine, and frost texture via UV/polarization; either add a separate bolometric/IR sense for heat or change the effect to reveal silhouettes, so thermal cloaking still works. Describe the move qualitatively.
   - scores: astrobio 6, skeptic 5
+  - Analogue: Firefly Photinus spectral matching; honeybee UV/polarization vision; retinal photopigments in microbes.: as named by the judge; no mechanism or reference recorded
+  - Fix: Keep amber for navigation, grazers against planet-shine, and frost texture via UV/polarization; either add a separate bolometric/IR sense for heat or change the effect to reveal silhouettes, so thermal cloaking still works. Describe the move qualitatively.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -116,3 +129,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

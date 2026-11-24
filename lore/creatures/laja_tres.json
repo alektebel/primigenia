@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Basalt ridges, thermal vent fields, wind-scoured plates.",
+    "habitat": "Basalt ridges, thermal vent fields, wind-scoured plates. Also, in the council's sketch (no such creature in this world yet): Sulfur-Skimmer, competes for vent crustaceans and mineral crusts; Laja-Tres dominate high-wind ridges, Skimmers hold low-vent flats.",
     "diet": "FeS₂, sulfur crystals, chemosynthetic biofilms, supercritical vent fluids.",
     "active": "Thermally regulated; active above 150°C, stasis below 130°C.",
     "predators": []
@@ -35,7 +35,7 @@
           "en": "Shield Plate"
         },
         "role": "Defence",
-        "effect": "Carapace locks plates against wind and impact, reducing damage by 30% and passively venting excess heat.",
+        "effect": "The creature locks its broad plates together to brace against strong winds and heavy impacts, steadily releasing built-up heat from its joints.",
         "numbers": {}
       },
       "weakness": "Slow to deploy; if struck before locking, thermal joints fracture and lose mobility.",
@@ -98,7 +98,7 @@
           "en": "Crystal Stride"
         },
         "role": "Control",
-        "effect": "Sideways movement regenerates stamina bar and stabilizes footing on loose scree; 20% speed boost when moving laterally.",
+        "effect": "Shifting sideways across the ground allows the creature to quickly renew its vigor and maintain steady footing on loose gravel, while its lateral steps carry it forward with notable swiftness.",
         "numbers": {}
       },
       "weakness": "Cannot move forward effectively; turning requires a 90° pivot that drains charge and leaves flank exposed.",
@@ -255,11 +255,6 @@
     }
   ],
   "relations": [
-    {
-      "with": "Sulfur-Skimmer",
-      "kind": "cousin",
-      "note": "(council kind 'Competition') Competes for vent crustaceans and mineral crusts; Laja-Tres dominate high-wind ridges, Skimmers hold low-vent flats."
-    },
     {
       "with": "carmesa",
       "kind": "convergent",

@@ -95,7 +95,7 @@
           "en": "Biomass Reshape"
         },
         "role": "Engage",
-        "effect": "Converts 1.2kg of local biomass into a support structure or gas-filtering sponge, restoring 5 HP to adjacent allies",
+        "effect": "The creature draws in surrounding biomass to form a sturdy support structure or porous gas-filtering sponge. Nearby allies have their vitality restored as the transformed tissue releases soothing vapors.",
         "numbers": {}
       },
       "weakness": "Rapid phenotypic shifting drains glucose reserves, causing temporary metabolic collapse if not fed",

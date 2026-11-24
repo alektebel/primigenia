@@ -22,16 +22,16 @@ Oversized pupils and a reflective tapetum capture photons in moonlit or starlit 
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| acechalunas.c1 | Oversized pupils and reflective tapetum layer | Moonless nights are truly dark ← Daylight niches are crowded ← Shift activity to the empty night niche | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Night eyes (`acechalunas.night_eyes`) | Passive | See 3× farther in moonlight; −50% sight in full sun | A flare or bright sun blinds it for 5 s; fight at noon. |
-| acechalunas.c2 | Broad tympanic membranes and low-frequency canals | Night air is still and dense ← Low calls travel while high pitches die ← Large ears catch long wavelengths | **F4** Dense air: 1.6 bar; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Dark call (`acechalunas.dark_call`) | Control | Locate kin within 150 m; +10 befriend at night | A 7 kHz whistle jams it; it loses the call for 8 s. |
-| acechalunas.c3 | Paired ventral photophores with rhythmic control | Dark nights demand a signal ← High pO₂ pays for a light organ ← Light also advertises to predators | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Glow code (`acechalunas.glow_code`) | Social | +15 befriend at night; identifies species within 40 m | Garfio spots the glow at 60 m; use a bright light to lure it away. |
+| acechalunas.c1 | Oversized pupils and reflective tapetum layer | Moonless nights are truly dark ← Daylight niches are crowded ← Shift activity to the empty night niche | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Night eyes (`acechalunas.night_eyes`) | Passive | The creature sees clearly across vast distances under moonlight, though its vision grows dim and hazy in bright daylight. | A flare or bright sun blinds it for 5 s; fight at noon. |
+| acechalunas.c2 | Broad tympanic membranes and low-frequency canals | Night air is still and dense ← Low calls travel while high pitches die ← Large ears catch long wavelengths | **F4** Dense air: 1.6 bar; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Dark call (`acechalunas.dark_call`) | Control | It emits low calls that echo across the landscape, allowing nearby creatures to recognize its kind. At night, this resonant call makes it strongly easier to befriend. | A 7 kHz whistle jams it; it loses the call for 8 s. |
+| acechalunas.c3 | Paired ventral photophores with rhythmic control | Dark nights demand a signal ← High pO₂ pays for a light organ ← Light also advertises to predators | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Glow code (`acechalunas.glow_code`) | Social | Its glowing patterns pulse rhythmically in the dark, making it strongly receptive to forming friendships. The shifting lights also reveal the true nature of any creature standing nearby. | Garfio spots the glow at 60 m; use a bright light to lure it away. |
 | acechalunas.c4 | Melanin-rich dermal shields and crepuscular rhythm | High UV hazard at altitude ← Solar UV pulses force shade avoidance ← 1.4× UV at 2,000 m selects for nocturnal crevices | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Shade step (`acechalunas.shade_step`) | Defence | +20 dodge in bright light; grants +5 to spot hidden paths at dusk | Stays rigid in open sun; easy to corner on exposed ridges. |
 
 ### acechalunas.c1: Oversized pupils and reflective tapetum layer
 
 Trait ← Moonless nights are truly dark ← Daylight niches are crowded ← Shift activity to the empty night niche ← F6, F27
 
-- **Skill:** Night eyes (Passive): See 3× farther in moonlight; −50% sight in full sun
+- **Skill:** Night eyes (Passive): The creature sees clearly across vast distances under moonlight, though its vision grows dim and hazy in bright daylight.
 - **Weakness:** A flare or bright sun blinds it for 5 s; fight at noon.
 - **Observe:**
   1. eye shine
@@ -49,7 +49,7 @@ Trait ← Moonless nights are truly dark ← Daylight niches are crowded ← Shi
 
 Trait ← Night air is still and dense ← Low calls travel while high pitches die ← Large ears catch long wavelengths ← F4, F16
 
-- **Skill:** Dark call (Control): Locate kin within 150 m; +10 befriend at night
+- **Skill:** Dark call (Control): It emits low calls that echo across the landscape, allowing nearby creatures to recognize its kind. At night, this resonant call makes it strongly easier to befriend.
 - **Weakness:** A 7 kHz whistle jams it; it loses the call for 8 s.
 - **Observe:**
   1. large ears
@@ -65,7 +65,7 @@ Trait ← Night air is still and dense ← Low calls travel while high pitches d
 
 Trait ← Dark nights demand a signal ← High pO₂ pays for a light organ ← Light also advertises to predators ← F5, F6
 
-- **Skill:** Glow code (Social): +15 befriend at night; identifies species within 40 m
+- **Skill:** Glow code (Social): Its glowing patterns pulse rhythmically in the dark, making it strongly receptive to forming friendships. The shifting lights also reveal the true nature of any creature standing nearby.
 - **Weakness:** Garfio spots the glow at 60 m; use a bright light to lure it away.
 - **Observe:**
   1. paired spots

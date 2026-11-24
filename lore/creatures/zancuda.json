@@ -43,7 +43,7 @@
           "en": "Stilt Wade"
         },
         "role": "Basic",
-        "effect": "Crosses 0.6m water or mud at 2m/s with no stamina drain.",
+        "effect": "The creature strides effortlessly across shallow water and thick mud without tiring. You can safely follow it through wetlands.",
         "numbers": {}
       },
       "weakness": "Spring tides flood the flats; catch it at high water.",
@@ -98,7 +98,7 @@
           "en": "Periscope"
         },
         "role": "Passive",
-        "effect": "See over reeds and water to 60m; +20% detect hidden creatures.",
+        "effect": "It raises its long neck to peer over reeds and water, strongly spotting hidden creatures. You can notice concealed threats that would otherwise go unnoticed.",
         "numbers": {}
       },
       "weakness": "Wind pushes the neck; gusts above 8m/s force it down for 5s.",
@@ -149,7 +149,7 @@
           "en": "Spear"
         },
         "role": "Engage",
-        "effect": "10 dmg, 2.5m reach, 1.5s cooldown; a miss costs 2s.",
+        "effect": "It lunges forward with a sharp beak strike at nearby targets. If it misses, it remains exposed for a short while before recovering its stance.",
         "numbers": {}
       },
       "weakness": "Bait two misses; the neck tangles and it cannot strike for 4s.",

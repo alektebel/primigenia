@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Hydrothermal vent plains & iron-sulfide mudflats. Evolves here because vent plumes obscure geographic landmarks & 38 PSU conductivity amplifies bio-voltages. Magnetotactic symbionts & ampullary organs exploit the dense ionic medium to track prey & navigate stable crustal anomaly corridors.",
+    "habitat": "Hydrothermal vent plains & iron-sulfide mudflats. Evolves here because vent plumes obscure geographic landmarks & 38 PSU conductivity amplifies bio-voltages. Magnetotactic symbionts & ampullary organs exploit the dense ionic medium to track prey & navigate stable crustal anomaly corridors. Also, in the council's sketch (no such creature in this world yet): Siderobacter, magnetotactic colonies provide internal compass & dietary iron, traded for stable gut pH.",
     "diet": "Conductive fluid grazers, magnetotactic bacterial colonies, electro-receptive invertebrates",
     "active": "Nocturnal & flare-peak, tide-quiet",
     "predators": []
@@ -35,7 +35,7 @@
           "en": "Conductivity Sense"
         },
         "role": "Basic",
-        "effect": "Reveals prey voltage signatures, hunting range +50m",
+        "effect": "The creature sweeps its snout across the environment to read the electrical whispers of nearby prey. Hidden targets glow faintly as it tracks them.",
         "numbers": {}
       },
       "weakness": "Saturated by high-salinity pools; player can dump conductive salts to blind it.",
@@ -155,7 +155,7 @@
           "en": "Galvanic Snare"
         },
         "role": "Poke",
-        "effect": "Releases low-voltage pulse, stuns conductive prey, +25% capture rate",
+        "effect": "It releases a crackling electric pulse that locks onto conductive creatures and holds them still. The stunned prey drop their defenses and become easy to catch.",
         "numbers": {}
       },
       "weakness": "Pulse drains metabolic energy; player can lure it into low-conductivity dry mud to exhaust it.",
@@ -212,7 +212,7 @@
           "en": "Anomaly Blend"
         },
         "role": "Defence",
-        "effect": "Matches local field gradient, detection chance -60%",
+        "effect": "Its shell ripples to perfectly match the local magnetic shifts, making it nearly impossible to spot. Observers struggle to pick it out from the background noise.",
         "numbers": {}
       },
       "weakness": "Plate alignment lags behind rapid field spikes; player can trigger storm flares to misalign it.",
@@ -261,11 +261,6 @@
       "with": "cromavolante",
       "kind": "cousin",
       "note": "(council kind 'Predator') Adults ambush juvenile Cromavolante when they descend to feed on vent microplankton."
-    },
-    {
-      "with": "Siderobacter",
-      "kind": "cousin",
-      "note": "(council kind 'Symbiont') Magnetotactic colonies provide internal compass & dietary iron, traded for stable gut pH."
     }
   ],
   "provenance": {

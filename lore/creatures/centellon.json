@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Mid-tropospheric convective belts (5–10 km altitude), persistent cumulonimbus anvils",
+    "habitat": "Mid-tropospheric convective belts (5–10 km altitude), persistent cumulonimbus anvils. Also, in the council's sketch (no such creature in this world yet): Sky Reef filter-feeders, competes for suspended aerosol organics but avoids direct conflict by occupying higher convective tiers",
     "diet": "Atmospheric ions, lightning-fixed nitrates/sulfates, suspended aerosol organics, dissolved storm-water droplets",
     "active": "Diurnal (peak during daytime thermals and afternoon squalls)",
     "predators": []
@@ -35,7 +35,7 @@
           "en": "Spark Tap"
         },
         "role": "Basic",
-        "effect": "Drain 15% HP from target to restore 12 stamina",
+        "effect": "The creature latches onto a nearby target, siphoning its vitality to quickly replenish its own energy. You see dark tendrils draw life from the foe as it recovers its strength.",
         "numbers": {}
       },
       "weakness": "Prolonged contact with water shorts the siphon circuit, reducing ATP yield by 40%",
@@ -149,7 +149,7 @@
           "en": "Ion Digest"
         },
         "role": "Engage",
-        "effect": "Convert a successful melee strike into a 20-second DoT that heals you for 8% of damage dealt",
+        "effect": "A successful strike leaves a lingering ionic residue that continuously saps the target's vigor. The creature absorbs the fading energy from the wound to slowly mend its own flesh.",
         "numbers": {}
       },
       "weakness": "Anoxic refuges cause rapid metabolic acidosis; must surface or expose gut to air every 3 cycles",
@@ -206,7 +206,7 @@
           "en": "Storm Shield"
         },
         "role": "Defence",
-        "effect": "Reduce incoming elemental damage by 25% while in rain or cloud cover",
+        "effect": "The creature's heavy dermal plates harden and shimmer when rain falls or clouds gather overhead. This natural armor strongly deflects elemental forces, making the creature far more resilient in stormy conditions.",
         "numbers": {}
       },
       "weakness": "Plates are brittle under high-impact kinetic strikes; cracking them causes radiation leak stun to the creature",
@@ -245,13 +245,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Sky Reef filter-feeders",
-      "kind": "cousin",
-      "note": "(council kind 'competition') Competes for suspended aerosol organics but avoids direct conflict by occupying higher convective tiers"
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

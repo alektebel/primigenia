@@ -21,15 +21,15 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_satyriacs.c1 | Boneless pelvic tails & horizontal quadrupedal posture | post-catastrophe nutrient influx fuels rapid lipid storage ← low gravitational stress on limb joints favors sprawling weight distribution ← stable axial tilt eliminates seasonal foraging scarcity | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes. | Lipid Reserve (`at_satyriacs.lipid_reserve`) | Defence | Absorbs 30% of incoming damage by metabolizing stored fat, regenerates health over 2 turns | Fat metabolism produces heat; prolonged use causes overheating in dry biomes |
-| at_satyriacs.c2 | Ritualised communal pleasure & festival-driven social cycles | high humidity and stable climate reduce territorial resource competition ← nutrient-rich bacterial manna yields constant caloric surplus ← post-catastrophe population boom requires rapid social cohesion | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F15** Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Euphoric Sync (`at_satyriacs.euphoric_sync`) | Social | Grants +2 morale to all nearby allies and reduces conflict chance by 40% for 3 turns | Predictable mating/festival windows allow enemies to ambush gathering sites |
-| at_satyriacs.c3 | Muscular fat tail as dynamic counterbalance and display | High fecundity and energy surplus from high O2 ← Pelvic mass accumulates in rear ← Horizontal posture distributes weight along spine ← Tail evolves as counterweight and display organ | **F7** Partial oxygen pressure is optimized at 23–27% O₂. | Pelvic Sweep (`at_satyriacs.pelvic_sweep`) | Defence | 30% chance to knock back melee attackers; +20% success in social contests | Tail is highly vascular and vulnerable to crushing; requires constant high-calorie intake |
+| at_satyriacs.c1 | Boneless pelvic tails & horizontal quadrupedal posture | post-catastrophe nutrient influx fuels rapid lipid storage ← low gravitational stress on limb joints favors sprawling weight distribution ← stable axial tilt eliminates seasonal foraging scarcity | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes. | Lipid Reserve (`at_satyriacs.lipid_reserve`) | Defence | The creature draws upon its thick fat reserves to soften blows, leaving it visibly winded but quickly recovering its strength. It slowly heals its wounds over a short while as it metabolizes its stored energy. | Fat metabolism produces heat; prolonged use causes overheating in dry biomes |
+| at_satyriacs.c2 | Ritualised communal pleasure & festival-driven social cycles | high humidity and stable climate reduce territorial resource competition ← nutrient-rich bacterial manna yields constant caloric surplus ← post-catastrophe population boom requires rapid social cohesion | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F15** Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Euphoric Sync (`at_satyriacs.euphoric_sync`) | Social | The creature engages in rhythmic movements and vocalizations that lift the spirits of those nearby, making them feel united and calm. This festive atmosphere strongly discourages any sudden altercations among the group. | Predictable mating/festival windows allow enemies to ambush gathering sites |
+| at_satyriacs.c3 | Muscular fat tail as dynamic counterbalance and display | High fecundity and energy surplus from high O2 ← Pelvic mass accumulates in rear ← Horizontal posture distributes weight along spine ← Tail evolves as counterweight and display organ | **F7** Partial oxygen pressure is optimized at 23–27% O₂. | Pelvic Sweep (`at_satyriacs.pelvic_sweep`) | Defence | The creature swings its heavy muscular tail with surprising force, often sending close attackers stumbling backward. It also carries itself with such confident grace that it strongly sways opponents in negotiations. | Tail is highly vascular and vulnerable to crushing; requires constant high-calorie intake |
 
 ### at_satyriacs.c1: Boneless pelvic tails & horizontal quadrupedal posture
 
 Trait ← post-catastrophe nutrient influx fuels rapid lipid storage ← low gravitational stress on limb joints favors sprawling weight distribution ← stable axial tilt eliminates seasonal foraging scarcity ← F7, F3, F2
 
-- **Skill:** Lipid Reserve (Defence): Absorbs 30% of incoming damage by metabolizing stored fat, regenerates health over 2 turns
+- **Skill:** Lipid Reserve (Defence): The creature draws upon its thick fat reserves to soften blows, leaving it visibly winded but quickly recovering its strength. It slowly heals its wounds over a short while as it metabolizes its stored energy.
 - **Weakness:** Fat metabolism produces heat; prolonged use causes overheating in dry biomes
 - **Observe:**
   1. Pelvic regions swell into thick, muscular fat-ridges
@@ -47,7 +47,7 @@ Trait ← post-catastrophe nutrient influx fuels rapid lipid storage ← low gra
 
 Trait ← high humidity and stable climate reduce territorial resource competition ← nutrient-rich bacterial manna yields constant caloric surplus ← post-catastrophe population boom requires rapid social cohesion ← F8, F15, F20
 
-- **Skill:** Euphoric Sync (Social): Grants +2 morale to all nearby allies and reduces conflict chance by 40% for 3 turns
+- **Skill:** Euphoric Sync (Social): The creature engages in rhythmic movements and vocalizations that lift the spirits of those nearby, making them feel united and calm. This festive atmosphere strongly discourages any sudden altercations among the group.
 - **Weakness:** Predictable mating/festival windows allow enemies to ambush gathering sites
 - **Observe:**
   1. Groups gather in open clearings for extended, synchronized social rituals
@@ -64,7 +64,7 @@ Trait ← high humidity and stable climate reduce territorial resource competiti
 
 Trait ← High fecundity and energy surplus from high O2 ← Pelvic mass accumulates in rear ← Horizontal posture distributes weight along spine ← Tail evolves as counterweight and display organ ← F7
 
-- **Skill:** Pelvic Sweep (Defence): 30% chance to knock back melee attackers; +20% success in social contests
+- **Skill:** Pelvic Sweep (Defence): The creature swings its heavy muscular tail with surprising force, often sending close attackers stumbling backward. It also carries itself with such confident grace that it strongly sways opponents in negotiations.
 - **Weakness:** Tail is highly vascular and vulnerable to crushing; requires constant high-calorie intake
 - **Observe:**
   1. Tail sways rhythmically with gait

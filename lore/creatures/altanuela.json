@@ -34,7 +34,7 @@
           "en": "Thermal Glide"
         },
         "role": "Basic",
-        "effect": "Move 10m without action; gain altitude in wind currents.",
+        "effect": "The creature glides effortlessly across the landscape for a short while, riding rising air currents to climb higher into the sky.",
         "numbers": {}
       },
       "weakness": "Wing shear in turbulence; player can use 'Storm' skill to damage flight.",
@@ -89,7 +89,7 @@
           "en": "Nitrogen Drip"
         },
         "role": "Social",
-        "effect": "Fertilize a 5m radius, boosting plant growth by +3 P over 3 turns.",
+        "effect": "The creature secretes nutrient-rich fluids onto the ground, causing nearby vegetation to flourish and grow noticeably stronger.",
         "numbers": {}
       },
       "weakness": "Starves during quiescent periods; player can use 'Calm Star' skill to reduce growth.",
@@ -148,7 +148,7 @@
           "en": "NIR Sight"
         },
         "role": "Basic",
-        "effect": "Reveal stealth and IR signatures in 15m radius; ignore visible light camouflage.",
+        "effect": "The creature's crest sensors pierce through visual cover, making hidden figures and heat trails clearly visible in the surrounding area.",
         "numbers": {}
       },
       "weakness": "Blinded by visible light; player can use 'Flash' or 'Bright Light' to stun.",
@@ -203,7 +203,7 @@
           "en": "Buoyancy Shift"
         },
         "role": "Defence",
-        "effect": "Gain 'Drift' status; take 50% less wind damage, but movement speed halved.",
+        "effect": "The creature inflates its internal gas bladders to become highly buoyant, drifting lightly on the breeze while moving with deliberate slowness.",
         "numbers": {}
       },
       "weakness": "Rapid depressurization; player can use 'Puncture' to deflate bladder.",

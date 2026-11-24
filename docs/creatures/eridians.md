@@ -8,11 +8,11 @@ Third-party lore: `lore/hailmary.en.json` / `eridians`
 
 ## Niche
 
-- **Habitat:** Nitride-vein canyons and hydrothermal basins where metal-rich brines pool under 40-bar pressure.
+- **Habitat:** Nitride-vein canyons and hydrothermal basins where metal-rich brines pool under 40-bar pressure. Also, in the council's sketch (no such creature in this world yet): K'thar, k'thar consumes Fe-Ni nitrides directly from hydrothermal precipitates; Eridians harvest the same veins for carapace inlays and tool-casting. K'thar foraging destabilizes Eridian structural supports. Also, in the council's sketch (no such creature in this world yet): Krr-shatter, krr-shatter emits a focused infrasonic pulse that resonates with Fe-Ni inlays, inducing micro-fractures. Eridians must apply 'Dampening' (mud-caking) or shift resonance to avoid carapace failure. Also, in the council's sketch (no such creature in this world yet): Nimbus-wisp, nimbus-wisps use lipid bladders to drift in high-pressure currents, absorbing toxic ammonia clumps. Eridians groom wisps for clean slurry; wisps carry Eridian spores to new vent clusters using sound-guided flight. Also, in the council's sketch (no such creature in this world yet): Iron-back, iron-backs also use low-slung, multi-limbed crawling and Fe-Ni inlays. Divergence: Iron-backs rely on passive armor and ambush; Eridians use active tool-use and acoustic manipulation. Iron-backs cannot sinter metal, limiting them to scavenged ore.
 - **Diet:** Ammonia-assimilation grazer; metabolizes nitride-filaments and bio-sintered carbide crusts, recycling NH₃ into amidine polymers with urea-like slurry waste.
 - **Active:** Continuous; the opaque haze and slow rotation erase diurnal cues, so activity tracks thermal gradients and acoustic social rhythms.
-- **Predators:** Pressure-crushing ambushers, Thermal-vent leviathans
-- **Prey:** Nitride-filament colonies, Brine-ammonoids
+- **Predators:** Pressure-crushing ambushers, Thermal-vent leviathans, Vacuum-biter
+- **Prey:** Nitride-filament colonies, Brine-ammonoids, Silt-sponge
 
 ## Body
 
@@ -24,17 +24,17 @@ A low-slung, multi-limbed crawler with a laminated carapace reinforced by bio-sc
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| eridians.c1 | Jaw-thoracic resonators for echolocation mapping | Perpetual haze blinds visible light ← Dense ammonia atmosphere speeds sound ← Resonators pulse clicks to map geometry ← Echo delay reveals terrain and stealth | **F8** Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.; **F9** Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.; **F14** Species evolved jaw-thoracic resonators for echolocation, compensating for zero-visibility haze. | Sonic Loom (`eridians.sonic_loom`) | Signature | Maps 15m radius, reveals stealth units, stuns targets for 2s. | Dissonance burst stuns resonators; high frequencies cause feedback pain. |
-| eridians.c2 | Laminated Fe-Ni carapace with cultural sintering | 1.35 g fractures organic exoskeletons ← Hydrothermal vents precipitate metal nitrides ← Bio-scavengers concentrate metals along stress lines ← Cultural sintering fuses inlays into super-strong alloys | **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.; **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.; **F17** Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance.; **F20** Electroreceptive ore-sensing and cultural pressure-sintering enable metalworking without innate bio-alloying. | Sonic Anvil (`eridians.sonic_anvil`) | Basic | Strikes ground to send tremor (15m); knocks down low-gravity foes and cracks brittle structures. | Requires stable footing; slippery terrain nullifies tremor. Heavy armor slows movement. |
-| eridians.c3 | Multi-limbed, low-slung crawling gait | 1.35 g torque prohibits bipedalism ← Distributed load-bearing ensures traction ← Stagnant-lid tectonics leave viscous terrain ← Low-slung crawl minimizes gravitational torque | **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.; **F4** The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.; **F15** Multi-limbed, low-slung crawling minimizes gravitational torque and maximizes stability on viscous terrain. | Grav-Plow (`eridians.grav_plow`) | Engage | Charges forward 8m, pushes obstacles, reduces friction by 20%. | Upright posture doubles fall risk; high center of gravity topples easily. |
+| eridians.c1 | Jaw-thoracic resonators for echolocation mapping | Perpetual haze blinds visible light ← Dense ammonia atmosphere speeds sound ← Resonators pulse clicks to map geometry ← Echo delay reveals terrain and stealth | **F8** Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.; **F9** Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.; **F14** Species evolved jaw-thoracic resonators for echolocation, compensating for zero-visibility haze. | Sonic Loom (`eridians.sonic_loom`) | Signature | The creature pulses resonant clicks to scan the surroundings, making hidden foes clearly visible and holding nearby enemies in place for a short while. | Dissonance burst stuns resonators; high frequencies cause feedback pain. |
+| eridians.c2 | Laminated Fe-Ni carapace with cultural sintering | 1.35 g fractures organic exoskeletons ← Hydrothermal vents precipitate metal nitrides ← Bio-scavengers concentrate metals along stress lines ← Cultural sintering fuses inlays into super-strong alloys | **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.; **F11** Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.; **F17** Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance.; **F20** Electroreceptive ore-sensing and cultural pressure-sintering enable metalworking without innate bio-alloying. | Sonic Anvil (`eridians.sonic_anvil`) | Basic | It slams its heavy carapace against the ground to send a strong tremor outward, toppling light creatures and shattering fragile barriers nearby. | Requires stable footing; slippery terrain nullifies tremor. Heavy armor slows movement. |
+| eridians.c3 | Multi-limbed, low-slung crawling gait | 1.35 g torque prohibits bipedalism ← Distributed load-bearing ensures traction ← Stagnant-lid tectonics leave viscous terrain ← Low-slung crawl minimizes gravitational torque | **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.; **F4** The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.; **F15** Multi-limbed, low-slung crawling minimizes gravitational torque and maximizes stability on viscous terrain. | Grav-Plow (`eridians.grav_plow`) | Engage | The creature lunges forward with a low, sweeping crawl, shoving aside anything in its path and gliding strongly across the terrain. | Upright posture doubles fall risk; high center of gravity topples easily. |
 | eridians.c4 | Fluid-filled internal cavities match 40 bar | 40 bar atmosphere crushes hollow organs ← Fluids transmit pressure uniformly ← Uniform pressure prevents tissue collapse ← No gas bladders required for structural support | **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory.; **F16** Fluid-filled internal cavities match ambient 40 bar, preventing tissue collapse without gas bladders. | Hydrostatic Skin (`eridians.hydrostatic_skin`) | Defence | Blocks 15 blunt damage; immune to crushing effects. | Vulnerable to rapid depressurization attacks which expand internal fluid. |
-| eridians.c5 | Symbiotic NH3-assimilation gut with amidine slurry | Reducing atmosphere lacks free oxygen and nitrates ← NH2- chemistry dominates surface biochemistry ← Symbiotic microbial guild fixes NH3 into amino acids ← Gut absorbs nutrients; excretes amidine/guanidine slurry | **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.; **F12** Ammonolysis dominates surface biochemistry, with NH₂⁻ acting as the primary nucleophile instead of OH⁻.; **F18** Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs. | Nitrogen Tap (`eridians.nitrogen_tap`) | Social | Channels for 1.5s to draw ambient NH3; heals 6 HP scaled by local ammonia concentration; attracts NH3-seeking allies. | Oxidizers burn tissues; 'dry air' biome modifier halts healing and applies 2 HP/s solvent-depletion damage. |
+| eridians.c5 | Symbiotic NH3-assimilation gut with amidine slurry | Reducing atmosphere lacks free oxygen and nitrates ← NH2- chemistry dominates surface biochemistry ← Symbiotic microbial guild fixes NH3 into amino acids ← Gut absorbs nutrients; excretes amidine/guanidine slurry | **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.; **F12** Ammonolysis dominates surface biochemistry, with NH₂⁻ acting as the primary nucleophile instead of OH⁻.; **F18** Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs. | Nitrogen Tap (`eridians.nitrogen_tap`) | Social | It opens its specialized gut to draw in surrounding ammonia fumes, replenishing its strength and drawing in friendly creatures that seek the same gas. | Oxidizers burn tissues; 'dry air' biome modifier halts healing and applies 2 HP/s solvent-depletion damage. |
 
 ### eridians.c1: Jaw-thoracic resonators for echolocation mapping
 
 Trait ← Perpetual haze blinds visible light ← Dense ammonia atmosphere speeds sound ← Resonators pulse clicks to map geometry ← Echo delay reveals terrain and stealth ← F8, F9, F14
 
-- **Skill:** Sonic Loom (Signature): Maps 15m radius, reveals stealth units, stuns targets for 2s.
+- **Skill:** Sonic Loom (Signature): The creature pulses resonant clicks to scan the surroundings, making hidden foes clearly visible and holding nearby enemies in place for a short while.
 - **Weakness:** Dissonance burst stuns resonators; high frequencies cause feedback pain.
 - **Observe:**
   1. Throat plates vibrating rapidly
@@ -53,7 +53,7 @@ Trait ← Perpetual haze blinds visible light ← Dense ammonia atmosphere speed
 
 Trait ← 1.35 g fractures organic exoskeletons ← Hydrothermal vents precipitate metal nitrides ← Bio-scavengers concentrate metals along stress lines ← Cultural sintering fuses inlays into super-strong alloys ← F3, F11, F17, F20
 
-- **Skill:** Sonic Anvil (Basic): Strikes ground to send tremor (15m); knocks down low-gravity foes and cracks brittle structures.
+- **Skill:** Sonic Anvil (Basic): It slams its heavy carapace against the ground to send a strong tremor outward, toppling light creatures and shattering fragile barriers nearby.
 - **Weakness:** Requires stable footing; slippery terrain nullifies tremor. Heavy armor slows movement.
 - **Observe:**
   1. Metallic clatter on shell as they move
@@ -72,7 +72,7 @@ Trait ← 1.35 g fractures organic exoskeletons ← Hydrothermal vents precipita
 
 Trait ← 1.35 g torque prohibits bipedalism ← Distributed load-bearing ensures traction ← Stagnant-lid tectonics leave viscous terrain ← Low-slung crawl minimizes gravitational torque ← F3, F4, F15
 
-- **Skill:** Grav-Plow (Engage): Charges forward 8m, pushes obstacles, reduces friction by 20%.
+- **Skill:** Grav-Plow (Engage): The creature lunges forward with a low, sweeping crawl, shoving aside anything in its path and gliding strongly across the terrain.
 - **Weakness:** Upright posture doubles fall risk; high center of gravity topples easily.
 - **Observe:**
   1. Six legs planted wide
@@ -108,7 +108,7 @@ Trait ← 40 bar atmosphere crushes hollow organs ← Fluids transmit pressure u
 
 Trait ← Reducing atmosphere lacks free oxygen and nitrates ← NH2- chemistry dominates surface biochemistry ← Symbiotic microbial guild fixes NH3 into amino acids ← Gut absorbs nutrients; excretes amidine/guanidine slurry ← F6, F12, F18
 
-- **Skill:** Nitrogen Tap (Social): Channels for 1.5s to draw ambient NH3; heals 6 HP scaled by local ammonia concentration; attracts NH3-seeking allies.
+- **Skill:** Nitrogen Tap (Social): It opens its specialized gut to draw in surrounding ammonia fumes, replenishing its strength and drawing in friendly creatures that seek the same gas.
 - **Weakness:** Oxidizers burn tissues; 'dry air' biome modifier halts healing and applies 2 HP/s solvent-depletion damage.
 - **Observe:**
   1. Gut-sacs pulse with visible symbiotic culture
@@ -122,17 +122,6 @@ Trait ← Reducing atmosphere lacks free oxygen and nitrates ← NH2- chemistry 
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Macroscopic direct NH₃ diet is highly speculative— posit a symbiotic microbial guild (F12/F18) that fixes/assimilates reduced nitrogen, with the Eridian gut absorbing amino acids and excreting concentrated nitrogenous slurry (urea/urate-like); 'Nitrogen Tap' healing should read as environmental NH₃ uptake through symbionts or vent brines, not magic; oxidizer weakness stays; desiccation weakness fits ammonia-requiring water activity.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, mythmaker, wildcard
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| K'thar | rivalry | F11 | K'thar consumes Fe-Ni nitrides directly from hydrothermal precipitates; Eridians harvest the same veins for carapace inlays and tool-casting. K'thar foraging destabilizes Eridian structural supports. |
-| Krr-shatter | counter | F9 | Krr-shatter emits a focused infrasonic pulse that resonates with Fe-Ni inlays, inducing micro-fractures. Eridians must apply 'Dampening' (mud-caking) or shift resonance to avoid carapace failure. |
-| Nimbus-wisp | symbiosis | F9 | Nimbus-wisps use lipid bladders to drift in high-pressure currents, absorbing toxic ammonia clumps. Eridians groom wisps for clean slurry; wisps carry Eridian spores to new vent clusters using sound-guided flight. |
-| Silt-sponge | predation | F10 | Silt-sponges filter concentrated amino-acid slurry from NH3-brine. Eridians harvest sponges for nutrient paste. Sponges deploy pressure-spines matching Eridian grip, requiring precise disarticulation skills to avoid injury. |
-| Iron-back | convergent | F3 | Iron-backs also use low-slung, multi-limbed crawling and Fe-Ni inlays. Divergence: Iron-backs rely on passive armor and ambush; Eridians use active tool-use and acoustic manipulation. Iron-backs cannot sinter metal, limiting them to scavenged ore. |
-| Vacuum-biter | predation | F16 | Vacuum-biters secrete a rapid-evaporation enzyme creating localized vacuum pockets. This exploits the Eridian's fluid-matched internal structure, causing implosion damage. Eridians are vulnerable to 'Silence' zones where biters hide. |
 
 ## Secrets
 

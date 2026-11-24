@@ -34,7 +34,7 @@
           "en": "Sustained Flight"
         },
         "role": "Engage",
-        "effect": "hold 60 km/h for three minutes across open ground, ignoring rough-terrain penalties and outlasting any pursuer that relies on anaerobic bursts",
+        "effect": "The pronghorn maintains a steady, swift pace across open terrain, moving easily over rough ground and outlasting any chasers who rely on short bursts of speed.",
         "numbers": {}
       },
       "weakness": "it is built to run past obstacles, not over them: it will not jump a fence and instead crawls underneath, so a fenceline corners it",
@@ -167,7 +167,7 @@
           "en": "Horizon Watch"
         },
         "role": "Control",
-        "effect": "spots a moving concealed creature at 500 m and grants the party +2 initiative; also reveals a hidden creature's position one turn early, but detection drops to 250 m in scrub",
+        "effect": "The pronghorn's wide-set eyes scan the horizon, spotting hidden creatures from afar and alerting the group before danger strikes. Its keen sight weakens in thick vegetation, but it still catches movement early.",
         "numbers": {}
       },
       "weakness": "the eyes trade binocular overlap for width: it is poor at judging close range and blind in a wedge directly behind, so a stalker that gets inside 40 m from downwind is invisible to it",

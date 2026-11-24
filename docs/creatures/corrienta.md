@@ -21,16 +21,16 @@ Ribbon-like morphology with porous filtration fronds, lateral fin-flaps, and che
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| corrienta.c1 | Porous filtration fronds | Strains organosilicon colloids from slow methane currents ← Phase boundaries force solute accumulation at liquid interfaces ← F20 | **F20** Solvent phase boundaries define sharp liquid-vapor and liquid-liquid miscibility gaps for N₂, CH₄, and C₂H₆. | Colloid Filter (`corrienta.colloid_filter`) | Basic | Extracts nutrients from liquid terrain, healing 5 HP/s | Clogs in pure solvent zones without solute gradients |
-| corrienta.c2 | Lateral fin-flaps | Maintains position in slow trough currents ← Low gravity and high fluid density allow sustained hovering ← F4 | **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass.; **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies. | Current Anchor (`corrienta.current_anchor`) | Control | Pins allies or enemies in place for 2s using liquid drag | Useless in still fluid or vacuum pockets |
-| corrienta.c3 | Chemical gradient receptors | Tracks trace oxidant plumes from photolysis ← Dense fog and weak light make chemical trails the only reliable navigation ← F18 | **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking.; **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄. | Scent Trail (`corrienta.scent_trail`) | Engage | Reveals hidden path to resource nodes, granting +20% movement speed | Overwhelmed by uniform chemical noise or heavy fog |
-| corrienta.c4 | Crepuscular activity bursts | Aligns with fog-drizzle peaks and micro-flare ionization ← Stratospheric haze regulation and stochastic flares create transient reactive windows ← F19 | **F19** Stratospheric haze regulation controls surface UV and greenhouse warming via photochemical smog.; **F3** Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg. | Flare Sprint (`corrienta.flare_sprint`) | Basic | 2s burst speed +30% during active micro-flare events | Exhaustion follows burst; highly vulnerable post-activity |
+| corrienta.c1 | Porous filtration fronds | Strains organosilicon colloids from slow methane currents ← Phase boundaries force solute accumulation at liquid interfaces ← F20 | **F20** Solvent phase boundaries define sharp liquid-vapor and liquid-liquid miscibility gaps for N₂, CH₄, and C₂H₆. | Colloid Filter (`corrienta.colloid_filter`) | Basic | The creature draws nourishment from the liquid terrain, its porous fronds filtering the water as it slowly recovers its strength. | Clogs in pure solvent zones without solute gradients |
+| corrienta.c2 | Lateral fin-flaps | Maintains position in slow trough currents ← Low gravity and high fluid density allow sustained hovering ← F4 | **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass.; **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies. | Current Anchor (`corrienta.current_anchor`) | Control | The creature flaps its lateral fins to stir up thick liquid drag, firmly pinning nearby allies or enemies in place for a short while. | Useless in still fluid or vacuum pockets |
+| corrienta.c3 | Chemical gradient receptors | Tracks trace oxidant plumes from photolysis ← Dense fog and weak light make chemical trails the only reliable navigation ← F18 | **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking.; **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄. | Scent Trail (`corrienta.scent_trail`) | Engage | The creature follows chemical gradients to reveal a hidden path toward resource nodes, moving along the trail with noticeably greater haste. | Overwhelmed by uniform chemical noise or heavy fog |
+| corrienta.c4 | Crepuscular activity bursts | Aligns with fog-drizzle peaks and micro-flare ionization ← Stratospheric haze regulation and stochastic flares create transient reactive windows ← F19 | **F19** Stratospheric haze regulation controls surface UV and greenhouse warming via photochemical smog.; **F3** Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg. | Flare Sprint (`corrienta.flare_sprint`) | Basic | The creature ignites a brief micro-flare and surges forward with a sudden burst of speed. | Exhaustion follows burst; highly vulnerable post-activity |
 
 ### corrienta.c1: Porous filtration fronds
 
 Trait ← Strains organosilicon colloids from slow methane currents ← Phase boundaries force solute accumulation at liquid interfaces ← F20 ← F20
 
-- **Skill:** Colloid Filter (Basic): Extracts nutrients from liquid terrain, healing 5 HP/s
+- **Skill:** Colloid Filter (Basic): The creature draws nourishment from the liquid terrain, its porous fronds filtering the water as it slowly recovers its strength.
 - **Weakness:** Clogs in pure solvent zones without solute gradients
 - **Observe:**
   1. Lace-like frond edges
@@ -49,7 +49,7 @@ Trait ← Strains organosilicon colloids from slow methane currents ← Phase bo
 
 Trait ← Maintains position in slow trough currents ← Low gravity and high fluid density allow sustained hovering ← F4 ← F4, F9
 
-- **Skill:** Current Anchor (Control): Pins allies or enemies in place for 2s using liquid drag
+- **Skill:** Current Anchor (Control): The creature flaps its lateral fins to stir up thick liquid drag, firmly pinning nearby allies or enemies in place for a short while.
 - **Weakness:** Useless in still fluid or vacuum pockets
 - **Observe:**
   1. Wave-matching fin rhythm
@@ -67,7 +67,7 @@ Trait ← Maintains position in slow trough currents ← Low gravity and high fl
 
 Trait ← Tracks trace oxidant plumes from photolysis ← Dense fog and weak light make chemical trails the only reliable navigation ← F18 ← F18, F10
 
-- **Skill:** Scent Trail (Engage): Reveals hidden path to resource nodes, granting +20% movement speed
+- **Skill:** Scent Trail (Engage): The creature follows chemical gradients to reveal a hidden path toward resource nodes, moving along the trail with noticeably greater haste.
 - **Weakness:** Overwhelmed by uniform chemical noise or heavy fog
 - **Observe:**
   1. Antennae twitching
@@ -85,7 +85,7 @@ Trait ← Tracks trace oxidant plumes from photolysis ← Dense fog and weak lig
 
 Trait ← Aligns with fog-drizzle peaks and micro-flare ionization ← Stratospheric haze regulation and stochastic flares create transient reactive windows ← F19 ← F19, F3
 
-- **Skill:** Flare Sprint (Basic): 2s burst speed +30% during active micro-flare events
+- **Skill:** Flare Sprint (Basic): The creature ignites a brief micro-flare and surges forward with a sudden burst of speed.
 - **Weakness:** Exhaustion follows burst; highly vulnerable post-activity
 - **Observe:**
   1. Energy spikes before movement

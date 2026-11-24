@@ -21,16 +21,16 @@ Armored carapace of iron-oxide plates, tube-like gill plumes, pressure-resistant
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cristalon.c1 | Flared iron-oxide carapace plates | Acidic ocean dissolves calcium shells ← Silica and iron precipitate kinetically ← Hard Fe2O3 armor replaces fragile calcite | **F12** Dissolved CO₂ maintains a surface pH of 6.8, buffered by carbonate-silicate weathering that prevents toxic acidification.; **F13** High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions. | Iron Hide (`cristalon.iron_hide`) | Defence | +25% damage reduction from crushing attacks | Heavy plates drain stamina in low gravity |
-| cristalon.c2 | Tubular gill plumes fringe jaw | Vent plumes carry heat and chemicals ← Laminar flow preserves concentration gradients ← Passive filtration harvests dissolved nutrients | **F18** Persistent stratus decks and low wind shear foster stable boundary layers, reducing convective turbulence and favoring laminar flow regimes for soaring flight.; **F11** Radiogenic heating drives moderate plate tectonics and hydrothermal vent fields, with a geothermal heat flux of 0.9× Earth’s. | Vent Filter (`cristalon.vent_filter`) | Basic | Harvests chemical nodes 30% faster | Plumes clog in turbid water |
-| cristalon.c3 | Gel-filled pressure sinuses under shell | 3.6 km depth exerts high hydrostatic pressure ← Gel displaces water to equalize stress ← Structural collapse prevented by fluid balance | **F10** Global oceans cover 71% of the surface with a mean depth of 3.6 km, featuring shallow epeiric shelves and deep abyssal plains.; **F9** High atmospheric heat capacity, CO₂ greenhouse forcing, and haze albedo dampen diurnal temperature swings, maintaining a mean surface temperature of 288 K. | Pressure Equalizer (`cristalon.pressure_equalizer`) | Passive | Immunity to depth crushing, +10% movement on slopes | Rapid ascent causes sinus rupture |
+| cristalon.c1 | Flared iron-oxide carapace plates | Acidic ocean dissolves calcium shells ← Silica and iron precipitate kinetically ← Hard Fe2O3 armor replaces fragile calcite | **F12** Dissolved CO₂ maintains a surface pH of 6.8, buffered by carbonate-silicate weathering that prevents toxic acidification.; **F13** High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions. | Iron Hide (`cristalon.iron_hide`) | Defence | Its thick iron-oxide carapace strongly absorbs heavy impacts, making crushing blows feel noticeably weaker against its shell. | Heavy plates drain stamina in low gravity |
+| cristalon.c2 | Tubular gill plumes fringe jaw | Vent plumes carry heat and chemicals ← Laminar flow preserves concentration gradients ← Passive filtration harvests dissolved nutrients | **F18** Persistent stratus decks and low wind shear foster stable boundary layers, reducing convective turbulence and favoring laminar flow regimes for soaring flight.; **F11** Radiogenic heating drives moderate plate tectonics and hydrothermal vent fields, with a geothermal heat flux of 0.9× Earth’s. | Vent Filter (`cristalon.vent_filter`) | Basic | Its tubular gill plumes rapidly draw in nearby chemicals, allowing it to gather resources with swift, continuous motion. | Plumes clog in turbid water |
+| cristalon.c3 | Gel-filled pressure sinuses under shell | 3.6 km depth exerts high hydrostatic pressure ← Gel displaces water to equalize stress ← Structural collapse prevented by fluid balance | **F10** Global oceans cover 71% of the surface with a mean depth of 3.6 km, featuring shallow epeiric shelves and deep abyssal plains.; **F9** High atmospheric heat capacity, CO₂ greenhouse forcing, and haze albedo dampen diurnal temperature swings, maintaining a mean surface temperature of 288 K. | Pressure Equalizer (`cristalon.pressure_equalizer`) | Passive | Its gel-filled sinuses balance external forces, letting it traverse steep inclines with steady, unhindered steps without succumbing to heavy pressure. | Rapid ascent causes sinus rupture |
 | cristalon.c4 | Chemosynthetic gut symbiont chambers | No sunlight penetrates abyssal plains ← Reliance on redox gradients from vents ← Taumoeba analogs bridge exotic energy | **F15** The native microbe Taumoeba evolved to metabolize Astrophage particulates, extracting stored redox potential via enzymatic dissolution of surface photoconductors.; **F14** Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches. | Chemotrophic Boost (`cristalon.chemotrophic_boost`) | Engage | Converts environmental toxins into +15 health | Starves if vent chemistry shifts |
 
 ### cristalon.c1: Flared iron-oxide carapace plates
 
 Trait ← Acidic ocean dissolves calcium shells ← Silica and iron precipitate kinetically ← Hard Fe2O3 armor replaces fragile calcite ← F12, F13
 
-- **Skill:** Iron Hide (Defence): +25% damage reduction from crushing attacks
+- **Skill:** Iron Hide (Defence): Its thick iron-oxide carapace strongly absorbs heavy impacts, making crushing blows feel noticeably weaker against its shell.
 - **Weakness:** Heavy plates drain stamina in low gravity
 - **Observe:**
   1. Rust-red plates shift with breath
@@ -49,7 +49,7 @@ Trait ← Acidic ocean dissolves calcium shells ← Silica and iron precipitate 
 
 Trait ← Vent plumes carry heat and chemicals ← Laminar flow preserves concentration gradients ← Passive filtration harvests dissolved nutrients ← F18, F11
 
-- **Skill:** Vent Filter (Basic): Harvests chemical nodes 30% faster
+- **Skill:** Vent Filter (Basic): Its tubular gill plumes rapidly draw in nearby chemicals, allowing it to gather resources with swift, continuous motion.
 - **Weakness:** Plumes clog in turbid water
 - **Observe:**
   1. Plumes sway in rhythmic pulses
@@ -67,7 +67,7 @@ Trait ← Vent plumes carry heat and chemicals ← Laminar flow preserves concen
 
 Trait ← 3.6 km depth exerts high hydrostatic pressure ← Gel displaces water to equalize stress ← Structural collapse prevented by fluid balance ← F10, F9
 
-- **Skill:** Pressure Equalizer (Passive): Immunity to depth crushing, +10% movement on slopes
+- **Skill:** Pressure Equalizer (Passive): Its gel-filled sinuses balance external forces, letting it traverse steep inclines with steady, unhindered steps without succumbing to heavy pressure.
 - **Weakness:** Rapid ascent causes sinus rupture
 - **Observe:**
   1. Shell ripples like water

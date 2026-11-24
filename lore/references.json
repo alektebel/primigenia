@@ -14044,9 +14044,10 @@
       ]
     },
     "container-title": "The Astrophysical Journal",
-    "DOI": "10.1088/0004-637X/765/2/131",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "DOI": "10.1088/0004-637x/765/2/131",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "lammer_2009_habitable",
@@ -14317,7 +14318,8 @@
     },
     "ISBN": "9780521871211",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Diffusion' (Cussler, 2009), title similarity 0.37, author match, year ok",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "ingebritsen_2006_groundwater",
@@ -14526,7 +14528,7 @@
   {
     "id": "takai_2008_122c",
     "type": "article-journal",
-    "title": "Cell proliferation at 122 C and isotopically heavy CH4 production by a hyperthermophilic methanogen under high-pressure cultivation",
+    "title": "Cell proliferation at 122°C and isotopically heavy CH 4 production by a hyperthermophilic methanogen under high-pressure cultivation",
     "author": [
       {
         "family": "Takai",
@@ -14550,8 +14552,9 @@
     },
     "container-title": "Proceedings of the National Academy of Sciences",
     "DOI": "10.1073/pnas.0712334105",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Cell proliferation at 122 C and isotopically heavy CH4 production by a hyperthermophilic methanogen under high-pressure cultivation'; DOI added",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "sloan_koh_2008_clathrate",
@@ -14576,7 +14579,8 @@
     },
     "ISBN": "9780849390784",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Clathrate hydrates of natural gases' (Sloan, 1990), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "chivian_2008_environmental",
@@ -14627,8 +14631,8 @@
     "id": "annan_2010_time",
     "type": "article-journal",
     "title": "Time-Lapse Seismic Monitoring of Calcite Precipitation",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Why use time-lapse seismic monitoring?' (, 1997) title similarity 0.64",
     "author": [
       {
         "family": "Annan",
@@ -14642,7 +14646,8 @@
         ]
       ]
     },
-    "container-title": "Geophysics"
+    "container-title": "Geophysics",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "coblentz_1976_tidal",

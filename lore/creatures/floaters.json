@@ -43,7 +43,7 @@
           "en": "Thermal Lift"
         },
         "role": "Engage",
-        "effect": "Ascends 20 m/s while generating a 10 wind-damage shield for allies",
+        "effect": "The creature rises swiftly through the air, wrapping nearby allies in a sturdy barrier that strongly deflects gusts, allowing them to advance safely.",
         "numbers": {}
       },
       "weakness": "Leaves a distinct H₂ chemical signature detectable by hunters",
@@ -89,7 +89,7 @@
           "en": "Jet Ride"
         },
         "role": "Control",
-        "effect": "Grants 30 m/s horizontal boost and 25% evasion along wind bands",
+        "effect": "It surges forward along the wind currents, slipping past attacks with remarkable agility, giving allies a clear path to follow.",
         "numbers": {}
       },
       "weakness": "Cannot brake quickly when crossing opposing wind layers",
@@ -135,7 +135,7 @@
           "en": "Iso-Dive"
         },
         "role": "Defence",
-        "effect": "Nullifies pressure damage and grants 15% movement speed in deep clouds",
+        "effect": "The creature glides effortlessly through dense atmospheric layers, shrugging off crushing forces as it moves strongly through the deep clouds, revealing safe routes ahead.",
         "numbers": {}
       },
       "weakness": "Slow to equilibrate when ascending rapidly into low pressure",
@@ -181,7 +181,7 @@
           "en": "Steam Rise"
         },
         "role": "Control",
-        "effect": "Ignore 3m wind, ascend 8m",
+        "effect": "It pushes through moderate gusts and drifts steadily upward into the open sky, drawing the eye toward higher ground.",
         "numbers": {}
       },
       "weakness": "Overheat causes burn damage",

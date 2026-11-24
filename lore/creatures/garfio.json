@@ -48,7 +48,7 @@
           "en": "Crack Bite"
         },
         "role": "Engage",
-        "effect": "Deals 18 damage, ignores 50% armour (bone and Espinodo plates only), 0.4 s audio click and forward lunge telegraph the strike, 0.8 s wind-up, 4 s cooldown.",
+        "effect": "A sharp click and a forward lunge telegraph a heavy strike that crushes through tough bone and chitin armor. The creature pauses briefly after biting before it can strike again.",
         "numbers": {}
       },
       "weakness": "The 0.4 s click and head drop telegraph the lunge; sidestep and strike the exposed flank for +25% damage.",
@@ -105,7 +105,7 @@
           "en": "Raid Dash"
         },
         "role": "Basic",
-        "effect": "From a belly-low crouch, bursts to 14 m/s for 3 s (~40 m) while the stamina bar visibly drains; then speed drops 40% for 8 s with a buckling-knees animation.",
+        "effect": "From a belly-low crouch, the creature bursts forward at high speed while its stamina visibly drains. After the burst, it staggers with buckling knees and moves much slower for a short while.",
         "numbers": {}
       },
       "weakness": "The crouch start telegraphs the burst: hover just outside reach for 3 s, then strike while its knees buckle and the stamina bar refills; broken ground still kills its cornering.",
@@ -159,7 +159,7 @@
           "en": "Heckle"
         },
         "role": "Control",
-        "effect": "Interrupts courtship or ritual within 30 m for 5 s; target loses 10 befriend.",
+        "effect": "A ragged, low-frequency call echoes nearby, forcing rival creatures to abruptly stop their courtship or ritual displays. The targeted creature becomes noticeably less friendly toward others for a short while.",
         "numbers": {}
       },
       "weakness": "Two courting creatures can mob it; bring a partner and it flees after 4 s.",
@@ -220,7 +220,7 @@
           "en": "Pose Shriek"
         },
         "role": "Signature",
-        "effect": "Inflates throat sac: visible condensation ring expands to 40 m; pose-reading creatures within 10 m flinch and cancel one action for 1.5 s. Costs 15% stamina, applies 50% speed reduction to self for 3 s.",
+        "effect": "The creature inflates its throat sac, sending a visible ring of condensation outward. Nearby pose-reading creatures flinch and abruptly cancel their current action, while the creature itself staggers and moves slowly afterward.",
         "numbers": {}
       },
       "weakness": "The expanding ring telegraphs the 40 m cone; stand outside it to avoid the flinch, then strike during the 3 s speed penalty.",

@@ -23,8 +23,8 @@ Hexapod with chelicerae, array of infrared pit organs, and dark lens eyes
 |---|---|---|---|---|---|---|---|
 | crisol.c1 | Polarization-pit sensory array | Detects polarization vector mismatches ← Background has strong, predictable polarization ← Prey creates polarization artifacts against background ← Thin atmosphere preserves high-contrast polarization patterns | **F11** Strong Rayleigh polarization patterns preserved to ground.; **F9** Transparent spectral window from 210 nm to 5000 nm.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Polaris Sight (`crisol.polaris_sight`) | Engage | Player can reveal hidden targets by detecting polarization contrast; 0.85 contrast reveal radius. | Blind to UV and color cues; relies entirely on polarization geometry. |
 | crisol.c2 | UV-blackout filter over pits | Sensors shielded from UV radiation ← High UV flux damages polarization-sensitive tissue ← Protection prioritized over UV vision ← F-star SED delivers high-energy photons | **F14** Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.; **F11** Strong Rayleigh polarization patterns preserved to ground. | UV Shielding (`crisol.uv_shielding`) | Defence | Player gains passive UV resistance when befriending Crisol. | Cannot see UV flares or UV-camouflaged prey that lacks polarization artifact. |
-| crisol.c3 | Spring-loaded cheliceral jaw | Explosive strike mechanics ← Low gravity allows high acceleration ← Predation requires speed to catch agile prey ← Surface gravity 0.99g reduces inertia costs | **F5** Surface gravity 0.99 g.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Pounce (`crisol.pounce`) | Basic | Player can perform a 15m leap strike; covers distance instantly. | Strike leaves predictable trajectory; prey can dodge with lateral motion. |
-| crisol.c4 | Fumarole roosting behavior | Uses volcanic vents for thermoregulation ← Tidal flexing drives active volcanism ← Ectothermic metabolism requires heat sources ← Silica-rich crust hosts fumaroles | **F12** Silica-rich crust and basaltic plains with active volcanism driven by tidal flexing.; **F8** Surface pressure 0.65 bar, dominated by N₂ (74%) and O₂ (22%), trace CO₂/H₂O. | Thermal Roost (`crisol.thermal_roost`) | Control | Player can heal by resting near fumaroles; 10 HP/turn. | Vulnerable while roosting; flares can overwhelm sensory array. |
+| crisol.c3 | Spring-loaded cheliceral jaw | Explosive strike mechanics ← Low gravity allows high acceleration ← Predation requires speed to catch agile prey ← Surface gravity 0.99g reduces inertia costs | **F5** Surface gravity 0.99 g.; **F13** Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface. | Pounce (`crisol.pounce`) | Basic | The creature springs forward with a sudden, powerful leap to strike nearby targets. | Strike leaves predictable trajectory; prey can dodge with lateral motion. |
+| crisol.c4 | Fumarole roosting behavior | Uses volcanic vents for thermoregulation ← Tidal flexing drives active volcanism ← Ectothermic metabolism requires heat sources ← Silica-rich crust hosts fumaroles | **F12** Silica-rich crust and basaltic plains with active volcanism driven by tidal flexing.; **F8** Surface pressure 0.65 bar, dominated by N₂ (74%) and O₂ (22%), trace CO₂/H₂O. | Thermal Roost (`crisol.thermal_roost`) | Control | The creature settles near steaming vents to rest, allowing nearby visitors to recover their strength while they linger. | Vulnerable while roosting; flares can overwhelm sensory array. |
 
 ### crisol.c1: Polarization-pit sensory array
 
@@ -66,7 +66,7 @@ Trait ← Sensors shielded from UV radiation ← High UV flux damages polarizati
 
 Trait ← Explosive strike mechanics ← Low gravity allows high acceleration ← Predation requires speed to catch agile prey ← Surface gravity 0.99g reduces inertia costs ← F5, F13
 
-- **Skill:** Pounce (Basic): Player can perform a 15m leap strike; covers distance instantly.
+- **Skill:** Pounce (Basic): The creature springs forward with a sudden, powerful leap to strike nearby targets.
 - **Weakness:** Strike leaves predictable trajectory; prey can dodge with lateral motion.
 - **Observe:**
   1. Chelicerae lock back before strike
@@ -84,7 +84,7 @@ Trait ← Explosive strike mechanics ← Low gravity allows high acceleration �
 
 Trait ← Uses volcanic vents for thermoregulation ← Tidal flexing drives active volcanism ← Ectothermic metabolism requires heat sources ← Silica-rich crust hosts fumaroles ← F12, F8
 
-- **Skill:** Thermal Roost (Control): Player can heal by resting near fumaroles; 10 HP/turn.
+- **Skill:** Thermal Roost (Control): The creature settles near steaming vents to rest, allowing nearby visitors to recover their strength while they linger.
 - **Weakness:** Vulnerable while roosting; flares can overwhelm sensory array.
 - **Observe:**
   1. Crisol sits motionless over steam vents

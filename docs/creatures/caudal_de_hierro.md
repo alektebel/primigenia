@@ -21,55 +21,62 @@ Highly speculative fantasy: gossamer helical filaments of self-organizing iron-s
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| caudal_de_hierro.c1 | Gossamer helical filament structure | Rides helical magnetic field lines ← Dynamo field is inherently helical ← Sulfur-rich liquid core sustains dynamo | **F6** A sulfur-rich liquid outer core sustains a surface dipole of 60 microtesla, about 1.2 times Earth's mean field.; **F3** The planet is 1.30 Earth masses and 1.07 Earth radii, giving a bulk density of 5,860 kg/m3 and surface gravity of 1.14 g. | Magnetic Ride (`caudal_de_hierro.magnetic_ride`) | Control | Ride the local magnetic gradient for 10s, +50% speed, immune to magnetic disorientation. | Magnetic shear tears it apart if the field reverses abruptly. |
-| caudal_de_hierro.c2 | Consumes convective entropy gradients | Harvests work from fluid velocity shear ← No chemical bonds or solvent for metabolism ← Core is above 300 GPa and 5000 K | **F17** The core is above 300 GPa and near 5,000 K, where no molecules or solvent survive; heredity is impossible, so chemistry-based life is excluded.; **F6** A sulfur-rich liquid outer core sustains a surface dipole of 60 microtesla, about 1.2 times Earth's mean field. | Entropy Siphon (`caudal_de_hierro.entropy_siphon`) | Poke | Extract thermal energy from flow, dealing 2 damage, heals 1 HP. | Starves in laminar flow regions; cannot persist without shear. |
-| caudal_de_hierro.c3 | Synchronizes oscillation to the 56-hour tidal month | Tidal strain modulates core convection velocity ← Creature locks phase to maximize shear harvest ← Moon creates cyclic strain of 5e-7 | **F4** One moon of 620 km radius orbits at 12 planetary radii every 2.35 days; tidal despinning has locked the planet to a 56-hour spin, so the master clock is the 56-hour tidal month with cyclic strain of order 5e-7.; **F10** Sound travels about 242 m/s in the cold 0.45 bar air, 1,480 m/s in water and 3,000-6,000 m/s in rock, so rock is the long-range channel. | Tidal Pulse (`caudal_de_hierro.tidal_pulse`) | Basic | Attack deals +20% damage during the player's 'tidal' phase. | Disoriented during the 'slack' tide; attack chance -50%. |
+| caudal_de_hierro.c1 | Gossamer helical filament structure | Rides helical magnetic field lines ← Dynamo field is inherently helical ← Sulfur-rich liquid core sustains dynamo | **F6** A sulfur-rich liquid outer core sustains a surface dipole of 60 microtesla, about 1.2 times Earth's mean field.; **F3** The planet is 1.30 Earth masses and 1.07 Earth radii, giving a bulk density of 5,860 kg/m3 and surface gravity of 1.14 g. | Magnetic Ride (`caudal_de_hierro.magnetic_ride`) | Control | The creature rides invisible magnetic currents, moving strongly and swiftly while completely ignoring any magnetic interference, allowing it to navigate freely. | Magnetic shear tears it apart if the field reverses abruptly. |
+| caudal_de_hierro.c2 | Consumes convective entropy gradients | Harvests work from fluid velocity shear ← No chemical bonds or solvent for metabolism ← Core is above 300 GPa and 5000 K | **F17** The core is above 300 GPa and near 5,000 K, where no molecules or solvent survive; heredity is impossible, so chemistry-based life is excluded.; **F6** A sulfur-rich liquid outer core sustains a surface dipole of 60 microtesla, about 1.2 times Earth's mean field. | Entropy Siphon (`caudal_de_hierro.entropy_siphon`) | Poke | The creature draws warmth from the surrounding currents, sapping strength from nearby targets while restoring its own vitality, leaving a visible trail of condensed heat. | Starves in laminar flow regions; cannot persist without shear. |
+| caudal_de_hierro.c3 | Synchronizes oscillation to the 56-hour tidal month | Tidal strain modulates core convection velocity ← Creature locks phase to maximize shear harvest ← Moon creates cyclic strain of 5e-7 | **F4** One moon of 620 km radius orbits at 12 planetary radii every 2.35 days; tidal despinning has locked the planet to a 56-hour spin, so the master clock is the 56-hour tidal month with cyclic strain of order 5e-7.; **F10** Sound travels about 242 m/s in the cold 0.45 bar air, 1,480 m/s in water and 3,000-6,000 m/s in rock, so rock is the long-range channel. | Tidal Pulse (`caudal_de_hierro.tidal_pulse`) | Basic | The creature strikes strongly with amplified force whenever it senses the player entering a specific rhythm, making its attacks noticeably more powerful. | Disoriented during the 'slack' tide; attack chance -50%. |
 | caudal_de_hierro.c4 | Emits low-frequency seismic hums | Uses sound to phase-lock with distant herds ← Sound travels 3,000-6,000 m/s in rock/core ← Prevents destructive interference between individuals | **F10** Sound travels about 242 m/s in the cold 0.45 bar air, 1,480 m/s in water and 3,000-6,000 m/s in rock, so rock is the long-range channel.; **F6** A sulfur-rich liquid outer core sustains a surface dipole of 60 microtesla, about 1.2 times Earth's mean field. | Seismic Chord (`caudal_de_hierro.seismic_chord`) | Social | Syncs with other creatures, +2 to group rolls, shares status effects. | Loud sound attracts 'Dynamo grazers' that disrupt flow; stealth is impossible. |
 
 ### caudal_de_hierro.c1: Gossamer helical filament structure
 
 Trait ← Rides helical magnetic field lines ← Dynamo field is inherently helical ← Sulfur-rich liquid core sustains dynamo ← F6, F3
 
-- **Skill:** Magnetic Ride (Control): Ride the local magnetic gradient for 10s, +50% speed, immune to magnetic disorientation.
+- **Skill:** Magnetic Ride (Control): The creature rides invisible magnetic currents, moving strongly and swiftly while completely ignoring any magnetic interference, allowing it to navigate freely.
 - **Weakness:** Magnetic shear tears it apart if the field reverses abruptly.
 - **Observe:**
   1. Helical filamentous shape
   2. Aligned with local magnetic north
   3. Moves along field lines
 - **Journal:** A ghost woven from iron and thought.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** implausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Either file it explicitly as a non-living dynamo pattern (F23 fantasy tier) that the player observes or avoids as a hazard, never commands, or move the grazer into the fracture aquifer (0.9-4 km, F12, F20): rebuild it as a colony of magnetotactic iron-sulfur microbes with encoded magnetosomes, rooted in F6 plus F15 redox below 118 C. Keep the fun as 'Magnetic Ride' (Control): a field-aligned glide that gathers the colony and steadies its compass. Weakness: an abrupt field reversal scrambles the magnetosomes.
+  - scores: astrobio 3, skeptic 5
+  - Analogue: Magnetotactic bacteria (e.g., Magnetospirillum) orient in Earth's field using intracellular magnetite magnetosomes — a real solution, but it requires a cell, water and metabolism; nothing analogous survives core conditions.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Moffatt 1978 [verified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Moffatt 1978 [verified])
+  - Fix: Either file it explicitly as a non-living dynamo pattern (F23 fantasy tier) that the player observes or avoids as a hazard, never commands, or move the grazer into the fracture aquifer (0.9-4 km, F12, F20): rebuild it as a colony of magnetotactic iron-sulfur microbes with encoded magnetosomes, rooted in F6 plus F15 redox below 118 C. Keep the fun as 'Magnetic Ride' (Control): a field-aligned glide that gathers the colony and steadies its compass. Weakness: an abrupt field reversal scrambles the magnetosomes.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### caudal_de_hierro.c2: Consumes convective entropy gradients
 
 Trait ← Harvests work from fluid velocity shear ← No chemical bonds or solvent for metabolism ← Core is above 300 GPa and 5000 K ← F17, F6
 
-- **Skill:** Entropy Siphon (Poke): Extract thermal energy from flow, dealing 2 damage, heals 1 HP.
+- **Skill:** Entropy Siphon (Poke): The creature draws warmth from the surrounding currents, sapping strength from nearby targets while restoring its own vitality, leaving a visible trail of condensed heat.
 - **Weakness:** Starves in laminar flow regions; cannot persist without shear.
 - **Observe:**
   1. Glows faintly where flow is turbulent
   2. Shape changes with flow speed
   3. No intake orifice, dissolves into flow
 - **Journal:** It eats the wind of the world's heart.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 5
+- **Plausibility:** implausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Re-root it as a chemosynthetic grazer at a redox interface in the aquifer (F15, F19, F20, at or below 118 C): it harvests H2 / Fe(II)-sulfate disequilibrium, with Darcy flow (F12) and calcite sealing (F16) deciding where the interface sits. Keep the luminous, shape-shifting look as filaments brightest where mixing is fastest. 'Entropy Siphon' (Poke): a single burst of stored radiolytic oxygen (F22) spent on one feeding strike. Weakness: in stagnant brine the redux front is sealed by calcite and it starves. If it stays in the core, call it a pattern, not a feeder — drop consume/heal verbs entirely.
+  - scores: astrobio 3, skeptic 5
+  - Analogue: No organism metabolises entropy or shear. Vent chemoautotrophs (e.g., the symbionts of Riftia pachyptila) exploit chemical disequilibrium, and bacteria sense flow through mechanosensitive channels, but both are aqueous, low-temperature chemistry — the opposite of core matter.: as named by the judge; no mechanism or reference recorded
+  - Fix: Re-root it as a chemosynthetic grazer at a redox interface in the aquifer (F15, F19, F20, at or below 118 C): it harvests H2 / Fe(II)-sulfate disequilibrium, with Darcy flow (F12) and calcite sealing (F16) deciding where the interface sits. Keep the luminous, shape-shifting look as filaments brightest where mixing is fastest. 'Entropy Siphon' (Poke): a single burst of stored radiolytic oxygen (F22) spent on one feeding strike. Weakness: in stagnant brine the redux front is sealed by calcite and it starves. If it stays in the core, call it a pattern, not a feeder — drop consume/heal verbs entirely.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### caudal_de_hierro.c3: Synchronizes oscillation to the 56-hour tidal month
 
 Trait ← Tidal strain modulates core convection velocity ← Creature locks phase to maximize shear harvest ← Moon creates cyclic strain of 5e-7 ← F4, F10
 
-- **Skill:** Tidal Pulse (Basic): Attack deals +20% damage during the player's 'tidal' phase.
+- **Skill:** Tidal Pulse (Basic): The creature strikes strongly with amplified force whenever it senses the player entering a specific rhythm, making its attacks noticeably more powerful.
 - **Weakness:** Disoriented during the 'slack' tide; attack chance -50%.
 - **Observe:**
   1. Rhythmic pulsing of filament width
   2. Seismic hum matches 56-hour period
   3. Brightens at peak tide
 - **Journal:** The planet's heartbeat is its clock.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 4
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 4
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### caudal_de_hierro.c4: Emits low-frequency seismic hums
@@ -83,8 +90,8 @@ Trait ← Uses sound to phase-lock with distant herds ← Sound travels 3,000-6,
   2. Directional emission pattern
   3. Harmonics change with group size
 - **Journal:** A choir of iron singing in the dark.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 3
+- **Plausibility:** unreviewed (judge none, 2026-11-24)
+  - scores: skeptic 3
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Journal
@@ -108,3 +115,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

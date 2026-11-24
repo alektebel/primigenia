@@ -12,7 +12,9 @@
     "habitat": "20–25 km redox layer; persistent volcanic plumes; high-altitude convective bands",
     "diet": "Atmospheric H2S, SO2, CH4, and photochemical oxidants via epidermal symbionts",
     "active": "Continuous drift; foraging bursts during storms and dusk",
-    "predators": []
+    "predators": [
+      "Aero-Wasp"
+    ]
   },
   "body": "Wide, rigid sail membrane reinforced by silica spicules; dense iron-sulfur core; porous epidermis housing symbiont clusters; conductive spines along leading edges",
   "chains": [
@@ -36,7 +38,7 @@
           "en": "Aerodynamic Drift"
         },
         "role": "Passive",
-        "effect": "Glides 25m without energy cost when in updrafts or dense air pockets.",
+        "effect": "The creature effortlessly glides on rising winds and thick air currents.",
         "numbers": {}
       },
       "weakness": "Grounded by still air; cannot climb without thermal or wind uplift.",
@@ -94,7 +96,7 @@
           "en": "Chemosynthetic Feed"
         },
         "role": "Basic",
-        "effect": "Heals 8 HP/s and generates 5% O2 for allies when near volcanic vents or storm outflow.",
+        "effect": "When near volcanic vents or storm runoff, the creature absorbs harsh gases to sustain itself and shares vitality with nearby allies.",
         "numbers": {}
       },
       "weakness": "Starves rapidly if H2S/SO2 supply is blocked; symbionts die in clean air.",
@@ -151,7 +153,7 @@
           "en": "Corona Lash"
         },
         "role": "Engage",
-        "effect": "Electrifies all targets within 15m for 4s; pulls enemies toward colony and disarms ranged attacks.",
+        "effect": "The creature crackles with stored electricity, drawing nearby foes inward and disrupting their strikes.",
         "numbers": {}
       },
       "weakness": "Spines attract destructive lightning strikes; players can use grounded rods to redirect bolts.",
@@ -209,7 +211,7 @@
           "en": "Spore Bomb"
         },
         "role": "Poke",
-        "effect": "Drops iron-core spore cloud; damages and blinds area for 6s; spores linger for 10s.",
+        "effect": "The creature releases a heavy cloud of iron-rich spores that obscures vision and settles over the ground.",
         "numbers": {}
       },
       "weakness": "Core damage is fatal; piercing attacks or sonic resonance can crack the core.",
@@ -248,13 +250,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Aero-Wasp",
-      "kind": "cousin",
-      "note": "(council kind 'Parasite') Aero-Wasp larvae tunnel into the iron core to mine ballast material, causing the colony to sink and starve. Players can lure wasps to damage reefs or harvest larvae to craft ballast-weights."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

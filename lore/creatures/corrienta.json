@@ -33,7 +33,7 @@
           "en": "Colloid Filter"
         },
         "role": "Basic",
-        "effect": "Extracts nutrients from liquid terrain, healing 5 HP/s",
+        "effect": "The creature draws nourishment from the liquid terrain, its porous fronds filtering the water as it slowly recovers its strength.",
         "numbers": {}
       },
       "weakness": "Clogs in pure solvent zones without solute gradients",
@@ -93,7 +93,7 @@
           "en": "Current Anchor"
         },
         "role": "Control",
-        "effect": "Pins allies or enemies in place for 2s using liquid drag",
+        "effect": "The creature flaps its lateral fins to stir up thick liquid drag, firmly pinning nearby allies or enemies in place for a short while.",
         "numbers": {}
       },
       "weakness": "Useless in still fluid or vacuum pockets",
@@ -149,7 +149,7 @@
           "en": "Scent Trail"
         },
         "role": "Engage",
-        "effect": "Reveals hidden path to resource nodes, granting +20% movement speed",
+        "effect": "The creature follows chemical gradients to reveal a hidden path toward resource nodes, moving along the trail with noticeably greater haste.",
         "numbers": {}
       },
       "weakness": "Overwhelmed by uniform chemical noise or heavy fog",
@@ -205,7 +205,7 @@
           "en": "Flare Sprint"
         },
         "role": "Basic",
-        "effect": "2s burst speed +30% during active micro-flare events",
+        "effect": "The creature ignites a brief micro-flare and surges forward with a sudden burst of speed.",
         "numbers": {}
       },
       "weakness": "Exhaustion follows burst; highly vulnerable post-activity",

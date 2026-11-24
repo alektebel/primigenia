@@ -10,6 +10,7 @@
 - **Diet:** Water ice, hydrogen peroxide frost, grazers, reaction-mass exhaust plumes.
 - **Active:** Continuous diurnal activity; hunting peaks during Kessler cascade events when debris density spikes.
 - **Predators:** none
+- **Prey:** Ring Grazer
 
 ## Body
 
@@ -21,39 +22,45 @@ Asymmetric body: central clathrate-brain core protected by 1 mm skin; magenta-hi
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cerradora_de_hueco.c1 | Doppler-shifted amber photoreceptors | Orbital intercept requires precise phasing ← Phasing requires knowing prey's orbital period ← Period shifts reflected light frequency via Doppler effect ← Eyes evolved shifted-amber photoreceptors to read spectral shift | **F8** Ring orbital speed is 21.6 km/s inner and 17.4 km/s outer, so crossing orbits close at km/s while co-orbital neighbours drift at cm/s.; **F12** Sunlight is 1,360 W/m2, zero in eclipse; Verrin-shine on Coth's night is 1.7 W/m2 at albedo 0.5.; **F21** Primary production uses amber-light photosynthesis with magenta bacteriorhodopsin-like pigments peaked near 585 nm, the hydrogen/peroxide couple at about -340 kJ/mol, and direct electron capture from the torus. | Phase Lock (`cerradora_de_hueco.phase_lock`) | Engage | Locks onto prey's orbital period, predicting position for 5 turns. +50% hit chance on predicted intercept. | Blind to optical phasing during eclipse; sensors rely on reflected light. |
-| cerradora_de_hueco.c2 | Peroxide-catalyzed sublimation bladders | Delta-v requires ejected mass for orbit changes ← Mass must be recovered from environment ← Peroxide-ice reaction yields high impulse ← Catalyst bladders evolved to maximize exhaust velocity | **F9** Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir.; **F18** The ring is 92% water ice and 8% silicate plus organics; at 221 K ice sublimes, and belt electrons radiolyse the top millimetre into hydrogen peroxide and hydrogen.; **F21** Primary production uses amber-light photosynthesis with magenta bacteriorhodopsin-like pigments peaked near 585 nm, the hydrogen/peroxide couple at about -340 kJ/mol, and direct electron capture from the torus. | Impulse Burn (`cerradora_de_hueco.impulse_burn`) | Basic | Burns ice and peroxide, delivering 15 m/s delta-v. Can change semi-major axis for Hohmann transfers. | High peroxide use risks internal poisoning; 10% chance of self-damage if burn exceeds capacity. |
+| cerradora_de_hueco.c1 | Doppler-shifted amber photoreceptors | Orbital intercept requires precise phasing ← Phasing requires knowing prey's orbital period ← Period shifts reflected light frequency via Doppler effect ← Eyes evolved shifted-amber photoreceptors to read spectral shift | **F8** Ring orbital speed is 21.6 km/s inner and 17.4 km/s outer, so crossing orbits close at km/s while co-orbital neighbours drift at cm/s.; **F12** Sunlight is 1,360 W/m2, zero in eclipse; Verrin-shine on Coth's night is 1.7 W/m2 at albedo 0.5.; **F21** Primary production uses amber-light photosynthesis with magenta bacteriorhodopsin-like pigments peaked near 585 nm, the hydrogen/peroxide couple at about -340 kJ/mol, and direct electron capture from the torus. | Phase Lock (`cerradora_de_hueco.phase_lock`) | Engage | The creature tracks the prey's orbit and anticipates where it will move next. Aiming at that predicted path makes strikes land with remarkable accuracy. | Blind to optical phasing during eclipse; sensors rely on reflected light. |
+| cerradora_de_hueco.c2 | Peroxide-catalyzed sublimation bladders | Delta-v requires ejected mass for orbit changes ← Mass must be recovered from environment ← Peroxide-ice reaction yields high impulse ← Catalyst bladders evolved to maximize exhaust velocity | **F9** Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir.; **F18** The ring is 92% water ice and 8% silicate plus organics; at 221 K ice sublimes, and belt electrons radiolyse the top millimetre into hydrogen peroxide and hydrogen.; **F21** Primary production uses amber-light photosynthesis with magenta bacteriorhodopsin-like pigments peaked near 585 nm, the hydrogen/peroxide couple at about -340 kJ/mol, and direct electron capture from the torus. | Impulse Burn (`cerradora_de_hueco.impulse_burn`) | Basic | The creature ignites chemical bladders to propel itself swiftly through the void. It can shift its trajectory to cut across the battlefield and reposition near targets. | High peroxide use risks internal poisoning; 10% chance of self-damage if burn exceeds capacity. |
 | cerradora_de_hueco.c3 | Hinged reflective sail | Radiation pressure provides outward thrust ← Thrust can be harvested for free altitude gain ← Hinge allows sail to catch radiation without blocking nozzles ← Hinged sail evolved to balance lift and thrust vectoring | **F10** Radiation pressure at 0.575 AU is 9 micropascals on a reflector; a 10 g/m2 living sail accelerates near 1 mm/s2, enough to spiral outward, never inward.; **F5** The ring spans 1.35-2.1 R_V, inside the ~2.17 R_V fluid Roche limit for 0.9 g/cm3 ice, with optical depth 1.2 and 20 m thickness. | Spiral Assist (`cerradora_de_hueco.spiral_assist`) | Control | Uses radiation pressure to gain 0.5 altitude without mass cost. Reduces energy cost of outbound transfers. | Sail blocks retro-thrust; cannot burn inward while sail is active. |
-| cerradora_de_hueco.c4 | Debris-exhaust tracking filaments | Kessler cascade creates chaotic debris field ← Debris forces prey to expend reaction mass to survive ← Reaction mass exhaust plumes reveal prey position ← Filaments evolved to detect and track exhaust plumes | **F19** Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade.; **F9** Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir. | Cascade Hunt (`cerradora_de_hueco.cascade_hunt`) | Signature | In debris fields, detects panic burns of prey. +75% capture chance; reveals hidden grazers. | Filaments can snag on large debris fragments; movement restricted in dense debris. |
+| cerradora_de_hueco.c4 | Debris-exhaust tracking filaments | Kessler cascade creates chaotic debris field ← Debris forces prey to expend reaction mass to survive ← Reaction mass exhaust plumes reveal prey position ← Filaments evolved to detect and track exhaust plumes | **F19** Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade.; **F9** Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir. | Cascade Hunt (`cerradora_de_hueco.cascade_hunt`) | Signature | Amidst floating wreckage, the creature senses frantic escape attempts and tracks them effortlessly. It easily secures fleeing prey and exposes those trying to hide. | Filaments can snag on large debris fragments; movement restricted in dense debris. |
 
 ### cerradora_de_hueco.c1: Doppler-shifted amber photoreceptors
 
 Trait ← Orbital intercept requires precise phasing ← Phasing requires knowing prey's orbital period ← Period shifts reflected light frequency via Doppler effect ← Eyes evolved shifted-amber photoreceptors to read spectral shift ← F8, F12, F21
 
-- **Skill:** Phase Lock (Engage): Locks onto prey's orbital period, predicting position for 5 turns. +50% hit chance on predicted intercept.
+- **Skill:** Phase Lock (Engage): The creature tracks the prey's orbit and anticipates where it will move next. Aiming at that predicted path makes strikes land with remarkable accuracy.
 - **Weakness:** Blind to optical phasing during eclipse; sensors rely on reflected light.
 - **Observe:**
   1. Amber eyes glow with shifted spectrum when targeting
   2. Tracking movements anticipate prey's future position
   3. Lock beam points ahead of prey velocity vector
 - **Journal:** It doesn't see where you are; it sees where you'll be.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep the predictive skill but change the sense: an amber (585 nm) star-and-ring tracker that measures prey angular displacement across successive sightings and eclipse clocks (F8, F12, F14) to fit an orbit. Drop the shifted-spectrum glow and lock beam; show anticipation instead. A literal spectral shift would need a narrow-band emitter this canon does not supply.
   - scores: astrobio 6, skeptic 4
+  - Analogue: A dragonfly intercepting another fly by angular image motion and time-to-contact, not by colour. CF-FM bats compensate Doppler shift in echolocation, but that works because they emit a narrow-band call, which reflected sunlight is not.: as named by the judge; no mechanism or reference recorded
+  - Fix: Keep the predictive skill but change the sense: an amber (585 nm) star-and-ring tracker that measures prey angular displacement across successive sightings and eclipse clocks (F8, F12, F14) to fit an orbit. Drop the shifted-spectrum glow and lock beam; show anticipation instead. A literal spectral shift would need a narrow-band emitter this canon does not supply.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### cerradora_de_hueco.c2: Peroxide-catalyzed sublimation bladders
 
 Trait ← Delta-v requires ejected mass for orbit changes ← Mass must be recovered from environment ← Peroxide-ice reaction yields high impulse ← Catalyst bladders evolved to maximize exhaust velocity ← F9, F18, F21
 
-- **Skill:** Impulse Burn (Basic): Burns ice and peroxide, delivering 15 m/s delta-v. Can change semi-major axis for Hohmann transfers.
+- **Skill:** Impulse Burn (Basic): The creature ignites chemical bladders to propel itself swiftly through the void. It can shift its trajectory to cut across the battlefield and reposition near targets.
 - **Weakness:** High peroxide use risks internal poisoning; 10% chance of self-damage if burn exceeds capacity.
 - **Observe:**
   1. Nozzle clusters vent white gas with visible heat haze
   2. Body color deepens with peroxide load
   3. Mass gauge drops visibly with each maneuver
 - **Journal:** It eats poison to buy speed.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Line each bladder with a peroxide-impermeable clathrate or ceramic membrane separate from the 1 mm pressure skin, feed ring ice in as expendable mass, and vent a cold collimated ice-vapour jet through the starboard nozzles. Replace 'white gas with visible heat haze' with 'a brief frosty sparkle as grains catch starlight'. Leave any self-poisoning chance to the game numbers, not the lore.
   - scores: astrobio 6, skeptic 3
+  - Analogue: Bombardier beetle (Brachinus) stores hydrogen peroxide and catalytically decomposes it into a hot defensive spray; hydrogen-peroxide monopropellant thrusters are flown on spacecraft.: as named by the judge; no mechanism or reference recorded
+  - Fix: Line each bladder with a peroxide-impermeable clathrate or ceramic membrane separate from the 1 mm pressure skin, feed ring ice in as expendable mass, and vent a cold collimated ice-vapour jet through the starboard nozzles. Replace 'white gas with visible heat haze' with 'a brief frosty sparkle as grains catch starlight'. Leave any self-poisoning chance to the game numbers, not the lore.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### cerradora_de_hueco.c3: Hinged reflective sail
@@ -67,30 +74,30 @@ Trait ← Radiation pressure provides outward thrust ← Thrust can be harvested
   2. Sail hinge clicks when adjusting angle
   3. Outward spiral path visible during idle drift
 - **Journal:** The star pushes it up; gravity pays the debt.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Make the sail a micron-thick radiation-toughened organic film on a light frame, not the pressure skin; gimbal the hinge through the centre of mass or add counter-rotating ballast nozzles. Let a small magenta pigment patch harvest F21 photosynthesis at the cost of a slight thrust penalty. Keep the outward-only spiral, the eclipse downtime and the journal line.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Solar sails such as IKAROS and NanoSail-D climb with photon pressure and no propellant; ring grains feel the related Poynting-Robertson effect.: as named by the judge; no mechanism or reference recorded
+  - Fix: Make the sail a micron-thick radiation-toughened organic film on a light frame, not the pressure skin; gimbal the hinge through the centre of mass or add counter-rotating ballast nozzles. Let a small magenta pigment patch harvest F21 photosynthesis at the cost of a slight thrust penalty. Keep the outward-only spiral, the eclipse downtime and the journal line.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### cerradora_de_hueco.c4: Debris-exhaust tracking filaments
 
 Trait ← Kessler cascade creates chaotic debris field ← Debris forces prey to expend reaction mass to survive ← Reaction mass exhaust plumes reveal prey position ← Filaments evolved to detect and track exhaust plumes ← F19, F9
 
-- **Skill:** Cascade Hunt (Signature): In debris fields, detects panic burns of prey. +75% capture chance; reveals hidden grazers.
+- **Skill:** Cascade Hunt (Signature): Amidst floating wreckage, the creature senses frantic escape attempts and tracks them effortlessly. It easily secures fleeing prey and exposes those trying to hide.
 - **Weakness:** Filaments can snag on large debris fragments; movement restricted in dense debris.
 - **Observe:**
   1. Filaments extend into debris cloud like sensory hairs
   2. Filaments glow near exhaust plumes
   3. Predator ignores open ice to focus on debris lanes
 - **Journal:** In the storm of broken ice, the predator watches the sparks.
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Describe the filaments as short-range whiskers that vibrate or taste when plume grains strike them, useful in the last metres of an intercept, and as impact hazards in dense debris. Change the secret from 'triggers a Kessler cascade' to 'kicks loose frost into a crossing orbit to flush grazers', preserving the chaos-hunting fun without breaking the energy budget.
   - scores: astrobio 6, skeptic 4
+  - Analogue: Spider trichobothria and insect antennae sense airflow and particles by direct mechanical interception; spacecraft dust detectors register single grain impacts by ionisation.: as named by the judge; no mechanism or reference recorded
+  - Fix: Describe the filaments as short-range whiskers that vibrate or taste when plume grains strike them, useful in the last metres of an intercept, and as impact hazards in dense debris. Change the secret from 'triggers a Kessler cascade' to 'kicks loose frost into a crossing orbit to flush grazers', preserving the chaos-hunting fun without breaking the energy budget.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Ring Grazer | cousin |  | (council kind 'Predator-Prey') Specialist hunter of grazers; uses Kessler cascades to flush prey and force mass expenditure, leaving them vulnerable to phasing strikes. |
 
 ## Journal
 
@@ -115,3 +122,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

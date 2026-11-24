@@ -22,16 +22,16 @@ A broad ventral foot and thick mucus coat minimize friction on rough basalt and 
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| babosa.c1 | Thick, alkaloid-rich mucus coat | Dense air holds moisture but high slopes bake skin ← Mucus traps water and blocks UV ← Same coating lubricates rough andesite | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Mucus Coat (`babosa.mucus_coat`) | Passive | +30% UV and heat resistance; -20% speed; leaves a slick trail. | Sea salt strips the coating; a salt line forces retreat. |
-| babosa.c2 | Sensory tentacles track chemical gradients | Cluttered undergrowth limits vision ← Dense air slows molecular diffusion ← Scent trails persist 1.6× longer | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Scent Read (`babosa.scent_read`) | Engage | Reveals creature path within 60 m for 30 s; marks targets for allies. | Heavy rain washes gradients; crossing running water breaks the link. |
-| babosa.c3 | Contractile body coils into a bitter mucus sphere | Lacks speed and hard armour ← Contracts to expose only wet, tough skin ← Alkaloid-rich mucus triggers predator gag reflex | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt | Hunker (`babosa.hunker`) | Defence | -40% damage taken for 10 s; cannot move or attack. | Flipping it exposes a soft ventral patch for 3 s before it can re-coil. |
-| babosa.c4 | Broad ventral foot glides over substrate | Small mass cannot overcome 1.6 bar drag ← Terminal velocity drops 25% ← Muscular waves push against mucus-lubricated rock | **F4** Dense air: 1.6 bar | Mucus Slide (`babosa.mucus_slide`) | Basic | +40% movement speed for 5 s; leaves a slippery trail that slows pursuers. | Direct fire or concentrated salt burns the ventral foot. |
+| babosa.c1 | Thick, alkaloid-rich mucus coat | Dense air holds moisture but high slopes bake skin ← Mucus traps water and blocks UV ← Same coating lubricates rough andesite | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Mucus Coat (`babosa.mucus_coat`) | Passive | The creature moves with a heavy, deliberate pace while its thick coating shields it from harsh sunlight and heat. It leaves behind a glistening, slippery trail that makes the ground difficult to traverse. | Sea salt strips the coating; a salt line forces retreat. |
+| babosa.c2 | Sensory tentacles track chemical gradients | Cluttered undergrowth limits vision ← Dense air slows molecular diffusion ← Scent trails persist 1.6× longer | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Scent Read (`babosa.scent_read`) | Engage | Its sensory tentacles catch chemical traces, leaving a visible trail that shows where it has recently traveled. The creature becomes clearly marked to nearby allies, making its movements easy to follow. | Heavy rain washes gradients; crossing running water breaks the link. |
+| babosa.c3 | Contractile body coils into a bitter mucus sphere | Lacks speed and hard armour ← Contracts to expose only wet, tough skin ← Alkaloid-rich mucus triggers predator gag reflex | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt | Hunker (`babosa.hunker`) | Defence | The creature contracts its body into a tightly coiled sphere of bitter mucus, becoming nearly impervious to harm. While in this defensive posture, it remains completely still and unable to strike. | Flipping it exposes a soft ventral patch for 3 s before it can re-coil. |
+| babosa.c4 | Broad ventral foot glides over substrate | Small mass cannot overcome 1.6 bar drag ← Terminal velocity drops 25% ← Muscular waves push against mucus-lubricated rock | **F4** Dense air: 1.6 bar | Mucus Slide (`babosa.mucus_slide`) | Basic | The creature propels itself forward with a swift, gliding motion across the ground. It leaves behind a slick residue that causes anyone following closely to stumble and lose their footing. | Direct fire or concentrated salt burns the ventral foot. |
 
 ### babosa.c1: Thick, alkaloid-rich mucus coat
 
 Trait ← Dense air holds moisture but high slopes bake skin ← Mucus traps water and blocks UV ← Same coating lubricates rough andesite ← F14, F15, F20
 
-- **Skill:** Mucus Coat (Passive): +30% UV and heat resistance; -20% speed; leaves a slick trail.
+- **Skill:** Mucus Coat (Passive): The creature moves with a heavy, deliberate pace while its thick coating shields it from harsh sunlight and heat. It leaves behind a glistening, slippery trail that makes the ground difficult to traverse.
 - **Weakness:** Sea salt strips the coating; a salt line forces retreat.
 - **Observe:**
   1. Shiny iridescent trail
@@ -49,7 +49,7 @@ Trait ← Dense air holds moisture but high slopes bake skin ← Mucus traps wat
 
 Trait ← Cluttered undergrowth limits vision ← Dense air slows molecular diffusion ← Scent trails persist 1.6× longer ← F16, F20
 
-- **Skill:** Scent Read (Engage): Reveals creature path within 60 m for 30 s; marks targets for allies.
+- **Skill:** Scent Read (Engage): Its sensory tentacles catch chemical traces, leaving a visible trail that shows where it has recently traveled. The creature becomes clearly marked to nearby allies, making its movements easy to follow.
 - **Weakness:** Heavy rain washes gradients; crossing running water breaks the link.
 - **Observe:**
   1. Tentacles sweeping low
@@ -67,7 +67,7 @@ Trait ← Cluttered undergrowth limits vision ← Dense air slows molecular diff
 
 Trait ← Lacks speed and hard armour ← Contracts to expose only wet, tough skin ← Alkaloid-rich mucus triggers predator gag reflex ← F2, F26
 
-- **Skill:** Hunker (Defence): -40% damage taken for 10 s; cannot move or attack.
+- **Skill:** Hunker (Defence): The creature contracts its body into a tightly coiled sphere of bitter mucus, becoming nearly impervious to harm. While in this defensive posture, it remains completely still and unable to strike.
 - **Weakness:** Flipping it exposes a soft ventral patch for 3 s before it can re-coil.
 - **Observe:**
   1. Tightly coiled sphere
@@ -85,7 +85,7 @@ Trait ← Lacks speed and hard armour ← Contracts to expose only wet, tough sk
 
 Trait ← Small mass cannot overcome 1.6 bar drag ← Terminal velocity drops 25% ← Muscular waves push against mucus-lubricated rock ← F4
 
-- **Skill:** Mucus Slide (Basic): +40% movement speed for 5 s; leaves a slippery trail that slows pursuers.
+- **Skill:** Mucus Slide (Basic): The creature propels itself forward with a swift, gliding motion across the ground. It leaves behind a slick residue that causes anyone following closely to stumble and lose their footing.
 - **Weakness:** Direct fire or concentrated salt burns the ventral foot.
 - **Observe:**
   1. Silky trail on vertical stone

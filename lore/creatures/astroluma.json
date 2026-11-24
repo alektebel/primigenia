@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Mid-ring lanes, 1.4–1.8 R_V; avoids chaotic Kessler zones",
+    "habitat": "Mid-ring lanes, 1.4–1.8 R_V; avoids chaotic Kessler zones. Also, in the council's sketch (no such creature in this world yet): Kessler Drifter, astroluma avoids saturated Kessler lanes where Drifters graze debris; Drifters trigger cascades that scatter Astroluma's phasing windows. Also, in the council's sketch (no such creature in this world yet): Coth Plume Moth, astroluma's shed ice clumps, rich in radiolytic organics, fall toward Coth and feed Plume Moths on their descent.",
     "diet": "Water ice, hydrogen peroxide frost, silicate-organic dust",
     "active": "Continuous; phototropic, phases with traffic",
     "predators": []
@@ -36,7 +36,7 @@
           "en": "Sail Catch"
         },
         "role": "Basic",
-        "effect": "Catch radiation pressure to gain 50 m altitude and reduce inward drift.",
+        "effect": "The creature unfurls its broad silver sail to catch starlight, pushing itself upward and steadying its course against inward pull.",
         "numbers": {}
       },
       "weakness": "Eclipse Drift: In Verrin's shadow, thrust vanishes and orbital decay accelerates.",
@@ -50,8 +50,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Keep the sail and the eclipse weakness, but pitch the membrane so part of the push is tangential and describe shadow as slow inward drift plus lost photosynthesis, not a fast fall. Delete the '50 m altitude' stat: game numbers are not yours; 'gains height / reduces inward drift' suffices.",
+        "fixes": [
+          "Keep the sail and the eclipse weakness, but pitch the membrane so part of the push is tangential and describe shadow as slow inward drift plus lost photosynthesis, not a fast fall. Delete the '50 m altitude' stat: game numbers are not yours; 'gains height / reduces inward drift' suffices."
+        ],
+        "analogues": [
+          {
+            "organism": "Engineering solar sails (IKAROS/JAXA, 2010) use reflecting films for photon thrust; the Saharan silver ant (Cataglyphis) uses mirrored hairs for radiative cooling, not locomotion.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 5
@@ -84,7 +94,7 @@
           "en": "Steam Brake"
         },
         "role": "Engage",
-        "effect": "Eject ice to shed 0.5 m/s relative velocity and dock safely.",
+        "effect": "The creature vents thick clouds of steam from its nozzles, rapidly slowing its approach so it can safely settle into place.",
         "numbers": {}
       },
       "weakness": "Fuel Debt: Using ice for thrust consumes food and armor reserves.",
@@ -97,11 +107,21 @@
         "en": "Every metre per second is bought with a mouthful of ice."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "No biological change needed. Remove '0.5 m/s' from the skill text and keep 'shed relative speed and dock safely'; let ice spent on thrust genuinely cost grazing and armour.",
+        "fixes": [
+          "No biological change needed. Remove '0.5 m/s' from the skill text and keep 'shed relative speed and dock safely'; let ice spent on thrust genuinely cost grazing and armour."
+        ],
+        "analogues": [
+          {
+            "organism": "Squid jetting water to manoeuvre and bombardier beetles (Brachinus) ejecting a chemically generated spray; in vacuum the true match is a cold-gas/water thruster.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
+          "astrobio": 8,
           "skeptic": 5
         }
       },
@@ -132,7 +152,7 @@
           "en": "Shell Drift"
         },
         "role": "Social",
-        "effect": "Release spore shell to drift and link with a mate at 10 m range.",
+        "effect": "The creature blooms its spore shells into shimmering discs, drifting gently until it finds and bonds with a nearby mate.",
         "numbers": {}
       },
       "weakness": "Sail Snag: Spore cannot steer if sail is punctured; drifts uncontrollably.",
@@ -146,8 +166,18 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Set mating in the same ring lane (or the outer ring edge) and have both partners release matched-area discs so they arrive at the same phase, with a brief steam-brake puff (F9) for final approach. If you insist on the Ledge rendezvous, make it a rare rocket-assisted dispersal, not sail drift. Delete '10 m range'.",
+        "fixes": [
+          "Set mating in the same ring lane (or the outer ring edge) and have both partners release matched-area discs so they arrive at the same phase, with a brief steam-brake puff (F9) for final approach. If you insist on the Ledge rendezvous, make it a rare rocket-assisted dispersal, not sail drift. Delete '10 m range'."
+        ],
+        "analogues": [
+          {
+            "organism": "Dandelion (Taraxacum) pappus as a light disc dispersed by a medium, and tardigrade tuns (Jonsson et al. 2008) for vacuum-tolerant spores; neither uses light pressure to navigate, so the mating mechanism remains unverified.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
           "skeptic": 3
@@ -180,7 +210,7 @@
           "en": "Ice Armor"
         },
         "role": "Defence",
-        "effect": "Harden ice shell to reduce incoming damage by 40%.",
+        "effect": "The creature thickens its icy exterior into a heavy armor, strongly deflecting blows and shielding its core from harm.",
         "numbers": {}
       },
       "weakness": "Overheat: Temperatures above 260 K breach clathrate skin and kill the cell.",
@@ -194,11 +224,20 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Make it a thin, layered/Whipple-style ice-silicate crust over the core (centimetres, self-healed from grazed frost), keep the sail membrane thin and unmortared, and limit the claim to small grains - big fragments should still be lethal. Remove '40%'; say 'small impacts glance off'.",
+        "fixes": [
+          "Make it a thin, layered/Whipple-style ice-silicate crust over the core (centimetres, self-healed from grazed frost), keep the sail membrane thin and unmortared, and limit the claim to small grains - big fragments should still be lethal. Remove '40%'; say 'small impacts glance off'."
+        ],
+        "analogues": [
+          {
+            "organism": "Whipple spaced bumper (a thin outer layer fragments a projectile into a spread debris cloud) and cometary icy regolith; tardigrade tun cryptobiosis for vacuum/dose tolerance - analogues only, not a living ice shield.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
-          "skeptic": 6
+          "astrobio": 6
         }
       },
       "provenance": {
@@ -209,18 +248,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Kessler Drifter",
-      "kind": "cousin",
-      "note": "(council kind 'Competition') Astroluma avoids saturated Kessler lanes where Drifters graze debris; Drifters trigger cascades that scatter Astroluma's phasing windows."
-    },
-    {
-      "with": "Coth Plume Moth",
-      "kind": "cousin",
-      "note": "(council kind 'Commensal') Astroluma's shed ice clumps, rich in radiolytic organics, fall toward Coth and feed Plume Moths on their descent."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-24",
     "by": [
@@ -232,6 +260,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

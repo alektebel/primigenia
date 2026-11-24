@@ -21,69 +21,81 @@ Flattened silicate-ice carapace, lateral claws, tucked brood-chamber, reaction-m
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| crang_lira.c1 | Flattened silicate-ice carapace shields internal organs | Armor absorbs micrometeoroid kinetic energy ← Prevents sterilizing radiation and impact vaporization ← Driven by constant hypervelocity debris flux | **F19** Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade.; **F13** Belt dose at Coth's surface is 0.5-5 Gy/day, and 10 cm of ice cuts it roughly a thousandfold. | Shell Lock (`crang_lira.shell_lock`) | Defence | Reduces damage by 80% for 2 laps, costs 5% mass. | Immobile while locked, heavy mass drains delta-v. |
-| crang_lira.c2 | Sideways skittering gait conserves orbital energy | Lateral movement avoids costly radial orbital changes ← Low profile minimizes cross-section to vertical impacts ← Claws optimized for rowing through dust shear | **F8** Ring orbital speed is 21.6 km/s inner and 17.4 km/s outer, so crossing orbits close at km/s while co-orbital neighbours drift at cm/s.; **F19** Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade. | Skitter (`crang_lira.skitter`) | Basic | Moves 15 m/s sideways relative to ring, silent and stable. | Cannot move radially quickly, easy target for phasing. |
-| crang_lira.c3 | Crushing claws fracture ice for sublimation propulsion | Sublimation provides reaction mass for orbit keeping ← Cracks ice and harvests peroxide fuel ← Requires high force to break ring grains | **F9** Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir.; **F22** Food is ice, peroxide frost, UV-processed organics such as formaldehyde and methanol, and other organisms; poisons are peroxide above 10 mM, free oxygen, heat above 260 K, ammonia above 20% and impact plasma. | Ice Crack (`crang_lira.ice_crack`) | Engage | Breaks ice grain, gains +10 delta-v and heals 5% mass. | Cracking requires proximity, risks exposure to plasma. |
-| crang_lira.c4 | Tucked abdomen seals brood during radiation spikes | Clathrate cap protects spores from kilogray doses ← Tucked mass stabilizes rotational inertia for maneuvers ← Brood uses parent's reaction mass for launch | **F23** Reproduction is budding plus spring-loaded spore shells; tuns survive vacuum and kilogray doses, and gamete meeting in free fall must be aimed by orbital phasing, not by falling.; **F20** The intracellular solvent is an ammonia-water eutectic brine at 176 K, held by a 1 mm clathrate skin resisting about 1 bar of vapour pressure. | Brood Seal (`crang_lira.brood_seal`) | Control | Protects 3 offspring for 20 laps, reduces mobility. | Sealed brood emits no heat, invisible to radar, but slow to escape. |
+| crang_lira.c1 | Flattened silicate-ice carapace shields internal organs | Armor absorbs micrometeoroid kinetic energy ← Prevents sterilizing radiation and impact vaporization ← Driven by constant hypervelocity debris flux | **F19** Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade.; **F13** Belt dose at Coth's surface is 0.5-5 Gy/day, and 10 cm of ice cuts it roughly a thousandfold. | Shell Lock (`crang_lira.shell_lock`) | Defence | The creature braces its hardened carapace to strongly deflect incoming attacks for a short while, though it must shed a small portion of its mass to maintain the stance. | Immobile while locked, heavy mass drains delta-v. |
+| crang_lira.c2 | Sideways skittering gait conserves orbital energy | Lateral movement avoids costly radial orbital changes ← Low profile minimizes cross-section to vertical impacts ← Claws optimized for rowing through dust shear | **F8** Ring orbital speed is 21.6 km/s inner and 17.4 km/s outer, so crossing orbits close at km/s while co-orbital neighbours drift at cm/s.; **F19** Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade. | Skitter (`crang_lira.skitter`) | Basic | The creature glides swiftly sideways along the surface in complete silence, maintaining a steady and balanced posture. | Cannot move radially quickly, easy target for phasing. |
+| crang_lira.c3 | Crushing claws fracture ice for sublimation propulsion | Sublimation provides reaction mass for orbit keeping ← Cracks ice and harvests peroxide fuel ← Requires high force to break ring grains | **F9** Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir.; **F22** Food is ice, peroxide frost, UV-processed organics such as formaldehyde and methanol, and other organisms; poisons are peroxide above 10 mM, free oxygen, heat above 260 K, ammonia above 20% and impact plasma. | Ice Crack (`crang_lira.ice_crack`) | Engage | The creature shatters the surrounding ice with its claws to launch itself forward, absorbing the released vapor to restore its strength. | Cracking requires proximity, risks exposure to plasma. |
+| crang_lira.c4 | Tucked abdomen seals brood during radiation spikes | Clathrate cap protects spores from kilogray doses ← Tucked mass stabilizes rotational inertia for maneuvers ← Brood uses parent's reaction mass for launch | **F23** Reproduction is budding plus spring-loaded spore shells; tuns survive vacuum and kilogray doses, and gamete meeting in free fall must be aimed by orbital phasing, not by falling.; **F20** The intracellular solvent is an ammonia-water eutectic brine at 176 K, held by a 1 mm clathrate skin resisting about 1 bar of vapour pressure. | Brood Seal (`crang_lira.brood_seal`) | Control | The creature tucks its abdomen over its young to shield them from harsh radiation, though this protective posture makes it move much slower. | Sealed brood emits no heat, invisible to radar, but slow to escape. |
 
 ### crang_lira.c1: Flattened silicate-ice carapace shields internal organs
 
 Trait ← Armor absorbs micrometeoroid kinetic energy ← Prevents sterilizing radiation and impact vaporization ← Driven by constant hypervelocity debris flux ← F19, F13
 
-- **Skill:** Shell Lock (Defence): Reduces damage by 80% for 2 laps, costs 5% mass.
+- **Skill:** Shell Lock (Defence): The creature braces its hardened carapace to strongly deflect incoming attacks for a short while, though it must shed a small portion of its mass to maintain the stance.
 - **Weakness:** Immobile while locked, heavy mass drains delta-v.
 - **Observe:**
   1. Glittering carapace
   2. Impact craters filled with regrowth ice
   3. Hides abdomen when flares hit
 - **Journal:** 
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Rebuild the trait as a flattened Whipple shell: thin silicate-ice bumper, dust-filled standoff gap, water-ice-rich inner hull of roughly 10 cm water-equivalent. It stops micron-to-mm fragments, not boulders; the animal survives the fine rain of a cascade and hides in shadow or a tun when large fragments fly. Replace flares with belt-dose or torus-plasma spikes. Skill Shell Lock (Defence): tuck limbs under the bumper and hold still, immobile and with costly radial station-keeping because of the ballast; delete the 80%, 2 laps and 5% mass figures. Change deflects a Kessler cascade to survives the fragment rain.
   - scores: astrobio 6, skeptic 3
+  - Analogue: Whipple bumper shield in spacecraft engineering; biological analogues are diatom silica frustules and the cryptobiotic cuticle of tardigrade tuns; low-slung armoured chitons for the low-profile solution: as named by the judge; no mechanism or reference recorded
+  - Fix: Rebuild the trait as a flattened Whipple shell: thin silicate-ice bumper, dust-filled standoff gap, water-ice-rich inner hull of roughly 10 cm water-equivalent. It stops micron-to-mm fragments, not boulders; the animal survives the fine rain of a cascade and hides in shadow or a tun when large fragments fly. Replace flares with belt-dose or torus-plasma spikes. Skill Shell Lock (Defence): tuck limbs under the bumper and hold still, immobile and with costly radial station-keeping because of the ballast; delete the 80%, 2 laps and 5% mass figures. Change deflects a Kessler cascade to survives the fragment rain.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### crang_lira.c2: Sideways skittering gait conserves orbital energy
 
 Trait ← Lateral movement avoids costly radial orbital changes ← Low profile minimizes cross-section to vertical impacts ← Claws optimized for rowing through dust shear ← F8, F19
 
-- **Skill:** Skitter (Basic): Moves 15 m/s sideways relative to ring, silent and stable.
+- **Skill:** Skitter (Basic): The creature glides swiftly sideways along the surface in complete silence, maintaining a steady and balanced posture.
 - **Weakness:** Cannot move radially quickly, easy target for phasing.
 - **Observe:**
   1. Legs move laterally
   2. Body aligns with ring plane
   3. Leaves no trail in vacuum
 - **Journal:** 
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
-  - scores: astrobio 6, skeptic 2
+- **Plausibility:** implausible (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Reframe as shear-surfing: the animal hooks grains on adjacent orbits and trades angular momentum with the ring, drifting at cm/s to m/s relative to its neighbours; that exchange is highly speculative but honest. Any faster dash must be paid for with sublimated ice under F9. Say low collision cross-section instead of conserves orbital energy. Skill Skitter (Basic): a low lateral scuttle aligned with the ring plane, fast relative to neighbours but unable to change radius quickly; delete the 15 m/s figure. Keep silent as a joke about F11, but replace leaves no trail with a brief spatters of ice dust.
+  - scores: astrobio 3, skeptic 2
+  - Analogue: Sidewinding rattlesnake reducing slip on granular sand; ice skater pushing against an edge; orbital momentum-exchange tether as an engineering analogue, highly speculative as biology: as named by the judge; no mechanism or reference recorded
+  - Fix: Reframe as shear-surfing: the animal hooks grains on adjacent orbits and trades angular momentum with the ring, drifting at cm/s to m/s relative to its neighbours; that exchange is highly speculative but honest. Any faster dash must be paid for with sublimated ice under F9. Say low collision cross-section instead of conserves orbital energy. Skill Skitter (Basic): a low lateral scuttle aligned with the ring plane, fast relative to neighbours but unable to change radius quickly; delete the 15 m/s figure. Keep silent as a joke about F11, but replace leaves no trail with a brief spatters of ice dust.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### crang_lira.c3: Crushing claws fracture ice for sublimation propulsion
 
 Trait ← Sublimation provides reaction mass for orbit keeping ← Cracks ice and harvests peroxide fuel ← Requires high force to break ring grains ← F9, F22
 
-- **Skill:** Ice Crack (Engage): Breaks ice grain, gains +10 delta-v and heals 5% mass.
+- **Skill:** Ice Crack (Engage): The creature shatters the surrounding ice with its claws to launch itself forward, absorbing the released vapor to restore its strength.
 - **Weakness:** Cracking requires proximity, risks exposure to plasma.
 - **Observe:**
   1. Claws churning ice
   2. Vapor jet flickers
   3. Peroxide frost glows magenta on mouthparts
 - **Journal:** 
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Brace a claw against a grain, crack it to expose fresh ice, heat that ice and vent it through the reaction-mass siphons; the grazer loses mass as it moves, and the recoil can help the stroke. Skill Ice Crack (Engage): fracture a grain and jet its vapour to reposition, requiring contact and therefore exposing the animal to peroxide frost and impact plasma; keep the peroxide-sequestering mouthparts from F22. Delete +10 delta-v and heals 5% mass.
   - scores: astrobio 6, skeptic 6
+  - Analogue: Squid and octopus jet propulsion, the same momentum conservation with a different working fluid; a steam or cold-gas thruster in engineering: as named by the judge; no mechanism or reference recorded
+  - Fix: Brace a claw against a grain, crack it to expose fresh ice, heat that ice and vent it through the reaction-mass siphons; the grazer loses mass as it moves, and the recoil can help the stroke. Skill Ice Crack (Engage): fracture a grain and jet its vapour to reposition, requiring contact and therefore exposing the animal to peroxide frost and impact plasma; keep the peroxide-sequestering mouthparts from F22. Delete +10 delta-v and heals 5% mass.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### crang_lira.c4: Tucked abdomen seals brood during radiation spikes
 
 Trait ← Clathrate cap protects spores from kilogray doses ← Tucked mass stabilizes rotational inertia for maneuvers ← Brood uses parent's reaction mass for launch ← F23, F20
 
-- **Skill:** Brood Seal (Control): Protects 3 offspring for 20 laps, reduces mobility.
+- **Skill:** Brood Seal (Control): The creature tucks its abdomen over its young to shield them from harsh radiation, though this protective posture makes it move much slower.
 - **Weakness:** Sealed brood emits no heat, invisible to radar, but slow to escape.
 - **Observe:**
   1. Abdomen vanishes under carapace
   2. Cap glows with clathrate crystal
   3. Offspring vibrate inside shell
 - **Journal:** 
-- **Plausibility:** fixable (judge astrobio/autoloop-2026-11-24, 2026-11-24)
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep the clathrate-capped brood small and water-shielded, and add passive or magnetic attitude damping to handle the spin-up under F4. Skill Brood Seal (Control): withdraw the abdomen under the cap and spend stored ice to launch spores aimed by orbital phasing, slowed and thermally quiet in the infrared but still visible to radar. Delete protects 3 offspring for 20 laps and keep only the plain behaviour.
   - scores: astrobio 6, skeptic 4
+  - Analogue: Tardigrade tun cryptobiosis; brooding parents that shield eggs; explosive ballistospore discharge in fungi for the spring-loaded launch: as named by the judge; no mechanism or reference recorded
+  - Fix: Keep the clathrate-capped brood small and water-shielded, and add passive or magnetic attitude damping to handle the spin-up under F4. Skill Brood Seal (Control): withdraw the abdomen under the cap and spend stored ice to launch spores aimed by orbital phasing, slowed and thermally quiet in the infrared but still visible to radar. Delete protects 3 offspring for 20 laps and keep only the plain behaviour.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -121,3 +133,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
 - 2026-11-24 autoloop: carcinisation links to 5 creature(s)
 - 2026-11-24 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

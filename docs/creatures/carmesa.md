@@ -21,16 +21,16 @@ Flattened carapace, lateral walking legs, tucked ventral gas-bladder, asymmetric
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| carmesa.c1 | Dorsoventrally flattened carapace | Minimizes frontal drag in thin air ← Distributes hydrostatic pressure evenly during migration ← Prevents tissue collapse across steep pressure gradient | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.; **F20** Hydrostatic pressure equalization mechanisms prevent tissue collapse during vertical migration, turning altitude changes into tactical risk/reward loops. | Aegis Plate (`carmesa.aegis_plate`) | Defence | Negates 60% vertical shear damage when anchored to ice-hail. | Vulnerable to dorsal piercing strikes |
-| carmesa.c2 | Lateral scuttling gait (sideways walking) | Wider stance lowers center of mass against crosswinds ← Enables instant altitude shifts without rotational inertia ← Counteracts constant shear drag from zonal flows | **F4** 9.8-hour rotation period with 2.5° axial tilt drives persistent zonal jets and weak seasonal variation.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Jetstep (`carmesa.jetstep`) | Engage | Dash 15m laterally, ignoring wind drag for 1 turn. | Cannot face threats directly; blind spot straight ahead |
-| carmesa.c3 | Ventral gas-bladder tucked beneath abdomen | Protects buoyancy regulator from predator sweeps ← Maintains neutral buoyancy in low-density H2 bath ← Requires active metabolic H2 production to offset gravity | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Gaslock (`carmesa.gaslock`) | Passive | Tuck bladder to reduce drag by 40% during dives. | Lung Pierce: Target ventral soft tissue; drops buoyancy and forces exhausting ascent. |
-| carmesa.c4 | Asymmetrical raptorial chelae (claws) | Lateral sweeping motion generates aerodynamic lift ← Converts ambient wind shear into striking force ← Armored tips prevent self-injury during high-velocity duels | **F8** Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.; **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments. | Oath Strike (`carmesa.oath_strike`) | Signature | Ritualized clash: 80% damage, but both take 20% recoil; forces parry or yield. | Overextended commitment; leaves flanks open if parried |
+| carmesa.c1 | Dorsoventrally flattened carapace | Minimizes frontal drag in thin air ← Distributes hydrostatic pressure evenly during migration ← Prevents tissue collapse across steep pressure gradient | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.; **F20** Hydrostatic pressure equalization mechanisms prevent tissue collapse during vertical migration, turning altitude changes into tactical risk/reward loops. | Aegis Plate (`carmesa.aegis_plate`) | Defence | When pressed against ice or hail, its flattened shell presses firmly into the surface to deflect downward force. The creature braces itself strongly against the ground, shielding its body from crushing impacts. | Vulnerable to dorsal piercing strikes |
+| carmesa.c2 | Lateral scuttling gait (sideways walking) | Wider stance lowers center of mass against crosswinds ← Enables instant altitude shifts without rotational inertia ← Counteracts constant shear drag from zonal flows | **F4** 9.8-hour rotation period with 2.5° axial tilt drives persistent zonal jets and weak seasonal variation.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Jetstep (`carmesa.jetstep`) | Engage | It scuttles swiftly sideways across the terrain, moving with such sudden speed that the wind cannot slow it down. The creature darts laterally in a blur, briefly brushing past the air currents without resistance. | Cannot face threats directly; blind spot straight ahead |
+| carmesa.c3 | Ventral gas-bladder tucked beneath abdomen | Protects buoyancy regulator from predator sweeps ← Maintains neutral buoyancy in low-density H2 bath ← Requires active metabolic H2 production to offset gravity | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Gaslock (`carmesa.gaslock`) | Passive | It tucks a hidden gas sac beneath its abdomen to streamline its descent. The creature folds its underbelly inward, allowing it to plummet through the air with minimal resistance. | Lung Pierce: Target ventral soft tissue; drops buoyancy and forces exhausting ascent. |
+| carmesa.c4 | Asymmetrical raptorial chelae (claws) | Lateral sweeping motion generates aerodynamic lift ← Converts ambient wind shear into striking force ← Armored tips prevent self-injury during high-velocity duels | **F8** Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.; **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments. | Oath Strike (`carmesa.oath_strike`) | Signature | It raises its mismatched claws to engage in a ritualized clash, locking them firmly against an opponent. The impact sends a heavy shock through both combatants, forcing the adversary to either brace against the blow or step back. | Overextended commitment; leaves flanks open if parried |
 
 ### carmesa.c1: Dorsoventrally flattened carapace
 
 Trait ← Minimizes frontal drag in thin air ← Distributes hydrostatic pressure evenly during migration ← Prevents tissue collapse across steep pressure gradient ← F3, F9, F20
 
-- **Skill:** Aegis Plate (Defence): Negates 60% vertical shear damage when anchored to ice-hail.
+- **Skill:** Aegis Plate (Defence): When pressed against ice or hail, its flattened shell presses firmly into the surface to deflect downward force. The creature braces itself strongly against the ground, shielding its body from crushing impacts.
 - **Weakness:** Vulnerable to dorsal piercing strikes
 - **Observe:**
   1. Edge-on profile in updrafts
@@ -49,7 +49,7 @@ Trait ← Minimizes frontal drag in thin air ← Distributes hydrostatic pressur
 
 Trait ← Wider stance lowers center of mass against crosswinds ← Enables instant altitude shifts without rotational inertia ← Counteracts constant shear drag from zonal flows ← F4, F7
 
-- **Skill:** Jetstep (Engage): Dash 15m laterally, ignoring wind drag for 1 turn.
+- **Skill:** Jetstep (Engage): It scuttles swiftly sideways across the terrain, moving with such sudden speed that the wind cannot slow it down. The creature darts laterally in a blur, briefly brushing past the air currents without resistance.
 - **Weakness:** Cannot face threats directly; blind spot straight ahead
 - **Observe:**
   1. Staggered leg placement perpendicular to wind
@@ -67,7 +67,7 @@ Trait ← Wider stance lowers center of mass against crosswinds ← Enables inst
 
 Trait ← Protects buoyancy regulator from predator sweeps ← Maintains neutral buoyancy in low-density H2 bath ← Requires active metabolic H2 production to offset gravity ← F3, F5, F16
 
-- **Skill:** Gaslock (Passive): Tuck bladder to reduce drag by 40% during dives.
+- **Skill:** Gaslock (Passive): It tucks a hidden gas sac beneath its abdomen to streamline its descent. The creature folds its underbelly inward, allowing it to plummet through the air with minimal resistance.
 - **Weakness:** Lung Pierce: Target ventral soft tissue; drops buoyancy and forces exhausting ascent.
 - **Observe:**
   1. Pulsing ventral sac
@@ -85,7 +85,7 @@ Trait ← Protects buoyancy regulator from predator sweeps ← Maintains neutral
 
 Trait ← Lateral sweeping motion generates aerodynamic lift ← Converts ambient wind shear into striking force ← Armored tips prevent self-injury during high-velocity duels ← F8, F19
 
-- **Skill:** Oath Strike (Signature): Ritualized clash: 80% damage, but both take 20% recoil; forces parry or yield.
+- **Skill:** Oath Strike (Signature): It raises its mismatched claws to engage in a ritualized clash, locking them firmly against an opponent. The impact sends a heavy shock through both combatants, forcing the adversary to either brace against the blow or step back.
 - **Weakness:** Overextended commitment; leaves flanks open if parried
 - **Observe:**
   1. Claps generate infrasonic booms
@@ -104,8 +104,8 @@ Trait ← Lateral sweeping motion generates aerodynamic lift ← Converts ambien
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Air Whales | cousin |  | (council kind 'Commensal') Rides thermal updrafts from their massive filter-maws to reach higher cloud layers without metabolic cost. |
-| Jet Hunters | cousin |  | (council kind 'Predator') Target carapace seams; Carmesa's lateral armor leaves dorsal soft tissue exposed to dive-bombing strikes. |
+| air_whales | cousin |  | (council kind 'Commensal') Rides thermal updrafts from their massive filter-maws to reach higher cloud layers without metabolic cost. |
+| jet_hunters | cousin |  | (council kind 'Predator') Target carapace seams; Carmesa's lateral armor leaves dorsal soft tissue exposed to dive-bombing strikes. |
 | laja_tres | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | salcaran | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | carapaz | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |

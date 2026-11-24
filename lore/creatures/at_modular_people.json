@@ -35,7 +35,7 @@
           "en": "Form Shift"
         },
         "role": "Control",
-        "effect": "Redeploy 3 units as bridge or barricade in 1 turn",
+        "effect": "The creature flexes its segmented joints to reshape its body into a sturdy bridge or barricade for nearby allies. This structural formation holds firm for a short while before it naturally relaxes.",
         "numbers": {}
       },
       "weakness": "Hinges require moist environment; desiccation causes lock-jam",
@@ -94,7 +94,7 @@
           "en": "Hive Sync"
         },
         "role": "Passive",
-        "effect": "Share vision and stamina pools among colony for 3 turns",
+        "effect": "The colony links its distributed neural ganglia to share sight and endurance across all nearby members. This collective awareness and shared vitality persists for a short while before the chemical signals naturally fade.",
         "numbers": {}
       },
       "weakness": "Pheromone jamming causes sector paralysis",

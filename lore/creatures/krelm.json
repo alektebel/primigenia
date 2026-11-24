@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Fractured salt pavements, Lane edges where evaporite crust is thin",
+    "habitat": "Fractured salt pavements, Lane edges where evaporite crust is thin. Also, in the council's sketch (no such creature in this world yet): Karrow, krelm uses a muscular cam to drive a rotating cap; Karrow evolved a vascularized free axle later. Krelm is the living fossil of the intermediate step.",
     "diet": "Sub-crustal lichens, mineral salts, trapped detritus",
     "active": "Diurnal, thermally active mid-day when crust is brittle",
     "predators": []
@@ -33,7 +33,7 @@
           "en": "Grind"
         },
         "role": "Basic",
-        "effect": "Deal 35 damage over 3s and break enemy armor by 20%.",
+        "effect": "It spins its grinding molar cap, tearing into nearby enemies and strongly shattering their protective plating.",
         "numbers": {}
       },
       "weakness": "Cap Jam: Gravel or soft mud fills the cam gap, locking the cap for 4s and leaving the creature helpless.",
@@ -47,13 +47,25 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 6
-        },
+        "summary": "Make the cap a dead, periodically shed keratin-mineral rasp (silica or magnetite grit at the working face), grown from and driven by a stationary vascular collar rather than living tissue across the joint; specify that Lane-edge crust is thin and translucent enough for the photobiont. Strip damage/percentage stats from Grind per the frame's no-game-numbers rule; keep a plain 'rotary scrape' description.",
+        "fixes": [
+          "Make the cap a dead, periodically shed keratin-mineral rasp (silica or magnetite grit at the working face), grown from and driven by a stationary vascular collar rather than living tissue across the joint; specify that Lane-edge crust is thin and translucent enough for the photobiont. Strip damage/percentage stats from Grind per the frame's no-game-numbers rule; keep a plain 'rotary scrape' description."
+        ],
         "analogues": [
+          {
+            "organism": "Chitons (Acanthopleura) graze rock with mineral-capped radula teeth; sea urchins graze with Aristotle's lantern; desert endolithic lichens live inside translucent halite and stone.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "gould_1981_kingdoms",
+              "labarbera_1983_wheels"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -62,7 +74,10 @@
               "labarbera_1983_wheels"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -100,11 +115,20 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Rewrite the chain as 'cam profile on dead cap rim <- muscles in living collar push rollers <- no vessels across joint'; keep the cap light with mineral only at the working face, and note that low gravity reduces downforce so the animal must brace or hang its weight over the cap. Treat F4 as 'cheap to carry', not 'free to spin'.",
+        "fixes": [
+          "Rewrite the chain as 'cam profile on dead cap rim <- muscles in living collar push rollers <- no vessels across joint'; keep the cap light with mineral only at the working face, and note that low gravity reduces downforce so the animal must brace or hang its weight over the cap. Treat F4 as 'cheap to carry', not 'free to spin'."
+        ],
+        "analogues": [
+          {
+            "organism": "The karrow's friction-pad-driven dead tyre (F18); the bacterial flagellar motor, the only true biological rotary axle; a snail's radula muscles dragging a hard tooth ribbon over a fixed cartilage.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
-          "skeptic": 6
+          "astrobio": 6
         }
       },
       "provenance": {
@@ -143,11 +167,20 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Add 'limbs absorb cap reaction torque and anchor the body' to the chain alongside F22 portage; give them keratin claws that bite the crust and keep a lifting shoulder so the cap can be raised to reposition. Avoid calling them mere 'steering' limbs on a creature that does not roll.",
+        "fixes": [
+          "Add 'limbs absorb cap reaction torque and anchor the body' to the chain alongside F22 portage; give them keratin claws that bite the crust and keep a lifting shoulder so the cap can be raised to reposition. Avoid calling them mere 'steering' limbs on a creature that does not roll."
+        ],
+        "analogues": [
+          {
+            "organism": "Limpets and chitons clamp the foot while the radula rasps; sea urchins brace with tube feet while Aristotle's lantern bites; karrow portage on two walking legs (F22).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
-          "skeptic": 6
+          "astrobio": 6
         }
       },
       "provenance": {
@@ -186,11 +219,20 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Move the symbiont into recessed grooves on the cap's upper side or onto the collar, out of the abrasive track, where reflected far-red light off pale salt (F16) and host moisture reach it; describe the trade as micronutrients and water, not proven nitrogen fixation. Keep the roughly nine-day regrowth cycle explicitly speculative (F23).",
+        "fixes": [
+          "Move the symbiont into recessed grooves on the cap's upper side or onto the collar, out of the abrasive track, where reflected far-red light off pale salt (F16) and host moisture reach it; describe the trade as micronutrients and water, not proven nitrogen fixation. Keep the roughly nine-day regrowth cycle explicitly speculative (F23)."
+        ],
+        "analogues": [
+          {
+            "organism": "The karrow's farmed tread lichen (F23); algae living in sloth fur; endolithic lichens in desert halite.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
-          "astrobio": 6,
-          "skeptic": 6
+          "astrobio": 6
         }
       },
       "provenance": {
@@ -201,13 +243,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Karrow",
-      "kind": "cousin",
-      "note": "Krelm uses a muscular cam to drive a rotating cap; Karrow evolved a vascularized free axle later. Krelm is the living fossil of the intermediate step."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-24",
     "by": [
@@ -219,6 +255,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

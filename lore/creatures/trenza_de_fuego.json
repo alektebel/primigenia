@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Photospheric flux tubes anchoring in umbrae; extends into granular upflows",
+    "habitat": "Photospheric flux tubes anchoring in umbrae; extends into granular upflows. Also, in the council's sketch (no such creature in this world yet): Remo de Plasma, remo steals Astrophage from Trenza's filaments using speed; Trenza occasionally traps Remo in siphon-grasps.",
     "diet": "Astrophage swarms and kinetic energy from granular plasma currents",
     "active": "Constant; anchors deeply and filters the boiling photosphere",
     "predators": []
@@ -36,7 +36,7 @@
           "en": "Braid Lock"
         },
         "role": "Defence",
-        "effect": "Reduces所受 damage by 60% and resists displacement for 5s by tightening the helix against the flux tube.",
+        "effect": "The creature tightly coils its plasma body around the flux tube, making its form rigid and strongly resisting any attempt to push it away.",
         "numbers": {}
       },
       "weakness": "Slow to reconfigure; rapid magnetic reorganization can snap the braid if anchored too tightly.",
@@ -101,7 +101,7 @@
           "en": "Siphon Grasp"
         },
         "role": "Basic",
-        "effect": "Drain 15 HP/s from a target in an upflow and heal self for 10 HP.",
+        "effect": "Its grasping plasma filaments wrap around a nearby target caught in an upflow, steadily siphoning vitality from it to nourish itself.",
         "numbers": {}
       },
       "weakness": "Filaments lose cohesion in dead-zone downflows; cannot harvest in low-velocity regions.",
@@ -159,7 +159,7 @@
           "en": "Lattice Scatter"
         },
         "role": "Defence",
-        "effect": "Reflect 50% of incoming energy attacks back at the source for 3s.",
+        "effect": "Its dusty plasma lattice skin shimmers and redirects incoming energy strikes back toward their origin.",
         "numbers": {}
       },
       "weakness": "Lattice is disrupted by high-energy particle storms; effectiveness drops during flares.",
@@ -221,7 +221,7 @@
           "en": "Resonance Hum"
         },
         "role": "Control",
-        "effect": "Emit an Alfvén wave pulse (range 80m) that slows all enemies on the same flux tube by 40% for 4s.",
+        "effect": "The creature vibrates its resonance organs to send a pulsing wave along the flux tube, causing all nearby foes to move sluggishly.",
         "numbers": {}
       },
       "weakness": "Requires magnetically connected targets; useless across field gaps.",
@@ -265,11 +265,6 @@
       "with": "Astrophage",
       "kind": "cousin",
       "note": "(council kind 'Predator') Trenza filters and consumes Astrophage swarms to prevent overgrowth on its filaments; the Astrophage gain mobility by riding Trenza's updrafts."
-    },
-    {
-      "with": "Remo de Plasma",
-      "kind": "cousin",
-      "note": "(council kind 'Competitor') Remo steals Astrophage from Trenza's filaments using speed; Trenza occasionally traps Remo in siphon-grasps."
     }
   ],
   "provenance": {

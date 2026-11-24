@@ -92,7 +92,7 @@
           "en": "Thermal Soar"
         },
         "role": "Engage",
-        "effect": "Rides updrafts for unlimited stamina, gains 10m altitude per second",
+        "effect": "The creature catches rising air currents to soar effortlessly through the sky, climbing steadily higher without tiring.",
         "numbers": {}
       },
       "weakness": "Helpless in calm, stagnant air pockets",
@@ -206,7 +206,7 @@
           "en": "Seal Bladder"
         },
         "role": "Defence",
-        "effect": "Blocks gas leakage for 20s, restores 50% bladder capacity",
+        "effect": "The creature tightly seals its outer membrane to strongly trap gases inside, replenishing its reserves for a short while.",
         "numbers": {}
       },
       "weakness": "Sealing mechanism consumes extra oxygen during flight",
@@ -245,13 +245,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "none",
-      "kind": "cousin",
-      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

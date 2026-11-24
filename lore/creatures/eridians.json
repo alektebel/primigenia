@@ -9,16 +9,18 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Nitride-vein canyons and hydrothermal basins where metal-rich brines pool under 40-bar pressure.",
+    "habitat": "Nitride-vein canyons and hydrothermal basins where metal-rich brines pool under 40-bar pressure. Also, in the council's sketch (no such creature in this world yet): K'thar, k'thar consumes Fe-Ni nitrides directly from hydrothermal precipitates; Eridians harvest the same veins for carapace inlays and tool-casting. K'thar foraging destabilizes Eridian structural supports. Also, in the council's sketch (no such creature in this world yet): Krr-shatter, krr-shatter emits a focused infrasonic pulse that resonates with Fe-Ni inlays, inducing micro-fractures. Eridians must apply 'Dampening' (mud-caking) or shift resonance to avoid carapace failure. Also, in the council's sketch (no such creature in this world yet): Nimbus-wisp, nimbus-wisps use lipid bladders to drift in high-pressure currents, absorbing toxic ammonia clumps. Eridians groom wisps for clean slurry; wisps carry Eridian spores to new vent clusters using sound-guided flight. Also, in the council's sketch (no such creature in this world yet): Iron-back, iron-backs also use low-slung, multi-limbed crawling and Fe-Ni inlays. Divergence: Iron-backs rely on passive armor and ambush; Eridians use active tool-use and acoustic manipulation. Iron-backs cannot sinter metal, limiting them to scavenged ore.",
     "diet": "Ammonia-assimilation grazer; metabolizes nitride-filaments and bio-sintered carbide crusts, recycling NH₃ into amidine polymers with urea-like slurry waste.",
     "active": "Continuous; the opaque haze and slow rotation erase diurnal cues, so activity tracks thermal gradients and acoustic social rhythms.",
     "predators": [
       "Pressure-crushing ambushers",
-      "Thermal-vent leviathans"
+      "Thermal-vent leviathans",
+      "Vacuum-biter"
     ],
     "prey": [
       "Nitride-filament colonies",
-      "Brine-ammonoids"
+      "Brine-ammonoids",
+      "Silt-sponge"
     ]
   },
   "body": "A low-slung, multi-limbed crawler with a laminated carapace reinforced by bio-scavenged iron-nickel inlays that distribute load under 1.35 g and resist fracture. Fluid-filled internal cavities match the 40-bar ambient pressure, while vascularized thoracic flaps radiate metabolic heat to prevent overheating.",
@@ -43,7 +45,7 @@
           "en": "Sonic Loom"
         },
         "role": "Signature",
-        "effect": "Maps 15m radius, reveals stealth units, stuns targets for 2s.",
+        "effect": "The creature pulses resonant clicks to scan the surroundings, making hidden foes clearly visible and holding nearby enemies in place for a short while.",
         "numbers": {}
       },
       "weakness": "Dissonance burst stuns resonators; high frequencies cause feedback pain.",
@@ -110,7 +112,7 @@
           "en": "Sonic Anvil"
         },
         "role": "Basic",
-        "effect": "Strikes ground to send tremor (15m); knocks down low-gravity foes and cracks brittle structures.",
+        "effect": "It slams its heavy carapace against the ground to send a strong tremor outward, toppling light creatures and shattering fragile barriers nearby.",
         "numbers": {}
       },
       "weakness": "Requires stable footing; slippery terrain nullifies tremor. Heavy armor slows movement.",
@@ -179,7 +181,7 @@
           "en": "Grav-Plow"
         },
         "role": "Engage",
-        "effect": "Charges forward 8m, pushes obstacles, reduces friction by 20%.",
+        "effect": "The creature lunges forward with a low, sweeping crawl, shoving aside anything in its path and gliding strongly across the terrain.",
         "numbers": {}
       },
       "weakness": "Upright posture doubles fall risk; high center of gravity topples easily.",
@@ -304,7 +306,7 @@
           "en": "Nitrogen Tap"
         },
         "role": "Social",
-        "effect": "Channels for 1.5s to draw ambient NH3; heals 6 HP scaled by local ammonia concentration; attracts NH3-seeking allies.",
+        "effect": "It opens its specialized gut to draw in surrounding ammonia fumes, replenishing its strength and drawing in friendly creatures that seek the same gas.",
         "numbers": {}
       },
       "weakness": "Oxidizers burn tissues; 'dry air' biome modifier halts healing and applies 2 HP/s solvent-depletion damage.",
@@ -350,44 +352,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "K'thar",
-      "kind": "rivalry",
-      "note": "K'thar consumes Fe-Ni nitrides directly from hydrothermal precipitates; Eridians harvest the same veins for carapace inlays and tool-casting. K'thar foraging destabilizes Eridian structural supports.",
-      "via": "F11"
-    },
-    {
-      "with": "Krr-shatter",
-      "kind": "counter",
-      "note": "Krr-shatter emits a focused infrasonic pulse that resonates with Fe-Ni inlays, inducing micro-fractures. Eridians must apply 'Dampening' (mud-caking) or shift resonance to avoid carapace failure.",
-      "via": "F9"
-    },
-    {
-      "with": "Nimbus-wisp",
-      "kind": "symbiosis",
-      "note": "Nimbus-wisps use lipid bladders to drift in high-pressure currents, absorbing toxic ammonia clumps. Eridians groom wisps for clean slurry; wisps carry Eridian spores to new vent clusters using sound-guided flight.",
-      "via": "F9"
-    },
-    {
-      "with": "Silt-sponge",
-      "kind": "predation",
-      "note": "Silt-sponges filter concentrated amino-acid slurry from NH3-brine. Eridians harvest sponges for nutrient paste. Sponges deploy pressure-spines matching Eridian grip, requiring precise disarticulation skills to avoid injury.",
-      "via": "F10"
-    },
-    {
-      "with": "Iron-back",
-      "kind": "convergent",
-      "note": "Iron-backs also use low-slung, multi-limbed crawling and Fe-Ni inlays. Divergence: Iron-backs rely on passive armor and ambush; Eridians use active tool-use and acoustic manipulation. Iron-backs cannot sinter metal, limiting them to scavenged ore.",
-      "via": "F3"
-    },
-    {
-      "with": "Vacuum-biter",
-      "kind": "predation",
-      "note": "Vacuum-biters secrete a rapid-evaporation enzyme creating localized vacuum pockets. This exploits the Eridian's fluid-matched internal structure, causing implosion damage. Eridians are vulnerable to 'Silence' zones where biters hide.",
-      "via": "F16"
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-18",
     "by": [

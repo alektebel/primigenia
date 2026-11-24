@@ -12,7 +12,12 @@
     "habitat": "Lateral junctions of basalt/salt Lanes; buried in crust.",
     "diet": "Karrow, Tucket, Glissen (when ice).",
     "active": "Diurnal.",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Karrow",
+      "Tucket",
+      "Glissen"
+    ]
   },
   "body": "Flattened, salt-crusted exoskeleton with six broad tarsi and elastic forelimbs.",
   "chains": [
@@ -33,7 +38,7 @@
           "en": "Salt-Mimic"
         },
         "role": "Defence",
-        "effect": "Player hides El Cruce in salt crust, reducing detection range by 70% for 10s.",
+        "effect": "The creature burrows into a salt crust, becoming nearly invisible and hard to spot for a short while.",
         "numbers": {}
       },
       "weakness": "Rain or wet wind dissolves salt crust, revealing the predator.",
@@ -47,18 +52,26 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 6
-        },
+        "summary": "Match the statistics of the crust: matte, broadband-white, grain-sized roughness at the scale prey can resolve, with only the dorsum exposed by burial. Replace instant crystal-shifting with moult- or chromatophore-based change over days. Keep the wet-wind weakness (F10/F15): a wetted crust changes brightness and clumps, betraying the outline. Explain six legs as one lost arachnid pair, and drop the numeric move values.",
+        "fixes": [
+          "Match the statistics of the crust: matte, broadband-white, grain-sized roughness at the scale prey can resolve, with only the dorsum exposed by burial. Replace instant crystal-shifting with moult- or chromatophore-based change over days. Keep the wet-wind weakness (F10/F15): a wetted crust changes brightness and clumps, betraying the outline. Explain six legs as one lost arachnid pair, and drop the numeric move values."
+        ],
         "analogues": [
+          {
+            "organism": "Crab spiders (Misumena/Thomisus) switch white-yellow over days; shore crabs tune chromatophores to substrate in minutes; antlion larvae and sand-burying vipers vanish into their substrate; peppered moth melanism shows the selection.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -84,7 +97,7 @@
           "en": "Vibration Sense"
         },
         "role": "Passive",
-        "effect": "Player sees vibration trails of approaching prey from 50m away, ignoring visual blindness.",
+        "effect": "The creature senses approaching prey through the ground, revealing their movement trails even when vision is obscured.",
         "numbers": {}
       },
       "weakness": "Wind noise (F10 gusts) masks vibration cues, blinding the predator.",
@@ -97,19 +110,27 @@
         "en": "It hears the road singing."
       },
       "plausibility": {
-        "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 6
-        },
+        "summary": "Couple the pits to the tarsi and ground rather than the air: gusts (F10) then mask cues by shaking loose salt and by the hunter's own movement, which keeps the stated weakness honest. Retain tread-cadence recognition, the best physical detail in this chain; state the range as approximate and remove numeric move values.",
+        "fixes": [
+          "Couple the pits to the tarsi and ground rather than the air: gusts (F10) then mask cues by shaking loose salt and by the hunter's own movement, which keeps the stated weakness honest. Retain tread-cadence recognition, the best physical detail in this chain; state the range as approximate and remove numeric move values."
+        ],
         "analogues": [
+          {
+            "organism": "Spiders' slit sensilla and subgenual organs detect substrate-borne vibration; stink bugs and treehoppers communicate through substrata; the fish lateral line is the aquatic analogue, sensing particle motion rather than air pressure.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -135,7 +156,7 @@
           "en": "Magnetic Disruption"
         },
         "role": "Control",
-        "effect": "El Cruce's magnetite limb disorients nearby prey, reducing speed by 50% and forcing a stop for 5s.",
+        "effect": "The creature strikes with a magnetite limb, strongly disorienting nearby prey and forcing them to halt for a short while.",
         "numbers": {}
       },
       "weakness": "Strong external magnetic fields (e.g., player magnetism) can confuse El Cruce's own strike timing.",
@@ -149,11 +170,21 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Scale the effect to strike distance (roughly 1-2 m), require a visible magnetite mass in the limb, and replace the forced stop with a skid and heading error; the hunter desensitising its own compass mid-strike is a good, honest cost. Treat 'prey stops and spins' as exaggeration. Keep the magnetic-decoy secret: a detached nodule neatly exploits F24.",
+        "fixes": [
+          "Scale the effect to strike distance (roughly 1-2 m), require a visible magnetite mass in the limb, and replace the forced stop with a skid and heading error; the hunter desensitising its own compass mid-strike is a good, honest cost. Treat 'prey stops and spins' as exaggeration. Keep the magnetic-decoy secret: a detached nodule neatly exploits F24."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria orient to fields; animal magnetoreception; electric fish jamming avoidance is the signal-jamming analogue; magnetic-pulse disruption of pigeon homing, from memory, unverified.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
           "astrobio": 6,
-          "skeptic": 6
+          "skeptic": 2
         }
       },
       "provenance": {
@@ -194,13 +225,24 @@
       },
       "plausibility": {
         "verdict": "fixable",
-        "judge": "astrobio/autoloop-2026-11-24",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "astrobio": 6,
-          "skeptic": 6
-        },
+        "summary": "Attribute Lane slowness to ambush posture, heat and ground clearance rather than foot width; specify claw-or-grit grip at the ice edge for glissen, or drop the ice claim. Use F27 hollow crust as a weakness: even a broad-footed hunter can be let down by a sumper's 2 m sinkhole.",
+        "fixes": [
+          "Attribute Lane slowness to ambush posture, heat and ground clearance rather than foot width; specify claw-or-grit grip at the ice edge for glissen, or drop the ice claim. Use F27 hollow crust as a weakness: even a broad-footed hunter can be let down by a sumper's 2 m sinkhole."
+        ],
         "analogues": [
+          {
+            "organism": "Solifugid camel spiders and dune beetles use widened or hairy tarsi as sand shoes; camels and snowshoe hares are the load-spreading scaling analogue; fringe-toed lizards on sand.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "labarbera_1983_wheels"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -208,7 +250,11 @@
               "labarbera_1983_wheels"
             ]
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -218,23 +264,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Karrow",
-      "kind": "cousin",
-      "note": "(council kind 'Prey') El Cruce targets Karrow at junctions where it must cross perpendicular paths."
-    },
-    {
-      "with": "Tucket",
-      "kind": "cousin",
-      "note": "(council kind 'Prey') El Cruce ambushes Tucket when it uncurls or while rolling downhill onto a junction."
-    },
-    {
-      "with": "Glissen",
-      "kind": "cousin",
-      "note": "(council kind 'Prey') El Cruce adapts its tarsi to grip thin ice at polar junctions."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-24",
     "by": [
@@ -246,6 +276,16 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

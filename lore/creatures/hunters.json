@@ -41,7 +41,7 @@
           "en": "Ram Strike"
         },
         "role": "Engage",
-        "effect": "Deals 22 damage in a 50 m radius with a 0.5 s wind-up",
+        "effect": "The creature winds up for a short while before launching forward with a burst of compressed gas, striking nearby targets strongly.",
         "numbers": {}
       },
       "weakness": "Leaves a brief jet-wake vortex that alerts prey and breaks stealth",
@@ -87,7 +87,7 @@
           "en": "Depth Sense"
         },
         "role": "Basic",
-        "effect": "Reveals stealthed floaters within 80 m and grants 10% accuracy",
+        "effect": "The creature's flank sensors pulse to reveal hidden enemies nearby, allowing it to track their movements with strong precision.",
         "numbers": {}
       },
       "weakness": "Blind to high-frequency alarm whistles used by some prey",
@@ -134,7 +134,7 @@
           "en": "Ion Surge"
         },
         "role": "Poke",
-        "effect": "Converts 15% environmental lightning into a 25% damage next attack",
+        "effect": "The creature's membranes absorb ambient electricity, causing its next strike to crackle with strongly amplified force.",
         "numbers": {}
       },
       "weakness": "Overcharges and stuns if struck by opposing polarity storms",
@@ -189,7 +189,7 @@
           "en": "Wind Dash"
         },
         "role": "Control",
-        "effect": "Move 12m for 2 stamina, gain 1 evasion",
+        "effect": "The creature rides nearby wind currents to dart forward swiftly, leaving a swirling trail that makes it strongly difficult to hit.",
         "numbers": {}
       },
       "weakness": "Stuck in laminar flow pockets",

@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_temptors.c1 | Rooted female cones & pheromone-driven male drones | Anchor in fungal-cemented soil and centralize reproduction -> biogenic mound topography where calcareous groundwater fuses with hyphae -> dense humid air efficiently transports volatile chemical signals -> 1.1 bar pressure and stable temperature inversions minimize attenuation | **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F12** Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests. | Mound Command (`at_temptors.mound_command`) | Control | Releases pheromone cloud, directing nearby male Temptors to gather resources or defend for 3 turns. | Sessile females cannot flee; ground-penetrating attacks bypass their pheromone shields. |
-| at_temptors.c2 | Olfactory pits & stiff bipedal gait | Pheromone tracking across mound forests -> dense air + temp inversions carry low-frequency chemical gradients -> 15°C surface temp stabilizes volatile diffusion rates -> male sensory organs shift to narrow-band olfactory detection | **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Scent-Track (`at_temptors.scent_track`) | Basic | +30% movement speed when following pheromone trails; reveals hidden male drones. | Easily confused by synthetic chemicals or strong winds. |
+| at_temptors.c1 | Rooted female cones & pheromone-driven male drones | Anchor in fungal-cemented soil and centralize reproduction -> biogenic mound topography where calcareous groundwater fuses with hyphae -> dense humid air efficiently transports volatile chemical signals -> 1.1 bar pressure and stable temperature inversions minimize attenuation | **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F12** Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests. | Mound Command (`at_temptors.mound_command`) | Control | The creature releases a strong pheromone cloud that guides nearby male Temptors to either gather supplies or stand guard for a short while. | Sessile females cannot flee; ground-penetrating attacks bypass their pheromone shields. |
+| at_temptors.c2 | Olfactory pits & stiff bipedal gait | Pheromone tracking across mound forests -> dense air + temp inversions carry low-frequency chemical gradients -> 15°C surface temp stabilizes volatile diffusion rates -> male sensory organs shift to narrow-band olfactory detection | **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Scent-Track (`at_temptors.scent_track`) | Basic | The creature moves swiftly along pheromone trails and makes hidden male drones visible to the eye. | Easily confused by synthetic chemicals or strong winds. |
 
 ### at_temptors.c1: Rooted female cones & pheromone-driven male drones
 
 Trait ← Anchor in fungal-cemented soil and centralize reproduction -> biogenic mound topography where calcareous groundwater fuses with hyphae -> dense humid air efficiently transports volatile chemical signals -> 1.1 bar pressure and stable temperature inversions minimize attenuation ← F7, F10, F12
 
-- **Skill:** Mound Command (Control): Releases pheromone cloud, directing nearby male Temptors to gather resources or defend for 3 turns.
+- **Skill:** Mound Command (Control): The creature releases a strong pheromone cloud that guides nearby male Temptors to either gather supplies or stand guard for a short while.
 - **Weakness:** Sessile females cannot flee; ground-penetrating attacks bypass their pheromone shields.
 - **Observe:**
   1. Beaked, cone-shaped females fused to fungal mounds
@@ -47,7 +47,7 @@ Trait ← Anchor in fungal-cemented soil and centralize reproduction -> biogenic
 
 Trait ← Pheromone tracking across mound forests -> dense air + temp inversions carry low-frequency chemical gradients -> 15°C surface temp stabilizes volatile diffusion rates -> male sensory organs shift to narrow-band olfactory detection ← F7, F10, F25
 
-- **Skill:** Scent-Track (Basic): +30% movement speed when following pheromone trails; reveals hidden male drones.
+- **Skill:** Scent-Track (Basic): The creature moves swiftly along pheromone trails and makes hidden male drones visible to the eye.
 - **Weakness:** Easily confused by synthetic chemicals or strong winds.
 - **Observe:**
   1. Deep nasal slits along the muzzle
