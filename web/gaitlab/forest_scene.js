@@ -99,20 +99,20 @@ class View{
       geo.setAttribute('aTrail',new T.Float32BufferAttribute(aT,1));geo.setAttribute('aMoss',new T.Float32BufferAttribute(aM,1));geo.setAttribute('aSky',new T.Float32BufferAttribute(aS,1));
       geo.setAttribute('aMead',new T.Float32BufferAttribute(aMd,1));geo.setAttribute('aRock',new T.Float32BufferAttribute(aR,1));geo.setIndex(idx);geo.computeBoundingSphere();return geo;
     };
-    const mat=F.patchMat(new T.MeshStandardMaterial({color:0xffffff,roughness:.96,metalness:0,bumpMap:F.SHARED.floor.litter.height,bumpScale:.3}),this.U,{terrain:true,mask:[1,0,0],
+    const mat=F.patchMat(new T.MeshStandardMaterial({color:0xffffff,roughness:.96,metalness:0,bumpMap:F.SHARED.floor.litter.height,bumpScale:.08}),this.U,{terrain:true,mask:[1,0,0],
       meadCol:new T.Color(...(this.id==='C'?[.13,.16,.05]:[.095,.12,.05])),mossK:1.0});
     const inner=new T.Mesh(mk(300,2,0),mat),outer=new T.Mesh(mk(F.EXT,6,300),mat);
     /* the trail: a soft-edged ribbon draped over the terrain (a 1.2 m trail cannot live in 2 m vertices) */
     {const tr=st.trail,pos=[],nor=[],aT=[],uv=[],aS=[],z0=[],idx=[],n=tr.pts.length,w=tr.w*.5+.32,nn=new T.Vector3();let k=0;
       for(let i=0;i<n;i++){const p=tr.pts[i],q=tr.pts[Math.min(i+1,n-1)],r=tr.pts[Math.max(i-1,0)];let tx=q.x-r.x,tz=q.z-r.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;
         const wob=1+.22*Math.sin(i*.37)+.12*Math.sin(i*1.31);
-        for(const sd of[-1,0,1]){const x=p.x-tz*sd*w*wob,zz=p.z+tx*sd*w*wob,y=g.at(x,zz)+.1+(sd===0?.02:0);g.normal(x,zz,nn);
+        for(const sd of[-1,0,1]){const x=p.x-tz*sd*w*wob,zz=p.z+tx*sd*w*wob,y=g.at(x,zz)+.16+(sd===0?.02:0);g.normal(x,zz,nn);
           pos.push(x,y,zz);nor.push(nn.x,nn.y,nn.z);aT.push(sd===0?1:.0);uv.push(sd*.5+.5,p.s/3);aS.push(st.skyAt(x,zz));}
         if(i<n-1){const a=i*3;idx.push(a,a+3,a+1,a+1,a+3,a+4,a+1,a+4,a+2,a+2,a+4,a+5);}}
       const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setAttribute('normal',new T.Float32BufferAttribute(nor,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
       const zero=new Array(n*3).fill(0);geo.setAttribute('aTrail',new T.Float32BufferAttribute(aT,1));geo.setAttribute('aMoss',new T.Float32BufferAttribute(zero,1));geo.setAttribute('aSky',new T.Float32BufferAttribute(aS,1));
       geo.setAttribute('aMead',new T.Float32BufferAttribute(zero,1));geo.setAttribute('aRock',new T.Float32BufferAttribute(zero,1));geo.setIndex(idx);
-      const rm=F.patchMat(new T.MeshStandardMaterial({color:0xffffff,roughness:.97,metalness:0,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3,bumpMap:F.SHARED.trail.height,bumpScale:.16}),this.U,{terrain:true,ribbon:true,mask:[1,1,0],meadCol:new T.Color(0,0,0),mossK:0});
+      const rm=F.patchMat(new T.MeshStandardMaterial({color:0xffffff,roughness:.97,metalness:0,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-10,polygonOffsetUnits:-10,bumpMap:F.SHARED.trail.height,bumpScale:.05}),this.U,{terrain:true,ribbon:true,mask:[1,1,0],meadCol:new T.Color(0,0,0),mossK:0});
       const rib=new T.Mesh(geo,rm);rib.receiveShadow=true;rib.renderOrder=2;this.scene.add(rib);this.ribbon=rib;this.terrTris+=idx.length/3;}
     inner.receiveShadow=true;outer.receiveShadow=true;this.scene.add(inner,outer);this.terrain=[inner,outer];this.terrTris=TRI(inner.geometry)+TRI(outer.geometry);
   }
@@ -231,7 +231,7 @@ class View{
     if(opt.ug>0){
       const S16=16,ci=Math.floor(px/S16),cj=Math.floor(pz/S16),rc=Math.ceil(opt.ug/S16);
       for(let b=-rc;b<=rc;b++)for(let a=-rc;a<=rc;a++)for(const it of st.ugCell(ci+a,cj+b)){
-        const dx=it.x-px,dz=it.z-pz,d2=dx*dx+dz*dz;if(d2>opt.ug*opt.ug)continue;const lod=d2<30*30?0:1,p=this.ug[it.type+it.v][lod],nrm=p.n;
+        const dx=it.x-px,dz=it.z-pz,d2=dx*dx+dz*dz;if(d2>opt.ug*opt.ug||(py-it.y<4&&d2<2.6*2.6))continue;   /* never put a shrub around the camera */const lod=d2<30*30?0:1,p=this.ug[it.type+it.v][lod],nrm=p.n;
         const sx=it.r/nrm.reach,sy=it.h/nrm.height,sh=.3+.7*Math.min(1,st.skyAt(it.x,it.z)*3.5),tint=[it.c*sh*.95,it.c*sh,it.c*sh*.8];
         if(it.type==='shrub'){const mb=p.bark&&this.imesh('shrubB'+it.v+lod,p.bark,M.bark,4000,{});if(mb)put(mb,it.x,it.y,it.z,sx,sy,sx,it.yaw,tint);
           const ml=this.imesh('shrubL'+it.v+lod,p.leaf,M.shrub,4000,{cast:false});put(ml,it.x,it.y,it.z,sx,sy,sx,it.yaw,tint);}

@@ -149,19 +149,18 @@ function floorTex(kind,seed){
 }
 
 /* pale packed-earth trail strip (u across, v along, tiles along): fine grain, a few dry leaves, roots crossing it, pebbles; edge moss comes from the shader */
-function trailTex(seed){
+function trailTex(seed){ /* soft, low-frequency packed earth: very gentle mottling, faint litter specks, a few small stones, fine root lines; almost no contrast */
   const N=512,R=rng32(seed),cv=cvs(N,N),g=cv.getContext('2d'),hc=cvs(N,N),hg=hc.getContext('2d');
   const wrap=(x,y,r,fn)=>{for(const dy of[-N,0,N])for(const dx of[-N,0,N]){const X=x+dx,Y=y+dy;if(X<-r||Y<-r||X>N+r||Y>N+r)continue;fn(X,Y);}};
-  g.fillStyle='#9d8468';g.fillRect(0,0,N,N);hg.fillStyle='#707070';hg.fillRect(0,0,N,N);
+  g.fillStyle='#a58d70';g.fillRect(0,0,N,N);hg.fillStyle='#808080';hg.fillRect(0,0,N,N);
   const im=g.getImageData(0,0,N,N),D=im.data;
-  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const u=x/N,v=y/N,m=pfbm(u*4,v*4,4,4,4,seed)-.5,f=pfbm(u*40,v*40,40,40,2,seed+3)-.5,i=(y*N+x)*4,k=1+m*.5+f*.28;D[i]*=k;D[i+1]*=k*.99;D[i+2]*=k*.97;}
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const u=x/N,v=y/N,m=pfbm(u*3,v*3,3,3,3,seed)-.5,f=pfbm(u*24,v*24,24,24,2,seed+3)-.5,i=(y*N+x)*4,k=1+m*.22+f*.07;D[i]*=k;D[i+1]*=k;D[i+2]*=k;}
   g.putImageData(im,0,0);
-  for(let i=0;i<500;i++){const x=R()*N,y=R()*N,r=1+R()*2.4,hh=Math.round(100+R()*120),c=`hsl(${24+R()*12},${12+R()*14}%,${40+R()*26}%)`;wrap(x,y,r,(X,Y)=>{g.fillStyle=c;g.beginPath();g.arc(X,Y,r,0,6.3);g.fill();hg.fillStyle=`rgb(${hh},${hh},${hh})`;hg.beginPath();hg.arc(X,Y,r,0,6.3);hg.fill();});}
-  for(let i=0;i<12;i++){const x=R()*N,y=R()*N,a=R()*6.28,L=12+R()*18,W=L*.4,c=`hsl(${22+R()*16},${34+R()*16}%,${24+R()*16}%)`;
-    wrap(x,y,L,(X,Y)=>{g.save();g.translate(X,Y);g.rotate(a);g.fillStyle=c;g.beginPath();g.moveTo(0,0);g.bezierCurveTo(L*.2,-W*.7,L*.7,-W*.6,L,0);g.bezierCurveTo(L*.7,W*.6,L*.2,W*.7,0,0);g.fill();g.restore();});}
-  g.lineCap='round';for(let i=0;i<3;i++){const y0=R()*N,sl=(R()-.5)*160,w=9+R()*9;
-    for(const[c,col,lw]of[[g,'#4a3926',w],[g,'#6b543a',w*.45],[hg,'#d8d8d8',w]]){c.strokeStyle=col;c.lineWidth=lw;for(const dy of[-N,0,N]){c.beginPath();c.moveTo(-10,y0-sl*.5+dy);c.bezierCurveTo(N*.3,y0-sl*.2+dy+12,N*.6,y0+sl*.2+dy-10,N+10,y0+sl*.5+dy);c.stroke();}}}
-  const hb=cvs(N,N),hbg=hb.getContext('2d');hbg.filter='blur(1.4px)';hbg.drawImage(hc,0,0);
+  for(let i=0;i<70;i++){const x=R()*N,y=R()*N,L=3+R()*5,a=R()*6.28,c=`hsla(${26+R()*14},${22+R()*12}%,${34+R()*10}%,.5)`;wrap(x,y,L,(X,Y)=>{g.save();g.translate(X,Y);g.rotate(a);g.fillStyle=c;g.beginPath();g.ellipse(0,0,L,L*.4,0,0,6.3);g.fill();g.restore();});}   /* litter specks */
+  for(let i=0;i<10;i++){const x=R()*N,y=R()*N,r=3+R()*4;wrap(x,y,r,(X,Y)=>{g.fillStyle='hsla(30,8%,58%,.6)';g.beginPath();g.ellipse(X,Y,r,r*.75,0,0,6.3);g.fill();g.fillStyle='hsla(30,10%,35%,.25)';g.beginPath();g.ellipse(X+1.5,Y+1.5,r,r*.7,0,0,6.3);g.fill();hg.fillStyle='#a8a8a8';hg.beginPath();hg.ellipse(X,Y,r,r*.75,0,0,6.3);hg.fill();});}   /* small stones */
+  g.lineCap='round';for(let i=0;i<2;i++){const y0=R()*N,sl=(R()-.5)*120;
+    for(const[c,col,lw]of[[g,'rgba(88,68,46,.55)',3.5],[g,'rgba(140,116,88,.35)',1.5],[hg,'#9a9a9a',3]]){c.strokeStyle=col;c.lineWidth=lw;for(const dy of[-N,0,N]){c.beginPath();c.moveTo(-10,y0-sl*.5+dy);c.bezierCurveTo(N*.3,y0-sl*.2+dy+10,N*.6,y0+sl*.2+dy-8,N+10,y0+sl*.5+dy);c.stroke();}}}
+  const hb=cvs(N,N),hbg=hb.getContext('2d');hbg.filter='blur(2px)';hbg.drawImage(hc,0,0);
   return{map:tex(cv),height:tex(hb)};
 }
 
@@ -400,11 +399,11 @@ function skeletonParts(woods,m,P,lod,seed){
       for(let j=0;j<ne;j++){const p=lp[Math.floor(R()*lp.length)].clone().add(V3(0,.12,0)),nf=6+Math.floor(R()*4);
         for(let q=0;q<nf;q++){const ang=q/nf*6.28+R()*.4,e=.4+R()*.55,len=.8+R()*.8,dir=V3(Math.cos(ang)*Math.cos(e*.9),Math.sin(e),Math.sin(ang)*Math.cos(e*.9)),side=new T.Vector3().crossVectors(dir,V3(0,1,0)).normalize();
           card(epi,p,side,dir,len*.35,len,()=>[0,1,0],[.8,.9,.7],[0,0],[1,1],.35,true);}}
-      for(let v=0;v<P.vines;v++){const a=lp[Math.floor(R()*lp.length)].clone();if(a.y<4)continue;
+      for(let v=0;v<Math.ceil(P.vines*.6);v++){const a=lp[Math.floor(R()*lp.length)].clone();if(a.y<5)continue;
         const down=R()<.55?R()*3:a.y*(.2+R()*.6),pp=[],drift=V3((R()-.5)*1.6,0,(R()-.5)*1.6),n=7;
         for(let i=0;i<=n;i++){const s=i/n;pp.push(V3(a.x+drift.x*s+Math.sin(s*5+v)*.25,a.y-(a.y-down)*s,a.z+drift.z*s+Math.cos(s*4+v)*.25));}
-        if(pp[n].y<vineReach)vineReach=pp[n].y;const th=.035+R()*.03;tube(bark,pp,s=>th*(1+.5*(1-s)),4,{uvScale:1,col:()=>[.2*(1-P.vineMoss*.4)+.02,.2+.1*P.vineMoss,.12]});
-        if(P.vineMoss>.2)for(let i=1;i<n;i+=2)card(moss,pp[i],V3(1,0,0),V3(0,1,0),.5,.7,()=>[0,1,0],[.7,.9,.6],[0,.2],[.5,.8],0,false);}
+        if(pp[n].y<vineReach)vineReach=pp[n].y;const th=.01+R()*.014;tube(bark,pp,s=>th*(1+.5*(1-s)),4,{uvScale:1,col:()=>[.07+.02*P.vineMoss,.06+.04*P.vineMoss,.035]});
+        if(P.vineMoss>.3&&R()<.5)for(let i=2;i<n;i+=3)card(moss,pp[i],V3(1,0,0),V3(0,1,0),.3,.45,()=>[0,1,0],[.35,.45,.28],[0,.2],[.5,.8],0,false);}
     }
   }
   const barkGeo=wood||(bark.tris?bark.geo():null);
@@ -448,18 +447,17 @@ function grassParts(seed,lod){
     card(gb,c,rt,V3(0,1,0),w,h,()=>[0,1,0],[.9,.95,.85],[0,0],[1,1],.35,true);}
   return{g:gb.geo(),tris:gb.tris};
 }
-function treeFernParts(seed,o,lod){
-  const R=rng32(seed*23+9),bark=new GB(),leaf=new GB(),H=o.H;
-  const pts=[];for(let i=0;i<=(lod===0?6:3);i++){const t=i/(lod===0?6:3);pts.push(V3(o.lean*t*t*H*.2,H*t,0));}
-  tube(bark,pts,(t)=>o.r*(1-.35*t)*(1+.35*Math.exp(-t*12)),lod===0?7:5,{uvScale:.5,uvU:2,col:(t)=>[.6-.2*t,.5-.18*t,.38]});
-  const top=pts[pts.length-1],nf=lod===0?13:8;
-  for(let i=0;i<nf;i++){
-    const ang=i/nf*6.28+R()*.3,el=lerp(.1,1.0,R()),L=o.fl*(.8+R()*.4),w=L*.3,dir=V3(Math.cos(ang),0,Math.sin(ang)),side=V3(-Math.sin(ang),0,Math.cos(ang));
-    const ids=[],seg=3;
-    for(let s=0;s<=seg;s++){const t=s/seg,c=top.clone().addScaledVector(dir,Math.cos(el)*L*t+.1);c.y+=Math.sin(el)*L*t-L*.7*t*t*(.6+.5*(1-el));
-      const ww=w*Math.sin(Math.PI*(.2+.6*t))*.5+.03,sh=.55+.45*t;for(const sd of[-1,1]){const p=c.clone().addScaledVector(side,sd*ww);ids.push(leaf.v(p.x,p.y,p.z,0,1,0,sd<0?0:1,t,sh,sh,sh));}}
-    for(let s=0;s<seg;s++){const a=ids[s*2],b=ids[s*2+1],c=ids[s*2+2],d=ids[s*2+3];leaf.tri(a,b,c);leaf.tri(b,d,c);}
-  }
+function treeFernParts(seed,o,lod){ /* Cyathea-like: slim fibrous dark trunk, crown of long arching bipinnate fronds, skirt of dead hanging fronds */
+  const R=rng32(seed*23+9),bark=new GB(),leaf=new GB(),H=o.H,nrg=lod===0?6:3;
+  const pts=[];for(let i=0;i<=nrg;i++){const t=i/nrg;pts.push(V3(o.lean*t*t*H*.12+Math.sin(t*3+seed)*.03*H*.1,H*t,0));}
+  tube(bark,pts,(t)=>o.r*(1-.25*t)*(1+.4*Math.exp(-t*14)),lod===0?8:5,{uvScale:.5,uvU:2,col:(t,th)=>[.2+.05*Math.sin(th*7+t*20),.14,.09]});
+  const top=pts[pts.length-1],nf=lod===0?18:11,seg=lod===0?5:3;
+  const frond=(ang,el,L,w,dead)=>{const dir=V3(Math.cos(ang),0,Math.sin(ang)),side=V3(-Math.sin(ang),0,Math.cos(ang)),ids=[];
+    for(let s2=0;s2<=seg;s2++){const t=s2/seg,c=top.clone().addScaledVector(dir,Math.cos(el)*L*t*(dead?.6:1)+.08);c.y+=Math.sin(el)*L*t-L*(dead?1.1:.85)*t*t*(.55+.5*(1-Math.min(1,el)));
+      const ww=w*Math.sin(Math.PI*(.15+.65*t))*.5+.03,sh=dead?.5:.55+.45*t,cl=dead?[.55*sh,.38*sh,.2*sh]:[sh,sh,sh];for(const sd of[-1,1]){const p=c.clone().addScaledVector(side,sd*ww);ids.push(leaf.v(p.x,p.y,p.z,0,1,0,sd<0?0:1,t,cl[0],cl[1],cl[2]));}}
+    for(let s2=0;s2<seg;s2++){const a=ids[s2*2],b2=ids[s2*2+1],c=ids[s2*2+2],d=ids[s2*2+3];leaf.tri(a,b2,c);leaf.tri(b2,d,c);}};
+  for(let i=0;i<nf;i++)frond(i/nf*6.28+R()*.3,lerp(.15,1.0,R()),o.fl*(1.0+R()*.4),o.fl*.4,false);
+  if(lod===0)for(let i=0;i<7;i++)frond(i/7*6.28+R()*.5,-.35-R()*.3,o.fl*.55,o.fl*.2,true);   /* dead frond skirt */
   return{bark:bark.geo(),leaf:leaf.geo(),tris:bark.tris+leaf.tris,meta:{H,r:o.r,crown:[top.x,top.y,top.z,o.fl*.7]}};
 }
 function logParts(seed,o,lod){
