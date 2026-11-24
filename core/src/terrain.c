@@ -1,4 +1,5 @@
 #include "cpore/terrain.h"
+#include "cpore/island.h"
 #include "cpore/cpore.h"
 
 #include <math.h>
@@ -606,8 +607,24 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
 
 #include "terrain_layouts.inc"
 
-static void fill_base(const CpTerrainParams *p, int n, float *height, Shape *shape)
+/* The shape of a desc island before erosion: the same evaluator as the layout tables, fed from the desc's float cache. */
+static float island_height(const CpTerrainParams *p, const CpIslandDesc *d, float x, float y)
 {
+    return shape_height(p, d->nest_r, d->scale, d->reef_x, d->reef_y, d->cliff_x, d->cliff_y, d->neval, d->eval, x, y);
+}
+
+static void fill_base(const CpTerrainParams *p, const CpIslandDesc *d, int n, float *height, Shape *shape)
+{
+    if (d) {
+        const float cell = p->size_m / (float)n, half = p->size_m * 0.5f;
+        int row_step = n >= 8 ? n / 8 : 1;
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < n; i++)
+                height[(size_t)j * (size_t)n + (size_t)i] = island_height(p, d, ((float)i + 0.5f) * cell - half, ((float)j + 0.5f) * cell - half);
+            if (((j + 1) % row_step) == 0 && (j + 1) / row_step <= 8) shape_tick(shape);
+        }
+        return;
+    }
     if (p->layout >= 1.f) {
         const Layout *L = &LAYOUTS[(int)(p->layout + 0.5f) - 1];
         const float cell = p->size_m / (float)n, half = p->size_m * 0.5f;
@@ -1746,9 +1763,8 @@ static int level_iters(const CpTerrainParams *p, int level)
  *        then (height - base) and sediment move to out->flow
  *   N:   the real maps
  */
-int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
-                        const CpTerrainWorkspace *ws,
-                        CpTerrainProgressFn fn, void *user)
+static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *out,
+                         const CpTerrainWorkspace *ws, CpTerrainProgressFn fn, void *user)
 {
     int rc = cp_terrain_validate(p);
     int n, n1, n2, use1, use2, nn;
@@ -1781,7 +1797,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     if (use2) {
         int a = n2 * n2;
         float *h = out->flow, *fl = h + a, *lv = fl + a, *sd = lv + a, *base = sd + a;
-        fill_base(p, n2, base, &shape);
+        fill_base(p, d, n2, base, &shape);
         for (int i = 0; i < a; i++) { h[i] = base[i]; sd[i] = 0.f; }
         stream_power(p, n2, h, sd, fl, lv, ws, level_iters(p, 2), &shape);
         for (int i = 0; i < a; i++) base[i] = h[i] - base[i];
@@ -1792,7 +1808,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     if (use1) {
         int b = n1 * n1;
         float *h = out->sediment, *fl = h + b, *lv = fl + b, *sd = lv + b, *base = ws->scratch;
-        fill_base(p, n1, base, &shape);
+        fill_base(p, d, n1, base, &shape);
         for (int j = 0; j < n1; j++) for (int i = 0; i < n1; i++) {
             int k = j * n1 + i;
             h[k] = base[k] + (prev_n ? upsample(prev_delta, prev_n, n1, i, j) : 0.f);
@@ -1807,7 +1823,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
         prev_sed = out->flow + b;
         prev_n = n1;
     }
-    fill_base(p, n, out->height, &shape);
+    fill_base(p, d, n, out->height, &shape);
     if (prev_n) {
         for (int j = 0; j < n; j++) for (int i = 0; i < n; i++) {
             int k = j * n + i;
@@ -1836,7 +1852,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
     }
     memset(out->material, 0, (size_t)nn);
-    if (p->rivers > 0.f && trail_ok(p) && !(p->layout >= 1.f)) {
+    if (p->rivers > 0.f && trail_ok(p) && !d && !(p->layout >= 1.f)) {
         gap_trail(p, out, ws);
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
@@ -1856,4 +1872,31 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     material_map(p,out);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);
     return CP_TERR_OK;
+}
+
+int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
+                        const CpTerrainWorkspace *ws,
+                        CpTerrainProgressFn fn, void *user)
+{
+    return generate_impl(p, NULL, out, ws, fn, user);
+}
+
+int cp_terrain_generate_desc(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *out,
+                             const CpTerrainWorkspace *ws, CpTerrainProgressFn fn, void *user)
+{
+    CpTerrainParams q;
+    if (!p || !d) return CP_TERR_ERR_NULL;
+    if (d->neval < 0 || d->neval > CP_ISL_MAX_EVAL || !(d->scale > 0.f)) return CP_TERR_ERR_ISL_FIELD;   /* not prepared */
+    q = *p;
+    q.size_m = (float)d->size_dm / 10.f;
+    q.island_radius_m = (float)d->island_radius_dm / 10.f;
+    q.valley_radius_m = d->nest_r;
+    q.valley_floor_m = (float)d->nest_floor_cm / 100.f;
+    q.lake_x_m = (float)d->lake_x_dm / 10.f;
+    q.lake_y_m = (float)d->lake_y_dm / 10.f;
+    q.lake_radius_m = (float)d->lake_r_dm / 10.f;
+    q.lake_depth_m = (float)d->lake_depth_cm / 100.f;
+    if (d->stream_iters > 0) q.stream_iters = d->stream_iters;
+    if (d->droplets > 0) q.droplets = d->droplets;
+    return generate_impl(&q, d, out, ws, fn, user);
 }
