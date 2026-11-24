@@ -1,0 +1,297 @@
+<!doctype html>
+<!-- MOCK (throwaway). Night-sky look study for docs/plans/night-sky.md. Not game code, not a port source:
+     one fragment shader, made-up constants, no seed, no real orbits. It exists only so the owner can judge the direction.
+     URL: ?t=0..1 (night progress) &phase=0..1 (0 new, 0.5 full) &tier=0..3 (eye) &adapt=0..1 &still=1 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night sky mock</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05070d; color: #cfd6e6; font: 14px/1.4 system-ui, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #tag { position: fixed; left: 16px; top: 12px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+  #ui { position: fixed; left: 16px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center;
+        background: rgba(8, 11, 20, .62); padding: 10px 14px; border-radius: 10px; max-width: calc(100% - 60px); }
+  label { display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+  input[type=range] { width: 130px; }
+  button { background: #1a2238; color: inherit; border: 1px solid #33405f; border-radius: 6px; padding: 4px 9px; font: inherit; cursor: pointer; }
+  button.on { background: #3c4f86; border-color: #8098d8; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="tag">Mock · night sky look study · not game code</div>
+<div id="ui">
+  <label>Night <input id="t" type="range" min="0" max="1" step="0.001" value="0.42"></label>
+  <label>Moon phase <input id="phase" type="range" min="0" max="1" step="0.001" value="0.14"></label>
+  <label>Dark adaptation <input id="adapt" type="range" min="0" max="1" step="0.01" value="1"></label>
+  <span>Eye:
+    <button data-tier="0">naked</button>
+    <button data-tier="1">keen</button>
+    <button data-tier="2">lens</button>
+    <button data-tier="3">telephoto</button>
+  </span>
+  <label><input id="run" type="checkbox"> run time</label>
+</div>
+<script id="fs" type="x-shader/x-fragment">
+precision highp float;
+uniform vec2 uRes;
+uniform float uT, uPhase, uAdapt, uTier, uClock;
+const float PI = 3.14159265;
+
+float h11(float n) { return fract(sin(n * 127.1) * 43758.5453); }
+float h31(vec3 p) { p = fract(p * vec3(0.1031, 0.1030, 0.0973)); p += dot(p, p.yxz + 33.33); return fract((p.x + p.y) * p.z); }
+vec3 h33(vec3 p) { return vec3(h31(p), h31(p + 17.7), h31(p + 41.3)); }
+float vnoise(vec3 p) {
+  vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  float a = mix(mix(h31(i), h31(i + vec3(1, 0, 0)), f.x), mix(h31(i + vec3(0, 1, 0)), h31(i + vec3(1, 1, 0)), f.x), f.y);
+  float b = mix(mix(h31(i + vec3(0, 0, 1)), h31(i + vec3(1, 0, 1)), f.x), mix(h31(i + vec3(0, 1, 1)), h31(i + vec3(1, 1, 1)), f.x), f.y);
+  return mix(a, b, f.z);
+}
+float fbm(vec3 p) { float s = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { s += a * vnoise(p); p = p * 2.03 + 7.1; a *= 0.5; } return s; }
+mat3 rotAxis(vec3 a, float ang) {
+  float c = cos(ang), s = sin(ang), k = 1.0 - c;
+  return mat3(a.x*a.x*k + c, a.y*a.x*k + a.z*s, a.z*a.x*k - a.y*s,
+              a.x*a.y*k - a.z*s, a.y*a.y*k + c, a.z*a.y*k + a.x*s,
+              a.x*a.z*k + a.y*s, a.y*a.z*k - a.x*s, a.z*a.z*k + c);
+}
+vec3 starTint(float h) {   // rough black-body ramp: red dwarfs to blue-white
+  return h < 0.5 ? mix(vec3(1.0, 0.62, 0.42), vec3(1.0, 0.93, 0.82), h * 2.0) : mix(vec3(1.0, 0.97, 0.92), vec3(0.70, 0.80, 1.0), h * 2.0 - 2.0 + 1.0);
+}
+// One star per grid cell of a shell around the unit sphere. Returns colour.
+vec3 starLayer(vec3 s, float n, float thresh, float size, float gain, float twk) {
+  vec3 p = s * n, cell = floor(p);
+  vec3 r = h33(cell);
+  vec3 sp = normalize(cell + 0.3 + 0.4 * r);
+  float keep = h31(cell + 5.5);
+  if (keep > thresh) return vec3(0.0);
+  float mag = pow(h31(cell + 9.1), 11.0);                 // few bright, many faint
+  float d = length(s - sp) * n;
+  float tw = 1.0 + twk * sin(uClock * (3.0 + 9.0 * r.x) + r.y * 40.0) * (0.5 + 0.5 * sin(uClock * 1.7 + r.z * 9.0));
+  float rad = size * (0.55 + 1.6 * mag);
+  float core = exp(-d * d / (rad * rad));
+  float halo = mag * mag * 0.10 / (1.0 + d * d / (rad * rad * 6.0)) * smoothstep(0.30, 0.08, d);   // stays inside its cell
+  return starTint(h31(cell + 2.2)) * (core * (0.10 + 1.9 * mag) + halo) * gain * tw;
+}
+float ridge(float az) {
+  float x = az * 3.0;
+  float r = 0.0, a = 0.5;
+  for (int i = 0; i < 5; i++) { r += a * abs(vnoise(vec3(x, 3.0, 0.0)) * 2.0 - 1.0); x *= 2.07; a *= 0.5; }
+  float volcano = 0.16 * exp(-pow((az - 0.55) / 0.34, 2.0)) - 0.035 * exp(-pow((az - 0.55) / 0.06, 2.0));
+  return 0.02 + 0.07 * (1.0 - r) + volcano;
+}
+// The "check a planet" inset: what each eye tier resolves on the ringed giant.
+vec3 planetInset(vec2 q, float tier) {
+  vec3 col = vec3(0.0015, 0.002, 0.004);
+  float scale = tier < 0.5 ? 0.06 : tier < 1.5 ? 0.22 : tier < 2.5 ? 0.5 : 0.78;
+  float blur = tier < 0.5 ? 0.9 : tier < 1.5 ? 0.22 : tier < 2.5 ? 0.06 : 0.02;
+  vec2 p = q / scale;
+  vec3 L = normalize(vec3(-0.75, 0.25, 0.6));
+  float r = length(p);
+  float disc = smoothstep(0.42 + blur, 0.42 - blur * 0.2, r);
+  vec3 n = vec3(p / 0.42, sqrt(max(1.0 - r * r / 0.1764, 0.0)));
+  float band = 0.5 + 0.5 * sin(n.y * 13.0 + 1.5 * sin(n.y * 31.0)) * step(1.5, tier);
+  vec3 body = mix(vec3(0.86, 0.72, 0.52), vec3(0.98, 0.90, 0.72), band) * (0.12 + 0.95 * max(dot(n, L), 0.0));
+  // rings: tilted annulus
+  float tilt = 0.36;
+  vec2 rp = vec2(p.x, p.y / tilt);
+  float rr = length(rp);
+  float ring = smoothstep(0.56 - blur, 0.58 + blur, rr) * smoothstep(1.0 + blur, 0.98 - blur, rr);
+  float gap = tier > 2.5 ? 1.0 - 0.85 * smoothstep(0.012, 0.0, abs(rr - 0.84) - 0.012) : 1.0;
+  float grooves = tier > 2.5 ? 0.82 + 0.18 * sin(rr * 90.0) : 1.0;
+  vec2 lxz = normalize(L.xz), rq = vec2(rp.x, -rp.y);     // ring-plane point; the planet's shadow falls away from the sun
+  float off = abs(rq.x * lxz.y - rq.y * lxz.x);
+  float shadow = 1.0 - 0.9 * smoothstep(0.42, 0.38, off) * step(dot(rq, lxz), 0.0) * step(1.5, tier);
+  vec3 ringCol = vec3(0.86, 0.80, 0.68) * 0.75 * gap * grooves * shadow;
+  float front = step(p.y, 0.0);                           // near half of the ring passes in front of the disc
+  if (tier < 0.5) {
+    col += vec3(1.0, 0.92, 0.75) * (exp(-r * r * 9.0) * 1.3 + 0.05 / (0.05 + r * r * 8.0));   // a steady point, no detail
+  } else {
+    float ringVis = tier < 1.5 ? 0.45 : 1.0;              // keen eyes: "ears", not rings
+    col = mix(col, ringCol, ring * ringVis * (1.0 - disc));
+    col = mix(col, body, disc);
+    col = mix(col, ringCol, ring * ringVis * disc * front);
+    if (tier > 0.5) {                                     // the giant's bright moons, in the ring plane
+      for (int i = 0; i < 4; i++) {
+        float fi = float(i);
+        float a = uClock * (0.05 + 0.04 * fi) + fi * 1.9;
+        vec2 mp = vec2(cos(a), sin(a) * tilt * 0.9) * (1.35 + 0.42 * fi);
+        if (tier < 2.5 && i > 1) continue;
+        col += vec3(0.9, 0.9, 1.0) * exp(-dot(p - mp, p - mp) / (0.0009 + blur * 0.01)) * 0.9;
+      }
+    }
+  }
+  return col;
+}
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+  // camera: looking up-west from the ground
+  float pitch = 0.47, fov = 1.05;
+  vec3 d = normalize(vec3(uv.x * fov, uv.y * fov, -1.0));
+  float cp = cos(pitch), sp = sin(pitch);
+  d = vec3(d.x, d.y * cp - d.z * sp, d.y * sp + d.z * cp);
+  float el = asin(clamp(d.y, -1.0, 1.0));
+  float az = atan(d.x, -d.z);
+
+  // celestial frame: pole 27 deg above the horizon to the right (north); the sky turns with time
+  vec3 pole = normalize(vec3(sin(1.45) * cos(0.47), sin(0.47), -cos(1.45) * cos(0.47)));
+  float turn = (uT - 0.42) * 2.2;
+  vec3 s = rotAxis(pole, -turn) * d;
+
+  // --- background: deep blue-black zenith, milky horizon (thick air), airglow
+  float hz = exp(-max(el, 0.0) * 5.5);
+  vec3 col = mix(vec3(0.0010, 0.0016, 0.0042), vec3(0.0065, 0.010, 0.019), hz);
+  float bands = 0.6 + 0.4 * sin(el * 46.0 + 2.5 * vnoise(vec3(az * 4.0, el * 3.0, uClock * 0.02)));
+  col += vec3(0.006, 0.016, 0.008) * exp(-pow((el - 0.2) / 0.13, 2.0)) * bands * uAdapt;      // green airglow
+  col += vec3(0.008, 0.003, 0.003) * exp(-pow((el - 0.34) / 0.2, 2.0)) * 0.6 * uAdapt;        // faint red layer above
+
+  // moon: position along the ecliptic, phase from the slider
+  vec3 sunC = normalize(vec3(-0.80, -0.25, -0.55));                  // the sun, set below the horizon to the left
+  vec3 ecl = normalize(cross(sunC, vec3(0.55, 0.60, -0.58)));        // ecliptic pole: the ecliptic climbs to the upper right
+  vec3 e1 = normalize(sunC - ecl * dot(sunC, ecl)), e2 = cross(ecl, e1);
+  float lam = uPhase * 2.0 * PI;
+  vec3 moonC = normalize(e1 * cos(lam) + e2 * sin(lam) + ecl * 0.07 * sin(lam * 1.7));
+  float moonUp = smoothstep(-0.05, 0.1, (rotAxis(pole, turn) * moonC).y);
+  float illum = 0.5 - 0.5 * cos(lam);
+  float moonGlow = illum * moonUp;
+  float extinct = exp(-0.22 / max(sin(max(el, 0.0)) + 0.06, 0.06));  // thick 1.6 bar air: strong extinction low down
+  float veil = 1.0 - 0.78 * moonGlow;                                // moonlight washes the faint sky
+
+  // --- galaxy band
+  vec3 gpole = normalize(vec3(0.829, -0.490, -0.249));     // the band crosses the view on a diagonal
+  vec3 gcore = normalize(vec3(-0.11, 0.305, -0.966));       // the core sits just below the centre
+  float b = asin(clamp(dot(s, gpole), -1.0, 1.0));
+  vec3 inPlane = normalize(s - gpole * dot(s, gpole));
+  float l = acos(clamp(dot(inPlane, gcore), -1.0, 1.0));
+  float bulge = exp(-pow(l / 0.55, 2.0));
+  float width = 0.13 + 0.12 * bulge;
+  float warp = fbm(s * 5.0 + 3.0) - 0.5;
+  float band = exp(-pow((b + warp * 0.07) / width, 2.0)) * (0.30 + 0.85 * bulge + 0.25 * fbm(s * 9.0));
+  float dust = smoothstep(0.42, 0.72, fbm(s * 7.0 + vec3(0.0, 4.0, 0.0)) + 0.55 * exp(-pow((b - 0.02 + warp * 0.10) / (0.045 + 0.05 * bulge), 2.0)) - 0.25);
+  float clouds = pow(fbm(s * 22.0 + 11.0), 2.2) * 1.6;               // unresolved star clouds
+  vec3 mw = mix(vec3(0.42, 0.52, 0.80), vec3(1.0, 0.80, 0.56), bulge) * band * (0.55 + clouds) * (1.0 - 0.86 * dust);
+  mw += vec3(0.9, 0.25, 0.35) * pow(max(fbm(s * 30.0 + 2.0) - 0.62, 0.0), 2.0) * 9.0 * band * step(0.5, uAdapt + 0.1);   // emission nebulae
+  col += mw * 0.34 * extinct * veil * mix(0.25, 1.0, uAdapt);
+
+  // --- zodiacal light: a soft cone up the ecliptic from the hidden sun
+  float eb = asin(clamp(dot(s, ecl), -1.0, 1.0));
+  float elong = acos(clamp(dot(s, sunC), -1.0, 1.0));
+  col += vec3(0.95, 0.85, 0.70) * 0.016 * exp(-pow(eb / (0.07 + 0.10 * elong), 2.0)) * exp(-elong * 1.5) * extinct * veil * uAdapt;
+
+  // --- stars
+  float density = 0.30 + 0.65 * exp(-pow(b / 0.30, 2.0));
+  vec3 st = starLayer(s, 40.0, 0.35 * density + 0.15, 0.045, 2.2, 0.30)
+          + starLayer(s, 110.0, 0.8 * density, 0.050, 0.90, 0.22) * mix(0.35, 1.0, uAdapt)
+          + starLayer(s, 300.0, density, 0.080, 0.30, 0.0) * uAdapt;
+  col += st * extinct * mix(1.0, 0.45, moonGlow) * (1.0 - 0.9 * dust * step(0.03, band));
+
+  // --- planets: steady points on the ecliptic (no twinkle); the ringed giant is the one to check
+  vec3 pa = normalize(e1 * cos(0.78) + e2 * sin(0.78));              // evening star, near the sun
+  vec3 pb = normalize(e1 * cos(1.55) + e2 * sin(1.55) + ecl * 0.02); // ringed giant
+  vec3 pc = normalize(e1 * cos(1.95) + e2 * sin(1.95) - ecl * 0.03); // red outer world
+  float da = length(s - pa), db = length(s - pb), dc = length(s - pc);
+  col += vec3(1.0, 0.97, 0.88) * (exp(-da * da * 90000.0) * 3.0 + 0.00008 / (da * da + 0.00004)) * extinct;
+  col += vec3(1.0, 0.90, 0.70) * (exp(-db * db * 140000.0) * 2.4 + 0.00004 / (db * db + 0.00004)) * extinct;
+  col += vec3(1.0, 0.55, 0.40) * (exp(-dc * dc * 200000.0) * 1.6 + 0.00002 / (dc * dc + 0.00004)) * extinct;
+
+  // --- moon disc (drawn 2x real size), phase, earthshine, halo
+  float mr = 0.0175;
+  float dm = length(s - moonC);
+  if (dm < mr) {
+    vec3 mx = normalize(cross(vec3(0.0, 1.0, 0.0), moonC)), my = cross(moonC, mx);
+    vec2 q = vec2(dot(s - moonC, mx), dot(s - moonC, my)) / mr;
+    vec3 n = normalize(mx * q.x + my * q.y - moonC * sqrt(max(1.0 - dot(q, q), 0.0)));
+    float lit = smoothstep(-0.02, 0.10, dot(n, sunC));
+    float maria = 0.72 + 0.28 * smoothstep(0.35, 0.65, fbm(vec3(q * 2.3, 1.0)));
+    float crater = 1.0 - 0.25 * smoothstep(0.6, 0.75, vnoise(vec3(q * 9.0, 4.0)));
+    vec3 surf = vec3(0.95, 0.93, 0.86) * maria * crater;
+    vec3 mcol = surf * (lit * 1.5 * pow(max(dot(n, sunC), 0.0), 0.6) + 0.035 * vec3(0.55, 0.70, 1.0));   // earthshine on the dark limb
+    col = mix(col, mcol * extinct, smoothstep(mr, mr * 0.96, dm));
+  }
+  col += vec3(0.75, 0.82, 1.0) * illum * (0.00010 / (dm * dm + 0.0006) + 0.05 * exp(-dm * 6.0)) * extinct;
+
+  // --- a meteor now and then
+  float mt = fract(uClock * 0.11), mid = floor(uClock * 0.11);
+  vec2 m0 = vec2(h11(mid) * 1.4 - 0.7, 0.10 + 0.3 * h11(mid + 3.0)), mv = normalize(vec2(-0.6 + h11(mid + 7.0) * 0.5, -0.5));
+  vec2 rel = uv - (m0 + mv * mt * 2.2);
+  float along = dot(rel, -mv), across = abs(dot(rel, vec2(-mv.y, mv.x)));
+  col += vec3(0.75, 1.0, 0.85) * step(0.0, along) * exp(-along * 9.0) * exp(-across * across * 90000.0) * smoothstep(0.0, 0.05, mt) * smoothstep(0.35, 0.15, mt) * 1.6;
+
+  // --- land: the volcano and ridges as a silhouette, with a breath of moonlight and haze
+  float rg = ridge(az);
+  if (el < rg) {
+    float depth = clamp((rg - el) / 0.2, 0.0, 1.0);
+    vec3 land = mix(vec3(0.0030, 0.0045, 0.0085), vec3(0.0006, 0.0009, 0.0018), depth);
+    land += vec3(0.012, 0.018, 0.032) * moonGlow * (1.0 - depth) * 0.9;
+    col = land;
+  }
+
+  // --- the eye inset (what "checking" the ringed giant shows)
+  vec2 ic = vec2(0.5 * uRes.x / uRes.y - 0.24, 0.26);
+  vec2 iq = uv - ic;
+  float ir = length(iq);
+  if (ir < 0.19) {
+    vec3 ins = planetInset(iq / 0.19, uTier);
+    col = mix(ins, col, smoothstep(0.180, 0.188, ir));
+    col += vec3(0.5, 0.6, 0.9) * 0.25 * smoothstep(0.006, 0.0, abs(ir - 0.184));
+  }
+
+  // display: filmic-ish shoulder, then gamma
+  col = 1.0 - exp(-col * 3.2);
+  col = pow(col, vec3(0.4545));
+  col += (h31(vec3(gl_FragCoord.xy, 1.0)) - 0.5) / 255.0;            // dither against banding
+  gl_FragColor = vec4(col, 1.0);
+}
+</script>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var canvas = document.getElementById('c');
+  var gl = canvas.getContext('webgl', { antialias: false, preserveDrawingBuffer: true });
+  var ids = ['t', 'phase', 'adapt'], el = {};
+  ids.forEach(function (id) { el[id] = document.getElementById(id); if (q.has(id)) el[id].value = q.get(id); });
+  var tier = q.has('tier') ? +q.get('tier') : 2, still = q.has('still');
+  if (still) document.getElementById('ui').style.display = 'none';
+  function setTier(n) { tier = n; document.querySelectorAll('button[data-tier]').forEach(function (b) { b.classList.toggle('on', +b.dataset.tier === n); }); }
+  document.querySelectorAll('button[data-tier]').forEach(function (b) { b.onclick = function () { setTier(+b.dataset.tier); }; });
+  setTier(tier);
+  if (!gl) { document.getElementById('tag').textContent = 'WebGL not available'; window.__ready = true; window.__rendered = 1; return; }
+  function sh(type, src) {
+    var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); }
+    return s;
+  }
+  var prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }'));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, document.getElementById('fs').textContent));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, 'p');
+  gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  var U = {}; ['uRes', 'uT', 'uPhase', 'uAdapt', 'uTier', 'uClock'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+  var t0 = performance.now();
+  window.__rendered = 0;
+  function frame() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.floor(innerWidth * dpr), h = Math.floor(innerHeight * dpr);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    gl.viewport(0, 0, w, h);
+    var clock = still ? 3.1 : (performance.now() - t0) / 1000;
+    if (document.getElementById('run').checked) el.t.value = (+el.t.value + 0.0004) % 1;
+    gl.uniform2f(U.uRes, w, h);
+    gl.uniform1f(U.uT, +el.t.value); gl.uniform1f(U.uPhase, +el.phase.value); gl.uniform1f(U.uAdapt, +el.adapt.value);
+    gl.uniform1f(U.uTier, tier); gl.uniform1f(U.uClock, clock);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    window.__rendered++;
+    if (!still || window.__rendered < 3) requestAnimationFrame(frame);
+  }
+  window.__ready = true;
+  frame();
+})();
+</script>
+</body>
+</html>
