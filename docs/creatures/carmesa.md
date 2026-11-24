@@ -111,6 +111,7 @@ Trait ← Lateral sweeping motion generates aerodynamic lift ← Converts ambien
 | carapaz | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | lombardo | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | crang_lira | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| ferrisca | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -139,4 +140,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-24 autoloop: carcinisation links to 1 creature(s)

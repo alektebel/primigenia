@@ -1,0 +1,526 @@
+{
+  "schema": "cpore.world/1",
+  "id": "metallic",
+  "kind": "fictional",
+  "system": {
+    "star": "Ord (K1V)",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Metallic world",
+    "es": "Mundo metálico"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Ord is a 6 Gyr-old K1V orange dwarf with 0.85 M☉, 0.45 L☉, and an effective temperature of 5100 K.",
+      "justification": "K-dwarf mass-luminosity and old, slow rotation give a stable, long-lived star; 0.45 L☉ at 5100 K is consistent with a K1V dwarf.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.45,
+      "unit": "L☉",
+      "consequences": [
+        "Long-lived stable star gives evolution time.",
+        "Red-shifted light selects for low-energy pigments.",
+        "Low UV reduces surface DNA damage between flares."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "star",
+      "claim": "Ord is a slow rotator but still produces a strong flare about once per 40 days; surface UV is about 0.35 times Earth's.",
+      "justification": "Old K dwarfs retain some magnetic activity; slow rotation lowers but does not eliminate flare events, and ozone attenuates the UV.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.35,
+      "unit": "× Earth UV",
+      "consequences": [
+        "Flare events force sheltering behavior.",
+        "Auroral displays become navigational cues.",
+        "Radiation spikes select for repair pathways."
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "The planet orbits at 0.587 AU with eccentricity 0.04, a 178-day year, and an instellation of 1.3 S⊕.",
+      "justification": "Kepler's third law with 0.85 M☉ gives 178 days at 0.587 AU; instellation is 0.45/0.587² = 1.3 S⊕. The semi-major axis is trimmed from the draft's 0.62 AU to keep the referee's corrected period and the accepted stellar mass consistent.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 178,
+      "unit": "days",
+      "consequences": [
+        "Short year compresses seasonal cycles.",
+        "Mild eccentricity keeps climate predictable.",
+        "High instellation supports shallow-water photosynthesis."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "orbit",
+      "claim": "Axial tilt is 21°, giving four seasons of roughly 45 days.",
+      "justification": "Obliquity drives seasonal insolation; a 178-day year divided into four seasons gives about 45 days each.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 21,
+      "unit": "degrees",
+      "consequences": [
+        "Seasonal dust belts shift with tilt.",
+        "Migration and breeding time to 45-day quarters.",
+        "Moult windows become seasonal."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Mass is 1.15 M⊕, radius 1.05 R⊕, and surface gravity 1.04 g.",
+      "justification": "M/R² gives 1.04 g; the mass and radius imply a bulk density close to Earth's.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.04,
+      "unit": "g",
+      "consequences": [
+        "Earth-like gravity permits large land animals.",
+        "Thick atmosphere is retained.",
+        "Flight is costly."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Sidereal day is 31 hours.",
+      "justification": "Angular momentum after a late giant impact leaves a 31-hour spin without tidal locking.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 31,
+      "unit": "hours",
+      "consequences": [
+        "Long days create strong diurnal temperature swings.",
+        "Two activity shifts evolve.",
+        "Coriolis-driven storms intensify."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "orbit",
+      "claim": "One moon, Pell, has radius 0.20 R⊕, a 16-day orbit, and raises tides 1.7 times Earth's.",
+      "justification": "Tidal force scales as mass/distance³; a 0.20 R⊕ moon at 16 days gives about 1.7 times Earth's tide.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.7,
+      "unit": "× Earth",
+      "consequences": [
+        "Strong tides create wide intertidal zones.",
+        "Spawning syncs to a 16-day cycle.",
+        "Tidal currents are transport routes."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "planet",
+      "claim": "The magnetic dipole is 1.5 times Earth's, strong enough to hold a magnetosphere.",
+      "justification": "A 1.15 M⊕ planet with a thin lithosphere and vigorous core convection sustains a dipole about 1.5 times Earth's.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.5,
+      "unit": "× Earth",
+      "consequences": [
+        "Magnetotactic navigation is reliable.",
+        "Auroral radiation belts mark hazards.",
+        "Compasses fail near ore bodies."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "planet",
+      "claim": "Background surface radiation is 1.5 mSv/yr, with local thorium hotspots.",
+      "justification": "K-star UV is low and ozone absorbs most of it; thorium-rich crust creates local hotspots.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.5,
+      "unit": "mSv/yr",
+      "consequences": [
+        "Low background mutation pressure.",
+        "Hotspots select radiation-tolerant lineages.",
+        "Mining thorium is hazardous."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "ocean",
+      "claim": "Oceans cover 45% of the surface and average 1.6 km deep.",
+      "justification": "A volatile-poor world after a late giant impact leaves 45% ocean cover and shallow basins.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 45,
+      "unit": "% surface",
+      "consequences": [
+        "Shallow seas dominate productivity.",
+        "Coastal gradients are extensive.",
+        "Deep abysses are rare."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "Surface pressure is 1.4 bar.",
+      "justification": "A CO₂ greenhouse and a thick nitrogen inventory hold 1.4 bar.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.4,
+      "unit": "bar",
+      "consequences": [
+        "Dense air carries sound far.",
+        "High pressure supports heavy flyers.",
+        "Weather systems have high energy."
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "atmosphere",
+      "claim": "Air is 76% N₂, 15% O₂, 2.5% CO₂, 6% Ar, 0.4% H₂O, and 0.01% H₂S confined to volcanic belts.",
+      "justification": "O₂ is biogenic; CO₂ keeps the greenhouse; Ar is radiogenic; H₂S photolyses in days and is lethal at percent levels, so it stays at 0.01% in volcanic belts.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "N₂ 76, O₂ 15, CO₂ 2.5",
+      "unit": "%",
+      "consequences": [
+        "15% O₂ supports fire and large aerobes.",
+        "H₂S is a local lethal hazard.",
+        "CO₂ greenhouse keeps water liquid."
+      ],
+      "refs": [
+        "lyons_2014_oxygen"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "atmosphere",
+      "claim": "Sound speed is 330 m/s at 285 K; low frequencies carry for kilometres.",
+      "justification": "c = √(γRT/M) for a 1.4-bar N₂/CO₂ mix at 285 K gives about 330 m/s; dense air and low attenuation carry low frequencies.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 330,
+      "unit": "m/s",
+      "consequences": [
+        "Low-frequency communication dominates.",
+        "Echolocation works in fog.",
+        "Sharp clanks mask signals."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "sky",
+      "claim": "A 1–2 km haze of suspended hematite makes light orange and blue-poor, with low contrast and short visibility.",
+      "justification": "Mie scattering by iron-oxide dust removes blue light and lowers contrast; the K-star spectrum is already red-shifted.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1–2",
+      "unit": "km",
+      "consequences": [
+        "Vision is short-range and contrast-poor.",
+        "Red and orange camouflage is common.",
+        "Dusk and dawn are peak activity."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "climate",
+      "claim": "Weather includes 10–30 m/s dust storms, acid fog in rift valleys, and lightning.",
+      "justification": "High pressure, fine dust, and rift topography drive dust storms, acid fog, and lightning.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 30,
+      "unit": "m/s",
+      "consequences": [
+        "Dust storms clog filters and gills.",
+        "Acid fog corrodes carbonate and metal armor.",
+        "Lightning charges exposed conductors."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "ocean",
+      "claim": "Open-ocean salinity is 1.1 times Earth's, brackish lagoons 0.3 times, and brine pools 2 times; conductivity is about 1.5 S/m in brackish water and 10 S/m in brine.",
+      "justification": "Evaporation in arid basins and sulfide oxidation raise salinity and conductivity; seawater and brine conduct differently.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.1,
+      "unit": "× Earth salinity",
+      "consequences": [
+        "Electric organs work in brackish water.",
+        "Brine pools short-circuit electric hunters.",
+        "Salinity barriers split populations."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "ocean",
+      "claim": "Open-sea pH is 6.5; dry basins fall to pH 4 as sulfide oxidation produces sulfuric acid.",
+      "justification": "CO₂ and sulfide oxidation set open-sea pH near 6.5 and dry-basin pH near 4.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 6.5,
+      "unit": "pH",
+      "consequences": [
+        "Carbonate skeletons are costly.",
+        "Acid-tolerant lineages dominate dry basins.",
+        "Corrosion is a constant selection pressure."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "geology",
+      "claim": "Heat flow is 1.8 times Earth's, with a thin lithosphere, rifts, and hydrothermal vent fields fed by radiogenic U/Th/K enrichment.",
+      "justification": "Radiogenic U/Th/K enrichment and a thin stagnant lid produce 1.8 times Earth's heat flow and abundant vents.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.8,
+      "unit": "× Earth",
+      "consequences": [
+        "Vent oases support chemosynthetic food webs.",
+        "Heat gradients guide miners.",
+        "Vent fields are patchy and ephemeral."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "geology",
+      "claim": "The crust exposes sulfides, magnetite, hematite, and Ni/Cu/Zn ores, but no native metal at the surface.",
+      "justification": "The surface is oxidizing and sulfide weathering destroys native metal; ore bodies remain as oxides and sulfides.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "none",
+      "consequences": [
+        "Armor and tools depend on smelting ore.",
+        "No naturally pure metal blades exist.",
+        "Ore bodies predict creature ecology."
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "chemistry",
+      "claim": "Primary energy sources are starlight, sulfide and iron oxidation, vent heat, and salinity gradients.",
+      "justification": "Redox couples and geothermal heat provide multiple primary energy sources.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "starlight, redox, heat, salinity",
+      "consequences": [
+        "Photic and vent food webs coexist.",
+        "Salinity-gradient specialists evolve.",
+        "Energy niches partition sharply."
+      ],
+      "refs": [
+        "emerson_2010_ironoxidizers"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "chemistry",
+      "claim": "Metabolism is built on Fe²⁺/Fe³⁺ and H₂S/S⁰ redox couples, with Fe-S, Cu, and Zn enzymes.",
+      "justification": "Fe-S clusters and metal cofactors are real biochemistry; the redox couples are thermodynamically favorable.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Fe²⁺/Fe³⁺, H₂S/S⁰",
+      "consequences": [
+        "Metal cofactors are essential and limiting.",
+        "Redox sensing is a primary sense.",
+        "O₂ is poison to vent obligates."
+      ],
+      "refs": [
+        "emerson_2010_ironoxidizers"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "Primary production is red-shifted photoautotrophy in shallow seas plus chemolithotrophy at vents.",
+      "justification": "The K-star spectrum and shallow photic zone favor red-shifted pigments; vents provide chemical energy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "red-shifted photoautotrophy + chemolithotrophy",
+      "consequences": [
+        "Two primary production systems support different herbivores.",
+        "Pigment diversity tracks depth and light.",
+        "Vent and photic ecotones are rich."
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "biochemistry",
+      "claim": "Oxygenic photosynthesis maintains atmospheric O₂ at 15%; this is highly speculative for this world but internally consistent.",
+      "justification": "A 15% O₂ atmosphere needs a large biogenic source; oxygenic photosynthesis is the only plausible one, but it is highly speculative here.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15,
+      "unit": "%",
+      "consequences": [
+        "O₂ enables large aerobes and fire.",
+        "Ozone shields the surface.",
+        "Vent obligates retreat from oxygen."
+      ],
+      "refs": [
+        "lyons_2014_oxygen"
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "biochemistry",
+      "claim": "Free Cu²⁺ and Zn²⁺ above about 1 µM are toxic; life chelates them with metallothionein-like proteins and vacuolar crystals.",
+      "justification": "Free Cu²⁺ and Zn²⁺ denature proteins at micromolar levels; chelation and vacuolar sequestration are the known biological answers.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "µM",
+      "consequences": [
+        "Detox organs are a key adaptation.",
+        "Metal-rich food is dangerous.",
+        "Chelation is a tradable resource."
+      ]
+    },
+    {
+      "id": "F25",
+      "group": "biochemistry",
+      "claim": "Life builds iron-sulfide plates, intracellular magnetite chains, and magnetite-tipped teeth, but deposits only oxides, sulfides, and phosphates—never native metal.",
+      "justification": "Scaly-foot snails deposit FeS plates (Warén et al. 2003), magnetotactic bacteria build magnetite chains (Blakemore 1975), and chitons armor teeth with magnetite (Lowenstam 1962); none grows native metal.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "FeS, Fe₃O₄",
+      "consequences": [
+        "Armor, compasses, and boring teeth are biomineral.",
+        "Metal armor is heavy and costly.",
+        "No lineage grows wires or swords."
+      ],
+      "refs": [
+        "waren_2003_scalyfoot",
+        "blakemore_1975_magnetotactic",
+        "lowenstam_1962_chiton"
+      ]
+    },
+    {
+      "id": "F26",
+      "group": "biochemistry",
+      "claim": "Electrocytes can produce about 300 V in brackish water, but the current shorts in full brine.",
+      "justification": "Stacked electrocytes can produce hundreds of volts; electric eels reach 860 V, so 300 V is modest but highly speculative for this world's lineages.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 300,
+      "unit": "V",
+      "consequences": [
+        "Electric hunting works in lagoons.",
+        "Insulating mucus is a defense.",
+        "Brine refuges protect prey."
+      ],
+      "refs": [
+        "catania_2014_eel"
+      ]
+    },
+    {
+      "id": "F27",
+      "group": "biochemistry",
+      "claim": "Sinter mats precipitate and concentrate sulfide ore, but organismal smelting is fantasy; reducing ore to metal requires a kiln.",
+      "justification": "Biology can precipitate sulfides but cannot reduce them to native metal; vent heat can bake ore but not smelt it.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "concentrate only",
+      "consequences": [
+        "Ore deposits form around vents.",
+        "Crafting requires player kilns.",
+        "Sinter mats anchor vent economies."
+      ],
+      "refs": [
+        "waren_2003_scalyfoot"
+      ]
+    },
+    {
+      "id": "F28",
+      "group": "biochemistry",
+      "claim": "Slagroot and related plants accumulate more than 1,000 µg/g Ni in dry leaves.",
+      "justification": "Metal hyperaccumulation above 1,000 µg/g is real in Earth plants (Brooks et al. 1977); it deters herbivores and marks metal-rich soil.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1000,
+      "unit": "µg/g dry mass",
+      "consequences": [
+        "Toxic forage deters herbivores.",
+        "High-Ni plants mark ore-bearing soil.",
+        "Acid rain mobilizes the stored metal."
+      ],
+      "refs": [
+        "brooks_1977_hyperaccumulator"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 28 facts (planet drafts, peer reviews, astrobio referee)"
+    }
+  ]
+}

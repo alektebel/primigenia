@@ -1,0 +1,279 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rocaescama",
+  "name": {
+    "en": "Rocaescama"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hydrothermal rift edges, oxidized sulfide chimneys, and mineral crust plains",
+    "diet": "Chemosynthetic iron-sulfur mats, mineral detritus, and Fe²⁺-rich biofilms",
+    "active": "Crepuscular; follows thermal plumes and red-shifted light peaks",
+    "predators": []
+  },
+  "body": "Ovoid, segmented iron-sulfide carapace, six stout legs, rasping magnetite mouth",
+  "chains": [
+    {
+      "id": "rocaescama.c1",
+      "trait": "Iron-sulfide carapace plates",
+      "links": [
+        "Plates absorb kinetic impact",
+        "Protection against abrasive crust and predators",
+        "Grazes on hard hydrothermal sulfide deposits",
+        "Thin lithosphere and radiogenic heat drive active vents"
+      ],
+      "roots": [
+        "F18",
+        "F19"
+      ],
+      "skill": {
+        "id": "rocaescama.iron_shell",
+        "name": {
+          "en": "Iron Shell"
+        },
+        "role": "Defence",
+        "effect": "Reduces incoming damage by 40% but reduces movement speed by 20%",
+        "numbers": {}
+      },
+      "weakness": "Soft ventral membrane between plates is unarmoured and highly vulnerable",
+      "observe": [
+        "Scraping hiss as plates rub against rock",
+        "Iridescent black plates with greenish sulfur edges",
+        "Slow, deliberate walking on hexapod legs"
+      ],
+      "journal": {
+        "en": "It eats the world's bones and wears them as skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_chrysomallon"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rocaescama.c2",
+      "trait": "Magnetite-tipped rasping mouth",
+      "links": [
+        "Teeth wear against armor and crust, self-sharpening",
+        "Rasps iron-oxidizing mats off magnetite-rich substrate",
+        "Diet requires processing low-nutrient chemosynthetic crust",
+        "F19 crust exposed by metal oxidation and hydrothermal activity"
+      ],
+      "roots": [
+        "F19",
+        "F25"
+      ],
+      "skill": {
+        "id": "rocaescama.scrape",
+        "name": {
+          "en": "Scrape"
+        },
+        "role": "Basic",
+        "effect": "Deals 30 damage and harvests iron resource; extra damage against rocky terrain",
+        "numbers": {}
+      },
+      "weakness": "Magnetite wears down; requires iron-rich diet to maintain sharpness, weakens without Fe²⁺",
+      "observe": [
+        "Mouth rasping reveals white magnetite tips",
+        "Molting mouthparts shed as glittering dust",
+        "Glossy sheen of oxidized iron around oral cavity"
+      ],
+      "journal": {
+        "en": "Its teeth never dull, only hungry."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lowenstam_1962_magnetite"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rocaescama.c3",
+      "trait": "Intracellular magnetite chain alignment",
+      "links": [
+        "Chains align with planetary field",
+        "Spatial orientation in zero-viscosity vent plumes",
+        "Navigates turbulence and thermal currents on vents",
+        "Planetary magnetic dipole is 1.5x Earth strength"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "rocaescama.mag_align",
+        "name": {
+          "en": "Mag-Align"
+        },
+        "role": "Passive",
+        "effect": "Grants immunity to knockback and disorientation effects",
+        "numbers": {}
+      },
+      "weakness": "Magnetotaxis disrupted by high-frequency electrical noise or magnetic anomalies",
+      "observe": [
+        "Body rotates subtly to face magnetic north",
+        "Glowing faintly under specific magnetic sensors",
+        "Stops spinning when magnetic field stabilizes"
+      ],
+      "journal": {
+        "en": "It carries a compass inside its flesh."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "blakemore_1975_magnetotactic"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rocaescama.c4",
+      "trait": "Gut symbionts oxidize Fe²⁺",
+      "links": [
+        "Symbionts harvest energy from iron redox",
+        "Extracts calories from ingested Fe²⁺ sulfides",
+        "Crust has high Fe²⁺ but low organic carbon",
+        "F21 metabolism built on Fe²⁺/Fe³⁺ redox couples"
+      ],
+      "roots": [
+        "F21",
+        "F20"
+      ],
+      "skill": {
+        "id": "rocaescama.iron_digest",
+        "name": {
+          "en": "Iron-Digest"
+        },
+        "role": "Passive",
+        "effect": "Passive: Converts ingested iron resource into 10% health over 3 turns",
+        "numbers": {}
+      },
+      "weakness": "Symbionts fail if gut pH drops below 4.0 during acid fog events",
+      "observe": [
+        "Green gas bubbles exhaled after feeding",
+        "Distended abdomen glowing faintly from symbiont activity",
+        "Avoids eating acidic sludge near pH 4 vents"
+      ],
+      "journal": {
+        "en": "The rock feeds the bacteria; the bacteria feed the beast."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "galvanar",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Galvanar flips Rocaescama with electric shocks to expose the soft ventral membrane"
+    },
+    {
+      "with": "galvanar",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Uses shock to flip Rocaescama and target soft underbelly; Rocaescama avoids Galvanar-rich estuaries"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Limbless vent-colonizer radiated into hexapod stability for hard substrate"
+  },
+  "temperament": "Slow, territorial, defensive, curious about magnetic anomalies",
+  "secrets": [
+    "Molting plates fall intact and can be mined by players for raw iron-sulfide ore.",
+    "Rocaescama can taste magnetic field lines to navigate blind rift valleys."
+  ],
+  "moments": [
+    "A colony of Rocaescama forms a living mosaic on a black smoker, their plates chiming like metal bells as the thermal plume surges and the magnetic field fluctuates."
+  ],
+  "journal": [
+    {
+      "en": "It eats the world's bones."
+    },
+    {
+      "en": "Molting plates fall intact; predators wait."
+    }
+  ]
+}

@@ -12979,8 +12979,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.1191127",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "johnsen_lohmann_2005",
@@ -13488,8 +13490,9 @@
     },
     "container-title": "Science",
     "DOI": "10.1126/science.1121290",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "roth_2014_europa",
@@ -13644,6 +13647,373 @@
       ]
     },
     "container-title": "Nature",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "waren_2003_scalyfoot",
+    "type": "article-journal",
+    "title": "A hot-vent gastropod with iron sulfide dermal sclerites",
+    "author": [
+      {
+        "family": "Warén",
+        "given": "Anders"
+      },
+      {
+        "family": "Bengtson",
+        "given": "Stefan"
+      },
+      {
+        "family": "Goffredi",
+        "given": "Shana K."
+      },
+      {
+        "family": "Van Dover",
+        "given": "Cindy L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1087696",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "lowenstam_1962_chiton",
+    "type": "article-journal",
+    "title": "Magnetite in denticle capping in recent chitons (Polyplacophora)",
+    "author": [
+      {
+        "family": "Lowenstam",
+        "given": "Heinz A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1962
+        ]
+      ]
+    },
+    "container-title": "Geological Society of America Bulletin",
+    "DOI": "10.1130/0016-7606(1962)73[435:MIDCIR]2.0.CO;2",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "emerson_2010_ironoxidizers",
+    "type": "article-journal",
+    "title": "Iron-oxidizing bacteria: an environmental and genomic perspective",
+    "author": [
+      {
+        "family": "Emerson",
+        "given": "David"
+      },
+      {
+        "family": "Fleming",
+        "given": "Emily J."
+      },
+      {
+        "family": "McBeth",
+        "given": "Jason M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Microbiology",
+    "DOI": "10.1146/annurev.micro.112408.134208",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "catania_2014_eel",
+    "type": "article-journal",
+    "title": "The shocking predatory strike of the electric eel",
+    "author": [
+      {
+        "family": "Catania",
+        "given": "Kenneth C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1260807",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "brooks_1977_hyperaccumulator",
+    "type": "article-journal",
+    "title": "Detection of nickeliferous rocks by analysis of herbarium specimens of indicator plants",
+    "author": [
+      {
+        "family": "Brooks",
+        "given": "R. R."
+      },
+      {
+        "family": "Lee",
+        "given": "J."
+      },
+      {
+        "family": "Reeves",
+        "given": "R. D."
+      },
+      {
+        "family": "Jaffré",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1977
+        ]
+      ]
+    },
+    "container-title": "Journal of Geochemical Exploration",
+    "DOI": "10.1016/0375-6742(77)90074-7",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "waren_2003_vent",
+    "type": "article-journal",
+    "title": "A hot-vent gastropod with iron sulfide dermal sclerites",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Warén",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1087696",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "lowenstam_1962_magnetite",
+    "type": "article-journal",
+    "title": "Magnetite in denticle capping in recent chitons (Polyplacophora)",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Lowenstam",
+        "given": "H. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1962
+        ]
+      ]
+    },
+    "container-title": "Geological Society of America Bulletin",
+    "DOI": "10.1130/0016-7606(1962)73[435:midcir]2.0.co;2",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "bennett_1971_evolution",
+    "type": "article-journal",
+    "title": "Evolution of electricity in animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'On the evolution of light, heat, and electricity by animals.' (Carpenter, None) title similarity 0.72",
+    "author": [
+      {
+        "family": "Bennett",
+        "given": "M.V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1971
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "brooks_1977_hyperaccumulation",
+    "type": "article-journal",
+    "title": "Hyperaccumulation of metals by plants",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The hyperaccumulation of metals by plants' (Macnair, 2003, doi 10.1016/s0065-2296(05)40002-6), title similarity 0.95, author differs, year off",
+    "author": [
+      {
+        "family": "Brooks",
+        "given": "N.R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1977
+        ]
+      ]
+    },
+    "container-title": "Geological Society of America Bulletin",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "brooks_1977_metal",
+    "type": "article-journal",
+    "title": "Metal accumulation in hyperaccumulator plants",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Physiological and molecular mechanisms of metal accumulation in hyperaccumulator plants' (Sytar, 2020) title similarity 0.68",
+    "author": [
+      {
+        "family": "Brooks",
+        "given": "N.R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1977
+        ]
+      ]
+    },
+    "container-title": "Biological Journal of the Linnean Society",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "brooks_1977_metallophytes",
+    "type": "article-journal",
+    "title": "Metallophytes: the ecology and physiology of plants that grow on metal-rich substrates",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Metallophytes' (Pandey, 2026, doi 10.1016/b978-0-443-30110-0.00004-0), title similarity 1.00, author differs, year off",
+    "author": [
+      {
+        "family": "Brooks",
+        "given": "N. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1977
+        ]
+      ]
+    },
+    "container-title": "Biological Journal of the Linnean Society",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "galvanar_2026_speculative",
+    "type": "article-journal",
+    "title": "Speculative electrocyte physiology in brackish environments",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Electrocyte physiology: 50 years later' (Markham, 2013) title similarity 0.58",
+    "author": [
+      {
+        "family": "Galvanar"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "Primigenia World Canon",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "waren_2003_chrysomallon",
+    "type": "article-journal",
+    "title": "Chrysomallon squamiferum: A new species of vent snail with an iron-plated shell",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Chrysomallon squamiferum: Sigwart, J., Chen, C. & Thomas, E.A.' (, 2018, doi 10.2305/iucn.uk.2019-2.rlts.t103636217a103636261.en), title similarity 1.00, author differs, year off",
+    "author": [
+      {
+        "family": "Warén",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "waren_2003_scaly",
+    "type": "article-journal",
+    "title": "The scaly-foot gastropod: a new living species with iron sulphides",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The ‘scaly-foot gastropod’: a new genus and species of hydrothermal vent-endemic gastropod (Neomphalina: Peltospiridae) from the Indian Ocean' (Chen, 2015, doi 10.1093/mollus/eyv013), title similarity 1.00, author differs, year off",
+    "author": [
+      {
+        "family": "Warén",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "waren_2003_squamiferous",
+    "type": "article-journal",
+    "title": "Squamiferous snail from deep Pacific hydrothermal vents",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'New gastropods from East Pacific hydrothermal vents' (WARÉN, 1989, doi 10.1111/j.1463-6409.1989.tb00124.x), title similarity 0.72, author match, year off",
+    "author": [
+      {
+        "family": "Warén",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Science",
     "x-checked": "2026-11-24"
   }
 ]

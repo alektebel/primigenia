@@ -1,0 +1,268 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cobrehorno",
+  "name": {
+    "en": "Cobrehorno"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Deep rift vent fields (1.8x Earth heat flow, pH 4–6.5 gradients)",
+    "diet": "Chemosynthetic symbionts, suspended metal-sulfide particles, vent fluids",
+    "active": "Continuous; slow growth and sintering cycles",
+    "predators": []
+  },
+  "body": "Columnar, branching silicate-sulfide composite plates; heat-shock protein-lined sintering chambers; basaltic dorsal heat-sink; vent-facing intake fronds",
+  "chains": [
+    {
+      "id": "cobrehorno.c1",
+      "trait": "Heat-shock lined sintering chambers",
+      "links": [
+        "Bakes suspended sulfides into dense composite armor",
+        "Vent fluids precipitate metals when cooled by body heat",
+        "High geothermal heat flow accelerates crystallization (Note: native metal reduction remains fantasy; biology concentrates/precipitates only)"
+      ],
+      "roots": [
+        "F18",
+        "F27"
+      ],
+      "skill": {
+        "id": "cobrehorno.kiln_plate",
+        "name": {
+          "en": "Kiln Plate"
+        },
+        "role": "Control",
+        "effect": "Places 2m radius armored zone, grants +30% defence to allies",
+        "numbers": {}
+      },
+      "weakness": "Takes 10s to construct; vulnerable mid-build",
+      "observe": [
+        "Water shimmers with heat haze around base",
+        "Branches extrude glassy, concentric plates",
+        "Silt cakes in precise geometric rings"
+      ],
+      "journal": {
+        "en": "It doesn't grow. It cements the vent itself."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_squamiferous"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrehorno.c2",
+      "trait": "Basaltic dorsal heat-sink plates",
+      "links": [
+        "Maintains internal reactor temperatures for symbionts",
+        "Chemosynthetic metabolism needs stable thermal gradients",
+        "Vent plumes fluctuate wildly in temperature and chemistry"
+      ],
+      "roots": [
+        "F18",
+        "F20"
+      ],
+      "skill": {
+        "id": "cobrehorno.thermal_lure",
+        "name": {
+          "en": "Thermal Lure"
+        },
+        "role": "Engage",
+        "effect": "Draws chemolithotrophs into feeding zone, +10% harvest rate",
+        "numbers": {}
+      },
+      "weakness": "Overheats and loses symbionts if displaced to shallow water",
+      "observe": [
+        "Dorsal plates glow dull red under vent light",
+        "Symbiotic bacteria bloom in thick clouds around intake",
+        "Vent currents bend smoothly around its spine"
+      ],
+      "journal": {
+        "en": "It wears the vent's fever as a second skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrehorno.c3",
+      "trait": "Vacuolar metal-crystal storage nodules",
+      "links": [
+        "Detoxifies dissolved Cu2+/Zn2+ ions",
+        "Free metals denature proteins above 1 µM concentration",
+        "Crustal sulfide weathering leaches ions into vent fluid"
+      ],
+      "roots": [
+        "F19",
+        "F24"
+      ],
+      "skill": {
+        "id": "cobrehorno.metal_cache",
+        "name": {
+          "en": "Metal Cache"
+        },
+        "role": "Passive",
+        "effect": "Stores 3 concentrated metal charges for crafting/alchemy",
+        "numbers": {}
+      },
+      "weakness": "Cannot relocate when heavily laden with nodules",
+      "observe": [
+        "Internal nodules click softly when brushed",
+        "Water clears immediately around its base",
+        "Gills filter metallic particulates into glowing sacs"
+      ],
+      "journal": {
+        "en": "It swallows the mountain's blood and spits out crystal."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_hyperaccumulation"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrehorno.c4",
+      "trait": "Electrochemical pH gradient sensors",
+      "links": [
+        "Locates optimal vent plumes for feeding",
+        "Sulfide oxidation and acid fog shift local pH",
+        "Fe-S redox metabolism depends on stable chemical gradients"
+      ],
+      "roots": [
+        "F17",
+        "F21"
+      ],
+      "skill": {
+        "id": "cobrehorno.plume_track",
+        "name": {
+          "en": "Plume Track"
+        },
+        "role": "Basic",
+        "effect": "Highlights thermal/acid plumes on minimap for 5s",
+        "numbers": {}
+      },
+      "weakness": "Confused by lightning-induced pH swings or dust storms",
+      "observe": [
+        "Intake fronds angle toward rising bubbles",
+        "Water turns milky near chemical intake",
+        "Symbionts flare bright green along gradient lines"
+      ],
+      "journal": {
+        "en": "It reads the water's sour notes to find the heat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "ferroluz",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Ferroluz clears vent-predators that would otherwise crush Cobrehorno's sinter terraces; Cobrehorno's metal caches fuel Ferroluz's molt cycles."
+    },
+    {
+      "with": "ferroluz",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Cobrehorno concentrates metal sulfides that Ferroluz harvests for molt cycles; Ferroluz patrols the perimeter, deterring burrowing predators that would fracture Cobrehorno's sinter terraces."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "early metazoan-like lineage"
+  },
+  "temperament": "Sedentary, defensive, slow-reacting, highly territorial over vents",
+  "secrets": [
+    "Sintered plates can be harvested for high-grade sulfide ore.",
+    "Releases a cloud of heat-resistant spores when fractured.",
+    "Symbiotic bacteria inside produce heat-stable enzymes used in crafting."
+  ],
+  "moments": [
+    "Watching it slowly extrude a glassy, sulfide-rich plate over a vent mouth, the heat warping the water above it like a mirage."
+  ],
+  "journal": [
+    {
+      "en": "It doesn't eat. It bakes the water into armor."
+    },
+    {
+      "en": "The vents sing through its crystalline ribs."
+    }
+  ]
+}

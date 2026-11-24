@@ -131,6 +131,19 @@
 | [Cromavolante](cromavolante.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Ostracilo](ostracilo.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
+## Metallic world (`metallic`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cobrehorno](cobrehorno.md) | new | draft | 4 | 4 fixable |
+| [Ferrisca](ferrisca.md) | new | draft | 4 | 4 fixable |
+| [Ferroluz](ferroluz.md) | new | draft | 4 | 4 fixable |
+| [Galvanar](galvanar.md) | new | draft | 4 | 4 fixable |
+| [Rocaescama](rocaescama.md) | new | draft | 4 | 4 fixable |
+| [Sidero-chisp](sidero_chisp.md) | new | draft | 4 | 4 fixable |
+| [Sidero-copa](sidero_copa.md) | new | draft | 4 | 4 fixable |
+| [Siderogon](siderogon.md) | new | draft | 4 | 4 fixable |
+
 ## Mycelial World (`mycelia`)
 
 | Creature | Kind | Status | Chains | Verdicts |

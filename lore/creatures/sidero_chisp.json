@@ -1,0 +1,240 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sidero_chisp",
+  "name": {
+    "en": "Sidero-chisp"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Brackish lagoons, estuaries, tidal channels.",
+    "diet": "Carnivore; small fish, crustaceans, grazers.",
+    "active": "Crepuscular; strikes during low-visibility tides.",
+    "predators": []
+  },
+  "body": "Eel-like, conductive surface tissue, stacked electrocytes, ampullary sensory organs, rust-colored dorsal scales.",
+  "chains": [
+    {
+      "id": "sidero_chisp.c1",
+      "trait": "Electrocytes produce 300V shock in brackish water.",
+      "links": [
+        "Stacked electrocytes generate high voltage",
+        "Stuns prey in low-conductivity water",
+        "Brackish conductivity and electrocyte biology"
+      ],
+      "roots": [
+        "F16",
+        "F26"
+      ],
+      "skill": {
+        "id": "sidero_chisp.brackish_bolt",
+        "name": {
+          "en": "Brackish Bolt"
+        },
+        "role": "Basic",
+        "effect": "Deals 20 damage and stuns target for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Shock range drops by 70% in high salinity.",
+      "observe": [
+        "Water sparkles violet near body",
+        "Jumps out to strike",
+        "Avoids brine pools"
+      ],
+      "journal": {
+        "en": "A serpent of lightning that fears the deep salt."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_chisp.c2",
+      "trait": "Electrocytes short-circuit in full brine.",
+      "links": [
+        "High ion concentration causes current leak",
+        "Cannot discharge weapon in brine",
+        "Brine conductivity and electrocyte limits"
+      ],
+      "roots": [
+        "F16",
+        "F26"
+      ],
+      "skill": {
+        "id": "sidero_chisp.brine_vulnerability",
+        "name": {
+          "en": "Brine Vulnerability"
+        },
+        "role": "Passive",
+        "effect": "Cannot use electric attacks in full brine; -50% defense.",
+        "numbers": {}
+      },
+      "weakness": "Trapped in brine pools without attack options.",
+      "observe": [
+        "Retreats when salinity rises",
+        "Body twitches but no spark in brine",
+        "Hides under lagoon edges"
+      ],
+      "journal": {
+        "en": "The salt steals their fire; they are powerless in the deep brine."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_chisp.c3",
+      "trait": "Ampullae detect bio-electric fields.",
+      "links": [
+        "Sensors sense muscle currents",
+        "Finds hidden prey in murky water",
+        "Low visibility and electroreception biology"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "sidero_chisp.electro_locate",
+        "name": {
+          "en": "Electro-locate"
+        },
+        "role": "Poke",
+        "effect": "Reveals stealthed targets within 30m; +40% hit chance.",
+        "numbers": {}
+      },
+      "weakness": "Sensitivity overloaded by lightning; stunned for 1 turn.",
+      "observe": [
+        "Snout twitches toward hidden prey",
+        "Strikes before seeing movement",
+        "Sensors glow faint blue"
+      ],
+      "journal": {
+        "en": "They see the spark of life itself, blind to the world."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_chisp.c4",
+      "trait": "Dorsal scales match hematite rust color.",
+      "links": [
+        "Pigments produce rust hue",
+        "Camouflage against hematite haze",
+        "Hematite dust and visual ecology"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "sidero_chisp.rust_cloak",
+        "name": {
+          "en": "Rust Cloak"
+        },
+        "role": "Defence",
+        "effect": "+25% stealth in brackish; enemies roll with disadvantage on first sight.",
+        "numbers": {}
+      },
+      "weakness": "Obvious against blue/green backgrounds (rare but possible).",
+      "observe": [
+        "Scales blend perfectly with mud",
+        "Ambushes prey that walk right by",
+        "Rests half-buried in rust silt"
+      ],
+      "journal": {
+        "en": "A shadow that wears the color of the sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "siderogon",
+      "kind": "cousin",
+      "note": "(council kind 'predator') Sidero-chisp hunts juvenile or sick siderogons in lagoon margins."
+    },
+    {
+      "with": "sidero_copa",
+      "kind": "cousin",
+      "note": "(council kind 'exploit') Sidero-chisp may use sidero-copa shade to ambush, but avoids toxic dew."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Eel-snake lineage."
+  },
+  "temperament": "Ambush, jerky, solitary.",
+  "secrets": [
+    "Harvest electrolyte glands: Sidero-chisp tissue can be used to craft shock tools.",
+    "Lightning rod behavior: Sidero-chisp can be lured into lightning strikes to stun them.",
+    "Brine trap: Luring a sidero-chisp into a brine pool makes it defenseless."
+  ],
+  "moments": [
+    "A shadow splits the mist, then the water boils with violet light. Sidero-chisp strikes, and the lagoon falls silent, save for the fizz of settling ions."
+  ]
+}

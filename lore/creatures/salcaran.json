@@ -295,6 +295,12 @@
       "kind": "convergent",
       "via": "carcinisation",
       "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "ferrisca",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
     }
   ],
   "provenance": {
@@ -321,6 +327,11 @@
     },
     {
       "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
       "who": "autoloop",
       "what": "carcinisation links to 1 creature(s)"
     },
