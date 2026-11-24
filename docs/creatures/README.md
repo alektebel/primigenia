@@ -81,6 +81,16 @@
 | [Snake People](at_snake_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
 | [Worms](at_worms.md) | easter_egg | draft | 2 | 2 plausible |
 
+## Thrum (`deepinterior`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cascabel](cascabel.md) | new | draft | 4 | 4 fixable |
+| [Caudal de Hierro](caudal_de_hierro.md) | new | draft | 4 | 4 fixable |
+| [Ocotl](ocotl.md) | new | draft | 4 | 4 fixable |
+| [Soplillo](soplillo.md) | new | draft | 4 | 4 fixable |
+| [Tumbrela](tumbrela.md) | new | draft | 4 | 4 fixable |
+
 ## The Deep Sky (`deepsky`)
 
 | Creature | Kind | Status | Chains | Verdicts |

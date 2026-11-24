@@ -13552,8 +13552,9 @@
     },
     "container-title": "Science",
     "DOI": "10.1126/science.289.5486.1902",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "fray_2009_sublimation",
@@ -13702,9 +13703,10 @@
       ]
     },
     "container-title": "Geological Society of America Bulletin",
-    "DOI": "10.1130/0016-7606(1962)73[435:MIDCIR]2.0.CO;2",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "DOI": "10.1130/0016-7606(1962)73[435:midcir]2.0.co;2",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "emerson_2010_ironoxidizers",
@@ -14014,6 +14016,789 @@
       ]
     },
     "container-title": "Science",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "kopparapu_2013_hz",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main-Sequence Stars: New Estimates",
+    "author": [
+      {
+        "family": "Kopparapu",
+        "given": "Ravi Kumar"
+      },
+      {
+        "family": "Ramirez",
+        "given": "Ramses"
+      },
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/765/2/131",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "lammer_2009_habitable",
+    "type": "article-journal",
+    "title": "What makes a planet habitable?",
+    "author": [
+      {
+        "family": "Lammer",
+        "given": "Helmut"
+      },
+      {
+        "family": "Bredehoft",
+        "given": "Jan Hendrik"
+      },
+      {
+        "family": "Coustenis",
+        "given": "Athena"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "The Astronomy and Astrophysics Review",
+    "DOI": "10.1007/s00159-009-0019-z",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'What Makes a Planet Habitable?' (, 2006, doi 10.1142/9781860949210_0029), title similarity 1.00, author differs, year off",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "seager_2007_massradius",
+    "type": "article-journal",
+    "title": "Mass‐Radius Relationships for Solid Exoplanets",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "Sara"
+      },
+      {
+        "family": "Kuchner",
+        "given": "Marc"
+      },
+      {
+        "family": "Hier-Majumder",
+        "given": "Sourav"
+      },
+      {
+        "family": "Militzer",
+        "given": "Burkhard"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1086/521346",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Mass-Radius Relationships for Solid Exoplanets'; DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "goldreich_soter_1966_q",
+    "type": "article-journal",
+    "title": "Q in the Solar System",
+    "author": [
+      {
+        "family": "Goldreich",
+        "given": "Peter"
+      },
+      {
+        "family": "Soter",
+        "given": "Steven"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1966
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1016/0019-1035(66)90051-0",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "turcotte_schubert_2014_geodynamics",
+    "type": "book",
+    "title": "Geodynamics",
+    "author": [
+      {
+        "family": "Turcotte",
+        "given": "Donald L."
+      },
+      {
+        "family": "Schubert",
+        "given": "Gerald"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "ISBN": "9781107006539",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Geodynamics' (Turcotte, 2012), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "stevenson_2003_magnetic",
+    "type": "article-journal",
+    "title": "Planetary magnetic fields",
+    "author": [
+      {
+        "family": "Stevenson",
+        "given": "David J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Earth and Planetary Science Letters",
+    "DOI": "10.1016/s0012-821x(02)01126-3",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "kasting_1991_co2",
+    "type": "article-journal",
+    "title": "CO2 condensation and the climate of early Mars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1991
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1016/0019-1035(91)90137-i",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "etioipe_2013_methane",
+    "type": "article-journal",
+    "title": "Abiotic Methane on Earth",
+    "author": [
+      {
+        "family": "Etiope",
+        "given": "Giuseppe"
+      },
+      {
+        "family": "Sherwood Lollar",
+        "given": "Barbara"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Reviews of Geophysics",
+    "DOI": "10.1002/rog.20011",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "mccollom_seewald_2007_abiotic",
+    "type": "article-journal",
+    "title": "Abiotic Synthesis of Organic Compounds in Deep-Sea Hydrothermal Environments",
+    "author": [
+      {
+        "family": "McCollom",
+        "given": "Thomas M."
+      },
+      {
+        "family": "Seewald",
+        "given": "Jeffrey S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Chemical Reviews",
+    "DOI": "10.1021/cr0503660",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "charlou_2002_rainbow",
+    "type": "article-journal",
+    "title": "Geochemistry of high H2 and CH4 vent fluids issuing from ultramafic rocks at the Rainbow hydrothermal field (36°14′N, MAR)",
+    "author": [
+      {
+        "family": "Charlou",
+        "given": "Jean Luc"
+      },
+      {
+        "family": "Donval",
+        "given": "Jean Pierre"
+      },
+      {
+        "family": "Fouquet",
+        "given": "Yves"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Chemical Geology",
+    "DOI": "10.1016/s0009-2541(02)00134-1",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Geochemistry of high H2 and CH4 vent fluids issuing from ultramafic rocks at the Rainbow hydrothermal field'; DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "cussler_2009_diffusion",
+    "type": "book",
+    "title": "Diffusion: Mass Transfer in Fluid Systems",
+    "author": [
+      {
+        "family": "Cussler",
+        "given": "E. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "ISBN": "9780521871211",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "ingebritsen_2006_groundwater",
+    "type": "book",
+    "title": "Groundwater in Geologic Processes",
+    "author": [
+      {
+        "family": "Ingebritsen",
+        "given": "Steven E."
+      },
+      {
+        "family": "Sanford",
+        "given": "Ward E."
+      },
+      {
+        "family": "Neuzil",
+        "given": "Christopher E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "ISBN": "9780521603218",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "frape_fritz_mcnutt_1984_shield",
+    "type": "article-journal",
+    "title": "Water-rock interaction and chemistry of groundwaters from the Canadian Shield",
+    "author": [
+      {
+        "family": "Frape",
+        "given": "Shaun K."
+      },
+      {
+        "family": "Fritz",
+        "given": "Peter"
+      },
+      {
+        "family": "McNutt",
+        "given": "Robert H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "container-title": "Geochimica et Cosmochimica Acta",
+    "DOI": "10.1016/0016-7037(84)90331-4",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "chivian_2008_desulforudis",
+    "type": "article-journal",
+    "title": "Environmental genomics reveals a single-species ecosystem deep within Earth",
+    "author": [
+      {
+        "family": "Chivian",
+        "given": "Dylan"
+      },
+      {
+        "family": "Brodie",
+        "given": "Eoin L."
+      },
+      {
+        "family": "Alm",
+        "given": "Eric J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1155495",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Faculty Opinions recommendation of Environmental genomics reveals a single-species ecosystem deep within Earth.' (Hill, 2009, doi 10.3410/f.1123329.621681), title similarity 0.81, author differs, year ok",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "magnabosco_2018_biomass",
+    "type": "article-journal",
+    "title": "The biomass and biodiversity of the continental subsurface",
+    "author": [
+      {
+        "family": "Magnabosco",
+        "given": "Cara"
+      },
+      {
+        "family": "Lin",
+        "given": "Li-Hung"
+      },
+      {
+        "family": "Dong",
+        "given": "Hongchen"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Nature Geoscience",
+    "DOI": "10.1038/s41561-018-0221-6",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "hoehler_jorgensen_2013_energy",
+    "type": "article-journal",
+    "title": "Microbial life under extreme energy limitation",
+    "author": [
+      {
+        "family": "Hoehler",
+        "given": "Tori M."
+      },
+      {
+        "family": "Jorgensen",
+        "given": "Bo Barker"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Nature Reviews Microbiology",
+    "DOI": "10.1038/nrmicro2939",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "koga_morii_2007_etherlipids",
+    "type": "article-journal",
+    "title": "Biosynthesis of ether-type polar lipids in archaea and evolutionary considerations",
+    "author": [
+      {
+        "family": "Koga",
+        "given": "Yosuke"
+      },
+      {
+        "family": "Morii",
+        "given": "Hiroyuki"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Microbiology and Molecular Biology Reviews",
+    "DOI": "10.1128/mmbr.00033-06",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "ragsdale_pierce_2008_woodljungdahl",
+    "type": "article-journal",
+    "title": "Acetogenesis and the Wood–Ljungdahl pathway of CO2 fixation",
+    "author": [
+      {
+        "family": "Ragsdale",
+        "given": "Stephen W."
+      },
+      {
+        "family": "Pierce",
+        "given": "Elizabeth"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Biochimica et Biophysica Acta (BBA) - Proteins and Proteomics",
+    "DOI": "10.1016/j.bbapap.2008.08.012",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Acetogenesis and the Wood-Ljungdahl pathway of CO2 fixation'; container-title corrected from 'Biochimica et Biophysica Acta'; DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "takai_2008_122c",
+    "type": "article-journal",
+    "title": "Cell proliferation at 122 C and isotopically heavy CH4 production by a hyperthermophilic methanogen under high-pressure cultivation",
+    "author": [
+      {
+        "family": "Takai",
+        "given": "Ken"
+      },
+      {
+        "family": "Nakamura",
+        "given": "Kentaro"
+      },
+      {
+        "family": "Toki",
+        "given": "Tomohiro"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "DOI": "10.1073/pnas.0712334105",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "sloan_koh_2008_clathrate",
+    "type": "book",
+    "title": "Clathrate Hydrates of Natural Gases",
+    "author": [
+      {
+        "family": "Sloan",
+        "given": "E. Dendy"
+      },
+      {
+        "family": "Koh",
+        "given": "Carolyn A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "ISBN": "9780849390784",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "chivian_2008_environmental",
+    "type": "article-journal",
+    "title": "Environmental genomics reveals a single-species ecosystem deep within Earth",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Faculty Opinions recommendation of Environmental genomics reveals a single-species ecosystem deep within Earth.' (Hill, 2009, doi 10.3410/f.1123329.621681), title similarity 0.81, author differs, year ok",
+    "author": [
+      {
+        "family": "Chivian",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "takai_2008_cell",
+    "type": "article-journal",
+    "title": "Cell proliferation at 122°C and isotopically heavy CH 4 production by a hyperthermophilic methanogen under high-pressure cultivation",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Cell proliferation at 122 C and isotopically heavy CH4 production by a hyperthermophilic methanogen under high-pressure cultivation'; DOI added",
+    "author": [
+      {
+        "family": "Takai",
+        "given": "K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "DOI": "10.1073/pnas.0712334105",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "annan_2010_time",
+    "type": "article-journal",
+    "title": "Time-Lapse Seismic Monitoring of Calcite Precipitation",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Annan",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Geophysics"
+  },
+  {
+    "id": "coblentz_1976_tidal",
+    "type": "article-journal",
+    "title": "Tidal Strain Measurements from Space Geodesy",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Contribution of Non-Tidal Oceanic Mass Variations to Polar Motion Determined from Space Geodesy and Ocean Data' (Göttl, None) title similarity 0.40",
+    "author": [
+      {
+        "family": "Coblentz",
+        "given": "W.K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "JGR",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "lasaga_1984_chemical",
+    "type": "article-journal",
+    "title": "Chemical kinetics of water‐rock interactions",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Chemical Kinetics of Water-Rock Interactions'; container-title corrected from 'JGR'; DOI added",
+    "author": [
+      {
+        "family": "Lasaga",
+        "given": "A.C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Solid Earth",
+    "DOI": "10.1029/jb089ib06p04009",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "magnabosco_2018_abundance",
+    "type": "article-journal",
+    "title": "Abundance and distribution of life in deep subsurface environments",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'POPULATION BIOLOGY OF TRIBOLIUM: DISTRIBUTION, ABUNDANCE AND COMPETITION IN FINEGRAINED ENVIRONMENTS' (, None) title similarity 0.45",
+    "author": [
+      {
+        "family": "Magnabosco",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "PNAS",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "mckay_2003_radiolysis",
+    "type": "article-journal",
+    "title": "Radiolysis of Water in the Terrestrial Subsurface",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Microbial Communities in the Terrestrial Subsurface' (, None) title similarity 0.68",
+    "author": [
+      {
+        "family": "McKay",
+        "given": "C.P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "moffatt_1978_magnetic",
+    "type": "book",
+    "title": "Magnetic Field Generation in Electrically Conducting Fluids",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Moffatt",
+        "given": "H.K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "ISBN": "9780521216401",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "segall_2010_earthquake",
+    "type": "book",
+    "title": "Earthquake and Volcano Deformation",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Segall",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Princeton Univ Press",
+    "ISBN": "9781282608214",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "takai_2008_metabolism",
+    "type": "article-journal",
+    "title": "Metabolism at 122°C and High Pressure",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Microbial Physiology in Deep Biosphere of the Earth' (TAKAI, 2010) title similarity 0.23",
+    "author": [
+      {
+        "family": "Takai",
+        "given": "K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "PNAS",
     "x-checked": "2026-11-24"
   }
 ]

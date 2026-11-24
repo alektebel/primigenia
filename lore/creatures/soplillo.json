@@ -1,0 +1,276 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "soplillo",
+  "name": {
+    "en": "Soplillo"
+  },
+  "world": "deepinterior",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Fracture intersections, 1.0–2.0 km depth, multi-gradient zones",
+    "diet": "Filter-feeds dissolved Fe(II)/sulfate, hosts chemosynthetic archaea in symbiosis",
+    "active": "Diurnal/nocturnal analog tied to 56-hour tidal cycle",
+    "predators": []
+  },
+  "body": "Porous, branching tube-structure, central processing chamber",
+  "chains": [
+    {
+      "id": "soplillo.c1",
+      "trait": "Porous silica-carbonate filtration tubes capture particulates",
+      "links": [
+        "Molecular diffusion moves scent 1 cm per day",
+        "Low-flow zones starve mobile grazers",
+        "Network nodes concentrate suspended mineral dust"
+      ],
+      "roots": [
+        "F11"
+      ],
+      "skill": {
+        "id": "soplillo.silt_filter",
+        "name": {
+          "en": "Silt Filter"
+        },
+        "role": "Social",
+        "effect": "Shares nutrients with allies in adjacent tiles, +10% growth",
+        "numbers": {}
+      },
+      "weakness": "Tubes clog if brine salinity spikes",
+      "observe": [
+        "Tubes weave into branching lattice",
+        "Sediment accumulates in central chamber",
+        "Flow reverses to flush clogged channels"
+      ],
+      "journal": {
+        "en": "They build cities of dust and breath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplillo.c2",
+      "trait": "Tidal-cycle activity gating synchronizes reproduction",
+      "links": [
+        "56-hour tidal month causes cyclic strain",
+        "Fracture apertures open and close rhythmically",
+        "Nutrient pulses align with reproductive windows"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "soplillo.tidal_sync",
+        "name": {
+          "en": "Tidal Sync"
+        },
+        "role": "Control",
+        "effect": "Speeds up turn order and boosts skill cooldowns by 1",
+        "numbers": {}
+      },
+      "weakness": "Becomes sluggish if tidal strain is disrupted",
+      "observe": [
+        "Tube tips droop during peak strain",
+        "Spawning clouds erupt at moon apogee",
+        "Metabolic glow pulses in 56-hour rhythm"
+      ],
+      "journal": {
+        "en": "They time their lives to the moon’s pull."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplillo.c3",
+      "trait": "Symbiotic archaeal housing chambers offload redox processing",
+      "links": [
+        "Energy limitation stretches generation times to millennia",
+        "Microbial base sparse and concentrated at interfaces",
+        "Host shelters archaea to accelerate metabolism"
+      ],
+      "roots": [
+        "F18"
+      ],
+      "skill": {
+        "id": "soplillo.archaeal_bond",
+        "name": {
+          "en": "Archaeal Bond"
+        },
+        "role": "Social",
+        "effect": "Grants ally a permanent +10% damage to redox targets",
+        "numbers": {}
+      },
+      "weakness": "Chamber damage kills symbionts permanently",
+      "observe": [
+        "Internal sacs glow with chemosynthetic light",
+        "Archaea drift freely within host tissue",
+        "Host excretes concentrated metabolic waste"
+      ],
+      "journal": {
+        "en": "They farm the planet’s slow fire."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplillo.c4",
+      "trait": "Calcite-secretion weaving constructs stable nurseries",
+      "links": [
+        "Geology edits the map faster than evolution",
+        "Calcite precipitates as CO2 escapes from pores",
+        "Parental care requires stable fracture architecture"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "soplillo.loom_weave",
+        "name": {
+          "en": "Loom Weave"
+        },
+        "role": "Defence",
+        "effect": "Creates a 3-tile calcite barrier blocking enemy movement and providing cover",
+        "numbers": {}
+      },
+      "weakness": "Secretion depletes calcium, weakening own carapace temporarily",
+      "observe": [
+        "Tube tips secrete mineral threads",
+        "Nursery walls smooth and layered",
+        "Young cling to fresh calcite scaffolds"
+      ],
+      "journal": {
+        "en": "They stitch the cracks into cradles."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "annan_2010_time"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cascabel’s crushing clears calcite blocks, exposing fresh filter surfaces for Soplillo."
+    },
+    {
+      "with": "ocotl",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both seek network nodes, but Ocotl’s pressure bursts destabilize Soplillo’s nursery structures."
+    },
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cascabel’s crushing clears calcite blocks, exposing fresh filter surfaces for Soplillo."
+    },
+    {
+      "with": "ocotl",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both seek network nodes, but Ocotl’s pressure bursts destabilize Soplillo’s nursery structures."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 4,
+    "origin": "symbiotic tube-weaving"
+  },
+  "temperament": "Communal, slow-moving, highly cooperative",
+  "secrets": [
+    "If you play a slow, steady hum, they will extend tubes toward you, offering nutrients.",
+    "Their calcite threads can be woven into temporary bridges across fractured chasms."
+  ],
+  "moments": [
+    "When the tidal strain peaks, the whole colony glows blue, and for a moment the rock itself seems to breathe."
+  ],
+  "journal": [
+    {
+      "en": "They are the planet’s memory."
+    },
+    {
+      "en": "Patience is their primary muscle."
+    }
+  ]
+}

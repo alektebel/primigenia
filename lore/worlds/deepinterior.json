@@ -1,0 +1,484 @@
+{
+  "schema": "cpore.world/1",
+  "id": "deepinterior",
+  "kind": "fictional",
+  "system": {
+    "star": "K3V dwarf, 0.78 M_sun, 0.30 L_sun, about 4,800 K",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Thrum",
+    "es": "Thrum"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "The star is a quiet K3V dwarf of 0.78 solar masses, 0.30 solar luminosity and about 4,800 K.",
+      "justification": "Mass, luminosity and temperature close on a roughly 0.8 R_sun main-sequence dwarf; a few Gyr of rotation braking has let flare activity decay. The star is deliberately irrelevant to the biosphere.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.78,
+      "unit": "M_sun",
+      "consequences": [
+        "No starlight reaches the habitat, so photosynthesis cannot be the base of the food web.",
+        "The surface stays frozen without a strong greenhouse.",
+        "Stellar type is a decoy: a star-first survey will misread the world."
+      ],
+      "refs": [
+        "kopparapu_2013_hz",
+        "lammer_2009_habitable"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "The planet orbits at 0.85 AU with a 324-day period and receives 0.42 times Earth's stellar flux, for an equilibrium temperature near 205 K.",
+      "justification": "Kepler's third law for 0.78 M_sun gives 324 days at 0.85 AU, and the flux follows the inverse-square law. The surface is frozen because the atmosphere is thin, not because the orbit is exotic.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.42,
+      "unit": "S_Earth",
+      "consequences": [
+        "Any surface water is ice; the biosphere must be subsurface.",
+        "Seasons are too weak to matter underground.",
+        "Surface temperature is set by the atmosphere, not by biology."
+      ],
+      "refs": [
+        "kopparapu_2013_hz"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "The planet is 1.30 Earth masses and 1.07 Earth radii, giving a bulk density of 5,860 kg/m3 and surface gravity of 1.14 g.",
+      "justification": "Mass divided by volume gives the density, and g = GM/R^2 gives the surface gravity. The high density implies a large iron core, which also powers the dynamo.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.14,
+      "unit": "g",
+      "consequences": [
+        "High gravity favours low, broad bodies and strong skeletal support.",
+        "A large core sustains a long-lived magnetic field.",
+        "Escape velocity is high enough to retain a CO2 atmosphere."
+      ],
+      "refs": [
+        "seager_2007_massradius"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "orbit",
+      "claim": "One moon of 620 km radius orbits at 12 planetary radii every 2.35 days; tidal despinning has locked the planet to a 56-hour spin, so the master clock is the 56-hour tidal month with cyclic strain of order 5e-7.",
+      "justification": "A 620 km moon at 12 R_p gives a 2.35-day orbit, and the resulting tide despins a 1.3 M_earth planet within about 10^7 years. The static bulge is roughly 2e-5 strain but does not dissipate; only the eccentricity-driven 5e-7 cycle does, which is why the tide is a clock rather than a furnace.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 56,
+      "unit": "h",
+      "consequences": [
+        "There is no day-night cycle; biology syncs to a 56-hour flush.",
+        "Fracture permeability pulses on the tidal beat.",
+        "On a moonless or locked world the rhythm, and the species that depend on it, fail."
+      ],
+      "refs": [
+        "goldreich_soter_1966_q"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "interior",
+      "claim": "The internal heat flux is 110 mW/m2, 1.3 times Earth's, which with 2.8 W/m/K conductivity gives a 39 K/km crustal gradient.",
+      "justification": "Conductive gradient equals heat flux divided by thermal conductivity. It puts the ice base at 0.9 km, the 122 C isotherm at 4 km and the Moho near 25 km.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 39,
+      "unit": "K/km",
+      "consequences": [
+        "The habitable shell is only 0.9-4 km thick.",
+        "Depth is a temperature clock, not a resource ladder.",
+        "Geothermal heat replaces sunlight as the energy source."
+      ],
+      "refs": [
+        "turcotte_schubert_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "A sulfur-rich liquid outer core sustains a surface dipole of 60 microtesla, about 1.2 times Earth's mean field.",
+      "justification": "Dynamo action in a large, low-viscosity iron alloy; 60 microtesla is within the range of strong terrestrial dynamos and only 1.2 times Earth's mean, not the 2.4 times claimed in one draft.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 60,
+      "unit": "microtesla",
+      "consequences": [
+        "Magnetite-bearing organisms can navigate field lines.",
+        "Geomagnetic excursions disrupt compass senses.",
+        "The field shields the surface but does nothing for the deep biosphere."
+      ],
+      "refs": [
+        "stevenson_2003_magnetic"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Surface pressure is 0.45 bar, with 96% CO2, 3% N2 and 0.6% Ar, and the surface temperature is 238 K (-35 C).",
+      "justification": "A 0.45 bar CO2 atmosphere adds about 33 K of greenhouse to a 205 K equilibrium temperature; at 0.45 bar, CO2 does not condense at 238 K.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 238,
+      "unit": "K",
+      "consequences": [
+        "A permanent ice lid separates the sky from the biosphere.",
+        "Liquid water exists only below about 0.9 km.",
+        "The atmosphere is thin enough that sound dies quickly in air."
+      ],
+      "refs": [
+        "kasting_1991_co2"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "The atmosphere holds about 30 ppm methane, which here is an abiotic serpentinisation product, not a biosignature.",
+      "justification": "Serpentinisation of ultramafic rock generates CH4 and H2 without life; on an anoxic, reducing world methane is the expected product. Treating it as evidence of surface biology is the trap.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 30,
+      "unit": "ppm",
+      "consequences": [
+        "Methane is a food source for subsurface methanogens.",
+        "A methane detection does not prove a surface biosphere.",
+        "Surveyors must read heat flux and fracture density instead."
+      ],
+      "refs": [
+        "etioipe_2013_methane",
+        "mccollom_seewald_2007_abiotic"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "sky",
+      "claim": "No starlight penetrates below about 900 m; the lid is fresh ice and dust, and rock albedo is below 0.05.",
+      "justification": "The 238 K surface freezes fresh meteoric water into an ice lid, while the salt brine below is isolated and remains liquid at the same temperature. Rock and ice absorb light within metres.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 900,
+      "unit": "m",
+      "consequences": [
+        "Eyes are useless; selection favours vibration and chemistry.",
+        "Photosynthesis is impossible in the habitat.",
+        "All navigation is tactile or chemical."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Sound travels about 242 m/s in the cold 0.45 bar air, 1,480 m/s in water and 3,000-6,000 m/s in rock, so rock is the long-range channel.",
+      "justification": "v = sqrt(gamma R T / M) for the gas, and sqrt(bulk modulus / density) for condensed phases. Rock carries elastic waves for kilometres with low loss.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3000,
+      "unit": "m/s",
+      "consequences": [
+        "Seismic hearing works over kilometres.",
+        "Airborne calls are short-range.",
+        "Footfalls and quakes are the dominant signals."
+      ],
+      "refs": [
+        "turcotte_schubert_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "At a molecular diffusion coefficient near 1e-9 m2/s, a scent molecule moves only about 1 cm per day, so chemical signals are local unless carried by flow.",
+      "justification": "RMS displacement scales as sqrt(2Dt); one day gives about 1.3 cm. This makes advection, not diffusion, the only long-range chemical transport.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "cm/day",
+      "consequences": [
+        "Life reads current, not scent.",
+        "Territorial marks persist only in stagnant pockets.",
+        "Flow-tasting is the primary navigation sense."
+      ],
+      "refs": [
+        "cussler_2009_diffusion"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "ocean",
+      "claim": "The habitat is a fracture aquifer from 0.9 to 4 km depth, with 0.5-2% porosity and permeability of 1e-17 to 1e-15 m2, so Darcy flow runs from centimetres to metres per year.",
+      "justification": "These are fracture porosity and permeability values measured in crystalline shields, and the resulting Darcy velocities are extremely slow. The shell is a maze of conduits, not a lake.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2,
+      "unit": "% porosity",
+      "consequences": [
+        "Migration takes years; populations are isolated.",
+        "Connectivity is patchy and transient.",
+        "Stagnant pockets starve filter feeders."
+      ],
+      "refs": [
+        "ingebritsen_2006_groundwater"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Pore fluid is a 3-6 M CaCl2 brine with density near 1.2 g/cm3 and residence times of 1e6-1e9 years.",
+      "justification": "Closed fracture systems concentrate calcium chloride by water-rock reaction; Canadian Shield brines are the real analogue. The brine is old, reduced and chemically stable.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.2,
+      "unit": "g/cm3",
+      "consequences": [
+        "Density stratification creates haloclines.",
+        "Osmotic adaptation to high salt is mandatory.",
+        "A fresh meltwater influx is lethal."
+      ],
+      "refs": [
+        "frape_fritz_mcnutt_1984_shield"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "geology",
+      "claim": "At 4 km, pore pressure is 40-120 MPa (0.4-1.2 kbar), depending on whether pores are hydrostatically or lithostatically connected.",
+      "justification": "Hydrostatic pressure is rho_w g h and lithostatic pressure is rho_r g h with rho_r about 2,800 kg/m3. The range brackets both cases.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 120,
+      "unit": "MPa",
+      "consequences": [
+        "Gas-filled spaces are impossible.",
+        "Fluid-filled, incompressible bodies are favoured.",
+        "Rapid ascent causes decompression injury."
+      ],
+      "refs": [
+        "turcotte_schubert_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "geology",
+      "claim": "Energy comes from radiolysis of water by U/Th/K (H2 and O2 in the same pore), serpentinisation of olivine (H2, CH4 and heat), and Fe(II)/sulfate redox couples.",
+      "justification": "These are the three documented energy sources of Earth's continental deep biosphere; Desulforudis audaxviator is the model radiolysis-fed community. No sunlight is involved.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "radiolysis + serpentinisation",
+      "consequences": [
+        "The food web is chemolithoautotrophic.",
+        "Oxygen is produced locally as a poison.",
+        "Serpentinite bodies are oases."
+      ],
+      "refs": [
+        "chivian_2008_desulforudis",
+        "mccollom_seewald_2007_abiotic",
+        "charlou_2002_rainbow"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "geology",
+      "claim": "CO2-rich fluid degassing precipitates calcite, sealing fractures on roughly 10^3-year timescales and rewriting permeability.",
+      "justification": "Calcite solubility falls as CO2 escapes, so cement grows where flow slows. Geology therefore edits the map faster than evolution edits the organisms.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1000,
+      "unit": "years",
+      "consequences": [
+        "Routes open and close within a lifetime.",
+        "Organisms can farm or seal conduits.",
+        "Maps are ephemeral and must be re-read."
+      ],
+      "refs": [
+        "ingebritsen_2006_groundwater"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "interior",
+      "claim": "The core is above 300 GPa and near 5,000 K, where no molecules or solvent survive; heredity is impossible, so chemistry-based life is excluded.",
+      "justification": "At core conditions iron-nickel is a liquid metal, not a medium for carbon chemistry; without a solvent and a copying mechanism there is no variation-and-retention loop. Anything there would be a pattern, not an organism.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 300,
+      "unit": "GPa",
+      "consequences": [
+        "There is no core biosphere.",
+        "Mantle-boundary riders are fantasy, not fauna.",
+        "The depth floor has a physical reason."
+      ],
+      "refs": [
+        "stevenson_2003_magnetic"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "The shell could hold of order 1e30 microbial cells, but energy limitation stretches generation times to centuries or millennia.",
+      "justification": "Scaled from Magnabosco et al.'s continental subsurface biomass estimate; the same energy-limitation arguments give extraordinarily slow growth. Biomass is sparse and concentrated at redox interfaces.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1e30",
+      "unit": "cells",
+      "consequences": [
+        "Ecosystems are slow and sparse.",
+        "Boom and bust follow fracture opening.",
+        "Players are rare specialists, not a dense fauna."
+      ],
+      "refs": [
+        "magnabosco_2018_biomass",
+        "hoehler_jorgensen_2013_energy"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Life is carbon-based in water, with ether-linked membranes and the reductive acetyl-CoA pathway, and is strictly anaerobic.",
+      "justification": "The conditions are Earth-like: liquid water below 400 K, wet rock, no radiation. Silicon and supercritical CO2 are rejected because their chemistry does not close here.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "carbon + water",
+      "consequences": [
+        "Membranes resist heat and hydrolysis.",
+        "Oxygen is a poison, not a fuel.",
+        "CO2 plus H2 is the base feedstock."
+      ],
+      "refs": [
+        "koga_morii_2007_etherlipids",
+        "ragsdale_pierce_2008_woodljungdahl"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "Protein denaturation sets a hard ceiling near 122 C; the local isotherm lies at about 4 km, and playable organisms stop at 118 C.",
+      "justification": "The 122 C limit is the measured high-temperature record for a methanogen (Takai et al.), and repair cannot keep pace with denaturation above it. The isotherm follows from the 39 K/km gradient.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 122,
+      "unit": "C",
+      "consequences": [
+        "The map has a hard thermal floor.",
+        "Heat-shock retreat is a core survival move.",
+        "Thermophile enzymes are a rare resource."
+      ],
+      "refs": [
+        "takai_2008_122c"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "biochemistry",
+      "claim": "Methane clathrate is stable at roughly 5-15 MPa and 275-285 K in the upper liquid shell, giving organisms a controllable buoyancy store.",
+      "justification": "Hydrate stability depends on pressure and temperature, and these conditions occur near 1 km depth. Warming or depressurising the bladder dissociates it explosively.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 10,
+      "unit": "MPa",
+      "consequences": [
+        "Vertical movement across density barriers.",
+        "Warming the bladder detonates it.",
+        "Hydrate layers cap conduits."
+      ],
+      "refs": [
+        "sloan_koh_2008_clathrate"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "Radiolytic oxygen can be hoarded in vesicles and spent in one metabolic burst before it poisons the cell.",
+      "justification": "Radiolysis makes H2 and O2 in the same pore, and strict anaerobes must detoxify or store the O2. A stored burst is powerful and self-limiting.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "burst",
+      "consequences": [
+        "Dash, heal or shock bite with a three-use budget.",
+        "Oxygen zones are both weapon and hazard.",
+        "The ability is chemistry, not magic."
+      ],
+      "refs": [
+        "chivian_2008_desulforudis"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "interior",
+      "claim": "Only the microbial base is real; the multicellular playable cast is highly speculative, and mantle or core convection riders are fantasy with no copying mechanism.",
+      "justification": "Observed deep life is microbial. Multicellular specialists are a plausible extrapolation; a pattern in convection or a magnetic field has no heredity, so it cannot evolve and cannot be tested as life.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "REAL / SPEC / FANTASY",
+      "consequences": [
+        "Deep fauna treat riders as a ghost story, never a neighbour.",
+        "Fantasy never carries a survival mechanic.",
+        "A survey that expects core life will misclassify the world."
+      ],
+      "refs": [
+        "magnabosco_2018_biomass"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 23 facts (planet drafts, peer reviews, astrobio referee)"
+    }
+  ]
+}
