@@ -33,7 +33,7 @@ Merged today, after the jump merge:
 Next waves:
 1. F3 owner tuning
 2. F4, M3 and H2
-3. B1: switch the game to Star massif; re-record scenarios
+3. B1 done on `island/b1-switch` (waiting for review; the game is Star massif there); then B2
 4. T and G steps
 5. R: loop re-tune
 
@@ -54,7 +54,7 @@ Max 3 implementation agents.
 
 ## Known issues
 - `make terrain-test` → `terrain-metrics` fails on seed 31337 (Rb 6.0036 > 5.5). The pin has been stale since the v4 rivers; the 4-point Strahler fit is noisy. Recommend widening the pin.
-- OG9 on layout 1 shows a sky-coloured band below the nest (fix in B1).
+- The nest valley of the Star massif is a lake (about 100 m, up to 2.4 m deep). B1 puts the nest on the dry shore; whether to drain it is the owner's call.
 
 ## Design queue (one study at a time, A60)
 rolling (A90) → v1 giant (A88) → lasing crystal (A87) → three-worlds feel lab (A93) → torn-in-two study (A100, after the owner's answers). DESIGN entries this session: A80–A100.

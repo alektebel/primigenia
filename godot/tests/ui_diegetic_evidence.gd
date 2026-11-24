@@ -82,9 +82,9 @@ func _run() -> void:
 	game.settings.grass = 20000
 	game.settings.weather = weather
 	game.settings["language"] = "en"
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	game.goto_island()
 	for i in 900:

@@ -1,8 +1,9 @@
 /* C2 secrets: meteor shards, hidden cave chamber, day/night and the nocturnal and sixth species.
- * `secrets_test <seed>` generates the n=1024 island (terrain seeds 1, 7, 42 are the certified ones), `secrets_test flat` runs the
+ * `secrets_test [--island star|ring] <seed>` generates the island (ring n=1024, star n=1536 = the frozen Star massif, B1) (terrain seeds 1, 7, 42 are the certified ones), `secrets_test flat` runs the
  * flat-world rules. Run by `make test` through `make secrets-test`. */
 #include "cpore/world.h"
 #include "cpore/terrain.h"
+#include "island_gen.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -14,18 +15,17 @@ static CpStageField f;
 static CpStageWorld w,w2;
 #define PASS(name) printf("PASS secrets: %s\n",name)
 static float dist(float x,float z){return sqrtf(x*x+z*z);}
+static int star;
+static float nest_x,nest_z;   /* the origin on the ring island; the dry, gentle, shore-clear cell nearest to it on the star island (island_gen.h) */
 static void generate(unsigned seed){
-    CpTerrainParams p;cp_terrain_params_default(&p);p.seed=seed;
-    size_t n=(size_t)p.n*p.n;
-    t.height=calloc(n,4);t.flow=calloc(n,4);t.sediment=calloc(n,4);t.material=calloc(n,1);t.river=calloc(n,1);
-    ws.scratch=calloc(n,4);ws.recv=calloc(n,4);ws.ups=calloc(n,4);ws.queue=calloc(n,4);
-    assert(t.height&&t.flow&&t.sediment&&t.material&&t.river&&ws.scratch&&ws.recv&&ws.ups&&ws.queue);
-    assert(!cp_terrain_generate(&p,&t,&ws,NULL,NULL));
+    CpTerrainParams p;
+    island_generate(&t,&ws,&p,seed,star,0);
     f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
+    nest_x=nest_z=0;if(star)island_nest_of(&f,&nest_x,&nest_z);
 }
 static void setup(CpStageSetup *s,int secrets,int legs,int radius){
     cp_stage_setup_default(s,5);
-    s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=s->nest_z=0;s->player_legs=legs;
+    s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=nest_x;s->nest_z=nest_z;s->player_legs=legs;
     s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius,0};
     s->secrets=secrets?3:0;
     if(secrets&&t.cave_count>0){
@@ -170,7 +170,15 @@ static void field_tests(unsigned seed){
         reset(&w,&cave_only);
         assert(!w.secrets.on&&w.secrets.cave_on&&w.secrets.n_shards==0);
         assert(w.secrets.chamber_x==want_x&&w.secrets.chamber_z==want_z);
-        assert(go(&w,w.secrets.chamber_x,w.secrets.chamber_z,20000)>=0&&w.secrets.chamber_entered);
+        /* straight to the chamber when the nav grid can thread the passage (the ring island, 3.5 m cells); on the star island the grid is 7.8 m
+         * and a GO order from far away is refused as unreachable, so the certified trip is nest -> mouth apron -> chamber (as route fixtures) */
+        if(go(&w,w.secrets.chamber_x,w.secrets.chamber_z,20000)<0){
+            assert(star);
+            reset(&w,&cave_only);
+            assert(go(&w,w.secrets.cave_x+w.secrets.cave_fx*6.f,w.secrets.cave_z+w.secrets.cave_fz*6.f,20000)>=0);
+            assert(go(&w,w.secrets.chamber_x,w.secrets.chamber_z,20000)>=0);
+        }
+        assert(w.secrets.chamber_entered);
         CpStageInput in={.verb=CP_STAGE_INSPECT,.target=CP_STAGE_SHARD_ID};
         assert(cp_stage_order(&w,&in)<0);   /* no shards in this mode */
     }
@@ -305,6 +313,7 @@ static void flat_tests(void){
     PASS("original species unchanged");
 }
 int main(int argc,char **argv){
+    star=island_args(&argc,argv);
     assert(argc==2);
     if(!strcmp(argv[1],"flat"))flat_tests();
     else{

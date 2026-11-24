@@ -15,6 +15,28 @@ extends RefCounted
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
 
+# B1 (island-realism plan, A101): the game's island is the frozen Star massif. game_params(seed) are the params every game entry
+# and every test that wants "the game island" passes to load_entry / build: the seed (micro detail only, A99 (1)), the desc's
+# grid size and the blob. Plain {"seed": s} params still mean the seed-generated layout-0 ring island (terrain tests, parity).
+const STAR_BLOB_PATH := "res://game/data/islands/star_massif.isl"
+static var _star_blob := PackedByteArray()
+static var _star_n := 0
+
+static func star_blob() -> PackedByteArray:
+	if _star_blob.is_empty():
+		_star_blob = FileAccess.get_file_as_bytes(STAR_BLOB_PATH)
+		var info: Dictionary = CporeTerrain.island_info(_star_blob)
+		if info.get("error", -1) != 0:
+			push_error("the shipped island %s does not parse (error %s)" % [STAR_BLOB_PATH, info.get("error")])
+			_star_blob = PackedByteArray()
+		else:
+			_star_n = int(info.n)
+	return _star_blob
+
+static func game_params(seed: int = 1) -> Dictionary:
+	var blob := star_blob()
+	return {"seed": seed, "n": _star_n, "island_blob": blob}
+
 const MAGIC := 0x30304D43  # "CM00"
 const FORMAT_VERSION := 1
 const DEFAULT_DIR := "user://terrain"

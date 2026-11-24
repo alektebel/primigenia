@@ -144,5 +144,5 @@ func build(data, chains_in = null) -> void:
 	mesh_instance.mesh = mesh
 	mesh_instance.material_override = mat
 	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mesh_instance.custom_aabb = AABB(Vector3(-2000, -100, -2000), Vector3(4000, 1000, 4000))
+	mesh_instance.custom_aabb = AABB(Vector3(-4000, -100, -4000), Vector3(8000, 1000, 8000))   # the 8 km Star massif field
 	add_child(mesh_instance)

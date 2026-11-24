@@ -35,9 +35,9 @@ func _run() -> void:
 	game.studio_dir = "user://entry-bench"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(game.studio_dir))
 	var fails := 0
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	game.goto_island("cold")
 	if not await until(_on_island):

@@ -27,9 +27,9 @@ func _run() -> void:
 	game.settings.grass = 3000
 	game.settings.wild = true
 	root.size = Vector2i(1280, 720)
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	for scenario in [scenario_name]:
 		var parsed := Scenario.read("creature/" + scenario) if scenario != "nest_all" else {"ok": true}

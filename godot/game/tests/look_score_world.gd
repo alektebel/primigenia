@@ -63,7 +63,7 @@ func _run() -> void:
 	game.settings.grass = 120000
 	game.settings.quality = quality
 	game.settings.wild = true
-	var params := {"seed": 1}
+	var params := TerrainCache.game_params(1)
 	var entry := TerrainCache.load_entry(params)
 	if entry.is_empty():
 		entry = TerrainCache.build(params, CporeTerrain.new())

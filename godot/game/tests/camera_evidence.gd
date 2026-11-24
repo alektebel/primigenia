@@ -25,9 +25,9 @@ func _run() -> void:
 	root.size = Vector2i(1280, 720)
 	var game = root.get_node("Game")
 	game.settings.wild = true
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	game.settings.grass = 60000
 	var island: Node3D = load("res://game/island/island.tscn").instantiate()

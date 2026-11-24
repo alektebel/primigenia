@@ -1,8 +1,10 @@
 /* Curated round trips through the public GO API; no debug move or teleport.
- * Fixtures are pinned to terrain v4, n=1024; see tests/routes/README.md. */
+ * routes_test [--island star|ring] <seed>: the ring island fixtures are pinned to terrain v5, n=1024; the star ones (tests/routes/star-seed*.txt)
+ * to the frozen Star massif at n=1536 (B1). See tests/routes/README.md. */
 #include "cpore/world.h"
 #include "cpore/terrain.h"
 #include "cpore/steer.h"
+#include "island_gen.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -29,22 +31,20 @@ static void reset(float x,float z,int legs,int radius){
     if(t.cave_count>0)s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};
     memset(&w,0,sizeof w);assert(!cp_stage_attach_field(&w,&f));assert(!cp_stage_reset(&w,&s));
 }
+static int star;
 static void generate(unsigned seed){
-    CpTerrainParams p;cp_terrain_params_default(&p);p.seed=seed;
-    size_t n=(size_t)p.n*p.n;
-    t.height=calloc(n,4);t.flow=calloc(n,4);t.sediment=calloc(n,4);t.material=calloc(n,1);t.river=calloc(n,1);
-    ws.scratch=calloc(n,4);ws.recv=calloc(n,4);ws.ups=calloc(n,4);ws.queue=calloc(n,4);
-    assert(t.height&&t.flow&&t.sediment&&t.material&&t.river&&ws.scratch&&ws.recv&&ws.ups&&ws.queue);
-    assert(!cp_terrain_generate(&p,&t,&ws,NULL,NULL));
+    CpTerrainParams p;
+    island_generate(&t,&ws,&p,seed,star,0);
     f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
     reset(0,0,0,0);
 }
 int main(int argc,char **argv){
+    star=island_args(&argc,argv);
     assert(argc<=2);
     unsigned seed=argc>1?(unsigned)atoi(argv[1]):1;
     assert(seed==1||seed==7||seed==42);
     generate(seed);
-    char file[128];snprintf(file,sizeof file,"tests/routes/seed%u.txt",seed);
+    char file[128];snprintf(file,sizeof file,star?"tests/routes/star-seed%u.txt":"tests/routes/seed%u.txt",seed);
     FILE *fp=fopen(file,"r");assert(fp);
     unsigned long long expected=0;
     assert(fscanf(fp,"terrain %llx",&expected)==1&&expected==f.hash);
@@ -57,10 +57,16 @@ int main(int argc,char **argv){
         assert(fscanf(fp,"%d %d",&pairs[i][0],&pairs[i][1])==2);
         assert(pairs[i][0]>=0&&pairs[i][0]<count&&pairs[i][1]>=0&&pairs[i][1]<count);
     }
+    /* optional "min_legs M" then M lines "place legs": a place that bodies with fewer legs are not certified to reach (the Star massif passes) */
+    int minlegs[32]={0},nmin=0;
+    if(fscanf(fp," min_legs %d",&nmin)==1){
+        assert(nmin>=0&&nmin<=count);
+        for(int i=0;i<nmin;i++){int pl,lg;assert(fscanf(fp,"%d %d",&pl,&lg)==2&&pl>=0&&pl<count);minlegs[pl]=lg;}
+    }
     fclose(fp);
     /* The pinned shard and chamber places must be what the C world derives from this field. */
     {
-        CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;s.nest_x=s.nest_z=0;
+        CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;s.nest_x=x[0];s.nest_z=z[0];   /* place 0 is the nest: the origin on the ring island */
         s.secrets=CP_SECRETS_SHARDS|CP_SECRETS_CAVE;
         s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};
         static CpStageWorld probe;
@@ -80,13 +86,14 @@ int main(int argc,char **argv){
         }
         assert(shards==CP_STAGE_SHARDS&&chamber==1);
     }
-    printf("# Routes seed %u — terrain v%d, n=%d, hash %016llx\n\n",seed,CP_TERRAIN_VERSION,f.n,(unsigned long long)f.hash);
+    printf("# Routes seed %u (%s island) — terrain v%d, n=%d, hash %016llx\n\n",seed,star?"star":"ring",CP_TERRAIN_VERSION,f.n,(unsigned long long)f.hash);
     puts("| Body (legs/radius m) | Route | Reached | Ticks | Plan m | Walk m | Max grade | Fords | Stalls | Replans | Cold ms | Warm ms |\n|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|");
     const char *only=getenv("ROUTES_ONLY");
     int failed=0,total=0;
     for(int body=0;body<9;body++)for(int pair=0;pair<npairs;pair++)for(int reverse=0;reverse<2;reverse++){
         int legs=body?2+2*((body-1)/2):4,radius=body?((body-1)%2?400:50):300;
         int a=pairs[pair][reverse],b=pairs[pair][1-reverse];
+        if(legs<minlegs[a]||legs<minlegs[b])continue;
         if(only&&!strstr(names[a],only)&&!strstr(names[b],only))continue;   /* ROUTES_ONLY=shard: a development filter, the gate runs everything */
         /* Invalidate only derived nav data through a different valid body signature. */
         reset(x[a],z[a],legs,radius==50?51:50);

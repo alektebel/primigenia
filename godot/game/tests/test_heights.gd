@@ -42,7 +42,7 @@ func _ok_spot(x: float, z: float) -> bool:
 	return StageSetup.dry(data, x, z) and absf(x) < 1700.0 and absf(z) < 1700.0 and data.normal(x, z).y > 0.9
 
 func _run() -> void:
-	entry = TerrainCache.load_entry({"seed": 1})
+	entry = TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
 		var p: Dictionary = CporeTerrain.defaults()
 		p.seed = 1

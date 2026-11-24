@@ -231,8 +231,9 @@ func _entry_finished() -> void:
 ## Starts the screen (terrain generation inside it when the terrain is not in memory yet) and then changes to the island.
 ## Every way into the island goes through here (menu, cell bridge, studio, load, --play).
 func enter_island(from: String = "") -> void:
-	var params := {"seed": int(settings.seed)}
-	var have := data != null and int(terrain.get("seed", settings.seed)) == int(settings.seed)
+	var params := TerrainCache.game_params(int(settings.seed))     # B1: the frozen Star massif (A101); the seed varies micro detail only
+	var have := data != null and int(terrain.get("seed", settings.seed)) == int(settings.seed) \
+			and str(terrain.get("island_hash", "")) == str(TerrainCache.resolve(params).get("island_hash", "?"))
 	if not have:
 		var cached := TerrainCache.load_entry(params)
 		if not cached.is_empty():

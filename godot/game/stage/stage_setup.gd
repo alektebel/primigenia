@@ -6,7 +6,7 @@ const RadialFauna := preload("res://game/island/radial_fauna.gd")
 
 const Profile := preload("res://game/stage/profile.gd")
 
-const BOUND := 195.0               # the valley the nest and the encounter are searched in
+const BOUND := 195.0               # the valley the nest and the encounter are searched in: a box of this half-width around the nest
 const GARFIO_DISTANCE := 60.0
 const CLOCK_START := 4000          # world clock at tick 0: 08:00 (500 ticks an hour, 0 = midnight), so a new game starts in the morning
 
@@ -64,30 +64,30 @@ static func add_herds(setup: Dictionary, data, nest: Vector2, probe = null) -> v
 				break
 			var a := k * TAU / 12.0
 			var p := b + Vector2(sin(a), cos(a)) * (3.0 + 2.0 * (k % 3)) if k > 0 else b
-			if not dry(data, p.x, p.y) or absf(p.x) > BOUND - 1.0 or absf(p.y) > BOUND - 1.0:
+			if not dry(data, p.x, p.y) or not in_valley(p, nest, 1.0):
 				continue
 			setup.wild.append({"x": p.x, "z": p.y, "home_x": b.x, "home_z": b.y, "species": s, "bot": -1, "profile": species[s].profile})
 			placed += 1
 
-static func find_spot(data, nest: Vector2, distance: float, arc: float, probe, taken: Array):
+static func find_spot(data, nest: Vector2, distance: float, arc: float, probe, taken: Array, join := true):
 	for j in 64:
 		var a := (arc + j / 64.0) * TAU
 		var target := nest + Vector2(sin(a), cos(a)) * distance
-		if absf(target.x) > BOUND - 12.0 or absf(target.y) > BOUND - 12.0:
+		if not in_valley(target, nest, 12.0):
 			continue
 		var near := false
 		for t in taken:
 			if (t as Vector2).distance_to(target) < 45.0:
 				near = true
-		if near:
+		if near or (join and not joined_to(data, target, taken)):
 			continue
 		var ok := true
 		for s in 21:
 			var p := nest.lerp(target, s / 20.0)
-			if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= 0.8:
+			if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= spot_gentle(data):
 				ok = false
 				break
-		if ok and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
+		if ok and shore_ok(data, target) and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
 			return target
 	return null
 
@@ -97,16 +97,86 @@ static func dry(data, x: float, z: float) -> bool:
 static func clear_of_water(x: float, z: float, water: Vector3) -> bool:
 	return water.z <= 0.0 or Vector2(x, z).distance_to(Vector2(water.x, water.y)) > water.z + 4.0
 
-# The valley centre, or the nearest dry meadow cell on an expanding ring.
+static func in_valley(p: Vector2, nest: Vector2, margin: float) -> bool:
+	return absf(p.x - nest.x) <= BOUND - margin and absf(p.y - nest.y) <= BOUND - margin
+
+# B1 (Star massif, authored islands only): the nest valley holds a lake (up to 2.4 m deep, about 100 m radius) around the origin, so a nest cell must also
+# keep NEST_SHORE metres from any pond or sea cell (8 probes at half and full distance) and stand on gentle ground. The C tests
+# (tests/island_gen.h island_nest) use the same rule. On the ring island the origin passes it, so the nest stays at the origin there.
+const NEST_SHORE := 30.0
+const NEST_GENTLE := 0.9
+# Herd and home spots, and every cell of the straight path from the nest to them, must be this level (normal.y; 0.9 = 25.8 degrees). It was 0.8
+# (36.9 degrees) on the gentle ring island; on the Star massif a 0.79 grade bank put Babosa's home where no two-legged body can stand.
+const SPOT_GENTLE := 0.9
+const SPOT_GENTLE_RING := 0.8
+
+# The authored island (Star massif, has climate maps) gets the stricter nest and spot rules; the seed-generated ring island keeps the old ones
+# (its tests and scenarios are unchanged).
+# A herd or home spot on the Star massif also keeps 4 m (the radius of the biggest certified body) from any pond or sea cell: the planner refuses a goal a
+# big body cannot stand on, and the lake bank is close to several spots.
+static func shore_ok(data, p: Vector2) -> bool:
+	return not data.has_climate() or shore_clear(data, p.x, p.y, 8.0)
+
+# Garfio's home must be seen from the nest (the low chase camera, 1.5 m up at the nest, 0.8 m up at the target; checked every 2 m): on the Star massif the first home
+# at 60 m sat 6 m down behind the lip of the nest terrace, so the first creature the player meets was hidden and could not be clicked.
+static func in_sight(data, nest: Vector2, target: Vector2) -> bool:
+	if not data.has_climate():
+		return true
+	var eye: float = data.ground(nest.x, nest.y) + 1.5
+	var tip: float = data.ground(target.x, target.y) + 0.8
+	var steps := int(nest.distance_to(target) / 2.0)
+	for i in range(1, steps):
+		var t := float(i) / steps
+		var p := nest.lerp(target, t)
+		if data.ground(p.x, p.y) > lerpf(eye, tip, t) - 0.2:
+			return false
+	return true
+
+# The straight line a-b is dry (no pond or sea sample every 3 m). Herds on the Star massif must be joined to each other and to Garfio's home by dry
+# straight lines: the bot (and a player holding a lock) approaches in a straight line, and the lake of the nest valley otherwise leaves a herd across the water
+# (seed 42: the first befriend target was 170 m away across the lake and the approach stalled at the shore).
+static func line_dry(data, a: Vector2, b: Vector2) -> bool:
+	var steps := int(a.distance_to(b) / 3.0) + 1
+	for i in range(steps + 1):
+		var p := a.lerp(b, float(i) / steps)
+		if data.is_pond_at(p.x, p.y) or data.ground(p.x, p.y) <= 1.0:
+			return false
+	return true
+
+static func joined_to(data, target: Vector2, taken: Array) -> bool:
+	if not data.has_climate():
+		return true
+	for t in taken:
+		if not line_dry(data, t, target):
+			return false
+	return true
+
+static func spot_gentle(data) -> float:
+	return SPOT_GENTLE if data.has_climate() else SPOT_GENTLE_RING
+
+static func shore_clear(data, x: float, z: float, margin: float) -> bool:
+	for r in [margin * 0.5, margin]:
+		for k in 8:
+			var a: float = k * TAU / 8.0
+			if data.is_pond_at(x + sin(a) * r, z + cos(a) * r) or data.ground(x + sin(a) * r, z + cos(a) * r) <= 1.0:
+				return false
+	return true
+
+static func nest_ok(data, x: float, z: float, water: Vector3) -> bool:
+	if not dry(data, x, z) or not clear_of_water(x, z, water):
+		return false
+	return not data.has_climate() or (data.normal(x, z).y >= NEST_GENTLE and shore_clear(data, x, z, NEST_SHORE))
+
+# The valley centre, or the nearest cell on an expanding ring that is dry, gentle and clear of the shore.
 static func find_nest(data, water: Vector3 = Vector3.ZERO) -> Vector2:
-	if dry(data, 0.0, 0.0) and clear_of_water(0.0, 0.0, water):
+	if nest_ok(data, 0.0, 0.0, water):
 		return Vector2.ZERO
 	for radius in range(5, 190, 5):
 		for k in 32:
 			var a := k * TAU / 32.0
 			var x := sin(a) * radius
 			var z := cos(a) * radius
-			if dry(data, x, z) and clear_of_water(x, z, water):
+			if nest_ok(data, x, z, water):
 				return Vector2(x, z)
 	return Vector2.ZERO
 
@@ -115,15 +185,15 @@ static func find_home(data, nest: Vector2, probe = null):
 	for k in 64:
 		var a := k * TAU / 64.0
 		var target := nest + Vector2(sin(a), cos(a)) * GARFIO_DISTANCE
-		if absf(target.x) > BOUND - 1.0 or absf(target.y) > BOUND - 1.0:
+		if not in_valley(target, nest, 1.0):
 			continue
 		var ok := true
 		for s in 21:
 			var p := nest.lerp(target, s / 20.0)
-			if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= 0.8:
+			if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= spot_gentle(data):
 				ok = false
 				break
-		if ok and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
+		if ok and shore_ok(data, target) and in_sight(data, nest, target) and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
 			return target
 	return null
 
@@ -159,7 +229,7 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 				if placed.size() >= NIGHT_COUNT:
 					break
 				var p: Vector2 = mouth + f * d + perp * lat
-				if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= 0.8 or absf(p.x) > 1700.0 or absf(p.y) > 1700.0:
+				if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= spot_gentle(data) or absf(p.x) > data.half - 100.0 or absf(p.y) > data.half - 100.0:
 					continue
 				var near := false
 				for q in placed:
@@ -175,6 +245,8 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 		taken.append(Vector2(w.home_x, w.home_z))
 	var spot = find_spot(data, nest, SLUG_DISTANCE, SLUG_ARC, probe, taken)
 	if spot == null:
+		spot = find_spot(data, nest, SLUG_DISTANCE, SLUG_ARC, probe, taken, false)   # the damp slope may lie across the lake: the sixth species is kept anyway
+	if spot == null:
 		return
 	var b: Vector2 = spot
 	var n := 0
@@ -183,7 +255,7 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 			break
 		var a := k * TAU / 12.0
 		var p := b + Vector2(sin(a), cos(a)) * (3.0 + 2.0 * (k % 3)) if k > 0 else b
-		if not dry(data, p.x, p.y) or absf(p.x) > BOUND - 1.0 or absf(p.y) > BOUND - 1.0:
+		if not dry(data, p.x, p.y) or not in_valley(p, nest, 1.0):
 			continue
 		setup.wild.append({"x": p.x, "z": p.y, "home_x": b.x, "home_z": b.y, "species": 5, "bot": -1, "profile": species[5].profile})
 		n += 1

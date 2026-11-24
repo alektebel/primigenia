@@ -11,7 +11,7 @@ func _run() -> void:
 	var game = root.get_node("Game")
 	game.persist_settings = false
 	game.settings.wild = true
-	var params := {"seed": 1}
+	var params := TerrainCache.game_params(1)
 	var entry := TerrainCache.load_entry(params)
 	if entry.is_empty():
 		entry = TerrainCache.build(params, CporeTerrain.new())

@@ -149,7 +149,7 @@ func _run() -> void:
 	game.settings.wild = true
 	if OS.get_environment("FLORA_DENSITY") != "":
 		game.settings.flora_density = float(OS.get_environment("FLORA_DENSITY"))
-	var params := {"seed": 1}
+	var params := TerrainCache.game_params(1)
 	if mode == "volcano":
 		params["volcano"] = 1.0
 	var entry := TerrainCache.load_entry(params)

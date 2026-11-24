@@ -51,11 +51,11 @@ func _run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(cache_file))
 
 	# 2. Cache hit time for the real island (generate once if absent).
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	var t0 := Time.get_ticks_msec()
-	entry = TerrainCache.load_entry({"seed": 1})
+	entry = TerrainCache.load_entry(TerrainCache.game_params(1))
 	timings["cache_hit_load_ms"] = Time.get_ticks_msec() - t0
 
 	# 3. Island.

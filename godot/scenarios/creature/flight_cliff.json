@@ -1,6 +1,6 @@
 {
 	"camera": {},
-	"created": "2026-11-24T01:58:33",
+	"created": "2026-11-24T23:18:14",
 	"engine": {
 		"build": "unknown",
 		"layout": "c1425e625a51a7ea",
@@ -134,11 +134,11 @@
 			"wet": 0.2
 		}
 	},
-	"hash": "2edb52b9a667a7a5",
+	"hash": "53b245b07dc0c240",
 	"island": {
-		"seed": 1.0,
-		"terrain_hash": "7137e3ea79830ad7",
-		"terrain_version": 4.0
+		"seed": 1,
+		"terrain_hash": "21bdd31b1ce706a5",
+		"terrain_version": 5
 	},
 	"kind": "scenario",
 	"legacy": {},
@@ -217,24 +217,24 @@
 		"traits": []
 	},
 	"name": "flight_cliff",
-	"note": "The light winged test creature (Planeador) on a plateau 19 m above the valley, facing the drop. Space takes off, then Space flap, Ctrl dive, W/S pitch, A/D turn; F3 tuning has flight/lift_mul.",
+	"note": "The light winged test creature (Planeador) on a plateau 38 m above the valley, facing the drop. Space takes off, then Space flap, Ctrl dive, W/S pitch, A/D turn; F3 tuning has flight/lift_mul.",
 	"plants": [],
 	"quest": {},
 	"recipe": "flight_cliff.log",
 	"setup": {
 		"cave": {
-			"fx": -0.615702271461487,
-			"fz": -0.787978887557983,
+			"fx": 0.516542553901672,
+			"fz": 0.856261551380157,
 			"half": 0.0,
 			"length": 0.0,
 			"radius": 0.0,
-			"x": 61.5234375,
-			"z": 620.5078125
+			"x": -361.97900390625,
+			"z": -91.145751953125
 		},
 		"flat_height": 2.0,
 		"nest": [
 			0.0,
-			0.0
+			115.0
 		],
 		"obstacles": [],
 		"player": {
@@ -252,7 +252,7 @@
 			],
 			"fire": 0,
 			"grip_deg": 51.5999984741211,
-			"grip_legs": 0,
+			"grip_legs": 4,
 			"grip_traits": 0,
 			"guard": 0,
 			"hp": 100.0,

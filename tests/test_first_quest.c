@@ -1,8 +1,9 @@
 /* First quest: digging, the fossil beds, the fire gland and the flamethrower (core/src/stage_dig.c, combat.c).
- * `first_quest_test <seed>` generates the n=1024 island (terrain seeds 1, 7, 42 are the certified ones); `first_quest_test flat`
+ * `first_quest_test [--island star|ring] <seed>` generates the island (ring: n=1024; star: the frozen Star massif, n=1536, B1; terrain seeds 1, 7, 42 are the certified ones); `first_quest_test flat`
  * runs the rules that need no terrain. Run by `make test` through `make first-quest-test`. */
 #include "cpore/world.h"
 #include "cpore/terrain.h"
+#include "island_gen.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -16,19 +17,18 @@ static int checks;
 #define OK(c,name) do{if(!(c)){printf("FAIL first-quest: %s (line %d)\n",name,__LINE__);exit(1);}checks++;}while(0)
 #define PASS(name) printf("PASS first-quest: %s\n",name)
 static float dist(float x,float z){return sqrtf(x*x+z*z);}
+static int star;
+static float nest_x,nest_z;   /* the origin on the ring island; the dry, gentle, shore-clear cell nearest to it on the star island (island_gen.h) */
 static void generate(unsigned seed){
-    CpTerrainParams p;cp_terrain_params_default(&p);p.seed=seed;
-    size_t n=(size_t)p.n*p.n;
-    t.height=calloc(n,4);t.flow=calloc(n,4);t.sediment=calloc(n,4);t.material=calloc(n,1);t.river=calloc(n,1);
-    ws.scratch=calloc(n,4);ws.recv=calloc(n,4);ws.ups=calloc(n,4);ws.queue=calloc(n,4);
-    assert(t.height&&t.flow&&t.sediment&&t.material&&t.river&&ws.scratch&&ws.recv&&ws.ups&&ws.queue);
-    assert(!cp_terrain_generate(&p,&t,&ws,NULL,NULL));
+    CpTerrainParams p;
+    island_generate(&t,&ws,&p,seed,star,0);
     f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
+    nest_x=nest_z=0;if(star)island_nest_of(&f,&nest_x,&nest_z);
 }
 static unsigned world_seed=5;
 static void setup(CpStageSetup *s){
     cp_stage_setup_default(s,world_seed);
-    s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=s->nest_z=0;s->player_legs=4;
+    s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=nest_x;s->nest_z=nest_z;s->player_legs=4;
     s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,300,0};
 }
 static void reset(CpStageWorld *world,const CpStageSetup *s){
@@ -146,7 +146,8 @@ static void field_tests(unsigned seed){
     /* 4. ordinary soil: grubs and pebbles at low rates, deterministic; the hash covers the dig block; snapshot and replay agree */
     reset(&w,&su);reset(&w2,&su);
     int grubs=0,pebbles=0,nothing=0,spots=0;
-    for(float x=-60;x<=60&&spots<40;x+=9)for(float z=-60;z<=60&&spots<40;z+=9){
+    const float span=star?150.f:60.f;   /* around the nest; the star valley is half lake, so the search reaches further */
+    for(float x=nest_x-span;x<=nest_x+span&&spots<40;x+=9)for(float z=nest_z-span;z<=nest_z+span&&spots<40;z+=9){
         if(!cp_stage_soft_soil(&w,x,z)||dist(x-bx,z-bz)<6.f)continue;
         tp(&w,x,z);tp(&w2,x,z);w.player.stamina=w2.player.stamina=100;
         const int a=dig_here(&w,NULL),b=dig_here(&w2,NULL);
@@ -255,6 +256,7 @@ static void flame_tests(void){
     PASS("the flamethrower: cone, burn over time, event, cooldown, deterministic");
 }
 int main(int argc,char **argv){
+    star=island_args(&argc,argv);
     if(argc>1&&!strcmp(argv[1],"flat")){flame_tests();printf("first-quest (flat): %d checks\n",checks);return 0;}
     field_tests(argc>1?(unsigned)atoi(argv[1]):1);
     printf("first-quest (seed %s): %d checks\n",argc>1?argv[1]:"1",checks);

@@ -53,9 +53,9 @@ func _navigation() -> void:
 	const Profile = preload("res://game/stage/profile.gd")
 	for seed_ in [1, 7, 11]:
 		var terrain := CporeTerrain.new()
-		var entry := TerrainCache.load_entry({"seed": seed_})
+		var entry := TerrainCache.load_entry(TerrainCache.game_params(seed_))
 		if entry.is_empty():
-			entry = TerrainCache.build({"seed": seed_}, terrain)
+			entry = TerrainCache.build(TerrainCache.game_params(seed_), terrain)
 		var data = preload("res://game/island/terrain_data.gd").new()
 		data.setup(entry)
 		var setup := CporeWorld.default_setup(seed_)
