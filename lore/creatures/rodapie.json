@@ -1,0 +1,259 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rodapie",
+  "name": {
+    "en": "Rodapié"
+  },
+  "world": "wheels",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Lane borders, dune bases, and evaporite pavements near salt flats.",
+    "diet": "Omnivore; scavenges carcasses, hunts small invertebrates, licks mineral crusts.",
+    "active": "Crepuscular; avoids midday heat and night frost.",
+    "predators": []
+  },
+  "body": "Quadrupedal body with a low center of gravity. Front limbs are bulky, capsule-like structures housing 'Wheel-Capsules'. These capsules can detach and roll independently. Rear limbs are robust walking legs.",
+  "chains": [
+    {
+      "id": "rodapie.c1",
+      "trait": "Front limbs are detachable symbiotic wheel-capsules.",
+      "links": [
+        "Predators (Skirls/Sumpers) ambush on Lanes",
+        "Rolling escape is faster than walking",
+        "Evolution produced front limbs that are symbiotic rolling colonies",
+        "Symbiont can detach from host girdle and roll autonomously",
+        "Detached limb acts as a decoy, distracting predator"
+      ],
+      "roots": [
+        "F27",
+        "F4",
+        "F23"
+      ],
+      "skill": {
+        "id": "rodapie.drop_leg",
+        "name": {
+          "en": "Drop Leg"
+        },
+        "role": "Defence",
+        "effect": "Detach a front wheel-capsule. Capsule rolls away in a random direction for 3 seconds, attracting aggro. Host gains 'Light Load' (move speed +30%) but loses forward attack capability.",
+        "numbers": {}
+      },
+      "weakness": "Decoy Vulnerability: If the player or enemy captures the rolling leg, the symbiont can be killed. Dead symbiont cannot be reattached, requiring regrowth.",
+      "observe": [
+        "Front limbs have visible seams and pulsing tissue at the joint.",
+        "On threat, host slams front down and releases limb with a wet pop.",
+        "Detached leg rolls smoothly, surface rippling as symbiont moves."
+      ],
+      "journal": {
+        "en": "It trades a limb for its life, and grows a new one by dawn."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodapie.c2",
+      "trait": "Rolling gait via host propulsion of symbiont.",
+      "links": [
+        "Wheel-capsule is symbiont, not driven axle",
+        "Symbiont has no motor, only mobility cilia",
+        "Host pushes symbiont forward against ground",
+        "Symbiont cilia grip and roll the capsule",
+        "Gives 3x walking speed on hard Lanes"
+      ],
+      "roots": [
+        "F14",
+        "F8",
+        "F23"
+      ],
+      "skill": {
+        "id": "rodapie.roll_burst",
+        "name": {
+          "en": "Roll Burst"
+        },
+        "role": "Basic",
+        "effect": "Host pushes front legs to roll. Speed triples for 3 seconds. Cost: Stamina drain. Can be used to dodge projectiles.",
+        "numbers": {}
+      },
+      "weakness": "Loose Sand: Symbiont cilia cannot grip loose sand or soft dunes. Rolling fails, and host must switch to walking.",
+      "observe": [
+        "Host pushes forward with shoulders to drive the wheels.",
+        "Wheel surfaces show rapid ciliary motion under the translucent rim.",
+        "No drive shafts or gears visible."
+      ],
+      "journal": {
+        "en": "It runs by throwing its feet."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodapie.c3",
+      "trait": "Regrowth cost limits repeated detachment.",
+      "links": [
+        "Symbiont is a complex colony",
+        "Detached symbiont cannot regenerate instantly",
+        "Host must build new capsule over hours",
+        "Metabolic drain during regrowth reduces host stats",
+        "Low gravity makes regrowth cheaper than on Earth, but still costly"
+      ],
+      "roots": [
+        "F4",
+        "F13"
+      ],
+      "skill": {
+        "id": "rodapie.regrow",
+        "name": {
+          "en": "Regrow"
+        },
+        "role": "Social",
+        "effect": "Spend time to regrow a lost wheel-capsule. Restores limb and heals host. Can be used to 'befriend' other Rodapiés by offering symbiont fragments (speculative).",
+        "numbers": {}
+      },
+      "weakness": "Regrowth Vulnerability: During regrowth, Rodapié has only one functional wheel and reduced movement. Aggressive players can interrupt this process.",
+      "observe": [
+        "Missing front limb shows a weeping wound that slowly fills with tissue.",
+        "Host rests in sheltered hollows while regrowing.",
+        "Regrown limb is smaller and paler initially."
+      ],
+      "journal": {
+        "en": "The price of speed is paid in flesh."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodapie.c4",
+      "trait": "Off-road portage via lifting wheels.",
+      "links": [
+        "Lanes are islands separated by dunes",
+        "Wheels trap in loose sand",
+        "Host retains walking legs",
+        "Rodapié can lift wheel-capsules and walk",
+        "Walking is slow but essential for inter-Lane travel"
+      ],
+      "roots": [
+        "F22",
+        "F13"
+      ],
+      "skill": {
+        "id": "rodapie.portage",
+        "name": {
+          "en": "Portage"
+        },
+        "role": "Control",
+        "effect": "Lift wheel-capsules. Rodapié walks at normal speed on dunes. Cannot use Roll Burst. Symbionts are safe but vulnerable to attack.",
+        "numbers": {}
+      },
+      "weakness": "Slow Travel: Portaging is essential for crossing dunes but makes Rodapié a slow target for chases.",
+      "observe": [
+        "Host tucks wheels against belly when crossing dunes.",
+        "Rear legs do all the work; front limbs are held aloft.",
+        "Symbionts pulse weakly while tucked, conserving energy."
+      ],
+      "journal": {
+        "en": "It walks the desert, wheels tucked like a turtle's head."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Skirl",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Skirls stoop on Rodapiés. Dropping a leg can confuse the stoop, causing the Skirl to strike the decoy or miss."
+    },
+    {
+      "with": "Karrow",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Karrow skid-lines leave brine residue that Rodapiés lick; Rodapiés disturb dust that Karrow senses for navigation."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Quadrupedal ancestor that specialized in rapid limb detachment and regrowth."
+  },
+  "temperament": "Skittish and defensive; plays dead then bolts.",
+  "secrets": [
+    "Symbiont fragments can be transferred: A wounded Rodapié may allow a conspecific to 'graft' a fragment of its symbiont to repair a damaged leg, creating a bond.",
+    "Rolling legs retain a fragment of host memory: Captured legs may roll toward their original host if hummed to."
+  ],
+  "moments": [
+    "A Rodapié senses a shadow overhead. With a wet crack, it slams its front down, releasing a pulsating wheel that rolls away into the dunes. The host walks calmly on its rear legs, the detached limb rolling frantically in the distance, drawing the Skirl's attention."
+  ],
+  "journal": [
+    {
+      "en": "Four legs, two of which can run away."
+    },
+    {
+      "en": "The road claims a limb, the host pays the debt."
+    }
+  ]
+}

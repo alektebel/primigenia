@@ -1,0 +1,245 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "krelm",
+  "name": {
+    "en": "Krelm"
+  },
+  "world": "wheels",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Fractured salt pavements, Lane edges where evaporite crust is thin",
+    "diet": "Sub-crustal lichens, mineral salts, trapped detritus",
+    "active": "Diurnal, thermally active mid-day when crust is brittle",
+    "predators": []
+  },
+  "body": "Asymmetrical ovoid, heavy rotating ventral molar cap, two short steering limbs, sensory stalks, keratinous cam-drive",
+  "chains": [
+    {
+      "id": "krelm.c1",
+      "trait": "Rotating ventral molar cap",
+      "links": [
+        "Scrape under-crust biomass",
+        "Hard salt crust blocks access",
+        "Evaporite pans form endless flat crust"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "krelm.grind",
+        "name": {
+          "en": "Grind"
+        },
+        "role": "Basic",
+        "effect": "Deal 35 damage over 3s and break enemy armor by 20%.",
+        "numbers": {}
+      },
+      "weakness": "Cap Jam: Gravel or soft mud fills the cam gap, locking the cap for 4s and leaving the creature helpless.",
+      "observe": [
+        "Cap rotates independently of body rotation",
+        "Cap scrapes visible crust flakes and dust",
+        "Muscle pulses drive cam, not free spin"
+      ],
+      "journal": {
+        "en": "It grinds its belly to reach the world's meat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "gould_1981_kingdoms",
+              "labarbera_1983_wheels"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "krelm.c2",
+      "trait": "Heavy muscular cam drive",
+      "links": [
+        "Cap needs torque to spin against load",
+        "Free axle not yet evolved",
+        "Low gravity permits heavy moving mass"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "krelm.skill_2",
+        "name": {
+          "en": "skill 2"
+        },
+        "role": "Passive",
+        "effect": "",
+        "numbers": {}
+      },
+      "weakness": "",
+      "observe": [
+        "(nothing recorded)"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "krelm.c3",
+      "trait": "Two short steering limbs",
+      "links": [
+        "Cap rotates fixed plane",
+        "Need directional control on flat",
+        "Same pressure that makes Karrow keep legs for portage"
+      ],
+      "roots": [
+        "F22"
+      ],
+      "skill": {
+        "id": "krelm.skill_3",
+        "name": {
+          "en": "skill 3"
+        },
+        "role": "Passive",
+        "effect": "",
+        "numbers": {}
+      },
+      "weakness": "",
+      "observe": [
+        "(nothing recorded)"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "krelm.c4",
+      "trait": "Lichen symbiont on cap",
+      "links": [
+        "Abrasion wears cap surface",
+        "Symbiont trades micronutrients",
+        "Red-star photosynthesis fuels symbiont"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "krelm.skill_4",
+        "name": {
+          "en": "skill 4"
+        },
+        "role": "Passive",
+        "effect": "",
+        "numbers": {}
+      },
+      "weakness": "",
+      "observe": [
+        "(nothing recorded)"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Karrow",
+      "kind": "cousin",
+      "note": "Krelm uses a muscular cam to drive a rotating cap; Karrow evolved a vascularized free axle later. Krelm is the living fossil of the intermediate step."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 2,
+    "origin": "Ancestral baller modified for rotation"
+  },
+  "temperament": "Persistent, irritable when cap jams, territorial of good scrapes",
+  "secrets": [
+    "Harvest the symbiont lichen for a temporary nutrient buff.",
+    "Stun by injecting brine into the cam gap."
+  ],
+  "moments": [
+    "A Krelm grinds down a skirl, but gets its cap jammed by the skirl's keratin sheath and freezes as a slow target."
+  ],
+  "journal": [
+    {
+      "en": "Cap rotation speed indicates hunger."
+    },
+    {
+      "en": "Krelm can be befriended by offering salt crystals to grease the cam."
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "el_cruce",
+  "name": {
+    "en": "El Cruce"
+  },
+  "world": "wheels",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Lateral junctions of basalt/salt Lanes; buried in crust.",
+    "diet": "Karrow, Tucket, Glissen (when ice).",
+    "active": "Diurnal.",
+    "predators": []
+  },
+  "body": "Flattened, salt-crusted exoskeleton with six broad tarsi and elastic forelimbs.",
+  "chains": [
+    {
+      "id": "el_cruce.c1",
+      "trait": "Exoskeleton plates mirror salt crystallization patterns.",
+      "links": [
+        "Plates mimic salt -> Hides against bright road surface -> Predator needs cryptic ambush position -> Road is the primary hunting ground.",
+        "Bright road -> High contrast environment -> Visual predators require visual camouflage -> F1 star spectrum and F14 salt flats create blinding white roads."
+      ],
+      "roots": [
+        "F14",
+        "F8"
+      ],
+      "skill": {
+        "id": "el_cruce.salt_mimic",
+        "name": {
+          "en": "Salt-Mimic"
+        },
+        "role": "Defence",
+        "effect": "Player hides El Cruce in salt crust, reducing detection range by 70% for 10s.",
+        "numbers": {}
+      },
+      "weakness": "Rain or wet wind dissolves salt crust, revealing the predator.",
+      "observe": [
+        "Exoskeleton flakes match surrounding salt geometry.",
+        "Plates shift microscopically to match local crystallization.",
+        "Predator remains motionless until vibration threshold is met."
+      ],
+      "journal": {
+        "en": "It does not walk; it becomes the road."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_cruce.c2",
+      "trait": "Fluid-filled sensory pits detect low-frequency vibrations.",
+      "links": [
+        "Pits detect vibration -> Locates rolling prey before sight -> Prey moves too fast for visual reaction -> F18 roller speed exceeds legged pursuit.",
+        "Vibration detection -> Efficient targeting on featureless ground -> F9 sound/vibration travels well in 1.5-bar air and hard ground."
+      ],
+      "roots": [
+        "F9",
+        "F18"
+      ],
+      "skill": {
+        "id": "el_cruce.vibration_sense",
+        "name": {
+          "en": "Vibration Sense"
+        },
+        "role": "Passive",
+        "effect": "Player sees vibration trails of approaching prey from 50m away, ignoring visual blindness.",
+        "numbers": {}
+      },
+      "weakness": "Wind noise (F10 gusts) masks vibration cues, blinding the predator.",
+      "observe": [
+        "Sensory pits twitch in response to distant wheels.",
+        "Predator tracks vibration source with fluid-shifts.",
+        "Predator attacks only when vibration frequency matches rolling signature."
+      ],
+      "journal": {
+        "en": "It hears the road singing."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_cruce.c3",
+      "trait": "Magnetite deposits in strike limb disrupt prey navigation.",
+      "links": [
+        "Magnetite disrupts navigation -> Prey swerves or stops -> Easier capture -> F24 prey uses magnetite to follow Lanes.",
+        "Magnetite deposit -> Local magnetic anomaly -> F7 crustal remanence provides magnetic 'map' for navigation."
+      ],
+      "roots": [
+        "F7",
+        "F24"
+      ],
+      "skill": {
+        "id": "el_cruce.magnetic_disruption",
+        "name": {
+          "en": "Magnetic Disruption"
+        },
+        "role": "Control",
+        "effect": "El Cruce's magnetite limb disorients nearby prey, reducing speed by 50% and forcing a stop for 5s.",
+        "numbers": {}
+      },
+      "weakness": "Strong external magnetic fields (e.g., player magnetism) can confuse El Cruce's own strike timing.",
+      "observe": [
+        "Prey swerves erratically as El Cruce prepares to strike.",
+        "Magnetite glint in the limb catches the K3V light.",
+        "Prey stops or spins, losing momentum."
+      ],
+      "journal": {
+        "en": "It steals the road from beneath their wheels."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_cruce.c4",
+      "trait": "Broad, flat tarsi for walking on loose crust.",
+      "links": [
+        "Broad tarsi -> Prevents sinking in dunes/crust -> Off-road mobility -> F22 off-road refuges are essential for survival.",
+        "Off-road mobility -> Lanes are islands in rough terrain -> F13 low relief but broken crust surrounds Lanes."
+      ],
+      "roots": [
+        "F13",
+        "F22"
+      ],
+      "skill": {
+        "id": "el_cruce.crust_walk",
+        "name": {
+          "en": "Crust-Walk"
+        },
+        "role": "Basic",
+        "effect": "El Cruce traverses loose terrain without stamina loss, allowing flank attacks.",
+        "numbers": {}
+      },
+      "weakness": "Slow on hard Lanes; relies on ambush rather than pursuit.",
+      "observe": [
+        "Tarsi spread wide to distribute weight.",
+        "Predator moves silently on dune fields.",
+        "El Cruce retreats off-road when not hunting."
+      ],
+      "journal": {
+        "en": "The road is its throne; the dunes are its home."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "labarbera_1983_wheels"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Karrow",
+      "kind": "cousin",
+      "note": "(council kind 'Prey') El Cruce targets Karrow at junctions where it must cross perpendicular paths."
+    },
+    {
+      "with": "Tucket",
+      "kind": "cousin",
+      "note": "(council kind 'Prey') El Cruce ambushes Tucket when it uncurls or while rolling downhill onto a junction."
+    },
+    {
+      "with": "Glissen",
+      "kind": "cousin",
+      "note": "(council kind 'Prey') El Cruce adapts its tarsi to grip thin ice at polar junctions."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "Six-legged arachnoid lineage adapted for flat-surface locomotion."
+  },
+  "temperament": "Patient, explosive, magnetically sensitive.",
+  "secrets": [
+    "The magnetite limb can be harvested to create a magnetic decoy that lures Skirls off-course.",
+    "El Cruce can 'taste' the salt composition to distinguish Karrow from Tucket before striking."
+  ],
+  "moments": [
+    "A straight, white road. No wind. A single ripple in the salt crust, and then the road is gone."
+  ],
+  "journal": [
+    {
+      "en": "The salt remembers its shape."
+    },
+    {
+      "en": "It waits where the roads kiss."
+    }
+  ]
+}

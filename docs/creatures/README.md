@@ -262,3 +262,12 @@
 | [Ceniza Roja](ceniza_roja.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Polvorín](polvorin.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Velafrío](velafrio.md) | new | draft | 4 | 4 fixable |
+
+## The Highway World (`wheels`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [El Cruce](el_cruce.md) | new | draft | 4 | 4 fixable |
+| [Krelm](krelm.md) | new | draft | 4 | 4 fixable |
+| [Rodadora](rodadora.md) | new | draft | 4 | 4 fixable |
+| [Rodapié](rodapie.md) | new | draft | 4 | 4 fixable |
