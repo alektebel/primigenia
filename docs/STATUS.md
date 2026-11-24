@@ -11,13 +11,22 @@ Tune and perfect the **creature-stage loop**, start to finish (plan: `docs/plans
 Merged 2026-11-23/24: creature feedback (A54), flight port (A56/A57), roster v9, slope grip (A59/A66), starter B kit (A62), context attacks (A72–A75, snapshot 15), camera T4 (0 snaps), **jump (Space, snapshot 16)**, befriend labs + sing notes (A80), social duel mood card (A81).
 Last jump-branch runs: C rc 0, M0 1433/0, play 247/0, devtools 1387/0, camera 4/0, first-quest 30/0.
 
-## Branches in flight
-| Branch | Who | State | Next step |
-|---|---|---|---|
-| `lore/exoplanets-40` | council | Fix 3 (1b40f63): multi-key `because:`; autoloop restarted 2026-11-24 (log `_agent/lore-exo-autoloop.log`) | Opus review step 4 → `docs/lore/EXOPLANETS.md` |
-| `world/ambient-fliers`, `ui/creator-c6` | paused | WIP committed, 1 commit each | Resume one by one |
+## Branches in flight (stopped 2026-11-24 night: Claude 5-hour limit, resets 05:30 Madrid; Codex limit until 2026-11-25 23:13)
+Resume each from its worktree in `/home/diego/Desarrollo/cpore-wt/<name>`; all have WIP on disk.
+| Branch (worktree) | State | Next step |
+|---|---|---|
+| `sim/loop-tune-1` (loop-tune) | Evidence + proposal 1 merged. Implementing: 40 m flee leash (derived from home, no new state), bot fixes (seed-42 hang, explore loop, deliberate Garfio duel); C tests were running | Finish suites, re-run loop score 3 seeds, merge (A33) |
+| `world/ambient-fliers` | 4 visual-only flier species, 36 birds; test_fliers 816/0; clips in `_agent/fliers-clips/` partly recorded | Review clips, run all suites, merge |
+| `combat/bellow-stride` | Codex started, Sonnet finishing (A75 far roar set B, layered); tests were running | Check set A goldens unchanged, merge |
+| `lab/island-layouts` | 3–4 candidate islands for A83+A86 (8 biomes, ~5 km), picker `web/gaitlab/island.html`; WIP uncommitted | Finish, owner picks |
+| `lab/ice` | Ice study (A85) restarted after a network outage; little or no work yet | Build 3 moves × 3–4 versions |
+| `plan/night-sky` | Fable 5.2 designs the night sky + planets/moons + stargazing (owner request) → `docs/plans/night-sky.md`; restarted, little or no work yet | Finish plan, owner questions |
+| `lore/exoplanets-40` | Fix 3 merged on branch (1b40f63); autoloop running (Codex chair falls back to DeepSeek) | Opus review step 4 |
+| `world/ambient-fliers` paused sibling `ui/creator-c6` | paused | Resume later |
 
-**Proposed overnight (awaiting owner go):** loop tuning measuring pass, flying wildlife, signature-attack picker lab, Opus plan for porting befriending (A76–A81), then "bellow in stride" (Codex).
+Merged today into main: jump (snapshot 16), camera T4, sing notes (A80), mood card (A81), befriend port plan (A82, `docs/plans/befriend-port.md`), signature attacks lab v2, engulf lab (A84), loop evidence.
+**Owner picks waiting in labs:** `signature.html`, `engulf.html`, `social_duel.html` (feel and numbers), `befriend_bodies.html`.
+**Design queue (one study at a time, A60):** ice → oil vomit + flamethrower (A89/A90) → rolling (A90) → v1 giant (A88) → lasing crystal (A87). New DESIGN entries today: A80–A92.
 
 ## Design state (all in `docs/DESIGN.md`)
 - **Movement picks:** A42–A53 for B, bipeds, radial, trilateral, two-headed, snake, worm, inchworm, slug, eel, octopus (A55).
