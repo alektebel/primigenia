@@ -3,7 +3,7 @@ extends RefCounted
 
 func run(t) -> void:
 	var d: Dictionary = CporeTerrain.defaults()
-	t.eq(d.size(), 47, "47 parameters (v4 adds rivers)")
+	t.eq(d.size(), 48, "48 parameters (v4 adds rivers; layout added for A83)")
 	t.eq(d.n, 1024, "default n")
 	t.eq(d.seed, 1, "default seed")
 	t.eq(d.size_m, 3600.0, "default size_m")
