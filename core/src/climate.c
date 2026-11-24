@@ -330,6 +330,39 @@ uint64_t cp_climate_hash(const CpClimateOut *o, int n)
 /* ---------------------------------------------------------------------- */
 #include "climate_biomes.inc"
 
+/* Row bounds of CP_BIOME_TABLE with the island's thresholds patched in (rows: 0 tundra, 1 alpine, 2 desert, 3 scrub,
+ * 4 meadow, 5 dry forest, 6 cloud forest). */
+static void row_bounds(const CpClimateParams *p, int r, float *t_lo, float *t_hi, float *p_lo, float *p_hi)
+{
+    *t_lo = CP_BIOME_TABLE[r].t_lo; *t_hi = CP_BIOME_TABLE[r].t_hi; *p_lo = CP_BIOME_TABLE[r].p_lo; *p_hi = CP_BIOME_TABLE[r].p_hi;
+    if (r == 0) *t_hi = p->t_tundra_C;
+    else if (r == 1) { *t_lo = p->t_tundra_C; *t_hi = p->t_treeline_C; }
+    else { *t_lo = p->t_treeline_C; }
+    if (r == 2) *p_hi = p->p_scrub;
+    if (r == 3) { *p_lo = p->p_scrub; *p_hi = p->p_meadow; }
+    if (r == 4) { *p_lo = p->p_meadow; *p_hi = p->p_dry_forest; }
+    if (r == 5) { *p_lo = p->p_dry_forest; *p_hi = p->p_jungle; }
+    if (r == 6) *p_lo = p->p_jungle;
+}
+
+int cp_climate_biome(const CpClimateParams *p, float T, float P, float slope, float h, int canopy_ok)
+{
+    int biome, r;
+    if (h <= 0.f) return CP_BIOME_SEA;
+    if (slope > 1.05f) return CP_BIOME_CLIFF;
+    if (h < 2.f && slope < 0.3f) return CP_BIOME_BEACH;
+    if (T < p->snow_C && P > 400.f) return CP_BIOME_SNOW;
+    biome = CP_BIOME_MEADOW;
+    for (r = 0; r < CP_BIOME_ROWS; r++) {
+        float tl, th, pl, ph;
+        row_bounds(p, r, &tl, &th, &pl, &ph);
+        if (T >= tl && T < th && P >= pl && P < ph) { biome = CP_BIOME_TABLE[r].biome; break; }
+    }
+    if (biome == CP_BIOME_DESERT && slope > 0.45f) biome = CP_BIOME_BADLANDS;
+    if (canopy_ok == 0 && (biome == CP_BIOME_JUNGLE || biome == CP_BIOME_DRY_FOREST)) biome = CP_BIOME_MEADOW;
+    return biome;
+}
+
 void cp_climate_defaults(CpClimateParams *p, int n, float cell_m)
 {
     memset(p, 0, sizeof *p);
@@ -356,6 +389,13 @@ void cp_climate_defaults(CpClimateParams *p, int n, float cell_m)
     p->foehn_C = 1.f;
     p->snow_C = 3.15f;
     p->qc_ref = 1.f;
+    p->t_tundra_C = 4.5f;
+    p->t_treeline_C = 7.f;
+    p->p_scrub = 250.f;
+    p->p_meadow = 450.f;
+    p->p_dry_forest = 900.f;
+    p->p_jungle = 1700.f;
+    p->canopy_p_full = 1800.f;
 }
 
 size_t cp_climate_scratch_floats(int n)
@@ -370,7 +410,7 @@ int cp_climate_run(const CpClimateParams *p, const float *height, const uint8_t 
     size_t cnt, i;
     float *hc, *pr, *qr, *lt;
     CpLtParams lp;
-    float dxg, snow_C;
+    float dxg;
     if (!p || !height || !out || !scratch || !out->precip || !out->temp || !out->qc || !out->fog || !out->biome || !out->veg)
         return CP_CLIM_ERR_NULL;
     n = p->n;
@@ -382,7 +422,6 @@ int cp_climate_run(const CpClimateParams *p, const float *height, const uint8_t 
     pr = hc + cnt;
     qr = pr + cnt;
     dxg = p->cell_m;
-    snow_C = p->snow_C;
 
     /* 1. heights in climate coordinates: sea clamped to 0, x scale_z */
     for (i = 0; i < cnt; i++) hc[i] = (height[i] > 0.f ? height[i] : 0.f) * p->scale_z;
@@ -422,7 +461,7 @@ int cp_climate_run(const CpClimateParams *p, const float *height, const uint8_t 
             float along = gx * p->wind_x + gy * p->wind_y;      /* > 0: climbing with the wind */
             float hz = (h > 0.f ? h : 0.f) * p->scale_z;
             float T, P = out->precip[c], fog, wet, soil, canopy, under, grass, litter, forest_t;
-            int land = h > 0.f, biome, r;
+            int land = h > 0.f, biome;
 
             /* temperature */
             T = p->t_sea_C - p->lapse_K_km * hz * 0.001f;
@@ -465,29 +504,16 @@ int cp_climate_run(const CpClimateParams *p, const float *height, const uint8_t 
                     }
                     if (sheltered) biome = CP_BIOME_REEF;
                 }
-            } else if (slope > 1.05f) {
-                biome = CP_BIOME_CLIFF;
-            } else if (h < 2.f && slope < 0.3f) {
-                biome = CP_BIOME_BEACH;
-            } else if (T < snow_C && P > 400.f) {
-                biome = CP_BIOME_SNOW;
             } else {
-                biome = CP_BIOME_MEADOW;
-                for (r = 0; r < CP_BIOME_ROWS; r++) {
-                    const CpBiomeRow *b = &CP_BIOME_TABLE[r];
-                    if (T >= b->t_lo && T < b->t_hi && P >= b->p_lo && P < b->p_hi) { biome = b->biome; break; }
-                }
-                if (biome == CP_BIOME_DESERT && slope > 0.45f) biome = CP_BIOME_BADLANDS;
-                if (canopy_mask && canopy_mask[c] == 0 && (biome == CP_BIOME_JUNGLE || biome == CP_BIOME_DRY_FOREST))
-                    biome = CP_BIOME_MEADOW;
+                biome = cp_climate_biome(p, T, P, slope, h, canopy_mask ? canopy_mask[c] : 255);
             }
             out->biome[c] = (uint8_t)biome;
 
             /* vegetation */
             wet = clampf(0.5f * P / 2500.f + 0.5f * out->fog[c], 0.f, 1.f);
             soil = land ? 1.f - smoothstep(0.6f, 1.05f, slope) : 0.f;
-            forest_t = smoothstep(4.5f, 7.f, T);                 /* treeline */
-            canopy = smoothstep(600.f, 1800.f, P) * soil * forest_t * (canopy_mask ? (float)canopy_mask[c] / 255.f : 1.f);
+            forest_t = smoothstep(p->t_tundra_C, p->t_treeline_C, T);                 /* treeline */
+            canopy = smoothstep(p->canopy_p_full * (1.f / 3.f), p->canopy_p_full, P) * soil * forest_t * (canopy_mask ? (float)canopy_mask[c] / 255.f : 1.f);
             if (biome == CP_BIOME_BEACH || biome == CP_BIOME_SNOW || biome == CP_BIOME_CLIFF || !land) canopy = 0.f;
             under = canopy * (0.6f + 0.4f * wet);
             grass = (1.f - canopy) * smoothstep(250.f, 800.f, P) * soil * (biome == CP_BIOME_SNOW || biome == CP_BIOME_BEACH ? 0.f : 1.f);

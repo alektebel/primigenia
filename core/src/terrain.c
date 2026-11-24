@@ -1,5 +1,6 @@
 #include "cpore/terrain.h"
 #include "cpore/island.h"
+#include "cpore/climate.h"
 #include "cpore/cpore.h"
 
 #include <math.h>
@@ -1331,6 +1332,163 @@ static void cave_entrances(const CpTerrainParams *p, CpTerrain *t, const CpTerra
     (void)nn;
 }
 
+/* ---- climate maps (part II of docs/plans/island-realism.md, step M2) ---------------------------------------------------- */
+
+/* The climate grid: 256 for n >= 256, else the largest power of two <= n. */
+static int climate_grid(int n)
+{
+    int cn = CP_TERRAIN_CLIMATE_N;
+    while (cn > n) cn >>= 1;
+    return cn;
+}
+/* Workspace layout, in floats: the kernel's scratch, the coarse height, precipitation, temperature, cloud water and fog
+ * (cn^2 each), then bytes: biome (cn^2), veg (4 cn^2), the canopy and the bias mask (cn^2 each). */
+static size_t climate_floats(int cn)
+{
+    size_t cc = (size_t)cn * (size_t)cn;
+    return cp_climate_scratch_floats(cn) + 5 * cc + (7 * cc + 3) / 4;
+}
+size_t cp_terrain_climate_work_floats(void) { return climate_floats(CP_TERRAIN_CLIMATE_N); }
+
+static uint8_t to_u8(float v)
+{
+    v = v * 255.f + 0.5f;
+    return v <= 0.f ? 0 : v >= 255.f ? 255 : (uint8_t)v;
+}
+
+/* the island's climate parameters: the kernel's defaults, overridden by the desc's climate block, wind and calibration slots */
+static void climate_params(const CpIslandDesc *d, int cn, float size_m, CpClimateParams *cp)
+{
+    cp_climate_defaults(cp, cn, size_m / (float)cn);
+    if (d->clim_scale_h_pm > 0) cp->scale_h = (float)d->clim_scale_h_pm / 1000.f;
+    if (d->clim_scale_z_pm > 0) cp->scale_z = (float)d->clim_scale_z_pm / 1000.f;
+    if (d->clim_lapse_cK_per_km > 0) { cp->t_sea_C = (float)d->clim_t_sea_cC / 100.f; cp->lapse_K_km = (float)d->clim_lapse_cK_per_km / 100.f; }
+    /* wind_mdeg: the direction the wind blows TOWARD, atan2(y, x) in map axes (x east, y south, so 135000 = toward the
+     * south-west = a north-east trade wind), in millidegrees. This is what tools/island/from_layout.mjs writes from the layout
+     * table's wind vector. wind_cms 0 = no wind data: the defaults (the same NE trade) stand. */
+    if (d->wind_cms > 0) {
+        float s, c, l;
+        sincos_deg((float)d->wind_mdeg / 1000.f, &s, &c);
+        l = sqrtf(c * c + s * s);
+        cp->wind_x = c / l; cp->wind_y = s / l;
+        cp->trade_speed = (float)d->wind_cms / 100.f;
+    }
+    if (d->has_calib) {
+        const int32_t *k = d->calib;
+        if (k[CP_ISL_CAL_RAIN_SCALE_PM] > 0) cp->rain_scale = (float)k[CP_ISL_CAL_RAIN_SCALE_PM] / 1000.f;
+        if (k[CP_ISL_CAL_P_INF_MM] > 0) cp->p_inf_mm_yr = (float)k[CP_ISL_CAL_P_INF_MM];
+        if (k[CP_ISL_CAL_QC_REF_PM] > 0) cp->qc_ref = (float)k[CP_ISL_CAL_QC_REF_PM] / 1000.f;
+        if (k[CP_ISL_CAL_SNOW_CC] > 0) cp->snow_C = (float)k[CP_ISL_CAL_SNOW_CC] / 100.f;
+        if (k[CP_ISL_CAL_ASPECT_CC] > 0) cp->aspect_C = (float)k[CP_ISL_CAL_ASPECT_CC] / 100.f;
+        if (k[CP_ISL_CAL_FOEHN_CC] > 0) cp->foehn_C = (float)k[CP_ISL_CAL_FOEHN_CC] / 100.f;
+        if (k[CP_ISL_CAL_TRADE_W_PM] > 0) { cp->trade_w = (float)k[CP_ISL_CAL_TRADE_W_PM] / 1000.f; cp->storm_w = 1.f - cp->trade_w; }
+        if (k[CP_ISL_CAL_STORM_CMS] > 0) cp->storm_speed = (float)k[CP_ISL_CAL_STORM_CMS] / 100.f;
+        if (k[CP_ISL_CAL_TREELINE_CC] > 0) cp->t_treeline_C = (float)k[CP_ISL_CAL_TREELINE_CC] / 100.f;
+        if (k[CP_ISL_CAL_TUNDRA_CC] > 0) cp->t_tundra_C = (float)k[CP_ISL_CAL_TUNDRA_CC] / 100.f;
+        if (k[CP_ISL_CAL_P_SCRUB_MM] > 0) cp->p_scrub = (float)k[CP_ISL_CAL_P_SCRUB_MM];
+        if (k[CP_ISL_CAL_P_MEADOW_MM] > 0) cp->p_meadow = (float)k[CP_ISL_CAL_P_MEADOW_MM];
+        if (k[CP_ISL_CAL_P_DRYFOREST_MM] > 0) cp->p_dry_forest = (float)k[CP_ISL_CAL_P_DRYFOREST_MM];
+        if (k[CP_ISL_CAL_P_JUNGLE_MM] > 0) cp->p_jungle = (float)k[CP_ISL_CAL_P_JUNGLE_MM];
+        if (k[CP_ISL_CAL_TAU_S] > 0) { cp->tau_c = (float)k[CP_ISL_CAL_TAU_S]; cp->tau_f = cp->tau_c; }
+        if (k[CP_ISL_CAL_CANOPY_P_FULL_MM] > 0) cp->canopy_p_full = (float)k[CP_ISL_CAL_CANOPY_P_FULL_MM];
+    }
+}
+
+/* Bilinear of one channel of an interleaved byte map, as 0..255 floats. */
+static float upsample_u8(const uint8_t *src, int ch, int c, int nc, int n, int i, int j)
+{
+    float fx = ((float)i + 0.5f) * (float)nc / (float)n - 0.5f;
+    float fy = ((float)j + 0.5f) * (float)nc / (float)n - 0.5f;
+    int x0, y0, x1, y1;
+    float a, b, v00, v10, v01, v11;
+    fx = clampf(fx, 0.f, (float)(nc - 1));
+    fy = clampf(fy, 0.f, (float)(nc - 1));
+    x0 = (int)fx; y0 = (int)fy;
+    x1 = x0 + 1 < nc ? x0 + 1 : x0;
+    y1 = y0 + 1 < nc ? y0 + 1 : y0;
+    fx -= (float)x0; fy -= (float)y0;
+    v00 = (float)src[(y0 * nc + x0) * ch + c]; v10 = (float)src[(y0 * nc + x1) * ch + c];
+    v01 = (float)src[(y1 * nc + x0) * ch + c]; v11 = (float)src[(y1 * nc + x1) * ch + c];
+    a = v00 + (v10 - v00) * fx;
+    b = v01 + (v11 - v01) * fx;
+    return a + (b - a) * fy;
+}
+
+/* (public, island.h) Runs the climate kernel on a coarse copy of the final heights and writes the climate, biome and veg maps. The biome is
+ * re-decided at the fine grid from the upsampled precipitation and a temperature corrected for the fine height, so cliffs,
+ * the coast and the snow line follow the real relief, not the 31 m cells. Needs the final height (call after river_water). */
+int cp_terrain_climate(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *t, const CpTerrainWorkspace *ws)
+{
+    if (!p || !d || !t || !ws || !t->height || !t->climate || !t->biome || !t->veg || !ws->climate_work) return CP_TERR_ERR_NULL;
+    if (p->n < 64 || p->n != t->n) return CP_TERR_ERR_N;
+    int n = p->n, cn = climate_grid(n);
+    size_t cc = (size_t)cn * (size_t)cn;
+    float *scr = ws->climate_work, *hc, *pr, *tp, *qc, *fg;
+    uint8_t *bio_c, *veg_c, *can_m, *bias_m;
+    CpClimateParams cp;
+    CpClimateOut o;
+    float cell = p->size_m / (float)n, ccell = p->size_m / (float)cn, half = p->size_m * .5f;
+    int rc;
+    hc = scr + cp_climate_scratch_floats(cn);
+    pr = hc + cc; tp = pr + cc; qc = tp + cc; fg = qc + cc;
+    bio_c = (uint8_t *)(fg + cc); veg_c = bio_c + cc; can_m = veg_c + 4 * cc; bias_m = can_m + cc;
+
+    /* box filter of the final height onto the climate grid (integer cell bounds, fixed summation order) */
+    for (int cy = 0; cy < cn; cy++) for (int cx = 0; cx < cn; cx++) {
+        int x0 = cx * n / cn, x1 = (cx + 1) * n / cn, y0 = cy * n / cn, y1 = (cy + 1) * n / cn;
+        float sum = 0.f;
+        for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) sum += t->height[y * n + x];
+        hc[cy * cn + cx] = sum / (float)((x1 - x0) * (y1 - y0));
+    }
+    climate_params(d, cn, p->size_m, &cp);
+    for (int cy = 0; cy < cn; cy++) for (int cx = 0; cx < cn; cx++) {
+        float wx = ((float)cx + .5f) * ccell - half, wy = ((float)cy + .5f) * ccell - half, v;
+        v = cp_island_mask(d, CP_ISL_MASK_CLIMATE, wx, wy);
+        bias_m[cy * cn + cx] = (uint8_t)(v + .5f);
+        v = cp_island_mask(d, CP_ISL_MASK_CANOPY, wx, wy);   /* 128 is neutral like the other masks: it means "allowed" */
+        v = v >= 128.f ? 255.f : v * 2.f;
+        can_m[cy * cn + cx] = (uint8_t)(v + .5f);
+    }
+    o.precip = pr; o.temp = tp; o.qc = qc; o.fog = fg; o.biome = bio_c; o.veg = veg_c;
+    rc = cp_climate_run(&cp, hc, d->nmask > CP_ISL_MASK_CANOPY ? can_m : NULL, d->nmask > CP_ISL_MASK_CLIMATE ? bias_m : NULL, &o, scr);
+    if (rc != CP_CLIM_OK) return rc;
+
+    for (size_t i = 0; i < cc; i++) {
+        t->climate[4 * i] = to_u8(pr[i] / 4000.f);
+        t->climate[4 * i + 1] = to_u8((tp[i] + 10.f) / 40.f);
+        t->climate[4 * i + 2] = to_u8(qc[i]);
+        t->climate[4 * i + 3] = to_u8(fg[i]);
+    }
+    for (int y = 0; y < n; y++) for (int x = 0; x < n; x++) {
+        int i = y * n + x, x0 = x > 0 ? x - 1 : x, x1 = x < n - 1 ? x + 1 : x, y0 = y > 0 ? y - 1 : y, y1 = y < n - 1 ? y + 1 : y;
+        int cx = x * cn / n, cy = y * cn / n, b, canok;
+        float gx = (t->height[y * n + x1] - t->height[y * n + x0]) / ((float)(x1 - x0) * cell);
+        float gy = (t->height[y1 * n + x] - t->height[y0 * n + x]) / ((float)(y1 - y0) * cell);
+        float slope = sqrtf(gx * gx + gy * gy), h = t->height[i];
+        if (h <= 0.f) {
+            b = bio_c[cy * cn + cx];
+            t->biome[i] = (uint8_t)(b == CP_BIOME_REEF ? CP_BIOME_REEF : CP_BIOME_SEA);
+            for (int k = 0; k < 4; k++) t->veg[4 * i + k] = 0;
+            continue;
+        }
+        {   /* land: the fine temperature follows the fine height (the coarse cell mean is the reference) */
+            float P = upsample(pr, cn, n, x, y), T = upsample(tp, cn, n, x, y), hb = upsample(hc, cn, n, x, y);
+            float dz = (maxf(hb, 0.f) - h) * cp.scale_z * 0.001f * cp.lapse_K_km;
+            canok = d->nmask > CP_ISL_MASK_CANOPY ? (int)upsample_u8(can_m, 1, 0, cn, n, x, y) : 255;
+            b = cp_climate_biome(&cp, T + dz, P, slope, h, canok > 0 ? 255 : 0);
+            t->biome[i] = (uint8_t)b;
+            if (b == CP_BIOME_BEACH || b == CP_BIOME_SNOW || b == CP_BIOME_CLIFF) {
+                t->veg[4 * i] = 0; t->veg[4 * i + 1] = 0; t->veg[4 * i + 2] = 0;
+                t->veg[4 * i + 3] = (uint8_t)(upsample_u8(veg_c, 4, 3, cn, n, x, y) + .5f);
+            } else {
+                for (int k = 0; k < 4; k++) t->veg[4 * i + k] = (uint8_t)(upsample_u8(veg_c, 4, k, cn, n, x, y) + .5f);
+            }
+        }
+    }
+    t->climate_n = cn;
+    return CP_TERR_OK;
+}
+
 static void material_map(const CpTerrainParams *p, CpTerrain *t)
 {
     BaseCtx c; base_ctx(p,&c);
@@ -1856,6 +2014,21 @@ uint64_t cp_terrain_hash(const CpTerrain *t)
     return h;
 }
 
+uint64_t cp_terrain_climate_hash(const CpTerrain *t)
+{
+    uint64_t h = 14695981039346656037ull;
+    size_t cc, nn;
+    if (!t || t->climate_n <= 0 || !t->climate || !t->biome || !t->veg) return 0;
+    cc = (size_t)t->climate_n * (size_t)t->climate_n;
+    nn = (size_t)t->n * (size_t)t->n;
+    fnv_u32(&h, (uint32_t)CP_CLIMATE_VERSION);
+    fnv_u32(&h, (uint32_t)t->climate_n);
+    for (size_t i = 0; i < 4 * cc; i++) fnv_byte(&h, t->climate[i]);
+    for (size_t i = 0; i < nn; i++) fnv_byte(&h, t->biome[i]);
+    for (size_t i = 0; i < 4 * nn; i++) fnv_byte(&h, t->veg[i]);
+    return h;
+}
+
 /* Stream-power iterations for a grid of side n. The count is set for N/4;
  * finer grids cost more per step and only have to sharpen what is there. */
 static int level_iters(const CpTerrainParams *p, int level)
@@ -1987,7 +2160,12 @@ static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerr
         int cx = (int)((v->x_m + p->size_m * .5f) / (p->size_m / (float)n)), cy = (int)((v->y_m + p->size_m * .5f) / (p->size_m / (float)n));
         if (cx >= 0 && cy >= 0 && cx < n && cy < n) v->z_m = out->height[cy * n + cx];
     }
-    material_map(p,out);
+    out->climate_n = 0;
+    if (d && n >= 64 && out->climate && out->biome && out->veg && ws->climate_work) {
+        rc = cp_terrain_climate(p, d, out, ws);
+        if (rc != CP_TERR_OK) return rc;
+    }
+    material_map(p,out);   /* M2 leaves the snow material on its altitude rule (the climate maps are an add-on; G1 switches it to biome == snow) */
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);
     return CP_TERR_OK;
 }

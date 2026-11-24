@@ -8,6 +8,10 @@ extends RefCounted
 # An authored island (core/include/cpore/island.h) adds its id and the hex cp_island_hash of its blob to the params as
 # "island" and "island_hash": the file name then carries both (and the digest covers them), so editing the island JSON
 # misses the old file even when the generator is unchanged. Without "island_hash" the key is the seed island's, as before.
+# The blob itself is passed as params["island_blob"] (PackedByteArray): resolve() turns it into "island" and "island_hash"
+# (CporeTerrain.island_info) and drops it from the key. An authored island also carries the climate maps (island-realism plan part
+# II, M2): entries hold "climate" (RGBA8 climate_n^2), "biome" (n*n), "veg" (n*n*4), "climate_n" and "climate_hash", verified on load,
+# and the file name carries the climate kernel version (CP_CLIMATE_VERSION) so a changed kernel misses old files.
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
 
@@ -22,6 +26,12 @@ static func resolve(params: Dictionary) -> Dictionary:
 	var defaults: Dictionary = CporeTerrain.defaults()
 	for k in defaults:
 		out[k] = int(out[k]) if typeof(defaults[k]) == TYPE_INT else float(out[k])
+	if out.has("island_blob"):
+		var info: Dictionary = CporeTerrain.island_info(out["island_blob"])
+		if info.get("error", -1) == 0:
+			out["island"] = info.id
+			out["island_hash"] = info.hash
+		out.erase("island_blob")
 	return out
 
 const STAMP_PARAMS := {"seed": 1, "n": 128}
@@ -53,7 +63,7 @@ static func island_tag(p: Dictionary) -> String:
 	var h := str(p.get("island_hash", ""))
 	if h == "":
 		return ""
-	return "-i%s-d%s" % [str(p.get("island", "x")).validate_filename().left(24), h.left(16)]
+	return "-i%s-d%s-c%d" % [str(p.get("island", "x")).validate_filename().left(24), h.left(16), CporeTerrain.climate_version()]
 
 static func cache_path(params: Dictionary, dir: String = DEFAULT_DIR) -> String:
 	var p := resolve(params)
@@ -73,6 +83,15 @@ static func _valid(entry: Dictionary, params: Dictionary) -> bool:
 	if typeof(entry.get("n")) != TYPE_INT or typeof(entry.get("params")) != TYPE_DICTIONARY:
 		return false
 	var n: int = entry.n
+	if str(params.get("island_hash", "")) != "":   # an authored island: the climate maps, byte-exact
+		for key in ["climate", "biome", "veg"]:
+			if typeof(entry.get(key)) != TYPE_PACKED_BYTE_ARRAY:
+				return false
+		var cn = entry.get("climate_n")
+		if typeof(cn) != TYPE_INT or cn < 1 or entry.climate.size() != 256 * 256 * 4 or entry.biome.size() != n * n or entry.veg.size() != n * n * 4:
+			return false
+		if typeof(entry.get("climate_hash")) != TYPE_STRING or CporeTerrain.climate_hash(entry) != entry.climate_hash:
+			return false
 	if n < 8 or entry.height.size() != n * n or entry.flow.size() != n * n or entry.sediment.size() != n * n \
 			or entry.water_level.size() != n * n or entry.material.size() != n * n or entry.river.size() != n * n or entry.surface.size() != n * n * 4 \
 			or entry.relief.size() != n * n * 4:
@@ -125,7 +144,10 @@ static func save_entry(params: Dictionary, entry: Dictionary, dir: String = DEFA
 # Generate + derived maps (+ save). `gen` is a CporeTerrain; safe on a worker thread.
 static func build(params: Dictionary, gen, dir: String = DEFAULT_DIR, save: bool = true) -> Dictionary:
 	var p := resolve(params)
-	var entry: Dictionary = gen.generate(p)
+	var opts := p.duplicate()
+	if params.has("island_blob"):
+		opts["island_blob"] = params["island_blob"]
+	var entry: Dictionary = gen.generate(opts)
 	if entry.get("error", -1) != 0:
 		return entry
 	TerrainData.prepare(entry)
@@ -140,5 +162,5 @@ static func get_or_build(params: Dictionary, dir: String = DEFAULT_DIR) -> Dicti
 	var entry := load_entry(p, dir)
 	var hit := not entry.is_empty()
 	if not hit:
-		entry = build(p, CporeTerrain.new(), dir)
+		entry = build(params, CporeTerrain.new(), dir)
 	return {"entry": entry, "hit": hit, "ms": Time.get_ticks_msec() - t0}

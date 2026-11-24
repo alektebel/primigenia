@@ -77,7 +77,7 @@ static void crc_and_header(void)
     {   uint8_t *b = malloc(blen); memcpy(b, blob, blen);
         b[0] = 'X'; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_MAGIC); b[0] = 'I';
         b[4] = 2; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_VERSION); b[4] = 1;
-        b[6] = 1; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_VERSION); b[6] = 0;
+        { uint8_t f6 = b[6]; b[6] = 2; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_VERSION); b[6] = f6; }   /* an unknown flag bit; bit 0 is the climate block (island.h) */
         b[blen / 2] ^= 0x10; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_CRC); b[blen / 2] ^= 0x10;
         b[12] ^= 1; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_CRC); b[12] ^= 1;
         b[blen - 1] ^= 0x01; assert(cp_island_parse(b, blen, &D2) == CP_TERR_ERR_ISL_CRC); b[blen - 1] ^= 0x01;

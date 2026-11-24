@@ -136,6 +136,15 @@ typedef struct CpTerrain {
     CpTerrainCave caves[CP_TERRAIN_CAVES_MAX];
     float volcano_x_m, volcano_y_m, volcano_radius_m, crater_radius_m;
     uint64_t island_hash;   /* cp_island_hash of the desc the terrain was generated from; 0 for layouts. Mixed into cp_terrain_hash */
+    /* Climate maps (island-realism plan part II, M2). Filled by cp_terrain_generate_desc when ALL of climate, biome, veg and
+     * the workspace's climate_work are set (and n >= 64); otherwise they are left alone and climate_n stays 0. Not part of
+     * cp_terrain_hash (that is the shape; the F0 parity gate relies on it): cp_terrain_climate_hash covers them.
+     *   climate  CP_TERRAIN_CLIMATE_N^2 * 4 bytes, but the grid is climate_n^2 (256 for n >= 256, else the largest power
+     *            of two <= n); R precipitation 0..4000 mm/yr linear, G temperature -10..+30 C, B cloud water, A fog frequency
+     *   biome    n*n, CP_BIOME_* (climate.h)
+     *   veg      n*n*4: R canopy, G undergrowth, B grass, A litter and moss wetness */
+    uint8_t *climate, *biome, *veg;
+    int climate_n;
 } CpTerrain;
 
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.
@@ -150,7 +159,14 @@ typedef struct CpTerrainWorkspace {
     int32_t *recv;
     int32_t *ups;
     int32_t *queue;
+    float *climate_work;         /* optional: cp_terrain_climate_work_floats() floats; NULL skips the climate maps */
 } CpTerrainWorkspace;
+
+#define CP_TERRAIN_CLIMATE_N 256   /* the climate grid of an island of n >= 256 */
+/* Floats the climate maps need as workspace (independent of n). */
+size_t cp_terrain_climate_work_floats(void);
+/* FNV-1a 64 over the climate, biome and veg maps (climate_n, then the bytes); 0 when they were not made. */
+uint64_t cp_terrain_climate_hash(const CpTerrain *t);
 
 void cp_terrain_params_default(CpTerrainParams *p);
 int  cp_terrain_validate(const CpTerrainParams *p);

@@ -6,7 +6,7 @@
   "n": 1536,
   "scale_pm": 1560,
   "wind": {"dir_mdeg":135000,"speed_cms":800},
-  "climate": {"scale_h_pm":8000,"scale_z_pm":2500,"t_sea_cC":1400,"lapse_cK_per_km":620},
+  "climate": {"scale_h_pm":8000,"scale_z_pm":2500,"t_sea_cC":1400,"lapse_cK_per_km":620,"calib":{"rain_scale_pm":220,"p_inf_mm":250,"qc_ref_pm":3000,"tau_s":800,"trade_w_pm":880,"storm_cms":2500,"snow_cC":315,"aspect_cC":150,"foehn_cC":100,"treeline_cC":700,"tundra_cC":450,"p_scrub_mm":250,"p_meadow_mm":450,"p_dryforest_mm":900,"p_jungle_mm":1700,"canopy_p_full_mm":1800}},
   "coast": {"reef_pm":[750,660],"cliff_pm":[-1000,0]},
   "erosion": {"stream_iters":0,"droplets":0},
   "nest": {"r_dm":1900,"floor_cm":4200,"lake":{"x_dm":-1500,"y_dm":700,"r_dm":680,"depth_cm":3400}},

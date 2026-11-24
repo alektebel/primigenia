@@ -185,7 +185,7 @@ climate-test: $(BUILD)/climate_test
 climate-bench: $(BUILD)/climate_test
 	./$(BUILD)/climate_test --bench
 # W11: native smoke remains small; 1024 guarantees and parity are opt-in.
-TERRAIN_SRC := core/src/terrain.c core/src/island_desc.c core/src/rng.c
+TERRAIN_SRC := core/src/terrain.c core/src/island_desc.c core/src/climate.c core/src/rng.c
 $(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
@@ -205,10 +205,16 @@ $(ISLAND_F0): tools/island/from_layout.mjs tools/island/pack.mjs core/src/terrai
 $(BUILD)/island_test: tests/test_island.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: island-test island-test-heavy
-island-test: $(BUILD)/island_test $(ISLAND_F0)
+# M2: the climate maps in the pipeline (tests/test_terrain_climate.c): add-on, goldens in tests/golden/island-climate.hashes
+# (regenerate on purpose with `./build/terrain_climate_test build/island/star_f0.isl --heavy --write-golden`), wind convention, calibration.
+$(BUILD)/terrain_climate_test: tests/test_terrain_climate.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+island-test: $(BUILD)/island_test $(BUILD)/terrain_climate_test $(ISLAND_F0)
 	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0)
-island-test-heavy: $(BUILD)/island_test $(ISLAND_F0)
+	nice -n 10 ./$(BUILD)/terrain_climate_test $(ISLAND_F0)
+island-test-heavy: $(BUILD)/island_test $(BUILD)/terrain_climate_test $(ISLAND_F0)
 	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0) --heavy
+	nice -n 10 ./$(BUILD)/terrain_climate_test $(ISLAND_F0) --heavy
 
 # F1 gate: the desc made from layout 1 (splines off) maps within 2% of the layout-1 stats the picker shipped (n 1536, about 8 s).
 .PHONY: island-stats
@@ -217,11 +223,11 @@ island-stats: $(BUILD)/terrain_cli $(ISLAND_F0)
 	nice -n 10 python3 tools/island/maps.py --cli $(BUILD)/terrain_cli --desc $(ISLAND_F0) --out $(BUILD)/island/maps-desc --n 1536 --seed 1 > $(BUILD)/island/maps-desc/log.txt
 	python3 tools/island/compare_stats.py $(BUILD)/island/maps-desc/stats-desc.json web/gaitlab/island/stats.json
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc,_ct_shape_desc]'
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc,_ct_shape_desc,_ct_climate_run,_ct_climate,_ct_climate_n,_ct_climate_hash]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
-	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=83886080 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
+	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=104857600 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
 .PHONY: terrain-parity
 terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm $(ISLAND_F0)
 	nice -n 10 node tests/test_wasm_terrain.mjs
@@ -360,7 +366,7 @@ godot: $(BUILD)/libcpore.a
 godot-cave-mesh-test: godot
 	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_cave_mesh.gd
 
-godot-test: godot $(BUILD)/terrain_cli $(BUILD)/world_cli
+godot-test: godot $(BUILD)/terrain_cli $(BUILD)/world_cli $(ISLAND_F0)
 	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/run_m0_tests.gd
 godot-render-test: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \

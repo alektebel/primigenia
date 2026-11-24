@@ -23,6 +23,7 @@ const TESTS := [
 	"res://game/tests/test_camera.gd",
 	"res://game/tests/test_actors.gd",
 	"res://game/tests/test_cache.gd",
+	"res://game/tests/test_island_climate.gd",
 	"res://game/tests/test_ground_marks.gd",
 	"res://game/tests/test_visual.gd",
 	"res://game/tests/test_photo.gd",
@@ -64,7 +65,13 @@ func _initialize() -> void:
 			printerr("FATAL: GDExtension class %s is missing. Run `make godot` first (it seeds .godot/extension_list.cfg)." % cls)
 			quit(2)
 			return
+	var only := ""   # `-- only=test_cache` runs the tests whose file name contains the text
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("only="):
+			only = a.substr(5)
 	for path in TESTS:
+		if only != "" and not path.contains(only):
+			continue
 		current = path.get_file()
 		var script = load(path)
 		if script == null or not script.can_instantiate():

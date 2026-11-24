@@ -92,11 +92,20 @@ const marks = nested(block(`L${layoutNo}_M`)).map(([n, kind, x, y]) => ({ name: 
 
 // Wind: the table's unit vector, as a compass-free angle in millidegrees (atan2 y,x), speed from the plan.
 const windDeg = (Math.atan2(wy, wx) * 180 / Math.PI + 360) % 360;
+// Climate calibration of the Star massif (docs/plans/island-realism.md part II, DESIGN A99): the island's own data, tuned against the M2
+// region gates (tools/climate/gates.py; numbers and the sweep in docs/evidence/island/climate/star/README.md). Keys are CALIB_KEYS of
+// pack.mjs; the units are in core/include/cpore/island.h (CP_ISL_CAL_*). Layouts 2-4 are not tuned and keep the kernel defaults.
+const CALIB = {
+  // tuned against the M2 gates (docs/evidence/island/climate/star/README.md); the kernel's starting values were 110, 200, 1.0, 1000, 750 and 1500
+  rain_scale_pm: 220, p_inf_mm: 250, qc_ref_pm: 3000, tau_s: 800, trade_w_pm: 880, storm_cms: 2500,
+  // canon and Whittaker values, listed so the island data says what it uses (they equal the kernel defaults)
+  snow_cC: 315, aspect_cC: 150, foehn_cC: 100, treeline_cC: 700, tundra_cC: 450,
+  p_scrub_mm: 250, p_meadow_mm: 450, p_dryforest_mm: 900, p_jungle_mm: 1700, canopy_p_full_mm: 1800 };
 const out = {
   format: 'primigenia.island/1',
   id: idm[1], size_dm: 80000, island_radius_dm: 24500, n: 1536, scale_pm: SCALE_PM,
   wind: { dir_mdeg: Math.round(windDeg * 1000), speed_cms: 800 },
-  climate: { scale_h_pm: 8000, scale_z_pm: 2500, t_sea_cC: 1400, lapse_cK_per_km: 620 },
+  climate: { scale_h_pm: 8000, scale_z_pm: 2500, t_sea_cC: 1400, lapse_cK_per_km: 620, ...(layoutNo === 1 ? { calib: CALIB } : {}) },
   coast: { reef_pm: [pm(rx, 'reef x'), pm(ry, 'reef y')], cliff_pm: [pm(cx, 'cliff x'), pm(cy, 'cliff y')] },
   erosion: { stream_iters: stream, droplets: drops },
   nest: { r_dm: dm(nestR, 'nest r'), floor_cm: 4200, lake: { x_dm: -1500, y_dm: 700, r_dm: 680, depth_cm: 3400 } },

@@ -130,7 +130,7 @@ The JSON shape below is the contract for F1 and F2:
   "format": "primigenia.island/1",
   "id": "star-massif",
   "size_dm": 80000, "island_radius_dm": 24500, "n": 1536,
-  "wind": {"dir_mdeg": 225000, "speed_cms": 800},
+  "wind": {"dir_mdeg": 135000, "speed_cms": 800},
   "climate": {"scale_h_pm": 8000, "scale_z_pm": 2500, "t_sea_cC": 1400, "lapse_cK_per_km": 620},
   "nest": {"r_dm": 1900, "floor_cm": 4200, "lake": {"x_dm": -1500, "y_dm": 700, "r_dm": 680, "depth_cm": 3400}},
   "features": [
@@ -150,6 +150,8 @@ The JSON shape below is the contract for F1 and F2:
 ```
 
 **Rules:**
+- **Wind convention (verified in M2).** `wind.dir_mdeg` is the direction the wind blows TOWARD, as `atan2(y, x)` in map axes (x east, y south), in millidegrees. The Star massif's NE trade wind blows toward the south-west: `(-0.7, 0.7)` = **135000**, which is what `from_layout.mjs` writes. (The 225000 this example carried before M2 was a placeholder; it would be a wind from the SE.) `tests/test_terrain_climate.c` pins it: under 135000 the NE side of the island is the wet one, under 315000 the SW side.
+- **Climate calibration block (M2).** `climate.calib` holds sixteen optional integers, an own header flag (bit 0 of the u16 flags) and 64 bytes after the masks; 0 or absent means the kernel default. Keys and units are `CALIB_KEYS` in `pack.mjs` and `CP_ISL_CAL_*` in `island.h`.
 - **Polylines:** each point is `[x_dm, y_dm, half_width_dm, height_cm]`. They are evaluated as **centripetal Catmull–Rom**, sampled at a fixed 16 segments per span into a segment list. The parameter spacing uses `sqrtf(sqrtf(d²))` = d^0.5, so the sampling stays inside the float rules. Distance to the curve is the existing `seg_dist`, and height and width are interpolated along it.
 - **Masks:** 128² u8 over the 8 km square (62.5 m texels), sampled bilinearly. Four masks:
   - `climate_bias`: ±50% on the precipitation; the art lever for "make this valley wetter";
@@ -376,6 +378,12 @@ At island generation, inside the same deterministic call and the W13 loading scr
 | **M2** | Pipeline + WASM + editor layer | `terrain.c` (`climate_maps`), `CpTerrain` fields, `apps/terrain_wasm_api.c` (`_ct_climate`), `cpore_terrain.cpp` (dict keys `climate`, `biome`, `veg`), `terrain_cache.gd`, `maps.py --climate` | WASM parity of the climate maps; terrain v5 goldens extended | **Region gates on Star massif:** ≥ 80% of the "Forest vale" region polygon classifies as forest/jungle; ≥ 70% of "Canyon badlands" as desert/badlands/scrub; mesa top is tundra or alpine; the nest valley is meadow; windward/lee annual P ratio ≥ 8 (Hilo ~3,200 mm vs Waikoloa ~250 mm gives ~13); snow only above 600 m game |
 | **M3** | Sim: cover, trunks, trails | `core/src/flora_place.c`, `world.h` (`CpStageField`), `stage_world.c` (speed, nav obstacles), `CP_STAGE_VERSION 4` | `test_nav.c` forest cases; `make nav-test` 20/20; `test_world.c` field hash covers cover and trunks | nav gate 20/20 on the star island; a creature crosses the forest vale by trail in ≤ 70% of the off-trail time |
 | **M4** | Flora consumes the climate | `flora_placement.gd`, `flora.json`, `grass.gd`, `grass.gdshader`, `terrain_data.gd` (`veg_tex`, `biome_tex`) | `godot/game/tests/flora_climate_test.gd` (counts per biome; no tree in desert cells; Madre de agua at the spring) | OG2/OG3 show the rain shadow; owner eyeball (tracker I2) |
+
+**M2 as built (2026-11-24):** the pipeline, WASM, Godot and cache plumbing are in (details and file list: `tools/climate/README.md`, "M2"). Calibration lives in the island data as a `climate.calib` block. On the Star massif all six gates pass for seeds 1, 7 and 42 (numbers, images and the tuning method: `docs/evidence/island/climate/star/README.md`). Two readings of the gate text and two known gaps:
+- the forest and canyon percentages leave the terrain overrides (cliff, beach) out of the denominator (the all-land numbers are in the JSON: 79.8 and 74.2); the mesa top is the region's cells within 10 % of its highest ground; windward/lee is the 95th percentile of land precipitation over the Canyon badlands mean (the vale over the canyon is 5.2);
+- the tuned constants differ from the starting values: `rain_scale` 0.22, `p_inf` 250, `tau` 800 s, trade share 0.88, storm speed 25 m/s, `qc_ref` 3; the summits then get about 9,000 mm/yr, far over the 3,000 to 4,000 windward target, and the RGBA8 precipitation map saturates at 4,000;
+- the trade-wind fog belt (360 to 600 m game) touches only the mesa and Crown Horn, not the NE vale floor;
+- `material_map` still uses the altitude snow rule (365 m); G1 switches it to the biome.
 
 ## 5. Part III: the jungle look study (lab, 3–4 versions)
 

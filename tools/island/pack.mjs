@@ -5,6 +5,9 @@
 export const FORMAT = 'primigenia.island/1';
 export const LIMITS = { feat: 96, pt: 1024, trail: 32, trailPt: 256, region: 24, regionPt: 96, mark: 32, mask: 4 };
 export const MASK_RES = 128;
+// Climate calibration slots (core/include/cpore/island.h CP_ISL_CAL_*). Keys under j.climate.calib; 0 or absent = the kernel default.
+export const CALIB_KEYS = ['rain_scale_pm', 'p_inf_mm', 'qc_ref_pm', 'snow_cC', 'aspect_cC', 'foehn_cC', 'trade_w_pm', 'storm_cms',
+  'treeline_cC', 'tundra_cC', 'p_scrub_mm', 'p_meadow_mm', 'p_dryforest_mm', 'p_jungle_mm', 'canopy_p_full_mm', 'tau_s'];
 export const MASK_KEYS = ['climate_bias', 'canopy', 'erosion', 'protect'];
 const KIND = { massif: 1, range: 2, ring: 3, plateau: 4, terrace: 5, badlands: 6, channel: 7, islet: 8, cone: 9 };
 const FLAG_SEA = 1, FLAG_RIVER = 2, FLAG_SPLINE = 4;
@@ -116,6 +119,12 @@ export function packIsland(j) {
     for (const key of MASK_KEYS.slice(masks.length)) if (j.masks[key] !== undefined) throw new Error(`masks: ${key} given after a gap`);
   }
 
+  const calib = clim.calib ? new Array(16).fill(0) : null;
+  if (calib) {
+    for (const k of Object.keys(clim.calib)) if (!CALIB_KEYS.includes(k)) throw new Error(`climate.calib: unknown key ${k}`);
+    CALIB_KEYS.forEach((k, i) => { if (clim.calib[k] !== undefined) calib[i] = int(clim.calib[k], `climate.calib.${k}`, 0, 1000000); });
+  }
+
   const w = new Writer();
   w.i32(int(j.size_dm, 'size_dm'), int(j.island_radius_dm, 'island_radius_dm'), int(j.n, 'n'), int(j.scale_pm, 'scale_pm'),
     int(wind.dir_mdeg ?? 0, 'wind.dir_mdeg'), int(wind.speed_cms ?? 0, 'wind.speed_cms'),
@@ -135,11 +144,12 @@ export function packIsland(j) {
   for (const p of rpts) w.i32(...p);
   marks.forEach((m, i) => { w.i32(int(m.x_dm, `mark ${i} x_dm`), int(m.y_dm, `mark ${i} y_dm`)); w.str(str(m.name, 32, `mark ${i} name`), 32); w.str(str(m.kind, 16, `mark ${i} kind`), 16); });
   for (const m of masks) w.bytes(m);
+  if (calib) w.i32(...calib);
   const body = w.concat();
 
   const out = new Uint8Array(16 + body.length), dv = new DataView(out.buffer);
   out.set([0x49, 0x53, 0x4c, 0x31], 0);        // "ISL1"
-  dv.setUint16(4, 1, true); dv.setUint16(6, 0, true); dv.setUint32(8, body.length, true);
+  dv.setUint16(4, 1, true); dv.setUint16(6, calib ? 1 : 0, true); dv.setUint32(8, body.length, true);
   out.set(body, 16);
   dv.setUint32(12, crc32(out, 12, 16), true);
   return out;

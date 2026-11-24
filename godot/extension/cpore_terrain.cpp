@@ -11,7 +11,12 @@
 #include <vector>
 extern "C" {
 #include "cpore/terrain.h"
+#include "cpore/island.h"
+#include "cpore/climate.h"
 }
+#include <memory>
+#include <cinttypes>
+#include <cstdio>
 #include "terrain_fields.inc"
 
 using namespace godot;
@@ -24,6 +29,8 @@ int fill_params(const Dictionary &options, CpTerrainParams &p) {
     const Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i) {
         if (keys[i].get_type() != Variant::STRING && keys[i].get_type() != Variant::STRING_NAME) return CP_TERR_ERR_RANGE;
+        // island keys belong to the cache key and the desc (see generate); they are not terrain parameters
+        if (keys[i] == Variant("island") || keys[i] == Variant("island_hash") || keys[i] == Variant("island_blob")) continue;
         if (!known.has(keys[i])) return CP_TERR_ERR_RANGE;
     }
     int bad = 0;
@@ -53,6 +60,9 @@ void CporeTerrain::_bind_methods() {
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("defaults"), &CporeTerrain::defaults);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("validate", "params"), &CporeTerrain::validate);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("hash", "data"), &CporeTerrain::hash);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("island_info", "blob"), &CporeTerrain::island_info);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("climate_hash", "data"), &CporeTerrain::climate_hash);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("climate_version"), &CporeTerrain::climate_version);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("surface_maps", "data"), &CporeTerrain::surface_maps);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("visual_maps", "data", "options"), &CporeTerrain::visual_maps);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("sun_visibility", "data", "sun"), &CporeTerrain::sun_visibility);
@@ -114,8 +124,27 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
     CpTerrain t{};
     t.height = height.ptrw(); t.flow = flow.ptrw(); t.sediment = sediment.ptrw(); t.material = material.ptrw(); t.river = river.ptrw();
     CpTerrainWorkspace ws{level.ptrw(), recv.data(), ups.data(), queue.data()};
+    // An authored island (island.h): options["island_blob"] is its ISL1 blob. Then the climate maps (part II, M2) come with it:
+    // climate (RGBA8 climate_n^2), biome (n*n) and veg (n*n*4), and the result carries "island" and "island_hash" for the cache key.
+    std::unique_ptr<CpIslandDesc> desc;
+    PackedByteArray climate, biome, veg;
+    std::vector<float> climate_work;
+    if (options.has("island_blob")) {
+        if (options["island_blob"].get_type() != Variant::PACKED_BYTE_ARRAY) { busy.store(false); result["error"] = int(CP_TERR_ERR_RANGE); return result; }
+        PackedByteArray blob = options["island_blob"];
+        desc.reset(new CpIslandDesc);
+        rc = cp_island_parse(blob.ptr(), size_t(blob.size()), desc.get());
+        if (rc) { busy.store(false); result["error"] = rc; return result; }
+        if (p.n >= 64) {
+            climate.resize(CP_TERRAIN_CLIMATE_N * CP_TERRAIN_CLIMATE_N * 4);
+            biome.resize(count); veg.resize(int64_t(count) * 4);
+            climate_work.resize(cp_terrain_climate_work_floats());
+            t.climate = climate.ptrw(); t.biome = biome.ptrw(); t.veg = veg.ptrw();
+            ws.climate_work = climate_work.data();
+        }
+    }
     stage.store(0); done.store(0); total.store(1);
-    rc = cp_terrain_generate(&p, &t, &ws, notify, this);
+    rc = desc ? cp_terrain_generate_desc(&p, desc.get(), &t, &ws, notify, this) : cp_terrain_generate(&p, &t, &ws, notify, this);
     busy.store(false);
     result["error"] = rc;
     if (rc) return result;
@@ -131,6 +160,16 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
     result["seed"] = int64_t(p.seed);
     result["n"] = t.n;
     result["size_m"] = double(t.size_m);
+    if (desc) {
+        resolved["island"] = String(desc->id);
+        resolved["island_hash"] = cpore::hash_text(cp_island_hash(desc.get()));
+        result["island"] = resolved["island"]; result["island_hash"] = resolved["island_hash"];
+        if (t.climate_n > 0) {
+            result["climate_n"] = t.climate_n;
+            result["climate"] = climate; result["biome"] = biome; result["veg"] = veg;
+            result["climate_hash"] = cpore::hash_text(cp_terrain_climate_hash(&t));
+        }
+    }
     result["params"] = resolved;
     result["hash"] = cpore::hash_text(cp_terrain_hash(&t));
     result["height"] = height; result["flow"] = flow; result["sediment"] = sediment;
@@ -148,6 +187,36 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
     result["caves"] = caves;
     result["volcano"] = Vector4(t.volcano_x_m, t.volcano_y_m, t.volcano_radius_m, t.crater_radius_m);
     return result;
+}
+
+// {error, id, hash (hex, cp_island_hash), n, size_m} of an ISL1 blob: what the cache key and the callers need before generating.
+Dictionary CporeTerrain::island_info(const PackedByteArray &blob) {
+    Dictionary r;
+    std::unique_ptr<CpIslandDesc> d(new CpIslandDesc);
+    const int rc = cp_island_parse(blob.ptr(), size_t(blob.size()), d.get());
+    r["error"] = rc;
+    if (rc) return r;
+    r["id"] = String(d->id);
+    r["hash"] = cpore::hash_text(cp_island_hash(d.get()));
+    r["n"] = d->n;
+    r["size_m"] = double(d->size_dm) / 10.0;
+    return r;
+}
+
+int CporeTerrain::climate_version() { return CP_CLIMATE_VERSION; }
+
+// cp_terrain_climate_hash of a generate() result that carries climate, biome and veg ("" otherwise).
+String CporeTerrain::climate_hash(const Dictionary &data) {
+    if (!data.has("n") || !data.has("climate") || !data.has("biome") || !data.has("veg") || !data.has("climate_n")) return String();
+    int64_t n, cn;
+    if (!cpore::to_int(data["n"], CP_TERRAIN_N_MIN, CP_TERRAIN_N_MAX, n) || !cpore::to_int(data["climate_n"], 1, CP_TERRAIN_CLIMATE_N, cn)) return String();
+    if (data["climate"].get_type() != Variant::PACKED_BYTE_ARRAY || data["biome"].get_type() != Variant::PACKED_BYTE_ARRAY || data["veg"].get_type() != Variant::PACKED_BYTE_ARRAY) return String();
+    PackedByteArray climate = data["climate"], biome = data["biome"], veg = data["veg"];
+    if (climate.size() != CP_TERRAIN_CLIMATE_N * CP_TERRAIN_CLIMATE_N * 4 || biome.size() != n * n || veg.size() != n * n * 4) return String();
+    CpTerrain t{};
+    t.n = int(n); t.climate_n = int(cn);
+    t.climate = const_cast<uint8_t *>(climate.ptr()); t.biome = const_cast<uint8_t *>(biome.ptr()); t.veg = const_cast<uint8_t *>(veg.ptr());
+    return cpore::hash_text(cp_terrain_climate_hash(&t));
 }
 
 String CporeTerrain::hash(const Dictionary &data) {
@@ -186,6 +255,12 @@ String CporeTerrain::hash(const Dictionary &data) {
         o.facing_x = facing.x; o.facing_y = facing.z;
         o.width_m = size.x; o.height_m = size.y; o.depth_m = size.z;
         o.waterfall = bool(c["waterfall"]) ? 1 : 0;
+    }
+    if (data.has("island_hash")) {   // an authored island: the desc hash is part of the terrain hash (terrain v5)
+        if (data["island_hash"].get_type() != Variant::STRING) return String();
+        const String text = data["island_hash"];
+        if (text.length() != 16 || !text.is_valid_hex_number(false)) return String();
+        t.island_hash = (uint64_t(text.substr(0, 8).hex_to_int()) << 32) | uint64_t(text.substr(8, 8).hex_to_int());   // halves: hex_to_int is signed 64-bit
     }
     Vector4 v = data["volcano"];
     t.volcano_x_m = v.x; t.volcano_y_m = v.y; t.volcano_radius_m = v.z; t.crater_radius_m = v.w;

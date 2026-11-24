@@ -24,7 +24,8 @@ mkdirSync('build/island', { recursive: true });
 writeFileSync('build/island/rich.isl', rich);
 
 const engine = await createTerrain({});
-const cli = (file, seed, n) => execFileSync('nice', ['-n', '10', 'build/terrain_cli', 'hash', '--desc', file, '--seed', String(seed), '--n', String(n)], { encoding: 'utf8' }).trim().split(/\s+/);
+// M2: --climate makes the climate maps too; the output is "<terrain hash> <seconds> climate <climate hash>"
+const cli = (file, seed, n) => execFileSync('nice', ['-n', '10', 'build/terrain_cli', 'hash', '--desc', file, '--seed', String(seed), '--n', String(n), '--climate'], { encoding: 'utf8' }).trim().split(/\s+/);
 let rows = [];
 assert.equal(engine.module._ct_desc_set(10), -12, 'a truncated blob is refused');
 assert.equal(engine.module._ct_generate_desc(), -8, 'no configured terrain, no generation');
@@ -35,6 +36,10 @@ for (const [name, file, blob] of [['plain', 'build/island/star_f0.isl', plain], 
     const t = engine.generate({ seed, n, desc: new Uint8Array(blob) });
     assert.equal(t.hash, native[0], `${name} seed ${seed} n=${n}`);
     assert.equal(t.size, 8000); assert.equal(t.version, 5); assert.ok(t.desc);
+    // M2: the climate maps are byte-identical native vs WASM (the climate hash covers climate, biome and veg), and a climate-only re-run reproduces them
+    assert.equal(t.climateHash, native[3], `${name} seed ${seed} n=${n} climate maps`);
+    assert.equal(t.climateN, 256); assert.equal(t.climate.length, 256 * 256 * 4); assert.equal(t.biome.length, n * n); assert.equal(t.veg.length, n * n * 4);
+    assert.equal(engine.climate(null, n).climateHash, t.climateHash, 'climate re-run');
     assert.ok(t.height.every(Number.isFinite) && t.height.length === n * n);
     // the desc hash is part of the terrain hash: the same seed on the layout, and a different desc, differ
     const layout = execFileSync('build/terrain_cli', ['hash', '--layout', '1', '--seed', String(seed), '--n', String(n)], { encoding: 'utf8' }).trim().split(/\s+/)[0];
@@ -44,6 +49,16 @@ for (const [name, file, blob] of [['plain', 'build/island/star_f0.isl', plain], 
   }
 }
 assert.notEqual(rows[0].hash, rows[3].hash, 'the rich desc changes the terrain');
+{   // the calibration block (island.h CP_ISL_CAL_*) is read by the WASM build and changes the maps, not the terrain
+    const j2 = JSON.parse(execFileSync('node', ['tools/island/from_layout.mjs'], { encoding: 'utf8' })); j2.climate = { ...(j2.climate || {}), calib: { rain_scale_pm: 400, p_inf_mm: 60 } };
+    const a = engine.generate({ seed: 1, n: 256, desc: new Uint8Array(plain) });
+    const b = engine.generate({ seed: 1, n: 256, desc: new Uint8Array(packIsland(j2)) });
+    assert.notEqual(a.climateHash, b.climateHash);
+    assert.equal(engine.climate(new Uint8Array(plain), 256).climateHash, a.climateHash, 'a climate re-run with the first blob returns its maps');
+    const sumR = (m) => { let t = 0; for (let i = 0; i < 256 * 256; i++) t += m.climate[4 * i]; return t; };
+    assert.notEqual(sumR(a), sumR(b));   // the terrain hash mixes the desc hash so it differs; the shape does not:
+    assert.deepEqual(Array.from(a.height.slice(0, 4096)), Array.from(b.height.slice(0, 4096)));
+}
 // F2: the editor's shape level (cp_terrain_shape_desc, _ct_shape_desc) is the CLI's `--base` run; erosion stays off even for a desc that recommends it
 for (const [name, file, blob] of [['plain', 'build/island/star_f0.isl', plain], ['rich', 'build/island/rich.isl', rich]]) {
   const native = execFileSync('build/terrain_cli', ['hash', '--desc', file, '--seed', '1', '--n', '256', '--base'], { encoding: 'utf8' }).trim().split(/\s+/)[0];
@@ -57,4 +72,4 @@ console.log('island WASM: shape level (_ct_shape_desc) == terrain_cli --base');
 const seedHash = execFileSync('build/terrain_cli', ['hash', '--seed', '1', '--n', '256'], { encoding: 'utf8' }).trim().split(/\s+/)[0];
 const again = engine.generate({ seed: 1, n: 256 });
 assert.equal(again.hash, seedHash); assert.equal(again.size, 3600); assert.ok(!again.desc);
-console.log('island WASM: native == WASM for 3 seeds x 2 descs (splines, masks, protect, a trail); no leakage into seed generation');
+console.log('island WASM: native == WASM for 3 seeds x 2 descs (splines, masks, protect, a trail) and for their climate maps; no leakage into seed generation');

@@ -298,6 +298,145 @@ def region_mask(meta_r, W, nest_r):
     return m
 
 
+BIOME_NAMES = ["sea", "reef", "beach", "meadow", "cloud forest", "dry forest", "scrub", "desert", "badlands", "alpine", "tundra", "snow", "cliff"]
+BIOME_RGB = [(30, 70, 130), (60, 190, 200), (222, 207, 150), (146, 200, 88), (16, 104, 52), (104, 150, 58), (192, 172, 92), (226, 190, 108),
+             (186, 98, 58), (150, 152, 172), (196, 214, 226), (250, 250, 255), (108, 100, 96)]
+
+
+def ramp(stops, v):
+    """v in 0..1 through (pos, rgb) stops."""
+    for (a, ca), (b, cb) in zip(stops, stops[1:]):
+        if v <= b:
+            t = 0 if b == a else (v - a) / (b - a)
+            return tuple(int(ca[i] + (cb[i] - ca[i]) * t) for i in range(3))
+    return stops[-1][1]
+
+
+PRECIP_STOPS = [(0.0, (120, 82, 46)), (0.06, (206, 168, 98)), (0.15, (230, 218, 120)), (0.3, (120, 190, 110)), (0.55, (40, 140, 170)), (0.8, (40, 70, 190)), (1.0, (110, 40, 170))]
+
+
+def lut_image(img, stops):
+    lut = [ramp(stops, v / 255.0) for v in range(256)]
+    out = Image.new("RGB", img.size)
+    out.putdata([lut[v] for v in img.convert("L").tobytes()])
+    return out
+
+
+def key_strip(W, items, title):
+    """a legend: items = [(label, rgb)]"""
+    strip = Image.new("RGB", (W, 40), (20, 24, 30))
+    d = ImageDraw.Draw(strip)
+    f = font(int(W * 0.0115))
+    d.text((12, 12), title, font=f, fill=(255, 255, 255))
+    x = 18 + int(d.textlength(title, font=f))
+    for label, rgb in items:
+        d.rectangle((x, 11, x + 18, 29), fill=rgb, outline=(235, 235, 235))
+        d.text((x + 24, 12), label, font=f, fill=(235, 235, 235))
+        x += 36 + int(d.textlength(label, font=f)) + 8
+    return strip
+
+
+GATE_REGIONS = {"Forest vale": (60, 230, 110), "Canyon badlands": (255, 150, 70), "Mesa": (200, 150, 255), "Nest valley": (255, 214, 96)}
+
+
+def climate_overlay(img, meta):
+    """light overlay for the climate images: the four gated regions as outlines, the nest, the wind, scale and north."""
+    W = img.size[0]
+    P = Proj(W)
+    base = img.convert("RGBA")
+    d = ImageDraw.Draw(base)
+    f_mid, f_sm = font(int(W * 0.0125)), font(int(W * 0.0105))
+    for r in meta["regions"]:
+        c = GATE_REGIONS.get(r["name"])
+        if not c:
+            continue
+        pts = [P.pt(*p) for p in r["pts"]]
+        rr = P.m(r["w"] or meta["nest_r"])
+        m = Image.new("L", (W, W), 0)
+        md = ImageDraw.Draw(m)
+        if len(pts) > 1:
+            md.line(pts, fill=255, width=int(rr * 2))
+        for (px, py) in pts:
+            md.ellipse((px - rr, py - rr, px + rr, py + rr), fill=255)
+        from PIL import ImageFilter, ImageChops
+        edge = ImageChops.subtract(m, m.filter(ImageFilter.MinFilter(5)))
+        base.paste(Image.new("RGBA", (W, W), c + (255,)), (0, 0), edge)
+        d = ImageDraw.Draw(base)
+        lx, ly = pts[len(pts) // 2]
+        text_box(d, (lx - 30, ly - 10), r["name"], f_mid, fill=c, bg=(10, 14, 20, 190))
+    nx, ny = P.pt(0, 0)
+    d.regular_polygon((nx, ny, 9), 4, rotation=45, fill=(255, 214, 96, 255), outline=(20, 20, 20, 255))
+    wx, wy = meta["wind"]       # the layout's wind: the direction of travel
+    cx, cy = 70, 62
+    d.rectangle((14, 14, 232, 96), fill=(10, 14, 20, 190))
+    d.text((22, 18), "Trade wind blows from the NE", font=f_sm, fill=(210, 235, 255, 255))
+    d.line((cx - wx * 38, cy - wy * 30, cx + wx * 38, cy + wy * 30), fill=(130, 200, 255, 255), width=5)
+    d.ellipse((cx + wx * 38 - 7, cy + wy * 30 - 7, cx + wx * 38 + 7, cy + wy * 30 + 7), fill=(130, 200, 255, 255))
+    d.text((120, 52), "toward the SW,\nlee = rain shadow", font=f_sm, fill=(240, 200, 150, 255))
+    bar = P.m(1000)
+    x0, y0 = 20, W - 30
+    d.rectangle((x0 - 4, y0 - 16, x0 + bar + 70, y0 + 12), fill=(10, 14, 20, 200))
+    d.line((x0, y0, x0 + bar, y0), fill=(255, 255, 255, 255), width=4)
+    d.text((x0 + bar + 8, y0 - 9), "1 km", font=f_sm, fill=(255, 255, 255, 255))
+    d.text((W - 34, 10), "N", font=f_mid, fill=(255, 255, 255, 255))
+    d.polygon([(W - 26, 34), (W - 34, 54), (W - 18, 54)], fill=(255, 255, 255, 255))
+    return base.convert("RGB")
+
+
+def climate_images(pre, name, meta, a, relief):
+    """--climate: precipitation, biome, vegetation and cloud/fog images from the maps terrain_cli wrote (docs/plans/island-realism.md 4.2)."""
+    px = a.px
+    cn_raw = open(pre + "-climate.rgba", "rb").read()
+    cn = int(round((len(cn_raw) // 4) ** 0.5))
+    clim = Image.merge("RGBA", [c.resize((px, px), Image.BILINEAR) for c in Image.frombytes("RGBA", (cn, cn), cn_raw).split()])   # per channel: an RGBA resize would premultiply by the alpha (fog)
+    biome = Image.open(pre + "-biome.pgm").resize((px, px), Image.NEAREST)
+    n = Image.open(pre + "-biome.pgm").size[0]
+    veg = Image.merge("RGBA", [c.resize((px, px), Image.BILINEAR) for c in Image.frombytes("RGBA", (n, n), open(pre + "-veg.rgba", "rb").read()).split()])
+    land = biome.point(lambda v: 255 if v > 1 else 0)
+    quiet = dict(meta, routes=[])
+    shade = relief.convert("L").point(lambda v: int(205 + v * 0.2))   # light: the colours must read as data, not as relief
+    from PIL import ImageChops
+
+    def shaded(rgb):
+        """rgb modulated by the relief shading so the ground reads under the colour"""
+        k = shade.point(lambda v: min(255, int(v * 1.0)))
+        return ImageChops.multiply(rgb, Image.merge("RGB", (k, k, k)))
+
+    out = {}
+    pr = lut_image(clim.getchannel("R"), PRECIP_STOPS)
+    pr = Image.composite(shaded(pr), pr, land)
+    sea_img = Image.new("RGB", (px, px), (34, 60, 96))
+    pr = Image.composite(pr, sea_img, land.point(lambda v: 255 if v else 0))
+    out["precip"] = (climate_overlay(pr, meta), key_strip(px, [("0", ramp(PRECIP_STOPS, 0)), ("250", ramp(PRECIP_STOPS, 0.0625)), ("600", ramp(PRECIP_STOPS, 0.15)),
+                                                                          ("1200", ramp(PRECIP_STOPS, 0.3)), ("2200", ramp(PRECIP_STOPS, 0.55)), ("3200", ramp(PRECIP_STOPS, 0.8)), ("4000+ mm/yr", ramp(PRECIP_STOPS, 1.0))], "Annual precipitation  "))
+    lut = BIOME_RGB
+    bi = Image.new("RGB", (px, px)); bi.putdata([lut[v] for v in biome.tobytes()])
+    bi = Image.composite(shaded(bi), bi, land)
+    out["biome"] = (climate_overlay(bi, meta), key_strip(px, list(zip(BIOME_NAMES, BIOME_RGB))[2:], "Biome  "))
+    # vegetation: ground tone by grass and canopy, dark green canopy, undergrowth thickens it, litter/moss wetness adds blue-green
+    can, und, gra, lit = (veg.getchannel(i) for i in range(4))
+    base = Image.new("RGB", (px, px), (150, 128, 96))
+    gcol = Image.new("RGB", (px, px), (150, 188, 84))
+    ccol = Image.new("RGB", (px, px), (14, 82, 38))
+    v1 = Image.composite(gcol, base, gra)
+    v2 = Image.composite(ccol, v1, can.point(lambda v: min(255, int(v * 1.1))))
+    v2 = Image.composite(Image.new("RGB", (px, px), (8, 52, 28)), v2, und.point(lambda v: int(v * 0.5)))
+    v2 = Image.composite(Image.new("RGB", (px, px), (240, 244, 250)), v2, biome.point(lambda v: 255 if v == 11 else 0))
+    v2 = Image.composite(Image.new("RGB", (px, px), (118, 110, 104)), v2, biome.point(lambda v: 255 if v == 12 else 0))
+    v2 = Image.composite(shaded(v2), v2, land)
+    v2 = Image.composite(v2, sea_img, land)
+    out["veg"] = (climate_overlay(v2, meta), key_strip(px, [("bare ground", (150, 128, 96)), ("grass", (150, 188, 84)), ("canopy", (14, 82, 38)), ("snow", (240, 244, 250)), ("cliff", (118, 110, 104))], "Vegetation  "))
+    # clouds: cloud water (R) and fog frequency (A) over the relief, the trade-wind cloud belt
+    qc, fog = clim.getchannel("B"), clim.getchannel("A")
+    cl = relief.convert("RGB").copy()
+    cl = Image.composite(Image.new("RGB", (px, px), (245, 248, 252)), cl, qc.point(lambda v: min(200, int(v * 1.5))))
+    cl = Image.composite(Image.new("RGB", (px, px), (170, 200, 215)), cl, fog.point(lambda v: min(160, int(v * 1.0))))
+    out["cloud"] = (climate_overlay(cl, meta), key_strip(px, [("cloud water", (245, 248, 252)), ("fog frequency", (170, 200, 215))], "Cloud and fog  "))
+    for k, (img, key) in out.items():
+        both = Image.new("RGB", (px, px + 40)); both.paste(img.convert("RGB"), (0, 0)); both.paste(key, (0, px))
+        both.save(os.path.join(a.out, "%s-%s.jpg" % (name, k) if a.suffix is None else "%s-%s-%s.jpg" % (name, a.suffix, k)), quality=a.quality, optimize=True)
+
+
 def legend_strip(W):
     strip = Image.new("RGB", (W, 70), (20, 24, 30))
     d = ImageDraw.Draw(strip)
@@ -323,6 +462,10 @@ def main():
     ap.add_argument("--desc", default=None, help="an ISL1 island blob (tools/island/pack.mjs): map that island instead of --layouts")
     ap.add_argument("--px", type=int, default=1100)
     ap.add_argument("--quality", type=int, default=80)
+    ap.add_argument("--climate", action="store_true", help="with --desc: also the climate maps (precipitation, biome, vegetation, cloud) and the M2 region gates")
+    ap.add_argument("--height", default=None, help="with --climate: reuse a -height.f32 from an earlier run (climate pass only, 0.1 s)")
+    ap.add_argument("--cal", action="append", default=[], help="with --climate: SLOT=VALUE climate calibration override (island.h CP_ISL_CAL_*), repeatable")
+    ap.add_argument("--suffix", default=None, help="file name tag for the climate images")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     stats = {}
@@ -330,7 +473,8 @@ def main():
         for L in ([0] if a.desc else [int(x) for x in a.layouts.split(",")]):
             pre = os.path.join(tmp, "l%d" % L)
             sel = ["--desc", a.desc] if a.desc else ["--layout", str(L)]
-            gen = json.loads(run(a.cli, ["maps"] + sel + ["--seed", str(a.seed), "--n", str(a.n), "--out", pre]))
+            gen = json.loads(run(a.cli, ["maps"] + sel + ["--seed", str(a.seed), "--n", str(a.n), "--out", pre] + (["--climate"] if a.climate and a.desc else []) +
+                                (["--height", a.height] if a.height and a.desc else []) + [x for c in a.cal for x in ("--cal", c)]))
             meta = json.loads(run(a.cli, ["layout-json"] + sel + ["--n", "64", "--droplets", "0", "--stream", "0", "--thermal", "0"]))
             relief = Image.open(pre + "-relief.ppm").convert("RGB").resize((a.px, a.px), Image.LANCZOS)
             cls = Image.open(pre + "-cls.pgm").resize((a.px, a.px), Image.NEAREST)
@@ -343,6 +487,14 @@ def main():
             paths = grid_paths(Image.open(pre + "-cls.pgm"), meta)
             overlay(relief, meta, True, land, paths).save(os.path.join(a.out, "%s-map.jpg" % name), quality=a.quality, optimize=True)
             relief.save(os.path.join(a.out, "%s-relief.jpg" % name), quality=a.quality, optimize=True)
+            if a.climate and a.desc:
+                climate_images(pre, name, meta, a, relief)
+                sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "climate"))
+                import gates
+                g = gates.run(argparse.Namespace(cli=a.cli, desc=a.desc, prefix=pre))
+                with open(os.path.join(a.out, "%s-climate-gates.json" % name), "w") as f:
+                    json.dump(g, f, indent=1)
+                print("climate gates", "PASS" if g["pass"] else "FAIL", json.dumps({k: v[0] for k, v in g["gates"].items()}))
             sl = overlay(slope_image(cls, shade, reach), meta, False, None, paths)
             strip = legend_strip(a.px)
             both = Image.new("RGB", (a.px, a.px + 70))

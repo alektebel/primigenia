@@ -116,6 +116,7 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
 
 static CpIslandDesc island;         /* --desc FILE: an ISL1 blob (core/include/cpore/island.h) */
 static int have_desc, shape_only;   /* shape_only: --base with --desc runs cp_terrain_shape_desc (no erosion whatever the desc recommends) */
+static int want_climate;   /* --climate */
 
 static int run_gen(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws, double *sec)
 {
@@ -137,6 +138,14 @@ static void setup(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws
     ws->recv = ialloc(p->n);
     ws->ups = ialloc(p->n);
     ws->queue = ialloc(p->n);
+    if (have_desc && want_climate && p->n >= 64) {   /* --climate: the climate, biome and veg maps (island.h descs only) */
+        size_t nn = (size_t)p->n * (size_t)p->n, wf = cp_terrain_climate_work_floats();
+        t->climate = calloc((size_t)CP_TERRAIN_CLIMATE_N * CP_TERRAIN_CLIMATE_N * 4, 1);
+        t->biome = calloc(nn, 1);
+        t->veg = calloc(nn * 4, 1);
+        ws->climate_work = calloc(wf, sizeof(float));
+        if (!t->climate || !t->biome || !t->veg || !ws->climate_work) die("out of memory");
+    }
 }
 
 /* Lowest water level at which a four-connected flood from `start` reaches
@@ -369,7 +378,20 @@ static void maps(const CpTerrain *t, const CpTerrainParams *p, const char *prefi
     snprintf(path, sizeof path, "%s-shade.pgm", prefix); write_pnm(path, "P5", n, shade, 1);
     snprintf(path, sizeof path, "%s-cls.pgm", prefix); write_pnm(path, "P5", n, cls, 1);
     snprintf(path, sizeof path, "%s-reach.pgm", prefix); write_pnm(path, "P5", n, reach, 1);
-    printf("{\"land_cells\":%d,\"plain_reach\":%d,\"climb_reach\":%d,\"cell_m\":%.3f}\n", land, plain_n, climb_n, (double)cell);
+    if (t->climate_n > 0) {   /* --climate on a desc: the raw maps next to the relief (tools/island/maps.py --climate reads them) */
+        FILE *f;
+        snprintf(path, sizeof path, "%s-climate.rgba", prefix);
+        f = fopen(path, "wb"); if (!f) { perror(path); exit(2); }
+        fwrite(t->climate, 4, (size_t)t->climate_n * (size_t)t->climate_n, f); fclose(f);
+        snprintf(path, sizeof path, "%s-height.f32", prefix);
+        f = fopen(path, "wb"); if (!f) { perror(path); exit(2); }
+        fwrite(t->height, 4, (size_t)nn, f); fclose(f);
+        snprintf(path, sizeof path, "%s-biome.pgm", prefix); write_pnm(path, "P5", n, t->biome, 1);
+        snprintf(path, sizeof path, "%s-veg.rgba", prefix);
+        f = fopen(path, "wb"); if (!f) { perror(path); exit(2); }
+        fwrite(t->veg, 4, (size_t)nn, f); fclose(f);
+    }
+    printf("{\"land_cells\":%d,\"plain_reach\":%d,\"climb_reach\":%d,\"cell_m\":%.3f,\"climate_n\":%d,\"climate_hash\":\"%016" PRIx64 "\"}\n", land, plain_n, climb_n, (double)cell, t->climate_n, cp_terrain_climate_hash(t));
     (void)p;
     free(slope); free(rgb); free(shade); free(cls); free(plain); free(climb); free(reach); free(q);
 }
@@ -388,6 +410,7 @@ int main(int argc, char **argv)
         return 2;
     }
     cmd = argv[1];
+    want_climate = has(argc, argv, "--climate");
     cp_terrain_params_default(&p);
     {   /* --desc FILE: generate that island. n is the desc's unless --n is given; the desc then sets size, nest, lake, erosion */
         const char *df = arg_s(argc, argv, "--desc");
@@ -409,6 +432,24 @@ int main(int argc, char **argv)
         return 2;
     }
     setup(&p, &t, &ws);
+    {   /* --cal SLOT=VALUE (repeatable): override one climate calibration slot (island.h CP_ISL_CAL_*) */
+        for (int i = 2; i + 1 < argc; i++) if (!strcmp(argv[i], "--cal") && have_desc) {
+            int slot = atoi(argv[i + 1]); const char *eq = strchr(argv[i + 1], '=');
+            if (!eq || slot < 0 || (slot >= CP_ISL_CALIB_N && slot != 100 && slot != 101)) die("--cal SLOT=VALUE");
+            if (slot == 100) island.clim_scale_h_pm = atoi(eq + 1);           /* experiments: the climate block's own scales */
+            else if (slot == 101) island.clim_scale_z_pm = atoi(eq + 1);
+            else { island.has_calib = 1; island.calib[slot] = atoi(eq + 1); }
+        }
+    }
+    if (arg_s(argc, argv, "--height") && have_desc) {   /* skip the shape: read the final heights (a -height.f32 from `maps --climate`) and run the climate only */
+        FILE *hf = fopen(arg_s(argc, argv, "--height"), "rb"); size_t cnt = (size_t)p.n * (size_t)p.n;
+        double t0 = now_s();
+        if (!hf || fread(t.height, 4, cnt, hf) != cnt) die("cannot read the --height file");
+        fclose(hf);
+        t.n = p.n; t.size_m = p.size_m;
+        rc = cp_terrain_climate(&p, &island, &t, &ws);
+        sec = now_s() - t0;
+    } else
     rc = run_gen(&p, &t, &ws, &sec);
     if (rc != CP_TERR_OK) {
         fprintf(stderr, "generate %d\n", rc);
@@ -443,6 +484,7 @@ int main(int argc, char **argv)
     }
     if (!strcmp(cmd, "hash")) {
         printf("%016" PRIx64 " %.4f\n", cp_terrain_hash(&t), sec);
+        if (t.climate_n > 0) printf("climate %016" PRIx64 "\n", cp_terrain_climate_hash(&t));
         return 0;
     }
     if (!strcmp(cmd, "time")) {
