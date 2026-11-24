@@ -102,6 +102,7 @@ function draw(o,S,act,g){
   const fx=o.fx;fx.reset();const mouth=S.head.clone().addScaledVector(S.Hd,.14);
   for(const t of S.jets){for(let j=0;j<4;j++){const ph=(g-t-j*40)/650;if(ph>0&&ph<1)fx.dot(mouth.clone().addScaledVector(S.Hd,.35*Math.pow(ph,.7)).add(V(0,.1*ph+.02*j*ph,(j-1.5)*.05*ph)),.025+.06*ph,.55*Math.sin(Math.PI*Math.min(1,ph*1.1))*(1-ph*.3),'#f2f2f0');}
     const ph2=(g-t)/700;if(ph2>0&&ph2<1)fx.arc(mouth.clone().addScaledVector(S.Hd,.03),qEul(Q.hyaw,Q.hpitch,0),.08+.4*Math.pow(ph2,.75),.5*Math.sin(Math.PI*Math.min(1,ph2*1.1))*(1-ph2*.4),'#ffffff');}
+  if(act==='sing')BB.noteBurst(fx,S.jets,g,mouth.clone().addScaledVector(S.Hd,.03),'#8fb04a',BB.rigs.snake.height);
   fx.flush();
 }
 const ACTS={

@@ -43,6 +43,7 @@ footer{flex:none;padding:4px 12px;color:var(--dim);font-size:11.5px;background:v
 </style>
 <script src="../biome/three.min.js"></script>
 <script src="social_duel_core.js"></script>
+<script src="sing_notes.js"></script>
 </head>
 <body>
 <header>
@@ -269,7 +270,25 @@ $('bNight').onclick=()=>api.setNight(!nightSel);$('bPred').onclick=()=>api.setPr
 // ------------------------------------------------------------------ loop
 function simStep(dt){let inp,b;if(botOn){b=C.bot(S,botOpts);if(b.key)C.press(S,b.key);inp=b.inp;}else inp=inputNow();C.step(S,dt,inp);
  for(const e of S.events){if(e.type==='read'&&!botOn){feedback(e.hit?'ON BEAT':(e.err>0?'LATE ':'EARLY ')+Math.abs(Math.round(e.err*1000))+' ms',e.hit?'#9fe3b8':'#ffb36b');}}}
-function visuals(dt,snap){bPose(dt);applyB(dt);zPose(Zt,S.T,dt,false);applyZ(Zt,S.T);Zh.forEach((z,i)=>{zPose(z,S.herd[i],dt,true);applyZ(z,S.herd[i]);});applyPred();
+// ------------------------------------------------------------------ sing notes (A80): one note per throat pulse, from the beak; dull cracked tumbling notes for an off-beat or wrong answer
+const NOTES=SingNotes.Pool(THREE,scene,24),NOTE_PULSE=.36;let noteRecs=[],noteAct=null,noteCall=null,noteSeed=1;
+const NOTE_B='#b98f5a',NOTE_Z='#5f9fd0',mouthAt=(head,x,y,out)=>{head.updateWorldMatrix(true,false);return head.localToWorld(out.set(x,y,0));};
+function updateNotes(){const b=S.B,tmp=new V3();
+ if(noteRecs.length&&S.t<noteRecs[0].t0-1)noteRecs=[];   // sim was reset
+ const act=b.act;if(act&&act.k==='sing'){if(noteAct!==act){noteAct=act;act.noteN=0;}
+  const A=ACT.sing,el=S.t-act.t0;
+  // pulse k peaks at .09+.36k (the throat sine); wrong = off the beat (known after the read), a wrong chain answer, or predicted off the beat before the read
+  while(act.noteN<4){const pe=NOTE_PULSE/4+NOTE_PULSE*act.noteN;if(pe>A.W+A.A||el<pe)break;
+   const tr=act.t0+A.W,err=tr-Math.round(tr/C.BEAT)*C.BEAT,wrong=act.read?(!act.hit||!!act.chainWrong):Math.abs(err)>C.WIN;
+   B.g.updateMatrixWorld(true);const p=mouthAt(B.head,.32,-.01,tmp);
+   noteRecs.push({t0:act.t0+pe,pos:p.clone(),wrong,seed:noteSeed++,kind:[1,0,2][act.noteN%3],src:'B'});act.noteN++;}}
+ const c=S.T.call;if(c&&c.k==='sing'){if(noteCall!==c){noteCall=c;c.noteN=0;}const u=S.t-c.t0;
+  while(c.noteN<3){const pe=.0875+.35*c.noteN;if(pe>1.0||u<pe)break;Zt.g.updateMatrixWorld(true);const p=mouthAt(Zt.head,.42,-.03,tmp);
+   noteRecs.push({t0:c.t0+pe,pos:p.clone(),wrong:false,seed:noteSeed++,kind:[0,2,1][c.noteN%3],src:'Z'});c.noteN++;}}
+ noteRecs=noteRecs.filter(r=>S.t-r.t0<1.2);
+ NOTES.begin();for(const r of noteRecs)NOTES.add({pos:r.pos,age:(S.t-r.t0)*1000,seed:r.seed,color:r.src==='B'?NOTE_B:NOTE_Z,size:r.src==='B'?.5:.6,rise:r.src==='B'?1.4:2.2,kind:r.kind,wrong:r.wrong,side:{x:-Math.sin(S.B.yaw),y:0,z:Math.cos(S.B.yaw)}});
+ NOTES.end();}
+function visuals(dt,snap){bPose(dt);applyB(dt);zPose(Zt,S.T,dt,false);applyZ(Zt,S.T);Zh.forEach((z,i)=>{zPose(z,S.herd[i],dt,true);applyZ(z,S.herd[i]);});applyPred();updateNotes();
  rings.forEach(r=>r.position.set(S.T.x,.04,S.T.z));ringMats[0].opacity=.5*(1-nightK*.5);ringMats[1].opacity=.3*(1-nightK*.5);
  fruitBush.visible=true;fruitMesh.visible=!S.fruit.taken;fruitBush.children.forEach(()=>0);
  applyLight(dt);updateCam(dt,snap);}
