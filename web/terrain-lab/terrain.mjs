@@ -12,7 +12,7 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
       const { seed, n, stream, droplets, thermal, warp, ridge, erosion, base, gentle, variety, bands, coast, rock, volcano, caves, rivers } = { ...DEFAULTS, ...request };
       const desc = request.desc;   // optional ISL1 blob (Uint8Array): generate that island instead of the seed's (core/include/cpore/island.h)
       if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw Error('Seed must be an integer from 0 to 4294967295.');
-      if (!Number.isInteger(n) || n < 8 || n > 1024) throw Error('Map size must be an integer from 8 to 1024.');
+      if (!Number.isInteger(n) || n < 8 || n > 1536) throw Error('Map size must be an integer from 8 to 1536.');
       if (!Number.isInteger(droplets) || droplets < 0 || droplets > 2000000 ||
           !Number.isInteger(thermal) || thermal < 0 || thermal > 48 ||
           !Number.isInteger(stream) || stream < 0 || stream > 256 ||
@@ -31,7 +31,7 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
         if (drc) throw Error(`Island blob refused (${drc}).`);
       }
       const start = performance.now();
-      const result = desc ? module._ct_generate_desc() : module._ct_generate();
+      const result = desc ? (request.shape ? module._ct_shape_desc() : module._ct_generate_desc()) : module._ct_generate();   // shape: the desc's base height only, no erosion
       const seconds = (performance.now() - start) / 1000;
       if (result) throw Error(`Terrain generation failed (${result}).`);
       const words = module._ct_hash() >>> 2;

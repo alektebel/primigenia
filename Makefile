@@ -223,17 +223,30 @@ island-stats: $(BUILD)/terrain_cli $(ISLAND_F0)
 	nice -n 10 python3 tools/island/maps.py --cli $(BUILD)/terrain_cli --desc $(ISLAND_F0) --out $(BUILD)/island/maps-desc --n 1536 --seed 1 > $(BUILD)/island/maps-desc/log.txt
 	python3 tools/island/compare_stats.py $(BUILD)/island/maps-desc/stats-desc.json web/gaitlab/island/stats.json
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc,_ct_climate_run,_ct_climate,_ct_climate_n,_ct_climate_hash]'
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc,_ct_shape_desc,_ct_climate_run,_ct_climate,_ct_climate_n,_ct_climate_hash]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
-	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=67108864 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
+	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=104857600 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
 .PHONY: terrain-parity
 terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm $(ISLAND_F0)
 	nice -n 10 node tests/test_wasm_terrain.mjs
 	nice -n 10 node tests/test_wasm_island.mjs
 terrain-test: terrain-parity
 wasm-test: terrain-parity
+
+# F2: the browser island editor (docs/plans/island-realism.md 3.4). web/gaitlab/island/ holds what the page loads: the WASM built above, the shared
+# packer (a copy of tools/island/pack.mjs) and the committed island. The check proves the page's engine hashes like the native CLI, that the
+# validation panel equals maps.py within 1%, then drives the page in headless Chromium on SwiftShader (phone and desktop, zero console errors).
+EDITOR_WEB := web/gaitlab/island
+.PHONY: island-editor-assets island-editor-check
+island-editor-assets: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm tools/island/pack.mjs
+	@mkdir -p $(EDITOR_WEB)/wasm
+	cp $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm $(EDITOR_WEB)/wasm/
+	cp tools/island/pack.mjs $(EDITOR_WEB)/pack.js
+island-editor-check: island-editor-assets $(BUILD)/terrain_cli $(ISLAND_F0)
+	nice -n 10 node tools/island/editor_check.cjs --write-expected
+	nice -n 10 node tools/island/editor_page_check.cjs
 
 .PHONY: terrain-metrics
 terrain-metrics: $(BUILD)/terrain_cli

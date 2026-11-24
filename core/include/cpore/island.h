@@ -187,6 +187,12 @@ int cp_terrain_generate_desc(const CpTerrainParams *p, const CpIslandDesc *d, Cp
  * touch the other maps (the snow material is decided at generation). Sets t->climate_n. */
 int cp_terrain_climate(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *t, const CpTerrainWorkspace *ws);
 
+/* Same as cp_terrain_generate_desc with every erosion pass off (droplets, thermal, stream power = 0, whatever p and the desc say):
+ * the authored shape plus the cliff bands, protect mask, rivers cut into the base and trails. This is the editor's drag preview;
+ * `terrain_cli hash --desc F --base` gives the same hash natively. */
+int cp_terrain_shape_desc(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *out,
+                          const CpTerrainWorkspace *ws, CpTerrainProgressFn fn, void *user);
+
 #ifdef __cplusplus
 }
 #endif

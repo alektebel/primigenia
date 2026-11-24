@@ -244,6 +244,13 @@ Page: `web/gaitlab/island_editor.html` + `island_editor.js` + `island/pack.js`. 
   - `node tools/island/editor_check.cjs`: the same blob gives the same terrain and climate hashes in WASM and native; packer round trip; validation numbers equal `maps.py --desc` within 1%;
   - a SwiftShader screenshot at 360×740 and 1280×800.
 
+- **F2 as built:**
+  - Files: `web/gaitlab/island_editor.html`, `island_editor.js`, and `island/` (`pack.js` is a copy of `tools/island/pack.mjs`, `model.js`, `analysis.js`, `engine.js`, `terrain_worker.js`, `wasm/cpore_terrain.{mjs,wasm}`, `star_massif.island.json`, `expected.json`). `make island-editor-assets` refreshes the copies; `make island-editor-check` runs `tools/island/editor_check.cjs` (node) and `editor_page_check.cjs` (Chromium on SwiftShader).
+  - New C: `cp_terrain_shape_desc` (every erosion pass off), exported as `_ct_shape_desc`; `terrain_cli hash --desc F --base` runs it. The terrain WASM now takes n up to 1536 (the bake), arena 67 MiB.
+  - Hosting API: `window.IslandEditor.exportJSON()` / `importJSON(text)` and an `IslandEditor.events` `change` event carrying the JSON, so a hosting artifact can mirror edits to a store.
+  - `expected.json` holds the native hashes of the committed island (seed 1: shape 256, eroded 512, bake 1024 and 1536); the page says "matches native build" only for that island at those levels, and prints the `terrain_cli` command for an edited one.
+  - Validation numbers come from `analysis.js` (a port of `terrain_cli maps` and the `maps.py` region and route code); the check holds them to `maps.py` within 1 point (areas 1 to 2%).
+
 ### 3.5 Steps F0–F5
 | # | Step | Files | Tests | Gate |
 |---|---|---|---|---|

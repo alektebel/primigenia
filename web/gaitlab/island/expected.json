@@ -1,0 +1,30 @@
+{
+ "git": "8b7c339a",
+ "desc_hash": "eab02da256cfeae6",
+ "entries": [
+  {
+   "seed": 1,
+   "n": 256,
+   "mode": "shape",
+   "hash": "30932af35f601c7b"
+  },
+  {
+   "seed": 1,
+   "n": 512,
+   "mode": "full",
+   "hash": "1f37f0f0001c8e6a"
+  },
+  {
+   "seed": 1,
+   "n": 1024,
+   "mode": "bake",
+   "hash": "d01f190cd3d29f84"
+  },
+  {
+   "seed": 1,
+   "n": 1536,
+   "mode": "bake",
+   "hash": "21bdd31b1ce706a5"
+  }
+ ]
+}

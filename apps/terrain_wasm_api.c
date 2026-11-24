@@ -1,10 +1,10 @@
-/* Standalone terrain ABI. One caller-owned static arena, 29 MiB at 1024².
+/* Standalone terrain ABI. One caller-owned static arena, 29 MiB at 1024² and 67 MiB at 1536² (the island editor's bake).
  * Core stays allocation-free; one module instance serves one Worker. */
 #include "cpore/terrain.h"
 #include "cpore/island.h"
 #include <emscripten.h>
 #include <stdint.h>
-#define MAX_N 1024
+#define MAX_N 1536
 static float arena[4 * MAX_N * MAX_N];
 static uint8_t materials[MAX_N * MAX_N];
 static uint8_t river_map[MAX_N * MAX_N];
@@ -139,4 +139,11 @@ int ct_climate_n(void) { return configured ? terrain.climate_n : 0; }
 uint32_t *ct_climate_hash(void) {
     uint64_t h=configured ? cp_terrain_climate_hash(&terrain) : 0;
     hash_words[0]=(uint32_t)h; hash_words[1]=(uint32_t)(h>>32); return hash_words;
+}
+/* The editor's drag preview: the desc's shape with every erosion pass off (cp_terrain_shape_desc). ct_config's erosion arguments are ignored. */
+int ct_shape_desc(void) {
+    if(!configured || !desc_ok) return CP_TERR_ERR_BUFFER;
+    last_desc=1;
+    terrain.climate=0; terrain.biome=0; terrain.veg=0; workspace.climate_work=0; terrain.climate_n=0;   /* the drag preview skips the climate; ct_climate_run makes it on demand */
+    return cp_terrain_shape_desc(&params,&island,&terrain,&workspace,progress,0);
 }
