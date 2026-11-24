@@ -5,6 +5,8 @@ The owner's taste for how the world and creatures look, so agents can judge visu
 ## 1. Style: naturalistic, slightly stylised
 Believable materials and light, clear shapes, a controlled palette. Same principle as the motion canon: real, a little exaggerated so it reads from the strategic camera. Not documentary photorealism, not painterly, not cartoon.
 
+**Update 2026-11-24 (A98, owner):** the world goes further toward realism: physically based sky and aerial perspective (Hillaire 2020), real moisture-driven vegetation, modelled trees and rocks, ground materials with normal and roughness detail. Shapes stay slightly stylised. Creatures get the realism layer (skin, wetness, muscle) so they sit in the same world. The failure list below still applies.
+
 ## 2. The planet: Earth-like with alien accents
 A real-feeling place that is not Earth: Earth-like geology, water and light, with a few alien touches (vegetation hues slightly shifted, an off-Earth sunset sky tint, some odd flora). Leaves room for stranger worlds in later stages.
 
