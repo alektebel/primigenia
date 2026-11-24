@@ -123,10 +123,39 @@ func _try_actions() -> void:
 	layer.action_event.connect(_on_action_event)
 
 const _flame_script := preload("res://game/actors/flame_fx.gd")
+const _impact_script := preload("res://actions/impact_fx.gd")
 
 func _on_action_event(ev: String, data: Dictionary) -> void:
-	if ev == "cry" and data.get("id", "") == "roar" and layer != null and host.is_inside_tree() and map != null:
-		_fx_script.roar_ring(host.get_parent(), host.global_position, 1.6 * map.height + 0.8)
+	if ev == "hit_fx" and host != null and host.is_inside_tree():
+		# A64: the shared melee contact: dust and sparks here, the camera shake and the like on the island
+		var parent := host.get_parent()
+		_impact_script.contact(parent, data)
+		if parent != null and parent.has_method("melee_impact"):
+			parent.melee_impact(data)
+		return
+	if ev == "drive" and layer != null and host != null and host.is_inside_tree() and map != null:
+		# the lunge pushes off: dust from the hind feet
+		var back := -Vector3(sin(host.rotation.y), 0.0, cos(host.rotation.y))
+		_dust_kick(host.global_position + back * 0.25 * map.height, 0.8)
+		return
+	if ev == "cry" and str(data.get("id", "")).begins_with("roar") and layer != null and host.is_inside_tree() and map != null:
+		# A74: the C roar's fear radius is 4 m, the ring and the dust show it; the cosmetic roar keeps its body-size ring
+		var c_roar := str(data.get("id", "")) != "roar"
+		_fx_script.roar_ring(host.get_parent(), host.global_position, 4.0 if c_roar else 1.6 * map.height + 0.8)
+		if c_roar:
+			_dust_kick(host.global_position, 1.2)
+		return
+	if ev == "projectile" and host != null and host.is_inside_tree():
+		var flight := maxf(0.05, float(data.get("ticks", 5)) * 0.1)
+		_fx_script.shot(host.get_parent(), data.get("from", host.global_position), data.to, flight, float(data.get("size", 1.0)) * 0.5, int(data.get("kind", 0)))
+		return
+	if ev == "acid_hit" and host != null and host.is_inside_tree():
+		var kind := int(data.get("kind", 0))
+		_fx_script.acid_sizzle(host.get_parent(), data.pos, float(data.get("victim_size", 1.0)), kind == 1 or kind == 3)
+		if kind == 1 or kind == 3:
+			var p: Vector3 = data.pos
+			p.y = host.global_position.y
+			_fx_script.acid_puddle(host.get_parent(), p, 0.5 + 0.35 * float(data.get("victim_size", 1.0)))
 		return
 	if ev == "flame_start" and layer != null and host.is_inside_tree():
 		var mouth: Vector3 = layer._mouth_world
@@ -140,6 +169,8 @@ func _on_action_event(ev: String, data: Dictionary) -> void:
 		_flame_script.flame_cone(host.get_parent(), mouth, fwd, 0.6)
 		return
 	if ev == "spit_release" and layer != null and host.is_inside_tree():
+		if int(layer._ctx.get("sig", {}).get("ctx", 0)) != 0:
+			return          # A69: a context spit is a C projectile; its blob leaves with the C `projectile` event and lands with the damage
 		var from: Vector3 = layer._mouth_world
 		var tgt: Dictionary = layer._ctx.get("target", {})
 		if tgt.is_empty():
@@ -299,8 +330,10 @@ func _profile_update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 		adapter.loco_apply(body, controller.pose, desc)
 		if acting:
 			_rig_script.apply_parts(body, controller.pose.act)
+			_impact_script.apply_flash(body, layer.flash)
 		elif layer != null and _acting_before:
 			_rig_script.reset(body)
+			_impact_script.apply_flash(body, 0.0)
 		_acting_before = acting
 		return
 	# Rest-pose glide: plant each foot under its rest sole and solve the legs.

@@ -9,6 +9,7 @@ const LIGHT_HOURS := {"dawn": 6.8, "day": 12.5, "dusk": 18.2, "night": 0.0}
 const CAMERA_Z := {"close": 0.0, "mid": 0.15, "far": 0.40, "tactical": 0.70}
 const STARTERS := ["hatchling", "a_grazer", "b_runner", "c_sprawler", "d_knuckle"]
 const Gait := preload("res://locomotion/loco_gait.gd")
+const ActionClock := preload("res://actions/action_clock.gd")
 
 static func register(reg, island, console_registry = null) -> void:
 	_creature(reg, island)
@@ -102,6 +103,10 @@ static func _overlays(reg, console_registry) -> void:
 		{"desc": "the creature legend corner hint (key list)."})
 
 static func _movement(reg) -> void:
+	reg.add_choice("attack set", "movement", ["A (A74 picks)", "B (A75 extras)"], "A (A74 picks)",
+		func(): return "B (A75 extras)" if ActionClock.attack_set == "b" else "A (A74 picks)",
+		func(v): ActionClock.attack_set = "b" if str(v).begins_with("B") else "a", false,
+		{"desc": "context attacks (A72/A74/A75): A = the owner's A74 picks. B = the second options he also liked: bite walking slow-step and far run-up snap, pounce standing quick spring and walking leap off the stride, and a spit pressed without hold is the glob (the charged lob from far). Same C timing; the roar far bellow-in-stride needs a different C state and is not in set B."})
 	reg.add_choice("style", "movement", ["a42 port", "longer-lower", "froude default"], "a42 port",
 		func(): return {"a42": "a42 port", "longer": "longer-lower", "froude": "froude default"}[Gait.style_mode],
 		func(v): Gait.style_mode = {"a42 port": "a42", "longer-lower": "longer", "froude default": "froude"}[v], false,

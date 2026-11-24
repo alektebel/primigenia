@@ -30,7 +30,8 @@ Last suite runs on main: M0 1385/0, play 237/0, devtools 1318/0. `make test` rou
 | `sim/roster-v9` | Sonnet | T9: MAX_WILD 32, SPECIES 12, cousin and flier slots, one snapshot bump | Merge, then re-run the loop score |
 | `sim/slope-grip` | Codex | A59 grip limit per creature; brief `docs/briefs/slope-grip.md`; Codex can't commit | Commit, review, merge |
 | `lore/exoplanets-40` | council | Derivation fix 472c68f works; autoloop running (log `_agent/lore-exo-autoloop.log`, ~30–40 min per world) | Step 4: Opus review → `docs/lore/EXOPLANETS.md`. Épsilon Indra seed teq needs a data fix |
-| `cam/occlusion`, `world/ambient-fliers`, `ui/creator-c6` | paused | WIP committed; the owner wants one focus at a time | Resume one by one |
+| `cam/occlusion` | Claude | T4 done (A76 focus): sphere-cast camera, prop proxies, eased boom, cut on teleport; `make godot-camera-test` 0.0-0.03% occluded, 0 snaps (before: 10-18 snaps) | Review, merge |
+| `world/ambient-fliers`, `ui/creator-c6` | paused | WIP committed; the owner wants one focus at a time | Resume one by one |
 | `anim/action-styles` | stopped | Replaced by the careful one-action-at-a-time process (A60) | — |
 
 Merge order for the C branches: jump → creature-feedback → slope-grip → roster-v9 → flight-port. Rebuild with `make godot` and re-test after each merge.

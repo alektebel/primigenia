@@ -472,6 +472,9 @@ func _fire() -> void:
 	if slot < 0:
 		# a starter with four moves already (starter B) keeps them: the player puts the flame in slot 4 at the nest, as the loadout panel does
 		await walk_to(island._nest, 6.0, 2500)       # the loadout is only editable at the nest
+		if int(state().active) >= 0:                 # a wild creature met the player on the way (the ticks of the earlier tasks decide): fight it out, then back to the nest
+			await _fight_out(tick())
+			await walk_to(island._nest, 6.0, 2500)
 		sui.assign_loadout(3, 14)
 		await ticks(5)
 		slot = int(state().loadout.slots.find(14))

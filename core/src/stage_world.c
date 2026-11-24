@@ -726,7 +726,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     cp_stage_parts_reset(w);
     cp_stage_secrets_reset(w);
     cp_stage_dig_reset(w);
-    cp_combat_loadout_default(&w->loadout,&copy.player);
+    cp_combat_loadout_starter(&w->loadout,&copy.player);
     for(int i=0;i<copy.n;i++){
         const CpStageSpawn *c=&copy.wild[i];
         creature(&w->wild[i],c->x,c->z,c->species,&c->profile);
@@ -801,6 +801,8 @@ static void start(CpStageWorld *w,int index){
         s.c[i].team=(uint8_t)i;
     }
     cp_combat_reset(&w->combat,&s);
+    cp_combat_ctx_enable(&w->combat,0,p->speed);   /* A72/A74: the player's pressed attacks pick a variant by distance and speed */
+    w->combat.c[0].vx=p->fx*p->speed;w->combat.c[0].vy=p->fz*p->speed;
     memcpy(w->combat.c[0].cd,w->recipes.cd,sizeof w->recipes.cd);
     w->combat.c[0].calcium=w->recipes.calcium;w->combat.c[0].mineral=w->recipes.mineral;
     w->combat.c[1].calcium=w->recipes.wild_calcium[index];
@@ -1215,6 +1217,7 @@ static void fight(CpStageWorld *w){
     switch(in->verb){
         case CP_STAGE_ATTACK:a.verb=CB_V_ATTACK;
         a.move=(int8_t)in->move;
+        a.hold=in->dir==1?1:0;
         break;
         case CP_STAGE_GUARD:a.verb=CB_V_GUARD;
         break;
@@ -1367,6 +1370,12 @@ static void fight(CpStageWorld *w){
         if(edge<cp_combat_body_radius(&w->player.profile)+.25f&&dist(entities[0],entities[1])>8)finish(w,CP_STAGE_FLED);
     }
 }
+/* A72: a pressed bite, pounce, spit or roar on a target within the far band (5 to 20 m) starts the fight at once: the run-in, the lob
+ * and the charge are the fight's first moves. Other moves, and wild aggression, keep the 5.5 m of the old walk-in. */
+static float engage_range(const CpStageWorld *w){
+    const int m=w->order.move;
+    return (m==CB_BITE||m==CB_POUNCE||m==CB_SPIT||m==CB_ROAR)?CB_BAND_MAX_GAP:5.5f;
+}
 static void wild_tick(CpStageWorld *w,int skip,int engage){
     /* Respawn is emitted before AI runs. Keep this clock here so player movement stays independent. */
     for(uint32_t n=0;n<w->ev_total&&n<CP_STAGE_MAX_EVENTS;n++){
@@ -1383,7 +1392,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         if(w->debug_flags&CP_STAGE_FLAG_AI_OFF){
             /* Debug AI_OFF: the wild neither walk, roam (no RNG draw) nor attack; the player can still start a fight. */
             int targeted=(w->order.verb==CP_STAGE_ATTACK&&w->order.target==i+1);
-            if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&targeted&&dist(&w->player,e)<5.5f)start(w,i);
+            if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&targeted&&dist(&w->player,e)<engage_range(w))start(w,i);
             continue;
         }
         if(cp_stage_creature_hidden(w,i))continue;   /* asleep by day (W8): it neither walks nor engages */
@@ -1438,7 +1447,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
         int targeted=(w->order.verb==CP_STAGE_ATTACK&&w->order.target==i+1);
-        if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&((hostile&&!cp_stage_social_shielded(w,i))||targeted)&&dist(&w->player,e)<5.5f)start(w,i);
+        if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&((hostile&&!cp_stage_social_shielded(w,i))||targeted)&&dist(&w->player,e)<(targeted?engage_range(w):5.5f))start(w,i);
     }
 }
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
@@ -1828,7 +1837,7 @@ static int parse_text(const char *text,CpStageInput *out){
     else if(strcmp(text,"flee")==0)a.verb=CP_STAGE_FLEE;
     else if(sscanf(text,"go %f,%f %c",&a.x,&a.z,&extra)==2||sscanf(text,"go %f %f %c",&a.x,&a.z,&extra)==2)a.verb=CP_STAGE_GO;
     else if(sscanf(text,"approach #%d %c",&a.target,&extra)==1)a.verb=CP_STAGE_APPROACH;
-    else if(sscanf(text,"attack #%d %31s %c",&a.target,move_name,&extra)==2){
+    else if(sscanf(text,"attack #%d %31s %c",&a.target,move_name,&extra)==2||(sscanf(text,"attack #%d %31s hold %c",&a.target,move_name,&extra)==2&&(a.dir=1))){
         a.verb=CP_STAGE_ATTACK;
         a.move=-1;
         for(int i=0;i<CB_MOVE_COUNT;i++)if(strcasecmp(move_name,cp_combat_move_name(i))==0)a.move=i;
@@ -2368,7 +2377,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpCombatCreature,heading_y);LAY(CpCombatCreature,dmg_dealt);LAY(CpCombatCreature,dmg_taken);
     LAY(CpCombatCreature,stamina_spent);LAY(CpCombatCreature,hits);LAY(CpCombatCreature,hits_taken);
     LAY(CpCombatCreature,blocked);LAY(CpCombatCreature,dodged);LAY(CpCombatCreature,interrupted);
-    LAY(CpCombatCreature,kills);LAY(CpCombatCreature,died_tick);LAY(CpCombatCreature,lo);LAY(CpCombatCreature,cd);
+    LAY(CpCombatCreature,kills);LAY(CpCombatCreature,died_tick);LAY(CpCombatCreature,ctx_on);LAY(CpCombatCreature,vctx);LAY(CpCombatCreature,mctx);LAY(CpCombatCreature,over_t);LAY(CpCombatCreature,mspd);LAY(CpCombatCreature,kbx);LAY(CpCombatCreature,spd);LAY(CpCombatWorld,proj);lay(&h,sizeof(CpCombatProj));LAY(CpCombatCreature,lo);LAY(CpCombatCreature,cd);
     LAY(CpCombatLoadout,slot);LAY(CpCombatLoadout,sig_slot);LAY(CpCombatLoadout,pad);LAY(CpCombatLoadout,known);
     LAY(CpStageBot,rng);LAY(CpStageBot,kind);LAY(CpStageBot,spam_move);LAY(CpStageBot,delay);
     LAY(CpStageBot,reaction);LAY(CpStageBot,ranged_commit);LAY(CpStageBot,timer);

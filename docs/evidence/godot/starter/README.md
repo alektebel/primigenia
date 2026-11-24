@@ -37,3 +37,6 @@ Caveats: at the zoo/play speed (about 5 m/s) every ~1 m body gallops (airborne 0
 ## Notes for later
 - Winnability vs Garfio (A31) was not run for the candidates (C world, out of scope): the heavier bodies (A, D 42-53 kg vs 36) change the C radius; run `game/tests/winnability_c.gd genome=res://game/data/starters/<file>` before the owner's pick.
 - Horn proposal t .92 / ang .55 is used in A; a longer (len .65) horn on a 1 m body is not proportional, so len follows the head (0.12).
+
+## Starter B kit (A62)
+B's two legs are now `zanca` (stilt legs, same knee/foot geometry) instead of `pezuna`. `zanca` is the part that gives C the pounce body capability (CP_STAGE_PART_MOVES); the beak (`pico`) already gave bite and spit, and the crest (`cresta`) already gave the roar. With that, `cp_combat_loadout_starter` yields slots bite, pounce, spit, roar. Cost: DNA +10 (zanca 25 vs pezuna 20 each), still under the 120 starter budget. B loses the hoof stomp (not in the loadout). No part was added, so the island trim (keeps the starter's own non-mouth, non-weapon parts) keeps them unchanged.

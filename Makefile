@@ -440,6 +440,16 @@ godot-nest-family-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/nest_family_test.gd -- $(CURDIR)/docs/evidence/godot/verb-target
+# A73: the way out of the nest editor (Done / Cancel / Enter / Esc, the confirm panel) and the hatch sequence timeline, headless.
+.PHONY: godot-editor-exit-test godot-editor-exit-evidence
+godot-editor-exit-test: godot
+	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/editor_exit_test.gd
+godot-editor-exit-evidence: godot
+	@mkdir -p docs/evidence/godot/editor-exit
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/editor_exit_sizes_evidence.gd -- $(CURDIR)/docs/evidence/godot/editor-exit
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/editor_exit_evidence.gd -- $(CURDIR)/docs/evidence/godot/editor-exit
 .PHONY: godot-play-test godot-wire-evidence
 QUALITY ?=
 godot-play-test: godot
@@ -448,6 +458,13 @@ godot-wire-evidence: godot
 	@mkdir -p docs/evidence/godot/wire
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire
+
+# Camera occlusion and snaps (creature-loop T4): a bot walks forest, rock and slope routes on the real island; gates < 2% of frames
+# occluded (body centre or head hidden from the camera), 0 snaps. CAM_ARGS e.g. "seed=2 z=0.15", or "legacy" for the before numbers.
+.PHONY: godot-camera-test
+CAM_ARGS ?=
+godot-camera-test: godot
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/camera_test.gd -- $(CAM_ARGS)
 
 # CAMERA-ZOOM s4 evidence: the z = 0..1 strip and frame times on the real island (software GL).
 .PHONY: godot-camera-evidence

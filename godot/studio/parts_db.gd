@@ -6,7 +6,7 @@ var parts: Array = []
 var by_id: Dictionary = {}
 
 # Slider ranges, from PLBL in web/creature/rig.js. [min, max]
-const RANGES := {"size": [.5, 2.2], "len": [.3, 3.2], "curve": [0.0, 1.3], "w": [.1, .45], "rot": [-PI, PI], "tilt": [-1.3, 1.3]}
+const RANGES := {"size": [.1, 2.2], "len": [.1, 3.2], "curve": [0.0, 1.3], "w": [.05, .45], "rot": [-PI, PI], "tilt": [-1.3, 1.3]}
 const LABELS := {"size": "Tamaño", "len": "Largo", "curve": "Curva", "w": "Grosor", "rot": "Giro", "tilt": "Inclinación"}
 const LEG := {"pata": {"w": .2, "k": [.28, -.72, .12], "f": [.38, -1.4, -.02]},
 	"zanca": {"w": .13, "k": [.1, -1.1, -.3], "f": [.18, -2.35, .05]},

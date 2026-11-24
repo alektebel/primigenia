@@ -272,33 +272,33 @@ func _stage() -> void:
 	var sui = island.stage_ui
 	ui.set_mode(&"attack")            # no default mode: the loadout slots show once Attack is chosen
 	var lo0: Dictionary = game.stage.cur.loadout
-	# A25: a new run starts with the starter parts (pico, pata, ojo): it knows bite, spit and peck (parts decide what a creature can slot)
-	check(lo0.slots == [0, 3, 7, 10] and lo0.can_edit and int(lo0.known) == 3209, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
-	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 3 and ui.abilities[2].move == 7, "the hotbar carries the C move ids of the slots")
-	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(1) == "spit" and ui.petals.id_at(3) != "" and ui.petals.state_at(3) != &"empty", "the petals show the glyph of each loadout move, the fourth slot carries the starter's own move (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(1)])
-	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout
+	# A25/A62: starter B (pico, zanca legs, ojo, crest) knows bite, spit, peck, pounce and roar (the hoof stomp went with the pezuna legs); the slots are bite, pounce, spit, roar (parts decide what a creature can slot)
+	check(lo0.slots == [0, 8, 3, 10] and lo0.can_edit and int(lo0.known) == 1417, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
+	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 8 and ui.abilities[2].move == 3, "the hotbar carries the C move ids of the slots")
+	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(2) == "spit" and ui.petals.id_at(3) != "" and ui.petals.state_at(3) != &"empty", "the petals show the glyph of each loadout move, the fourth slot carries the starter's own move (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(2)])
+	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout, spit's own slot (3) empties
 	await sim_ticks(2)
-	check(game.stage.cur.loadout.slots == [3, -1, 7, 10], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
-	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(1) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 2 empty")
+	check(game.stage.cur.loadout.slots == [3, 8, -1, 10], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
+	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(2) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 3 empty")
 	sui.assign_loadout(2, 4)                  # tail_strike: this creature has no tail, C says not_known
 	await sim_ticks(1)                        # (the next tick's walking input would overwrite the error)
-	check(game.stage.cur.loadout.slots == [3, -1, 7, 10] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
+	check(game.stage.cur.loadout.slots == [3, 8, -1, 10] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
 	sui.selected_id = 1
 	var orders0: int = sui.attack_orders.size()
 	_key(KEY_1)
 	check(sui.attack_orders.size() > orders0 and str(sui.attack_orders.back().order) == "attack #1 spit", "key 1 fires the move in slot 1 (%s)" % [sui.attack_orders.back()])
 	sui._pending_attack = null
 	orders0 = sui.attack_orders.size()
-	_key(KEY_2)
-	check(sui.attack_orders.size() == orders0, "key 2 on an empty slot fires nothing")
+	_key(KEY_3)
+	check(sui.attack_orders.size() == orders0, "key 3 on an empty slot fires nothing")
 	sui.toggle_loadout_panel()
 	check(ui.loadout_panel.visible_open and game.modal_open == false, "the panel opens at the nest (key L)")
 	await frames(2)
 	check(game.modal_open, "an open panel blocks movement input (modal_open)")
 	ui.loadout_panel.choose(0, 0)
-	ui.loadout_panel.choose(1, 3)
+	ui.loadout_panel.choose(2, 3)
 	await sim_ticks(3)
-	check(game.stage.cur.loadout.slots == [0, 3, 7, 10], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
+	check(game.stage.cur.loadout.slots == [0, 8, 3, 10], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
 	ui.loadout_panel.close_panel()
 	await frames(2)
 	sui.selected_id = -1
@@ -356,7 +356,7 @@ func _stage() -> void:
 	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a jump on flat ground does no damage")
 	check(Vector2(island.player_pos.x - jx0.x, island.player_pos.z - jx0.z).length() < 0.5, "a standing jump stays in place")
 	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "run": false}
-	await sim_ticks(15)
+	await sim_ticks(5)      # short: the shore is a few metres ahead on the current island, and C refuses a jump in deep water
 	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "jump": true}
 	await sim_ticks(1)
 	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
@@ -548,6 +548,9 @@ func _actions_begin(island) -> Dictionary:
 				f1 = f
 		if f1 == null or int(f1.phase) != 1 or int(f1.move) < 0:
 			st.wind.n = 0
+			return
+		if w.driver.layer.paused():
+			st.wind.n = 0            # A64 hit-pause: the layer clock stands still, so the fade-in restarts after it
 			return
 		st.wind.n += 1
 		st.wind.seen += 1

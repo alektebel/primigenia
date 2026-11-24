@@ -587,7 +587,7 @@ Dictionary CporeWorld::state() const {
             }
             if (e.type < CP_STAGE_EV_SKILL) continue;
             Dictionary ev;
-            ev["type"] = int(e.type); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
+            ev["type"] = int(e.type); ev["by"] = int(e.by); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
             ev["value"] = double(e.value); ev["x"] = double(e.x); ev["z"] = double(e.z);
             evs.append(ev);
         }
@@ -607,8 +607,10 @@ Dictionary CporeWorld::state() const {
             f["fx"] = double(c.fx); f["fz"] = double(c.fy);
             f["hp"] = double(c.hp); f["stamina"] = double(c.stamina);
             f["move"] = int(c.move); f["phase"] = int(c.phase);
-            f["burn"] = int(c.burn_t); f["bleed"] = int(c.bleed_t); f["slow"] = int(c.slow_t); f["stun"] = int(c.stun_t);
+            f["fear"] = int(c.fear_t); f["burn"] = int(c.burn_t); f["bleed"] = int(c.bleed_t); f["slow"] = int(c.slow_t); f["stun"] = int(c.stun_t);
             f["phase_tick"] = int(c.ptick); f["phase_length"] = int(c.plen);
+            f["ctx"] = int(c.mctx); f["hold"] = int(c.mhold); f["over"] = int(c.over_t); f["spd"] = double(c.spd); f["mspd"] = double(c.mspd);
+            f["kbx"] = double(c.kbx); f["kbz"] = double(c.kby);
             Array cd;
             for (int k = 0; k < CB_MOVE_COUNT; ++k) cd.append(int(c.cd[k]));
             f["cooldowns"] = cd;
@@ -616,6 +618,16 @@ Dictionary CporeWorld::state() const {
         }
     }
     combat["fighters"] = fighters;
+    Array projectiles;                      // A69: spit shots in flight (aim point in world metres, ticks left)
+    if (w.active >= 0) for (int i = 0; i < CB_MAX_PROJ; ++i) {
+        const CpCombatProj &p = w.combat.proj[i];
+        if (!p.alive) continue;
+        Dictionary q;
+        q["owner"] = int(p.owner); q["kind"] = int(p.kind); q["ticks"] = int(p.t_left);
+        q["x"] = double(w.arena_x + p.x - 20); q["z"] = double(w.arena_z + p.y - 20);
+        projectiles.append(q);
+    }
+    combat["projectiles"] = projectiles;
     Array events;
     for (int i = 0; i < w.combat.n_ev; ++i) {
         const CpCombatEvent &e = w.combat.ev[i];
