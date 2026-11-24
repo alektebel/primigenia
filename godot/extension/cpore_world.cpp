@@ -325,6 +325,8 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
     ClassDB::bind_method(D_METHOD("set_run", "on"), &CporeWorld::set_run);
+    ClassDB::bind_method(D_METHOD("jump"), &CporeWorld::jump);
+    ClassDB::bind_method(D_METHOD("jump_height"), &CporeWorld::jump_height);
     ClassDB::bind_method(D_METHOD("quest_award", "step", "dna"), &CporeWorld::quest_award);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
     ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
@@ -481,6 +483,8 @@ int CporeWorld::order(const Dictionary &input) {
 String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
 
 void CporeWorld::set_run(bool on) { cp_stage_set_run(world.get(), on); }
+int CporeWorld::jump() { return cp_stage_jump(world.get()); }
+double CporeWorld::jump_height() const { return cp_stage_jump_height(world.get()); }
 int CporeWorld::quest_award(int step, int dna) { return cp_stage_quest_award(world.get(), step, dna); }
 
 Dictionary CporeWorld::state() const {
@@ -495,6 +499,7 @@ Dictionary CporeWorld::state() const {
     Dictionary player;
     player["running"] = w.running != 0; player["stamina"] = int(w.run_stamina);
     player["falling"] = w.falling != 0;
+    player["jumping"] = w.jumping != 0; player["jump_cd"] = int(w.jump_cd);
     player["sliding"] = w.player.sliding != 0;
     player["grip_deg"] = double(cp_stage_grip_deg(&w.player.profile,w.player.legs));
     player["y"] = w.falling ? w.fall_y_mm * .001 : cp_stage_ground(&w, w.player.x, w.player.z);
@@ -582,7 +587,7 @@ Dictionary CporeWorld::state() const {
             }
             if (e.type < CP_STAGE_EV_SKILL) continue;
             Dictionary ev;
-            ev["type"] = int(e.type); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
+            ev["type"] = int(e.type); ev["by"] = int(e.by); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
             ev["value"] = double(e.value); ev["x"] = double(e.x); ev["z"] = double(e.z);
             evs.append(ev);
         }

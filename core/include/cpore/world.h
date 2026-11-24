@@ -22,10 +22,12 @@
 #define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
 #define CP_STAGE_WAKE_RADIUS 6.f
 #define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
-#define CP_STAGE_SNAPSHOT_VERSION 15   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59); 13: A59 slope grip traits and wildlife fall state; 15: A72/A74 context attacks (variant, momentum, knockback, projectiles, hold; 14 belongs to feat/jump) */
+#define CP_STAGE_SNAPSHOT_VERSION 16   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59); 13: A59 slope grip traits and wildlife fall state; 15: A72/A74 context attacks (variant, momentum, knockback, projectiles, hold); 16: jump (jumping flag, landing cooldown; feat/jump, was 14) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
+#define CP_JUMP_STAMINA_PCT 6      /* % of max stamina per jump (starting value; play test checks it) */
+#define CP_JUMP_COOLDOWN_TICKS 3   /* 0.3 s after landing */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -340,6 +342,7 @@ typedef struct {
     /* Run stamina is separate from combat stamina; mm, mm/s for fixed-step gravity. */
     int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
     int32_t fall_dx_mm,fall_dz_mm;
+    int32_t jumping,jump_cd;         /* jump: the current air phase was a jump (keeps the run-up speed on landing); ticks until another jump is allowed */
     CpStageDig dig;                  /* first-quest: fossil beds, holes, the dig in progress (snapshot 9) */
     uint32_t grace_until,wake_until[CP_STAGE_MAX_WILD]; /* v8 AI clocks; zero keeps legacy hashes */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
@@ -358,6 +361,11 @@ int cp_stage_dig_json(const CpStageWorld *w,char *out,size_t cap);
 int cp_stage_dig_observe(const CpStageWorld *w,char *out,size_t cap);   /* the agent's view: progress, holes, and the cue of any bed within 30 m (no coordinates of the far ones) */
 /* --- C2 secrets (core/src/stage_secrets.c) --- */
 void cp_stage_set_run(CpStageWorld *w,int on);
+/* Space: a hop on the ground, applied before the step like set_run (log v5: bit 2 of the run column). Apex 0.8 x hip height, within
+ * [0.2, 1.2] m and at most half the safe drop, so a jump on flat ground never hurts; the horizontal speed carries over. Costs
+ * CP_JUMP_STAMINA_PCT % of max stamina. Returns 0 (jumped) or CP_STAGE_ERR_* / -1 when refused (nothing changes). */
+int cp_stage_jump(CpStageWorld *w);
+float cp_stage_jump_height(const CpStageWorld *w);   /* the apex in metres for the player's body */
 float cp_stage_safe_drop(const CpStageWorld *w); /* metres, 1.5 times mean leg length */
 int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
 int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: asleep by day, unless approached within 6 m or recently awake */
@@ -501,7 +509,7 @@ extern const int CP_STAGE_PARAM_COUNT;
 uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
                             uint32_t ticks,uint64_t *hashes);
-/* Input log v4: the run toggle of a tick (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
+/* Input log v4/v5: bit 0 of `on` is the run toggle of a tick, bit 1 (v5) a jump requested that tick (cp_stage_jump after set_run). Run toggle (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
  * step, as the Godot session does). Entries carry absolute world ticks, ascending. cp_stage_replay_ex is this with no run entries. */
 typedef struct { uint32_t tick; int32_t on; } CpStageRunEntry;
 uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,

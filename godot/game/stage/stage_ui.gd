@@ -98,7 +98,9 @@ func setup(island_node: Node3D, name_text: String) -> void:
 		ui.bind_audio(get_tree().root.get_node("Audio"))
 	ui.mode_changed.connect(_on_mode)
 	ui.ability_pressed.connect(_on_ability)
-	ui.guard_pressed.connect(func() -> void: _send({"verb": V_GUARD}, "guard"))
+	ui.guard_pressed.connect(func() -> void:
+		if stage.cur.active >= 0:          # Space guards only in a fight; everywhere else it is the jump (island.gd)
+			_send({"verb": V_GUARD}, "guard"))
 	ui.dodge_pressed.connect(func(d: int) -> void:
 		island.dodge_hint = {"dir": d, "until": Time.get_ticks_msec() + 700}      # which way the dodge animation leans
 		_send({"verb": V_DODGE, "dir": DODGE_LEFT if d < 0 else DODGE_RIGHT}, "dodge"))

@@ -259,6 +259,21 @@ func _fall_pose(dt: float, falling: bool) -> Basis:
 	var roll := sin(_fall_t * 3.3) * FALL_ROLL * _fall_k
 	return Basis(Vector3.BACK, roll) * Basis(Vector3.RIGHT, lean)
 
+# Jump presentation (loco_jump.gd): crouch, launch, tuck, landing squash on top of the controller's pose. The player only.
+const LocoJump := preload("res://locomotion/loco_jump.gd")
+var _jump = null
+func _jump_pose(dt: float, s: Dictionary) -> void:
+	var jumping := bool(s.get("jumping", false))
+	if _jump == null:
+		if not jumping:
+			return
+		_jump = LocoJump.new()
+	var air := 0.0
+	if jumping and _ground.is_valid():
+		air = maxf(0.0, (s.pos as Vector3).y - float(_ground.call(s.pos.x, s.pos.z)))
+	if "_ref_h" in controller:
+		_jump.apply(dt, jumping, air, controller.pose, float(controller._ref_h), controller._hip_loc)
+
 var _eat_squash := 0.0
 ## Fallback of the meal for a body with no action layer: a quick dip-and-rebound of the body on each bite (decays in update).
 func eat_pulse() -> void:
@@ -285,7 +300,7 @@ func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 
 func _profile_update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
-	host.basis = Basis(Vector3.UP, s.yaw) * _fall_pose(dt, bool(s.get("falling", false)))
+	host.basis = Basis(Vector3.UP, s.yaw) * _fall_pose(dt, bool(s.get("falling", false)) and not bool(s.get("jumping", false)))
 	_eat_fallback(dt)
 	if s.has("flight") and controller != null and adapter != null:
 		_update_flight(dt, s)
@@ -300,6 +315,8 @@ func _profile_update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 			_started = true
 		controller.set_intent(s.get("intent", null))
 		controller.step(dt, s.pos, s.yaw, s.vel)
+		if s.has("jumping") or _jump != null:
+			_jump_pose(dt, s)
 		var acting: bool = actions_enabled and layer != null and int(ctx.get("lod", 0)) < 2
 		if acting:
 			var c2: Dictionary = ctx.duplicate()

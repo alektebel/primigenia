@@ -75,7 +75,7 @@ static int replay(const char *path){
     int grip_n=-1,grip_traits[CP_STAGE_MAX_WILD+1]={0},grip_legs[CP_STAGE_MAX_WILD+1]={0};
     int sec_bits=0,sec_clock=0,sec_cave=0;
     float sec_v[7]={0};   /* C2 secrets header line: `secrets <bits> <start_clock> <cave_on> <x z fx fz half length radius>` */
-    if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version<2||version>4))goto invalid;
+    if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version<2||version>5))goto invalid;
     if(version>=3){
         long mark;
         for(;;){
@@ -156,7 +156,7 @@ static int replay(const char *path){
     for(int i=0;i<ticks;i++){
         CpStageInput *a=&inputs[i];
         int hx,hz;
-        if(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)!=9||hx< -32768||hx>32767||hz< -32768||hz>32767||(version==4&&(fscanf(f,"%d",&runs[i])!=1||(runs[i]&~1)))){
+        if(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)!=9||hx< -32768||hx>32767||hz< -32768||hz>32767||(version>=4&&(fscanf(f,"%d",&runs[i])!=1||(runs[i]&~(version==5?3:1))))){
             free(inputs);free(runs);
             goto invalid;
         }
@@ -206,7 +206,7 @@ static int replay(const char *path){
             }
             cursor++;
         }
-        if(version==4)cp_stage_set_run(&world,runs[i]);
+        if(version>=4){cp_stage_set_run(&world,runs[i]&1);if(runs[i]&2)cp_stage_jump(&world);}
         printf("%016"PRIx64"\n",cp_stage_step(&world,&inputs[i]));
     }
     free(inputs);free(runs);

@@ -169,5 +169,35 @@ int main(void){
         assert(cp_stage_replay_run(&su,NULL,0,NULL,ent,1,NULL,0,runs,-1,150,NULL)==0);
         free(m);
     }
+    /* Jump (Space): apex 0.8 x hip height, no damage on flat ground, the run-up speed carries over, one jump per landing, stamina cost. */
+    {
+        reset(0);for(int i=0;i<5;i++)cp_stage_step(&w,&wait);
+        float st0=w.player.stamina,apex=cp_stage_jump_height(&w);
+        assert(fabsf(apex-.8f*.56f*.6f)<.01f);
+        assert(cp_stage_jump(&w)==0&&w.falling&&w.jumping);
+        assert(fabsf(st0-w.player.stamina-w.player.profile.stamina*CP_JUMP_STAMINA_PCT*.01f)<.01f);
+        assert(cp_stage_jump(&w)!=0);                       /* no double jump */
+        int32_t top=0,x0=(int32_t)(w.player.x*1000);float hp=w.player.hp;int ticks=0;
+        while(w.falling&&ticks<100){cp_stage_step(&w,&wait);if(w.fall_y_mm>top)top=w.fall_y_mm;ticks++;}
+        assert(!w.falling&&!w.jumping&&w.player.hp==hp);
+        float rise=(top-ground_mm0())*.001f;assert(rise>apex*.9f&&rise<apex*1.2f);
+        assert((int32_t)(w.player.x*1000)==x0);              /* standing jump: straight up */
+        assert(cp_stage_jump(&w)!=0);                        /* cooldown */
+        for(int i=0;i<CP_JUMP_COOLDOWN_TICKS;i++)cp_stage_step(&w,&wait);
+        assert(cp_stage_jump(&w)==0);
+        while(w.falling)cp_stage_step(&w,&wait);
+        /* a running jump travels further and lands still moving */
+        reset(0);for(int i=0;i<30;i++)cp_stage_step(&w,&east);
+        float sp=w.player.speed,xa=w.player.x;assert(sp>.3f);
+        assert(cp_stage_jump(&w)==0);hp=w.player.hp;
+        while(w.falling)cp_stage_step(&w,&east);
+        assert(w.player.x-xa>sp*.3f&&w.player.hp==hp&&fabsf(w.player.speed-sp)<sp*.5f);
+        /* exhausted, in a fight and in the water: refused */
+        reset(0);w.player.stamina=1;assert(cp_stage_jump(&w)==CP_STAGE_ERR_NO_STAMINA);
+        reset(0);w.player.stamina=w.player.profile.stamina;w.active=0;assert(cp_stage_jump(&w)!=0);
+        /* big bodies are clamped; the apex never exceeds half the safe drop */
+        reset(0);w.player.profile.radius_cm=300;assert(cp_stage_jump_height(&w)<=1.2f+1e-4f);
+        w.player.profile.radius_cm=20;assert(cp_stage_jump_height(&w)<=.5f*cp_stage_safe_drop(&w)+1e-4f);
+    }
     puts("PASS run/fall");return 0;
 }

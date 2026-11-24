@@ -866,6 +866,34 @@ void cp_stage_set_run(CpStageWorld *w,int on){
     else if(!w->running&&w->run_stamina>=150&&!w->respawn_ticks&&!w->parts.lost&&w->active<0&&!w->falling)w->running=1;
     w->hash=cp_stage_hash(w);
 }
+static int32_t ground_mm(const CpStageWorld *w,float x,float z);
+float cp_stage_jump_height(const CpStageWorld *w){
+    float apex=.8f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(&w->player.profile);
+    if(apex>1.2f)apex=1.2f;
+    if(apex<.2f)apex=.2f;
+    const float cap=.5f*cp_stage_safe_drop(w);
+    if(apex>cap)apex=cap;
+    return apex;
+}
+int cp_stage_jump(CpStageWorld *w){
+    if(!w)return -1;
+    CpStageCreature *c=&w->player;
+    const int v=w->order.verb;
+    if(w->falling||w->active>=0||w->respawn_ticks||w->parts.lost||w->outcome||w->jump_cd>0||c->sliding)return CP_STAGE_ERR_BUSY;
+    if(v!=CP_STAGE_CONTINUE&&v!=CP_STAGE_WAIT&&v!=CP_STAGE_GO&&v!=CP_STAGE_HEADING&&v!=CP_STAGE_GO_NEST&&v!=CP_STAGE_FLEE)return CP_STAGE_ERR_BUSY;
+    if(cp_stage_water_depth(w,c->x,c->z)>.3f)return CP_STAGE_ERR_BUSY;
+    const float need=c->profile.stamina*.1f,cost=c->profile.stamina*CP_JUMP_STAMINA_PCT*.01f;
+    if(c->stamina<need||c->stamina<cost)return CP_STAGE_ERR_NO_STAMINA;
+    c->stamina-=cost;
+    const float apex=cp_stage_jump_height(w);
+    w->falling=1;w->jumping=1;
+    w->fall_y_mm=w->fall_start_mm=ground_mm(w,c->x,c->z);
+    w->fall_v_mm_s=(int32_t)lroundf(sqrtf(2*9.81f*apex)*1000);
+    w->fall_dx_mm=(int32_t)lroundf(c->fx*c->speed*100);
+    w->fall_dz_mm=(int32_t)lroundf(c->fz*c->speed*100);
+    w->hash=cp_stage_hash(w);
+    return 0;
+}
 static int32_t ground_mm(const CpStageWorld *w,float x,float z){return (int32_t)lroundf(cp_stage_ground(w,x,z)*1000);}
 /* Slope-free collision sweep for direct movement and airborne drift. Water, bounds and obstacles still block. */
 static int fall_clear(const CpStageWorld *w,float x,float z,float nx,float nz,float r){
@@ -936,7 +964,10 @@ static void fall_tick(CpStageWorld *w){
             ev_push(w,CP_STAGE_EV_FELL,0,0,(drop+5)/10,damage,c->x,c->z);
             c->hp=clamp(c->hp-damage,0,c->profile.hp);
             w->falling=0;w->fall_y_mm=w->fall_v_mm_s=w->fall_start_mm=0;
-            w->fall_dx_mm=w->fall_dz_mm=0;c->sliding=0;c->speed=0;
+            const float carry=(w->jumping&&damage<=0&&!c->sliding)?length((float)w->fall_dx_mm,(float)w->fall_dz_mm)*.01f:0;
+            w->fall_dx_mm=w->fall_dz_mm=0;c->sliding=0;c->speed=carry;   /* a jump keeps its run-up speed so a running jump does not stutter on landing */
+            if(w->jumping)w->jump_cd=CP_JUMP_COOLDOWN_TICKS;
+            w->jumping=0;
             if(c->hp<=0){
                 w->running=0;w->outcome=CP_STAGE_DEATH;w->order=(CpStageInput){0};path_clear(w);
                 cp_stage_parts_death(w);
@@ -1600,6 +1631,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
         w->player.stamina=clamp(w->player.stamina+(sprint?-1.4f:1),0,w->player.profile.stamina);
         if(w->cooldown_ticks>0)w->cooldown_ticks--;
     }
+    if(w->jump_cd>0)w->jump_cd--;
     if(!run_moved&&w->run_stamina<1000){w->run_stamina+=5;if(w->run_stamina>1000)w->run_stamina=1000;}
     if(w->falling||w->respawn_ticks||w->parts.lost)engage=0;
     cp_stage_social_step(w);
@@ -1762,6 +1794,7 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         u32(&h,w->fall_y_mm);u32(&h,w->fall_v_mm_s);u32(&h,w->fall_start_mm);
         u32(&h,w->fall_dx_mm);u32(&h,w->fall_dz_mm);
     }
+    if(w->jumping||w->jump_cd){u32(&h,0x4a554d50);u32(&h,w->jumping);u32(&h,w->jump_cd);}
     if(w->recipes.used){uint64_t rh=cp_stage_recipes_hash(w);u32(&h,(uint32_t)rh);u32(&h,(uint32_t)(rh>>32));}
     if(w->dig.used){uint64_t dh=cp_stage_dig_hash(w);u32(&h,0x44494731);u32(&h,(uint32_t)dh);u32(&h,(uint32_t)(dh>>32));}
     if(w->secrets.on||w->secrets.cave_on){uint64_t sh=cp_stage_secrets_hash(w);u32(&h,(uint32_t)sh);u32(&h,(uint32_t)(sh>>32));}
@@ -1947,7 +1980,7 @@ uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,s
     for(uint32_t k=0;k<ticks;k++){
         const uint32_t tick=first+k;
         while(dcursor<dbg_count&&dbg[dcursor].tick==tick)cp_stage_debug(&replay,&dbg[dcursor++].d);
-        while(rcursor<run_count&&runs[rcursor].tick==tick){cp_stage_set_run(&replay,runs[rcursor].on);rcursor++;}
+        while(rcursor<run_count&&runs[rcursor].tick==tick){cp_stage_set_run(&replay,runs[rcursor].on&1);if(runs[rcursor].on&2)cp_stage_jump(&replay);rcursor++;}
         while(cursor<count&&log[cursor].tick==tick)cp_stage_order(&replay,&log[cursor++].input);
         uint64_t hash=cp_stage_step(&replay,NULL);
         if(hashes)hashes[k]=hash;
@@ -2225,7 +2258,7 @@ int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d){
             c->x=d->x;
             c->z=d->z;
             c->speed=c->acceleration=c->turn_rate=0;
-            if(!d->id){w->falling=0;w->fall_y_mm=w->fall_start_mm=w->fall_v_mm_s=0;w->fall_dx_mm=w->fall_dz_mm=0;c->sliding=0;}
+            if(!d->id){w->jumping=0;w->falling=0;w->fall_y_mm=w->fall_start_mm=w->fall_v_mm_s=0;w->fall_dx_mm=w->fall_dz_mm=0;c->sliding=0;}
             if(d->id)c->goal_x=d->x,c->goal_z=d->z;
             break;
         }
@@ -2318,7 +2351,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,edit_anywhere);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,running);LAY(CpStageWorld,run_stamina);LAY(CpStageWorld,falling);LAY(CpStageWorld,fall_y_mm);LAY(CpStageWorld,fall_v_mm_s);LAY(CpStageWorld,fall_start_mm);LAY(CpStageWorld,fall_dx_mm);LAY(CpStageWorld,fall_dz_mm);
+    LAY(CpStageWorld,running);LAY(CpStageWorld,run_stamina);LAY(CpStageWorld,falling);LAY(CpStageWorld,fall_y_mm);LAY(CpStageWorld,fall_v_mm_s);LAY(CpStageWorld,fall_start_mm);LAY(CpStageWorld,fall_dx_mm);LAY(CpStageWorld,fall_dz_mm);LAY(CpStageWorld,jumping);LAY(CpStageWorld,jump_cd);
     LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,recipes);LAY(CpStageWorld,secrets);LAY(CpStageWorld,dig);LAY(CpStageWorld,grace_until);LAY(CpStageWorld,wake_until);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSecrets));lay(&h,sizeof(CpStageCave));lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);

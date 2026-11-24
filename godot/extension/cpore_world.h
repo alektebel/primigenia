@@ -49,6 +49,8 @@ public:
     int nest_edit(const godot::String &body);
     int nest_apply(const godot::String &body);
     void set_run(bool on);
+    int jump();                       // Space: 0 jumped, <0 refused (log v5: run column bit 1)
+    double jump_height() const;       // the player's apex in metres
     int quest_award(int step, int dna);
     void set_tiers(bool on);
     void set_edit_anywhere(bool on);
