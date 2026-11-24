@@ -436,3 +436,10 @@ int cp_island_parse(const uint8_t *blob, size_t len, CpIslandDesc *out)
     for (int i = 0; i < out->nmark; i++) if (bad(&r, !in_int(out->mark[i].x_dm) || !in_int(out->mark[i].y_dm))) return r.err;
     return cp_island_prepare(out);
 }
+
+#include "islands/star_massif.inc"
+const uint8_t *cp_island_star_massif(size_t *len)
+{
+    if (len) *len = sizeof CP_ISLAND_STAR_MASSIF_BLOB;
+    return CP_ISLAND_STAR_MASSIF_BLOB;
+}

@@ -1,0 +1,110 @@
+{
+ "n": 1536,
+ "gates": {
+  "forest_vale_forest_pct": [
+   90.1,
+   ">=",
+   80.0
+  ],
+  "canyon_dry_pct": [
+   80.5,
+   ">=",
+   70.0
+  ],
+  "mesa_cold_pct": [
+   80.6,
+   ">=",
+   80.0
+  ],
+  "nest_meadow_pct": [
+   86.6,
+   ">=",
+   80.0
+  ],
+  "rain_ratio_windward_vs_lee": [
+   11.09,
+   ">=",
+   8.0
+  ],
+  "snow_min_height_m": [
+   652.0,
+   ">=",
+   600.0
+  ]
+ },
+ "regions": {
+  "Forest vale": {
+   "cells": 81024,
+   "biome_pct": {
+    "beach": 0.5,
+    "meadow": 4.8,
+    "jungle": 55.4,
+    "dry_forest": 24.3,
+    "scrub": 4.0,
+    "cliff": 11.0
+   },
+   "mean_P_mm": 1889.8
+  },
+  "Canyon badlands": {
+   "cells": 62211,
+   "biome_pct": {
+    "beach": 0.6,
+    "meadow": 13.7,
+    "jungle": 0.5,
+    "dry_forest": 3.8,
+    "scrub": 40.4,
+    "desert": 12.3,
+    "badlands": 21.6,
+    "cliff": 7.2
+   },
+   "mean_P_mm": 360.7
+  },
+  "Mesa": {
+   "cells": 13198,
+   "biome_pct": {
+    "jungle": 16.7,
+    "dry_forest": 0.0,
+    "alpine": 69.6,
+    "cliff": 13.6
+   },
+   "mean_P_mm": 3962.2
+  },
+  "Nest valley": {
+   "cells": 4296,
+   "biome_pct": {
+    "meadow": 86.6,
+    "dry_forest": 7.6,
+    "scrub": 5.8
+   },
+   "mean_P_mm": 577.0
+  }
+ },
+ "forest_vale_forest_pct_all_land": 79.8,
+ "canyon_dry_pct_all_land": 74.2,
+ "vale_over_canyon": 5.24,
+ "land_P_mm": {
+  "p05": 157.0,
+  "p95": 4000.0,
+  "max": 4000.0,
+  "min": 94.0
+ },
+ "snow": {
+  "cells": 123,
+  "min_h_m": 652.0,
+  "max_h_m": 822.4
+ },
+ "island_biome_pct": {
+  "beach": 2.4,
+  "meadow": 11.9,
+  "jungle": 20.7,
+  "dry_forest": 16.8,
+  "scrub": 18.8,
+  "desert": 6.2,
+  "badlands": 5.9,
+  "alpine": 1.5,
+  "tundra": 0.0,
+  "snow": 0.0,
+  "cliff": 15.6
+ },
+ "pass": true
+}
