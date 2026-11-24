@@ -2,7 +2,8 @@ extends SceneTree
 # P0 of docs/plans/island-realism.md (section 2): the fixed orbit-to-ground review camera path OG0..OG9 at four times of day.
 #   LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a godot --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
 #     --script res://game/tests/island_path_shots.gd -- <out dir> <tier low|medium> [island] [shots OG2,OG5|all] [tods dawn,night|all]
-# island: "0" or "default" = the game's own island (CporeTerrain.defaults()); a path to a JSON file = terrain params (the "params"
+# island: "0" or "default" = the game's own island (CporeTerrain.defaults()); a path to a packed island (.isl: the authored Star massif with its
+# climate maps; `make godot-island-path ISLAND=godot/game/data/islands/star_massif.isl`); a path to a JSON file = terrain params (the "params"
 # object of `terrain_cli layout-json --layout N`, or that whole output; later steps point it at an island file). `make godot-island-path`
 # turns LAYOUT=N into that file. The shot list below is in world metres (nest at the origin, x east, z south) for the Star massif.
 # Writes <out>/<tier>_<tod>_<OGn>.jpg, <out>/times_<tier>.json (software-GL ms per frame, a relative number only) and
@@ -70,6 +71,17 @@ func island_params(arg: String) -> Dictionary:
 	var p := {"seed": 1}
 	if arg == "ring" or arg == "0":
 		return p                                # the old layout-0 ring island
+	if arg.ends_with(".isl"):
+		# a packed island (core/include/cpore/island.h): the authored Star massif with its climate maps (island-realism M2)
+		var blob := FileAccess.get_file_as_bytes(arg)
+		var info: Dictionary = CporeTerrain.island_info(blob)
+		if blob.is_empty() or info.get("error", -1) != 0:
+			push_error("cannot read island blob " + arg)
+			quit(2)
+			return {}
+		p["n"] = int(info.n)
+		p["island_blob"] = blob
+		return p
 	var f := FileAccess.open(arg, FileAccess.READ)
 	if f == null:
 		push_error("cannot read island file " + arg)

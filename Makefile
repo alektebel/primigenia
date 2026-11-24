@@ -377,7 +377,11 @@ godot: $(BUILD)/libcpore.a
 	@mkdir -p godot/.godot
 	@test -s godot/.godot/extension_list.cfg || echo 'res://cpore.gdextension' > godot/.godot/extension_list.cfg
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import
-.PHONY: godot-cave-mesh-test
+.PHONY: godot-cave-mesh-test godot-flora-climate-test
+# Island-realism M4: flora and grass follow the climate maps of the frozen Star massif (counts per biome, no tree in desert cells, the spring tree).
+godot-flora-climate-test: godot
+	nice -n 10 timeout 60 $(GODOT) --headless --path godot --check-only --script res://game/tests/flora_climate_test.gd
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/flora_climate_test.gd
 godot-cave-mesh-test: godot
 	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_cave_mesh.gd
 

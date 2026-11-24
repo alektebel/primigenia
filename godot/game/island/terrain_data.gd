@@ -40,6 +40,13 @@ var height_tex: ImageTexture
 var level_tex: ImageTexture
 var surface_tex: ImageTexture
 var relief_tex: ImageTexture
+# Climate maps of an authored island (island-realism plan part II): empty on the seed islands (layout 0), where flora and grass keep the old rules.
+var biome: PackedByteArray        # CP_BIOME_* id per cell (n*n)
+var veg: PackedByteArray          # RGBA8 (n*n): R canopy density, G undergrowth, B grass density, A litter/moss wetness
+var climate: PackedByteArray      # RGBA8 (climate_n^2): R precipitation 0..4000 mm/yr, G temperature -10..30 C, B cloud water, A fog frequency
+var climate_n: int = 0
+var biome_tex: ImageTexture       # R8 biome id (nearest sampling), n*n
+var veg_tex: ImageTexture
 
 # Adds the derived maps to a CporeTerrain.generate() result (worker-thread safe).
 static func prepare(entry: Dictionary) -> void:
@@ -76,7 +83,28 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 		vh_min = entry.vh_min
 		vh_range = entry.vh_range
 		vmaps = entry.vmaps
+	biome = PackedByteArray()
+	veg = PackedByteArray()
+	climate = PackedByteArray()
+	climate_n = 0
+	var cb: Variant = entry.get("biome")
+	var cv: Variant = entry.get("veg")
+	if typeof(cb) == TYPE_PACKED_BYTE_ARRAY and typeof(cv) == TYPE_PACKED_BYTE_ARRAY and cb.size() == n * n and cv.size() == n * n * 4:
+		biome = cb
+		veg = cv
+		var cm: Variant = entry.get("climate")
+		var cn: Variant = entry.get("climate_n")
+		if typeof(cm) == TYPE_PACKED_BYTE_ARRAY and typeof(cn) == TYPE_INT and cn > 0 and cm.size() == cn * cn * 4:
+			climate = cm
+			climate_n = cn
 	if build_textures:
+		if has_climate():
+			biome_tex = _tex(Image.FORMAT_R8, biome)
+			veg_tex = _tex(Image.FORMAT_RGBA8, veg)
+		else:
+			# 1x1 stand-ins keep the grass shader's samplers bound; use_veg stays 0 so they are never read for density.
+			biome_tex = ImageTexture.create_from_image(Image.create_from_data(1, 1, false, Image.FORMAT_R8, PackedByteArray([0])))
+			veg_tex = ImageTexture.create_from_image(Image.create_from_data(1, 1, false, Image.FORMAT_RGBA8, PackedByteArray([0, 0, 255, 0])))
 		if vn > 0:
 			vheight_tex = ImageTexture.create_from_image(Image.create_from_data(vn, vn, false, Image.FORMAT_R16, vheight))
 			vmaps_tex = ImageTexture.create_from_image(Image.create_from_data(vn / 2, vn / 2, false, Image.FORMAT_RGBA8, vmaps))
@@ -97,6 +125,26 @@ func apply_sun_shadows(sun: Vector3) -> int:
 	if relief_tex != null:
 		relief_tex.update(Image.create_from_data(n, n, false, Image.FORMAT_RGBA8, relief))
 	return Time.get_ticks_msec() - t0
+
+func has_climate() -> bool:
+	return biome.size() == n * n and n > 0
+
+# Biome id (CP_BIOME_*) of cell k, or -1 without climate maps.
+func biome_at(k: int) -> int:
+	return biome[k] if has_climate() else -1
+
+# Vegetation channel (0 canopy, 1 undergrowth, 2 grass, 3 litter/moss wetness) of cell k as 0..1; 0 without climate maps.
+func veg_at(k: int, channel: int) -> float:
+	return float(veg[k * 4 + channel]) / 255.0 if has_climate() else 0.0
+
+# Nearest climate texel at world (x, z): Vector4(precipitation mm/yr, temperature C, cloud water 0..1, fog 0..1); ZERO without climate maps.
+func climate_at(x: float, z: float) -> Vector4:
+	if climate_n == 0:
+		return Vector4.ZERO
+	var i := clampi(floori((x + half) / size_m * float(climate_n)), 0, climate_n - 1)
+	var j := clampi(floori((z + half) / size_m * float(climate_n)), 0, climate_n - 1)
+	var o := (j * climate_n + i) * 4
+	return Vector4(float(climate[o]) / 255.0 * 4000.0, float(climate[o + 1]) / 255.0 * 40.0 - 10.0, float(climate[o + 2]) / 255.0, float(climate[o + 3]) / 255.0)
 
 func _tex(format: Image.Format, bytes: PackedByteArray) -> ImageTexture:
 	return ImageTexture.create_from_image(Image.create_from_data(n, n, false, format, bytes))
@@ -135,6 +183,11 @@ func bind_visual(m: ShaderMaterial) -> void:
 	m.set_shader_parameter("VIS_CELL", vcell)
 	m.set_shader_parameter("VH_MIN", vh_min)
 	m.set_shader_parameter("VH_RANGE", vh_range)
+
+# Sets the climate uniforms (grass.gdshader): veg_tex and use_veg (1 with climate maps, 0 on the seed islands).
+func bind_climate(m: ShaderMaterial) -> void:
+	m.set_shader_parameter("veg_tex", veg_tex)
+	m.set_shader_parameter("use_veg", 1.0 if has_climate() else 0.0)
 
 func _vh(i: int, j: int) -> float:
 	return vh_min + vh_range * (1.0 / 65535.0) * float(vheight.decode_u16((clampi(j, 0, vn - 1) * vn + clampi(i, 0, vn - 1)) * 2))
