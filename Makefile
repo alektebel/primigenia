@@ -21,6 +21,7 @@ lib: $(BUILD)/libcpore.so
 $(BUILD)/%.o: %.c $(HDRS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+$(BUILD)/core/src/terrain.o: core/src/terrain_layouts.inc
 
 $(BUILD)/libcpore.a: $(CORE_OBJ)
 	ar rcs $@ $^
@@ -177,7 +178,7 @@ terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
 
 TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
-$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
+$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
 	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=50331648 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
 .PHONY: terrain-parity
