@@ -71,6 +71,9 @@ static float arg_f(int argc,char **argv,const char *key,float fallback)
 
 static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
 {
+    {   float lay = arg_f(argc, argv, "--layout", p->layout);
+        if (lay >= 1.f) cp_terrain_layout_apply((int)(lay + 0.5f), p);   /* A83: nest radius, erosion strength; flags below still win */
+    }
     int n = arg_i(argc, argv, "--n", p->n);
     int drops = arg_i(argc, argv, "--droplets", p->droplets);
     int thermal = arg_i(argc, argv, "--thermal", p->thermal_iters);
@@ -92,6 +95,7 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     p->volcano=arg_f(argc,argv,"--volcano",p->volcano);
     p->caves=arg_f(argc,argv,"--caves",p->caves);
     p->rivers=arg_f(argc,argv,"--rivers",p->rivers);
+    p->layout=arg_f(argc,argv,"--layout",p->layout);
     p->stream_iters = stream;
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
@@ -271,6 +275,101 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
     return failed?2:0;
 }
 
+
+/* A83 design maps: PPM shaded relief, PGM slope classes and PGM reachability from the nest (origin).
+ * classes: 0 sea or deep river, 1 <30 deg, 2 30..45, 3 45..51.6, 4 steeper than 51.6, 5 shallow river or pond.
+ * reach: 0 none, 1 plain body (51.6 deg grip, A66), 2 with climbing parts (75 deg) only. */
+static void write_pnm(const char *path, const char *magic, int n, const uint8_t *px, int ch)
+{
+    FILE *f = fopen(path, "wb");
+    if (!f) { perror(path); exit(2); }
+    fprintf(f, "%s\n%d %d\n255\n", magic, n, n);
+    if (fwrite(px, (size_t)ch, (size_t)n * (size_t)n, f) != (size_t)n * (size_t)n) die("short write");
+    fclose(f);
+}
+
+static int flood(const uint8_t *cls, const float *slope, const CpTerrain *t, int n, float tan_limit, uint8_t *mark, int *q)
+{
+    int qh = 0, qt = 0, start = (n / 2) * n + n / 2, count = 0;
+    q[qt++] = start;
+    mark[start] = 1;
+    while (qh < qt) {
+        int c = q[qh++], x = c % n, y = c / n;
+        count++;
+        for (int d = 0; d < 8; d++) {
+            static const int ox[8] = {1, 1, 0, -1, -1, -1, 0, 1}, oy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+            int nx = x + ox[d], ny = y + oy[d], ni;
+            if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+            ni = ny * n + nx;
+            if (mark[ni] || cls[ni] == 0 || slope[ni] > tan_limit) continue;
+            mark[ni] = 1;
+            q[qt++] = ni;
+        }
+    }
+    return count;
+}
+
+static void maps(const CpTerrain *t, const CpTerrainParams *p, const char *prefix)
+{
+    int n = t->n, nn = n * n;
+    float cell = t->size_m / (float)n;
+    float *slope = falloc(n);
+    uint8_t *rgb = malloc((size_t)nn * 3), *shade = malloc(nn), *cls = malloc(nn), *plain = calloc(nn, 1), *climb = calloc(nn, 1), *reach = calloc(nn, 1);
+    int *q = malloc(sizeof(int) * (size_t)nn);
+    char path[1024];
+    const float tan30 = 0.57735f, tan45 = 1.f, tan516 = 1.2608f, tan75 = 3.7321f;
+    int land = 0, plain_n, climb_n;
+    if (!rgb || !shade || !cls || !plain || !climb || !reach || !q) die("out of memory");
+    cp_terrain_slope(t->height, n, t->size_m, slope);
+    for (int j = 0; j < n; j++) for (int i = 0; i < n; i++) {
+        int k = j * n + i, i0 = i ? i - 1 : i, i1 = i < n - 1 ? i + 1 : i, j0 = j ? j - 1 : j, j1 = j < n - 1 ? j + 1 : j;
+        float h = t->height[k];
+        float gx = (t->height[j * n + i1] - t->height[j * n + i0]) / ((float)(i1 - i0) * cell);
+        float gy = (t->height[j1 * n + i] - t->height[j0 * n + i]) / ((float)(j1 - j0) * cell);
+        float nz = 1.f / sqrtf(1.f + 1.96f * (gx * gx + gy * gy)), nx = -1.4f * gx * nz, ny = -1.4f * gy * nz;
+        float lit = nx * -0.45f + ny * -0.55f + nz * 0.70f;
+        int rc = t->river ? (t->river[k] & 3) : 0;
+        float r, g, b, sh;
+        uint8_t c;
+        lit = lit < 0.f ? 0.f : lit > 1.f ? 1.f : lit;
+        sh = 0.25f + 0.85f * lit;
+        shade[k] = (uint8_t)(255.f * (sh > 1.f ? 1.f : sh));
+        if (h <= 0.f) {
+            float dp = h < -24.f ? 1.f : -h / 24.f;
+            r = 40.f - 18.f * dp; g = 90.f - 30.f * dp; b = 130.f - 25.f * dp; sh = 0.85f + 0.15f * lit;
+            if (h > -12.f) { float a = (h + 12.f) / 12.f; r = 40.f + 40.f * a; g = 140.f + 70.f * a; b = 175.f + 20.f * a; }   /* warm shallows: reefs */
+            else if (h < -60.f) { float a = h < -140.f ? 1.f : (-60.f - h) / 80.f; r = 24.f - 14.f * a; g = 70.f - 40.f * a; b = 112.f - 50.f * a; }   /* abyss */
+            c = 0;
+        } else {
+            float u = h / 420.f; u = u > 1.f ? 1.f : u;
+            if (h < 7.f) { r = 205.f; g = 190.f; b = 140.f; }
+            else if (u < 0.12f) { r = 96.f + 40.f * u / 0.12f; g = 140.f - 10.f * u / 0.12f; b = 74.f; }
+            else if (u < 0.45f) { float a = (u - 0.12f) / 0.33f; r = 136.f + 30.f * a; g = 130.f + 5.f * a; b = 74.f + 40.f * a; }
+            else if (u < 0.85f) { float a = (u - 0.45f) / 0.40f; r = 166.f + 10.f * a; g = 135.f + 25.f * a; b = 114.f + 50.f * a; }
+            else { r = 235.f; g = 238.f; b = 242.f; }
+            if (t->material[k] == CP_TERR_MAT_ROCK || t->material[k] == CP_TERR_MAT_SCREE) { r = r * 0.55f + 78.f; g = g * 0.55f + 70.f; b = b * 0.55f + 64.f; }
+            c = slope[k] < tan30 ? 1 : slope[k] < tan45 ? 2 : slope[k] < tan516 ? 3 : 4;
+            if (rc == CP_TERR_RIVER_DEEP) { c = 0; r = 40.f; g = 98.f; b = 150.f; sh = 0.9f; }
+            else if (rc == CP_TERR_RIVER_SHALLOW || rc == CP_TERR_RIVER_STREAM) { r = 80.f; g = 150.f; b = 190.f; sh = 0.95f; if (rc == CP_TERR_RIVER_SHALLOW) c = 5; }
+            land++;
+        }
+        cls[k] = c;
+        rgb[k * 3] = (uint8_t)(r * sh > 255.f ? 255.f : r * sh);
+        rgb[k * 3 + 1] = (uint8_t)(g * sh > 255.f ? 255.f : g * sh);
+        rgb[k * 3 + 2] = (uint8_t)(b * sh > 255.f ? 255.f : b * sh);
+    }
+    plain_n = flood(cls, slope, t, n, tan516, plain, q);
+    climb_n = flood(cls, slope, t, n, tan75, climb, q);
+    for (int k = 0; k < nn; k++) reach[k] = plain[k] ? 1 : climb[k] ? 2 : 0;
+    snprintf(path, sizeof path, "%s-relief.ppm", prefix); write_pnm(path, "P6", n, rgb, 3);
+    snprintf(path, sizeof path, "%s-shade.pgm", prefix); write_pnm(path, "P5", n, shade, 1);
+    snprintf(path, sizeof path, "%s-cls.pgm", prefix); write_pnm(path, "P5", n, cls, 1);
+    snprintf(path, sizeof path, "%s-reach.pgm", prefix); write_pnm(path, "P5", n, reach, 1);
+    printf("{\"land_cells\":%d,\"plain_reach\":%d,\"climb_reach\":%d,\"cell_m\":%.3f}\n", land, plain_n, climb_n, (double)cell);
+    (void)p;
+    free(slope); free(rgb); free(shade); free(cls); free(plain); free(climb); free(reach); free(q);
+}
+
 int main(int argc, char **argv)
 {
     CpTerrainParams p;
@@ -300,6 +399,18 @@ int main(int argc, char **argv)
     }
     t.n = p.n;
     t.size_m = p.size_m;
+    if (!strcmp(cmd, "layout-json")) {
+        static char buf[65536];
+        if (!cp_terrain_layout_json((int)(p.layout + 0.5f), buf, sizeof buf)) die("unknown layout");
+        puts(buf);
+        return 0;
+    }
+    if (!strcmp(cmd, "maps")) {
+        const char *prefix = arg_s(argc, argv, "--out");
+        if (!prefix) die("maps needs --out PREFIX");
+        maps(&t, &p, prefix);
+        return 0;
+    }
     if (!strcmp(cmd,"features")) {
         int counts[6]={0};for(int i=0;i<p.n*p.n;i++)counts[t.material[i]]++;
         printf("{\"seed\":%u,\"volcano\":[%.6f,%.6f,%.6f,%.6f],\"materials\":[%d,%d,%d,%d,%d,%d],\"caves\":[",

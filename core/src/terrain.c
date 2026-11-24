@@ -2,6 +2,7 @@
 #include "cpore/cpore.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 /* Mountains are a mask plus erosion, not a height painted by hand (W11).
@@ -307,6 +308,7 @@ int cp_terrain_validate(const CpTerrainParams *p)
     if (!in_range(p->sea_cliffs, 0.f, 1.f) || !in_range(p->hard_rock, 0.f, 1.f) ||
         !in_range(p->volcano, 0.f, 1.f) || !in_range(p->caves, 0.f, 1.f) ||
         !in_range(p->rivers, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->layout, 0.f, 4.4f)) return CP_TERR_ERR_RANGE;
     return CP_TERR_OK;
 }
 
@@ -602,8 +604,21 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
     return h;
 }
 
+#include "terrain_layouts.inc"
+
 static void fill_base(const CpTerrainParams *p, int n, float *height, Shape *shape)
 {
+    if (p->layout >= 1.f) {
+        const Layout *L = &LAYOUTS[(int)(p->layout + 0.5f) - 1];
+        const float cell = p->size_m / (float)n, half = p->size_m * 0.5f;
+        int row_step = n >= 8 ? n / 8 : 1;
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < n; i++)
+                height[(size_t)j * (size_t)n + (size_t)i] = layout_height(p, L, ((float)i + 0.5f) * cell - half, ((float)j + 0.5f) * cell - half);
+            if (((j + 1) % row_step) == 0 && (j + 1) / row_step <= 8) shape_tick(shape);
+        }
+        return;
+    }
     const float cell = p->size_m / (float)n;
     const float half = p->size_m * 0.5f;
     BaseCtx c;
@@ -1821,7 +1836,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
     }
     memset(out->material, 0, (size_t)nn);
-    if (p->rivers > 0.f && trail_ok(p)) {
+    if (p->rivers > 0.f && trail_ok(p) && !(p->layout >= 1.f)) {
         gap_trail(p, out, ws);
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
