@@ -52,7 +52,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
+test: island-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
 	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
@@ -166,15 +166,30 @@ studio-test:
 	G48_TEST_OUTPUT=$(BUILD)/studio-tests/g48-tests.json nice -n 10 node tests/studio_procedural_parts.cjs
 
 # W11: native smoke remains small; 1024 guarantees and parity are opt-in.
-TERRAIN_SRC := core/src/terrain.c core/src/rng.c
+TERRAIN_SRC := core/src/terrain.c core/src/island_desc.c core/src/rng.c
 $(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: terrain-test
 # Never regenerate committed goldens during tests.
-terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
+terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli island-test-heavy
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
+
+# F0 (docs/plans/island-realism.md): the desc from layout 1 must generate the same terrain hash as --layout 1.
+# The blob is built by the real tool chain (from_layout.mjs, pack.mjs) so the test covers the whole path. n = 1536 under --heavy.
+ISLAND_F0 := $(BUILD)/island/star_f0.isl
+$(ISLAND_F0): tools/island/from_layout.mjs tools/island/pack.mjs core/src/terrain_layouts.inc
+	@mkdir -p $(dir $@)
+	node tools/island/from_layout.mjs > $(BUILD)/island/star_f0.island.json
+	node tools/island/pack.mjs $(BUILD)/island/star_f0.island.json $@
+$(BUILD)/island_test: tests/test_island.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: island-test island-test-heavy
+island-test: $(BUILD)/island_test $(ISLAND_F0)
+	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0)
+island-test-heavy: $(BUILD)/island_test $(ISLAND_F0)
+	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0) --heavy
 
 TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
