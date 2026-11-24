@@ -64,7 +64,7 @@ function setStar(c,p){if(p)STARS[c.def.id]=p;else delete STARS[c.def.id];save();
 const cells=[];let hover=null;
 A.forEach((def,i)=>{
   const c=SIG.build(def,i),el=document.createElement('div');el.className='cell';
-  el.innerHTML=`<div class="cap"><b><i>${i+1}</i>${def.name}</b><span class="an">${def.animal}<span class="role">${def.role}</span></span><span class="org">organ: ${def.organ}</span></div><div class="eff">${def.effect}</div><div class="ctl"><span class="pri"><button data-p="1" aria-label="Priority 1">1</button><button data-p="2" aria-label="Priority 2">2</button><button data-p="3" aria-label="Priority 3">3</button></span><button class="star" aria-label="Star ${def.name}" aria-pressed="false" title="Star: prioritise this attack">&#9733;</button></div><div class="bar"><u style="left:${def.ti/L*100}%"></u><i></i></div>`;
+  el.innerHTML=`<div class="cap"><b><i>${i+1}</i>${def.name}</b><span class="an">${def.animal}<span class="role">${def.role}</span></span><span class="org">organ: ${def.organ}</span></div><div class="eff">${def.effect}</div><div class="ctl"><span class="pri"><button data-p="1" aria-label="Priority 1">1</button><button data-p="2" aria-label="Priority 2">2</button><button data-p="3" aria-label="Priority 3">3</button></span><button class="star" aria-label="Star ${def.name}" aria-pressed="false" title="Star: prioritise this attack">&#9733;</button></div><div class="bar"><u style="left:${def.ti/def.L*100}%"></u><i></i></div>`;
   cellsEl.appendChild(el);Object.assign(c,{el,star:el.querySelector('.star'),pri:[...el.querySelectorAll('.pri button')],ph:el.querySelector('.bar i'),idx:i});
   el.addEventListener('click',e=>{if(e.target.closest('.ctl'))return;toggleFocus(c);});el.addEventListener('mouseenter',()=>{hover=c;});
   c.star.addEventListener('click',e=>{e.stopPropagation();setStar(c,STARS[def.id]?0:2);});c.pri.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setStar(c,Number(b.dataset.p));}));
@@ -73,8 +73,8 @@ const S={T:0,play:true,rate:1,cam:'game',focus:null,over:null};
 const CAMS={game:{az:100,el:16},side:{az:90,el:5},front:{az:140,el:12}};
 function aim(c,aspect){const d=CAMS[S.cam],az=d.az*Math.PI/180,el=d.el*Math.PI/180,k=c.def.cam;let h=k.h*(S.focus?.86:1);h=Math.max(h,3.3/aspect+.3);
   const dist=(h/2)/Math.tan(c.cam.fov*Math.PI/360);c.cam.aspect=aspect;c.cam.position.set(k.cx-dist*Math.cos(el)*Math.cos(az),k.ty+dist*Math.sin(el),dist*Math.cos(el)*Math.sin(az));const kk=c.inst.kick||0,kx=kk*.035*Math.sin(S.T*.11),ky=kk*.03*Math.cos(S.T*.13);c.cam.position.x+=kx;c.cam.position.y+=ky;c.cam.lookAt(new T_.Vector3(k.cx+kx,k.ty+ky,0));c.cam.updateProjectionMatrix();}
-const cellS=c=>S.per?S.per[c.idx]:S.over!==null?S.over:(S.T/1000)%L;
-function applyCell(c){const s=cellS(c);c.fx.reset();c.inst.pose(s,c.fx);c.fx.flush();c.ph.style.left=(s/L*100)+'%';}
+const cellS=c=>S.per?S.per[c.idx]:S.over!==null?S.over:(S.T/1000)%c.def.L;
+function applyCell(c){const s=cellS(c);c.fx.reset();c.inst.pose(s,c.fx);c.fx.flush();c.ph.style.left=(s/c.def.L*100)+'%';}
 function render(){
   const W=canvas.clientWidth,H=canvas.clientHeight,dpr=Math.min(window.devicePixelRatio||1,1.5);
   if(canvas.width!==Math.round(W*dpr)||canvas.height!==Math.round(H*dpr)){renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);}
