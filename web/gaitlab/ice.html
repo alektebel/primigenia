@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Ice study (A85 cryo gland)</title>
+<style>
+:root{color-scheme:dark;--bg:#14181c;--panel:#1e2328;--ink:#efebe2;--dim:#aab0b6;--line:#3b424a;--gold:#edc578;--red:#e0705c}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.35 system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;background:#2b3238;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:5px 10px;cursor:pointer;transition:transform 160ms ease-out,background 160ms ease-out}
+button:hover{background:#38414a}button:active{transform:scale(.97)}button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}
+button.hitb{background:#5a2a26;border-color:#8a4038}button.hitb:hover{background:#74352f}
+header{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex:none}
+h1{font-size:16px;margin:0;line-height:1.2}h1 small{display:block;font-size:11.5px;font-weight:400;color:var(--dim);max-width:700px}
+.group{display:flex;gap:4px;align-items:center}.group>span{font-size:12px;color:var(--dim);margin-right:3px}
+#check{font-size:12px;color:var(--dim)}#check.pass{color:#a3d4ad}#check.fail{color:#ff998c}
+#stage{position:relative;flex:1;min-height:0}#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#cells{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:3px}
+.cell{position:relative;border:1px solid var(--line);border-radius:6px;cursor:zoom-in;min-width:0;min-height:0;overflow:hidden}
+.cell:hover{border-color:#66707a}.cell.starred{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.cap{position:absolute;left:9px;top:6px;right:210px;pointer-events:none;text-shadow:0 1px 3px #000,0 0 6px #000}
+.cap b{font-size:15px;color:var(--gold);letter-spacing:.02em}.cap b i{font-style:normal;color:var(--ink);margin-right:6px;font-size:12px;opacity:.9}
+.cap .org{display:block;font-size:11.5px;color:#d9dde0;margin-top:1px}.cap .tag{display:none;font-size:13px;color:#d3d7da;margin-top:4px;max-width:640px}
+.star{position:absolute;right:5px;top:4px;width:30px;height:28px;padding:0;font-size:17px;line-height:1;background:#2b3238cc;border-radius:6px}
+.hud{position:absolute;right:40px;top:4px;width:178px;pointer-events:none;background:#14181cc8;border:1px solid #333b43;border-radius:6px;padding:4px 7px;font-size:11.5px;line-height:1.3;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #000}
+.hud .k{color:#aab0b6}.hud b{color:var(--ink)}.hud .gain{color:#a3e0b0}.hud .bad{color:#ff998c}
+.hud .mt{height:6px;background:#0c0f12;border-radius:3px;margin:2px 0;overflow:hidden}.hud .mt>div{height:100%;background:linear-gradient(90deg,#c79a54,#e8cf8e);width:0}
+.banner{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;letter-spacing:.08em;color:#ffb3a6;text-shadow:0 2px 6px #000,0 0 14px #a02a1a;pointer-events:none;opacity:0;transition:opacity 120ms ease-out}
+.tl{position:absolute;left:8px;right:8px;bottom:5px;pointer-events:none}
+.bar{position:relative;display:flex;height:13px;border-radius:3px;overflow:hidden;background:#0c0f12;border:1px solid #000}
+.bar>div.s{display:flex;align-items:center;justify-content:center;font-size:9.5px;color:#101214;white-space:nowrap;overflow:hidden;font-weight:600;min-width:0}
+.bar .ph{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;box-shadow:0 0 4px #000;z-index:4}
+.bar .hm{position:absolute;top:-3px;bottom:-3px;width:3px;background:#ff6a55;z-index:3;display:none}
+.tl .rd{display:none;justify-content:space-between;font-size:12px;color:#cfd4d8;margin-top:3px;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #000}
+#stage.focus .cell{display:none}#stage.focus .cell.on{display:block;grid-column:1/-1;grid-row:1/-1;cursor:zoom-out}#stage.focus #cells{grid-template-columns:1fr;grid-template-rows:1fr}
+#stage.focus .cap b{font-size:24px}#stage.focus .cap .org{font-size:15px}#stage.focus .cap .tag{display:block}#stage.focus .bar{height:26px}#stage.focus .bar>div.s{font-size:12.5px}#stage.focus .tl .rd{display:flex}
+#stage.focus .hud{width:250px;font-size:14px;padding:6px 10px}#stage.focus .banner{font-size:42px}
+footer{flex:none;padding:5px 12px;color:var(--dim);font-size:12px;background:var(--panel);border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}kbd{font:inherit;color:var(--ink);background:#2b3238;border-radius:3px;padding:0 4px}
+#choices{flex:1;min-width:240px;background:#14181c;color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:3px 7px;font:12px ui-monospace,monospace}
+.tabs{display:flex;gap:4px}.tabs button{font-weight:600}
+.cell .pass{position:absolute;left:9px;bottom:30px;font-size:11.5px;color:#bfe6ff;text-shadow:0 1px 3px #000;pointer-events:none}
+.banner{color:#d6f3ff;text-shadow:0 2px 6px #000,0 0 16px #2c7fb8}
+.hud .ice{color:#9fe0ff}.hud .mt>div{background:linear-gradient(90deg,#4aa6d8,#d6f3ff)}
+</style>
+<script src="../biome/three.min.js"></script>
+<script src="bb_core.js"></script>
+<script src="engulf_core.js"></script>
+<script src="ice_core.js"></script>
+<script src="ice_quad.js"></script>
+<script src="ice_spike.js"></script>
+<script src="ice_breath.js"></script>
+<script src="ice_bridge.js"></script>
+</head>
+<body>
+<header>
+<h1>Cryo gland (A85): ice spike, frost breath, ice bridge<small id="blurb"></small></h1>
+<div class="group tabs" id="tabs"><button data-move="spike" aria-pressed="true">1 Ice spike</button><button data-move="breath" aria-pressed="false">2 Frost breath &rarr; freeze</button><button data-move="bridge" aria-pressed="false">3 Ice bridge</button></div>
+<div class="group"><button id="play" aria-pressed="true">Pause</button><button id="back" aria-label="Step back one frame">&lsaquo; frame</button><button id="fwd" aria-label="Step forward one frame">frame &rsaquo;</button><button id="restart">Restart</button></div>
+<div class="group" id="rates"><span>Speed</span><button data-rate="1" aria-pressed="true">1×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate=".25" aria-pressed="false">0.25×</button></div>
+<div class="group"><button id="loop" aria-pressed="true">Loop</button></div>
+<div class="group" id="cams"><span>Camera</span><button data-cam="game" aria-pressed="true">Game</button><button data-cam="side" aria-pressed="false">Side</button><button data-cam="front" aria-pressed="false">Front ¾</button></div>
+<div class="group"><button id="tight" aria-pressed="false">Frame: follow</button><button id="ending" aria-pressed="false" title="What happens to the frozen target">Ending: auto</button><button id="hit" class="hitb">Heavy hit &rarr; shatter (H)</button><button id="copy">Copy choices</button></div>
+<div id="check"></div>
+</header>
+<div id="stage"><canvas id="gl"></canvas><div id="cells"></div></div>
+<footer><span><kbd>P</kbd> play · <kbd>,</kbd> <kbd>.</kbd> frame step · <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> speed · <kbd>L</kbd> loop · <kbd>C</kbd> camera · <kbd>T</kbd> wide frame · <kbd>M</kbd> next move · <kbd>E</kbd> ending (breath) · <kbd>H</kbd> heavy hit (breath) · <kbd>S</kbd> star hovered cell · <kbd>F</kbd> or click a cell to enlarge · <kbd>Esc</kbd> back. Bar: coloured phases, white line = now.</span><input id="choices" readonly aria-label="Starred choices" placeholder="Star the versions you like, then Copy choices"></footer>
+<script>
+'use strict';
+(()=>{
+const {T:THREE_,rigs,EG}=IC,$=id=>document.getElementById(id);
+const FRAME=1000/60,GAP=1000;
+const MOVES={
+ spike:{title:'Ice spike',blurb:'A projectile that damages and slows. A cryo creature (pale throat sac, rime on the skin) against a grazer: windup, release, the hit flinch, then a visibly slowed, frosted gait that recovers. Four takes: spat icicle, shard volley, ground eruption, breath-formed lance.'},
+ breath:{title:'Frost breath',blurb:'A short cone that slows, then encases the target in ice after about 1.5 s inside it. Shows the slow, the frozen block (mid-stride), the thaw, and the A89 combo: frozen + heavy hit = shatter. Ending alternates thaw and shatter each loop (button / E to fix one, H to hit now).'},
+ bridge:{title:'Ice bridge',blurb:'Freezes the river surface ahead into a walkable path that lasts about 20 s, then cracks and melts. The creature crosses; the timer runs time-lapsed (about 3.4x) so you see the whole life of the bridge. Four takes: breath, spat slabs, frost wave, stepping-stone floes.'}};
+const canvas=$('gl'),stage=$('stage'),cellsEl=$('cells');
+const renderer=new THREE_.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setClearColor('#1b252e');renderer.setScissorTest(true);
+let STARS={};try{STARS=JSON.parse(localStorage.getItem('iceStars')||'{}')||{};}catch(e){STARS={};}
+const saveStars=()=>{try{localStorage.setItem('iceStars',JSON.stringify(STARS));}catch(e){}};
+const key=r=>r.move+'/'+r.id;
+const choicesText=()=>{const o=[];for(const m of Object.keys(MOVES)){const p=rigs[m].filter(r=>STARS[key(r)]).map(r=>r.id);if(p.length)o.push(m+': '+p.join(' + '));}return o.length?'ice picks: '+o.join('; '):'';};
+const S={T:0,play:true,rate:1,loop:true,cam:'game',focus:null,wide:false,move:'spike',pass:0,ending:'auto',hitT:null};
+let cells=[],hover=null;
+function starUI(c){const on=!!STARS[key(c.rig)];c.star.setAttribute('aria-pressed',String(on));c.el.classList.toggle('starred',on);}
+function toggleStar(c){const k=key(c.rig);if(STARS[k])delete STARS[k];else STARS[k]=1;saveStars();starUI(c);$('choices').value=choicesText();}
+function setMove(m){
+  if(!rigs[m])return;S.move=m;S.focus=null;stage.classList.remove('focus');S.hitT=null;S.T=0;S.pass=0;
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.move===m)));$('blurb').textContent=MOVES[m].blurb;
+  $('ending').style.display=m==='breath'?'':'none';$('hit').style.display=m==='breath'?'':'none';
+  cellsEl.innerHTML='';cells=[];
+  rigs[m].forEach((rig,idx)=>{
+    if(!rig.inst){const scene=new THREE_.Scene();rig.inst=rig.build(scene);rig.inst.scene=scene;rig.inst.cam=new THREE_.PerspectiveCamera(30,1.8,.05,90);}
+    const el=document.createElement('div');el.className='cell';const segs=rig.ph,tot=rig.len;
+    el.innerHTML=`<div class="cap"><b><i>${idx+1}</i>${rig.label} · ${rig.name}</b><span class="org">${rig.org}</span><span class="tag">${rig.tag}</span></div>
+<button class="star" aria-label="Star ${rig.label}" aria-pressed="false" title="Star: keep this version">&#9733;</button>
+<div class="hud"></div><div class="banner"></div><div class="pass"></div>
+<div class="tl"><div class="bar">${segs.map(p=>`<div class="s" style="flex:${p[1]} 1 0;background:${p[2]}" title="${p[0]} ${Math.round(p[1])} ms">${p[1]/tot>=.07?p[0]:''}</div>`).join('')}<span class="ph"></span></div><div class="rd"><span>${segs.map(p=>p[0]+' '+Math.round(p[1])).join(' · ')}</span><span class="clk"></span></div></div>`;
+    cellsEl.appendChild(el);
+    const c={rig,inst:rig.inst,el,idx,ph:el.querySelector('.ph'),clk:el.querySelector('.clk'),star:el.querySelector('.star'),hud:el.querySelector('.hud'),banner:el.querySelector('.banner'),pass:el.querySelector('.pass'),cs:{cx:1,cy:.4,span:3,v:1.7}};
+    el.addEventListener('click',e=>{if(e.target.closest('.star'))return;toggleFocus(c);});el.addEventListener('mouseenter',()=>{hover=c;});
+    c.star.addEventListener('click',e=>{e.stopPropagation();toggleStar(c);});starUI(c);cells.push(c);});
+  $('choices').value=choicesText();
+}
+const CAMS={game:{az:100,el:16},side:{az:90,el:6},front:{az:140,el:13}};
+const tmax=()=>Math.max(...cells.map(c=>c.rig.len))+GAP;
+const effEnding=()=>S.ending==='auto'?(S.pass%2?'shatter':'thaw'):S.ending;
+function ctxNow(){const e=effEnding();return {shatter:e==='shatter',hitT:S.hitT,ending:e,T:S.T};}
+function aim(c,preset,aspect){
+  const d=CAMS[preset],az=d.az*Math.PI/180,el=d.el*Math.PI/180,k=c.cs;let span=k.span*(S.wide?1.4:1);if(S.focus)span*=.97;
+  const vspan=Math.max(span/aspect,(k.v||1.7)*(S.wide?1.25:1)),dist=(vspan/2)/Math.tan(c.inst.cam.fov*Math.PI/360),cam=c.inst.cam;
+  cam.aspect=aspect;cam.position.set(k.cx-dist*Math.cos(el)*Math.cos(az),k.cy+dist*Math.sin(el),dist*Math.cos(el)*Math.sin(az));cam.lookAt(new THREE_.Vector3(k.cx,k.cy,0));cam.updateProjectionMatrix();
+}
+function applyCell(c){
+  const rig=c.rig,u=Math.min(S.T,rig.len),ctx=ctxNow();const info=rig.frame(c.inst,u,ctx)||{};const cm=rig.cam(u,ctx);
+  c.cs.cx=cm.cx;c.cs.cy=cm.cy;c.cs.span=cm.span;c.cs.v=cm.v||1.7;
+  if(info.shake){c.cs.cx+=info.shake*.03*Math.sin(S.T*.13);c.cs.cy+=info.shake*.03*Math.cos(S.T*.17);}
+  c.ph.style.left=(u/rig.len*100)+'%';c.hud.innerHTML=info.hud||'';c.clk.textContent=`u ${u.toFixed(0)} ms`;
+  c.banner.textContent=info.banner||'';c.banner.style.opacity=info.banner?Math.min(1,info.bannerK===undefined?1:info.bannerK):0;
+  c.pass.textContent=rig.move==='breath'?'Ending: '+ctx.ending+(ctx.shatter&&S.hitT!==null?' (manual hit)':''):'';
+}
+function render(){
+  const W=canvas.clientWidth,H=canvas.clientHeight,dpr=Math.min(window.devicePixelRatio||1,1.5);
+  if(canvas.width!==Math.round(W*dpr)||canvas.height!==Math.round(H*dpr)){renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);}
+  renderer.setScissor(0,0,W,H);renderer.setViewport(0,0,W,H);renderer.clear();
+  const sr=stage.getBoundingClientRect();
+  for(const c of cells){
+    if(S.focus&&S.focus!==c)continue;const r=c.el.getBoundingClientRect();if(r.width<2)continue;
+    const x=r.left-sr.left,y=H-(r.top-sr.top)-r.height;
+    try{applyCell(c);}catch(e){window.__errs.push(String(e&&e.stack||e));}aim(c,S.cam,r.width/r.height);
+    renderer.setViewport(x,y,r.width,r.height);renderer.setScissor(x,y,r.width,r.height);renderer.render(c.inst.scene,c.inst.cam);
+  }
+}
+window.__errs=[];addEventListener('error',e=>window.__errs.push(String(e.message)));let frames=0,last=performance.now();
+function tick(now){
+  const dt=Math.max(0,Math.min(100,now-last));last=now;const TM=tmax();
+  if(S.play){S.T+=dt*S.rate;if(S.T>=TM){if(S.loop){S.T=0;S.pass++;S.hitT=null;}else{S.T=TM;setPlay(false);}}}
+  render();frames++;window.__frames=frames;requestAnimationFrame(tick);
+}
+function doHit(){if(S.move!=='breath')return;const f=cells[0].rig.frozenWin;S.hitT=Math.max(f[0]+350,Math.min(S.T,f[1]-120));if(S.T<S.hitT-1100)S.T=S.hitT-1100;if(S.ending==='thaw')setEnding('auto');if(!S.play)setPlay(true);}
+function setEnding(e){S.ending=e;S.hitT=null;$('ending').textContent='Ending: '+e;}
+function setPlay(p){S.play=p;$('play').textContent=p?'Pause':'Play';$('play').setAttribute('aria-pressed',p?'true':'false');}
+function step(n){setPlay(false);S.T=Math.max(0,Math.min(tmax(),Math.round(S.T/FRAME)*FRAME+n*FRAME));}
+function setRate(r){S.rate=r;document.querySelectorAll('#rates button').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.rate)===r)));}
+function setCam(n){S.cam=n;document.querySelectorAll('#cams button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cam===n)));}
+function setLoop(v){S.loop=v;$('loop').setAttribute('aria-pressed',String(v));}
+function setWide(v){S.wide=v;$('tight').textContent='Frame: '+(v?'wide':'follow');$('tight').setAttribute('aria-pressed',String(v));}
+function toggleFocus(c){S.focus=(S.focus===c)?null:c;stage.classList.toggle('focus',!!S.focus);cells.forEach(x=>x.el.classList.toggle('on',x===S.focus));}
+$('play').onclick=()=>setPlay(!S.play);$('back').onclick=()=>step(-1);$('fwd').onclick=()=>step(1);$('restart').onclick=()=>{S.T=0;S.hitT=null;setPlay(true);};
+document.querySelectorAll('#rates button').forEach(b=>b.onclick=()=>setRate(Number(b.dataset.rate)));
+document.querySelectorAll('#cams button').forEach(b=>b.onclick=()=>setCam(b.dataset.cam));
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>setMove(b.dataset.move));
+$('tight').onclick=()=>setWide(!S.wide);$('loop').onclick=()=>setLoop(!S.loop);$('hit').onclick=doHit;
+const cycleEnding=()=>{const o=['auto','thaw','shatter'];setEnding(o[(o.indexOf(S.ending)+1)%3]);};$('ending').onclick=cycleEnding;
+$('copy').onclick=async()=>{const txt=choicesText();$('choices').value=txt;try{await navigator.clipboard.writeText(txt);}catch(e){$('choices').removeAttribute('readonly');$('choices').select();try{document.execCommand('copy');}catch(e2){}$('choices').setAttribute('readonly','');}};
+addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;
+  if(k==='p'||k==='P'||k===' '){e.preventDefault();setPlay(!S.play);}else if(k===','){step(-1);}else if(k==='.'){step(1);}
+  else if(k==='1')setRate(1);else if(k==='2')setRate(.5);else if(k==='3')setRate(.25);
+  else if(k==='l'||k==='L')setLoop(!S.loop);else if(k==='t'||k==='T')setWide(!S.wide);else if(k==='h'||k==='H')doHit();else if(k==='e'||k==='E'){if(S.move==='breath')cycleEnding();}
+  else if(k==='m'||k==='M'){const o=Object.keys(MOVES);setMove(o[(o.indexOf(S.move)+1)%o.length]);}
+  else if(k==='c'||k==='C'){const o=['game','side','front'];setCam(o[(o.indexOf(S.cam)+1)%3]);}
+  else if(k==='s'||k==='S'){if(hover)toggleStar(hover);}
+  else if(k==='f'||k==='F'){if(hover||S.focus)toggleFocus(S.focus||hover);}else if(k==='Escape'&&S.focus)toggleFocus(S.focus);
+});
+window.ILab={S,get cells(){return cells;},rigs,setMove,setT(t){setPlay(false);S.T=t;},setCam,setRate,setLoop,setWide,toggleFocus,render,step,tmax,doHit,setEnding,setPass(n){S.pass=n;},STARS,cell:id=>cells.find(c=>c.rig.id===id)};
+const url=new URL(location.href);
+setMove(url.searchParams.get('move')||'spike');
+if(url.searchParams.get('test')==='1')setPlay(false);
+render();window.__ready=true;requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
