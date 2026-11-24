@@ -92,9 +92,9 @@ func _run() -> void:
 	game.settings.grass = 3000
 	game.settings["onboarding"] = 0x1ff
 	game.settings.edit_anywhere = false          # the nest rule is what is under test
-	var entry := TerrainCache.load_entry({"seed": 1}, "user://terrain-secrets")
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1), "user://terrain-secrets")
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new(), "user://terrain-secrets")
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new(), "user://terrain-secrets")
 	game.set_island(entry)
 	game.goto_island()
 	var t_wait := Time.get_ticks_msec()

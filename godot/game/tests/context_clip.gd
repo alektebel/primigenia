@@ -70,9 +70,9 @@ func _run_clip() -> void:
 	game = root.get_node("Game")
 	game.persist_settings = false
 	game.settings.grass = 1500
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	game.goto_island()
 	for i in 900:

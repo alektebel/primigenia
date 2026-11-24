@@ -1,9 +1,10 @@
 /* C1-nav: GO pathfinding on the generated island (docs/godot/NAV.md).
- *   build/nav_test [seed=1] [n=1024]
+ *   build/nav_test [--island star|ring] [seed=1] [n=1024 (ring) | 1536 (star)]
  * 20 seeded far targets must be reached (>= 18), the planner time is reported, and the same orders replay to the
  * same hashes (also through cp_stage_replay_ex and a snapshot taken while a path is being followed). */
 #include "cpore/world.h"
 #include "cpore/terrain.h"
+#include "island_gen.h"
 #include <assert.h>
 #include <inttypes.h>
 #include <math.h>
@@ -44,24 +45,14 @@ static void fresh(float nx,float nz){
     assert(cp_stage_reset(&world,&setup)==0);
 }
 int main(int argc,char **argv){
+    const int star=island_args(&argc,argv);
     const uint32_t seed=argc>1?(uint32_t)atoi(argv[1]):1;
-    const int n=argc>2?atoi(argv[2]):1024;
+    const int n_arg=argc>2?atoi(argv[2]):0;
     CpTerrainParams p;
-    cp_terrain_params_default(&p);
-    p.seed=seed;
-    p.n=n;
-    const size_t count=(size_t)n*n;
-    terrain.material=calloc(count,1);
-    terrain.height=calloc(count,sizeof(float));
-    terrain.flow=calloc(count,sizeof(float));
-    terrain.sediment=calloc(count,sizeof(float));
-    ws.scratch=calloc(count,sizeof(float));
-    ws.recv=calloc(count,sizeof(int32_t));
-    ws.ups=calloc(count,sizeof(int32_t));
-    ws.queue=calloc(count,sizeof(int32_t));
     double t0=now_ms();
-    assert(cp_terrain_generate(&p,&terrain,&ws,NULL,NULL)==0);
-    printf("terrain seed %u n %d generated in %.0f ms\n",seed,n,now_ms()-t0);
+    island_generate(&terrain,&ws,&p,seed,star,n_arg);
+    const int n=p.n;
+    printf("%s island: terrain seed %u n %d generated in %.0f ms\n",star?"star":"ring",seed,n,now_ms()-t0);
     field=(CpStageField){n,p.size_m,p.size_m/(float)n,p.size_m*.5f,terrain.height,ws.scratch,cp_terrain_hash(&terrain)};
     fresh(0,0);
     float nx=0,nz=0;

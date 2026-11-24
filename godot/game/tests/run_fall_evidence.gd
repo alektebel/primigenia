@@ -40,9 +40,9 @@ func _run() -> void:
 	root.size = Vector2i(1280, 720)
 	game = root.get_node("Game")
 	game.settings.grass = 30000
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	island = load("res://game/island/island.tscn").instantiate()
 	root.add_child(island)

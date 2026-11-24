@@ -65,9 +65,11 @@ func set_tod(t: String) -> void:
 	dn.update_now()
 
 func island_params(arg: String) -> Dictionary:
+	if arg == "" or arg == "star" or arg == "default":
+		return TerrainCache.game_params(1)     # B1: the game's island, the frozen Star massif desc
 	var p := {"seed": 1}
-	if arg == "" or arg == "0" or arg == "default":
-		return p
+	if arg == "ring" or arg == "0":
+		return p                                # the old layout-0 ring island
 	var f := FileAccess.open(arg, FileAccess.READ)
 	if f == null:
 		push_error("cannot read island file " + arg)

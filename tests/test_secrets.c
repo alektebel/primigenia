@@ -1,8 +1,9 @@
 /* C2 secrets: meteor shards, hidden cave chamber, day/night and the nocturnal and sixth species.
- * `secrets_test <seed>` generates the n=1024 island (terrain seeds 1, 7, 42 are the certified ones), `secrets_test flat` runs the
+ * `secrets_test [--island star|ring] <seed>` generates the island (ring n=1024, star n=1536 = the frozen Star massif, B1) (terrain seeds 1, 7, 42 are the certified ones), `secrets_test flat` runs the
  * flat-world rules. Run by `make test` through `make secrets-test`. */
 #include "cpore/world.h"
 #include "cpore/terrain.h"
+#include "island_gen.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -14,13 +15,10 @@ static CpStageField f;
 static CpStageWorld w,w2;
 #define PASS(name) printf("PASS secrets: %s\n",name)
 static float dist(float x,float z){return sqrtf(x*x+z*z);}
+static int star;
 static void generate(unsigned seed){
-    CpTerrainParams p;cp_terrain_params_default(&p);p.seed=seed;
-    size_t n=(size_t)p.n*p.n;
-    t.height=calloc(n,4);t.flow=calloc(n,4);t.sediment=calloc(n,4);t.material=calloc(n,1);t.river=calloc(n,1);
-    ws.scratch=calloc(n,4);ws.recv=calloc(n,4);ws.ups=calloc(n,4);ws.queue=calloc(n,4);
-    assert(t.height&&t.flow&&t.sediment&&t.material&&t.river&&ws.scratch&&ws.recv&&ws.ups&&ws.queue);
-    assert(!cp_terrain_generate(&p,&t,&ws,NULL,NULL));
+    CpTerrainParams p;
+    island_generate(&t,&ws,&p,seed,star,0);
     f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
 }
 static void setup(CpStageSetup *s,int secrets,int legs,int radius){
@@ -305,6 +303,7 @@ static void flat_tests(void){
     PASS("original species unchanged");
 }
 int main(int argc,char **argv){
+    star=island_args(&argc,argv);
     assert(argc==2);
     if(!strcmp(argv[1],"flat"))flat_tests();
     else{

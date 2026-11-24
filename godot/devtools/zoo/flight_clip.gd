@@ -43,9 +43,9 @@ func _run() -> void:
 	game = root.get_node("Game")
 	game.settings.grass = 0
 	game.settings.quality = "low"      # software GL: the clip is about the creature, the world only has to be there
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	var parsed := Scenario.read("creature/flight_cliff")
 	game.pending_scenario = parsed

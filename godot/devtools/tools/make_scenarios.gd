@@ -239,7 +239,7 @@ func _flight_cliff(entry, data) -> bool:
 	return true
 
 func _run() -> void:
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
 		var p: Dictionary = CporeTerrain.defaults()
 		p.seed = 1

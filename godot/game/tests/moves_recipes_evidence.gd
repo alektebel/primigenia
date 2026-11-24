@@ -145,9 +145,9 @@ func _run() -> void:
 	if args.size() >= 2:
 		game.settings.lang = args[1]
 	skip_fights = args.size() >= 3 and args[2] == "recipes"
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	game.goto_island()
 	for i in 900:

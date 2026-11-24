@@ -162,9 +162,9 @@ func _run() -> void:
 	var weather: String = args[2] if args.size() > 2 else ""
 	game.settings.weather = weather
 	game.settings.grass = 20000
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	game.set_island(entry)
 	var island: Node3D = load("res://game/island/island.tscn").instantiate()
 	root.add_child(island)

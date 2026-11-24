@@ -7,7 +7,7 @@ const WorldLog := preload("res://game/stage/world_log.gd")
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 
 func run(t) -> void:
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
 		var p: Dictionary = CporeTerrain.defaults()
 		p.seed = 1

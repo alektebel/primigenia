@@ -17,7 +17,7 @@ func _run() -> void:
 		printerr(parsed.error)
 		quit(1)
 		return
-	var entry := TerrainCache.load_entry({"seed": 1})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	var sw = StageWorld.new()
 	sw.world.set_field(entry)
 	var res := Scenario.load_into(parsed, sw)

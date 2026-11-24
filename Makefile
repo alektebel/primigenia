@@ -939,25 +939,27 @@ godot-frame-test:
 	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --script res://game/tests/test_frame_lod.gd
 
 # Island review camera path (docs/plans/island-realism.md section 2, step P0): OG0..OG9 at dawn/midday/dusk/night, software GL, one Godot at a time.
-#   make godot-island-path [LABEL=<name>] [PATH_TIER=low|medium|low,medium] [LAYOUT=1|0] [ISLAND=<terrain params json>] [SHOTS=OG2,OG5] [TODS=dawn,night] [PATH_OUT=<dir>]
-# LAYOUT=1 is the Star massif lab island (terrain_cli layout-json), LAYOUT=0 the game's default island; ISLAND overrides both.
+#   make godot-island-path [LABEL=<name>] [PATH_TIER=low|medium|low,medium] [LAYOUT=star|1|0] [ISLAND=<terrain params json>] [SHOTS=OG2,OG5] [TODS=dawn,night] [PATH_OUT=<dir>]
+# LAYOUT=star (default since B1) is the game's island, the frozen Star massif desc; LAYOUT=1 is the layout-1 lab island (terrain_cli layout-json, no climate);
+# LAYOUT=0 the old layout-0 ring island; ISLAND (a terrain params json) overrides all three.
 # Writes $(PATH_OUT) (default docs/evidence/island/path/<LABEL>; LABEL defaults to <date>-<hash>): <tier>_<tod>_OGn.jpg, times_<tier>.json,
 # path_<tier>.json and sheet_<tier>.jpg. Run it twice with the same LABEL and the frames are pixel-identical.
 .PHONY: godot-island-path
 PATH_LABEL ?= $(shell date +%F)-$(shell git rev-parse --short HEAD)
 PATH_OUT ?= $(CURDIR)/docs/evidence/island/path/$(or $(LABEL),$(PATH_LABEL))
 PATH_TIER ?= medium
-LAYOUT ?= 1
+LAYOUT ?= star
 SHOTS ?= all
 TODS ?= all
 godot-island-path: godot $(BUILD)/terrain_cli
 	@rm -rf $(PATH_OUT)
 	@mkdir -p $(PATH_OUT)
 	@isl="$(ISLAND)"; \
-	if [ -z "$$isl" ] && [ "$(LAYOUT)" != "0" ]; then isl=$(PATH_OUT)/.island.json; $(BUILD)/terrain_cli layout-json --layout $(LAYOUT) > $$isl || exit 1; fi; \
+	if [ -z "$$isl" ] && [ "$(LAYOUT)" = "0" ]; then isl=ring; fi; \
+	if [ -z "$$isl" ] && [ "$(LAYOUT)" != "star" ]; then isl=$(PATH_OUT)/.island.json; $(BUILD)/terrain_cli layout-json --layout $(LAYOUT) > $$isl || exit 1; fi; \
 	for q in $(subst $(comma), ,$(PATH_TIER)); do \
 	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1700 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
-	    --script res://game/tests/island_path_shots.gd -- $(PATH_OUT) $$q "$${isl:-0}" $(SHOTS) $(TODS) || exit 1; \
+	    --script res://game/tests/island_path_shots.gd -- $(PATH_OUT) $$q "$${isl:-star}" $(SHOTS) $(TODS) || exit 1; \
 	  python3 tools/island/path_sheet.py $(PATH_OUT) $$q; \
 	done
 	@rm -f $(PATH_OUT)/.island.json

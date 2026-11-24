@@ -54,9 +54,9 @@ func _run() -> void:
 	game.persist_settings = false
 	game.settings.grass = 3000
 	game.settings.seed = wseed
-	var entry := TerrainCache.load_entry({"seed": wseed})
+	var entry := TerrainCache.load_entry(TerrainCache.game_params(wseed))
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": wseed}, CporeTerrain.new())
+		entry = TerrainCache.build(TerrainCache.game_params(wseed), CporeTerrain.new())
 	game.set_island(entry)
 	game.goto_island()
 	for i in 6000:

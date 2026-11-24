@@ -34,7 +34,7 @@ static func measure(d, step: int = 5) -> Dictionary:
 	return {"p50": devs[devs.size() / 2], "p99": devs[int(devs.size() * 0.99)], "max": devs[-1], "count": devs.size(), "water_max": water_max}
 
 func run(t) -> void:
-	var res := TerrainCache.get_or_build({"seed": 1})
+	var res := TerrainCache.get_or_build(TerrainCache.game_params(1))
 	var entry: Dictionary = res.entry
 	var d = TerrainData.new()
 	d.setup(entry, false)
