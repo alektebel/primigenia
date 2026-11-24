@@ -90,6 +90,12 @@ typedef struct {
     float foehn_C;           /* warming on lee slopes (1) */
     float snow_C;            /* snow where T < this and P > 400 mm (canon snowline 1750 m: 14 - 6.2*1.75 = 3.15) */
     float qc_ref;            /* cloud water (kg m^-2) that counts as 1.0 in the qc map */
+    /* Whittaker table thresholds (climate_biomes.inc rows, patched per run) and the canopy ramp: starting values, calibrated
+     * per island (island.h CP_ISL_CAL_*) */
+    float t_tundra_C;        /* tundra below this mean annual temperature (4.5) */
+    float t_treeline_C;      /* alpine up to here, forest above (7) */
+    float p_scrub, p_meadow, p_dry_forest, p_jungle;   /* mm/yr: desert | scrub | meadow | dry forest | cloud forest (250, 450, 900, 1700) */
+    float canopy_p_full;     /* canopy density 1 at this P (1800 mm), 0 at a third of it */
 } CpClimateParams;
 
 /* Starting values from the plan (each is a starting value, plan section 4). */
@@ -104,6 +110,10 @@ typedef struct {
     uint8_t *biome;    /* CP_BIOME_* */
     uint8_t *veg;      /* 4 bytes per cell: canopy, undergrowth, grass, litter/moss wetness */
 } CpClimateOut;
+
+/* The land biome rules of cp_climate_run for one cell (h > 0 land, else CP_BIOME_SEA; reefs need the neighbourhood, so the
+ * pipeline decides those): cliff, beach, snow, then the Whittaker table. canopy_ok 0 = forest barred (canopy mask 0). */
+int cp_climate_biome(const CpClimateParams *p, float T, float P, float slope, float h, int canopy_ok);
 
 size_t cp_climate_scratch_floats(int n);
 

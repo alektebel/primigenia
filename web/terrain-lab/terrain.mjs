@@ -49,7 +49,39 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
       }
       const landmark=module._ct_volcano ? Array.from(module.HEAPF32.slice(module._ct_volcano()>>>2,(module._ct_volcano()>>>2)+4)) : null;
       return { seed, n, desc: Boolean(desc), size: module._ct_size ? module._ct_size() : 2000, version: module._ct_version(), base, gentle, variety, bands, coast, rock, volcano, entrances, landmark, material, hash, seconds,
-        height: maps[0], flow: maps[1], sediment: maps[2], level: maps[3] || maps[0].slice() };
+        height: maps[0], flow: maps[1], sediment: maps[2], level: maps[3] || maps[0].slice(), ...climateMaps(module, n, Boolean(desc)) };
+    },
+    ...climateApi(module),
+  };
+}
+
+// ---- climate maps (docs/plans/island-realism.md part II, step M2) -----------------------------------------------------------
+// A desc generation also makes the climate maps (n >= 64): `climateN` (the grid side, 256 for n >= 256), `climate` (RGBA8
+// climateN^2: R precipitation 0..4000 mm/yr, G temperature -10..+30 C, B cloud water, A fog frequency), `biome` (n*n, CP_BIOME_*
+// of core/include/cpore/climate.h), `veg` (n*n*4: canopy, undergrowth, grass, litter/moss wetness) and `climateHash`
+// (cp_terrain_climate_hash). `engine.climate(blob?)` re-runs only the climate on the current heights, optionally with a new desc blob
+// (the editor does this after a calibration or mask change; the shape is not regenerated).
+function climateMaps(module, n, hasDesc) {
+  if (!hasDesc || !module._ct_climate_n) return {};
+  const cn = module._ct_climate_n();
+  if (!cn) return {};
+  const take = (layer, len) => { const at = module._ct_climate(layer); return module.HEAPU8.slice(at, at + len); };
+  const w = module._ct_climate_hash() >>> 2;
+  const climateHash = module.HEAPU32[w + 1].toString(16).padStart(8, '0') + module.HEAPU32[w].toString(16).padStart(8, '0');
+  return { climateN: cn, climate: take(0, cn * cn * 4), biome: take(1, n * n), veg: take(2, n * n * 4), climateHash };
+}
+function climateApi(module) {
+  return {
+    climate(blob, n) {
+      if (blob) {
+        if (!(blob instanceof Uint8Array) || blob.length > module._ct_desc_buf_size()) throw Error('The island blob must be a Uint8Array of at most 256 KiB.');
+        module.HEAPU8.set(blob, module._ct_desc_buf());
+        const drc = module._ct_desc_set(blob.length);
+        if (drc) throw Error(`Island blob refused (${drc}).`);
+      }
+      const rc = module._ct_climate_run();
+      if (rc) throw Error(`Climate run failed (${rc}).`);
+      return climateMaps(module, n, true);
     },
   };
 }

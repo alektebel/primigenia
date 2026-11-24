@@ -83,6 +83,7 @@ static void walk(const CpIslandDesc *d, Wr *w)
     }
     for (int m = 0; m < d->nmask; m++)
         for (int i = 0; i < CP_ISL_MASK_RES * CP_ISL_MASK_RES; i++) w8(w, d->mask[m][i]);
+    if (d->has_calib) for (int i = 0; i < CP_ISL_CALIB_N; i++) w32(w, d->calib[i]);
 }
 
 uint64_t cp_island_hash(const CpIslandDesc *d)
@@ -102,7 +103,7 @@ size_t cp_island_pack(const CpIslandDesc *d, uint8_t *buf, size_t cap)
     if (w.pos > w.cap) return 0;
     body = w.pos;
     memcpy(buf, "ISL1", 4);
-    buf[4] = CP_ISL_FORMAT; buf[5] = 0; buf[6] = 0; buf[7] = 0;
+    buf[4] = CP_ISL_FORMAT; buf[5] = 0; buf[6] = d->has_calib ? CP_ISL_FLAG_CALIB : 0; buf[7] = 0;
     for (int i = 0; i < 4; i++) buf[8 + i] = (uint8_t)((uint32_t)body >> (8 * i));
     crc = blob_crc(buf, CP_ISL_HEADER_BYTES + body);
     for (int i = 0; i < 4; i++) buf[12 + i] = (uint8_t)(crc >> (8 * i));
@@ -353,7 +354,7 @@ int cp_island_parse(const uint8_t *blob, size_t len, CpIslandDesc *out)
     if (!blob || !out) return CP_TERR_ERR_NULL;
     if (len < CP_ISL_HEADER_BYTES) return CP_TERR_ERR_ISL_TRUNC;
     if (memcmp(blob, "ISL1", 4) != 0) return CP_TERR_ERR_ISL_MAGIC;
-    if (blob[4] != CP_ISL_FORMAT || blob[5] != 0 || blob[6] != 0 || blob[7] != 0) return CP_TERR_ERR_ISL_VERSION;
+    if (blob[4] != CP_ISL_FORMAT || blob[5] != 0 || (blob[6] & ~CP_ISL_FLAG_CALIB) != 0 || blob[7] != 0) return CP_TERR_ERR_ISL_VERSION;
     body = (uint32_t)blob[8] | (uint32_t)blob[9] << 8 | (uint32_t)blob[10] << 16 | (uint32_t)blob[11] << 24;
     if ((size_t)body != len - CP_ISL_HEADER_BYTES) return CP_TERR_ERR_ISL_TRUNC;
     crc = (uint32_t)blob[12] | (uint32_t)blob[13] << 8 | (uint32_t)blob[14] << 16 | (uint32_t)blob[15] << 24;
@@ -381,7 +382,7 @@ int cp_island_parse(const uint8_t *blob, size_t len, CpIslandDesc *out)
     /* bounds on the body size from the counts, before any record is read */
     {   size_t need = (size_t)out->nfeat * (40 + CP_ISL_NAME) + (size_t)out->npt * 16 + (size_t)out->ntrail * 24 + (size_t)out->ntrail_pt * 8 +
                       (size_t)out->nregion * (16 + CP_ISL_NAME + 32) + (size_t)out->nregion_pt * 8 + (size_t)out->nmark * (8 + CP_ISL_NAME + 16) +
-                      (size_t)out->nmask * CP_ISL_MASK_RES * CP_ISL_MASK_RES;
+                      (size_t)out->nmask * CP_ISL_MASK_RES * CP_ISL_MASK_RES + ((blob[6] & CP_ISL_FLAG_CALIB) ? (size_t)CP_ISL_CALIB_N * 4 : 0);
         if (r.pos + need != r.len) return CP_TERR_ERR_ISL_TRUNC;
     }
     for (int i = 0; i < out->nfeat; i++) {
@@ -401,6 +402,10 @@ int cp_island_parse(const uint8_t *blob, size_t len, CpIslandDesc *out)
     for (int i = 0; i < out->nregion_pt; i++) { out->region_pt[i][0] = r32(&r); out->region_pt[i][1] = r32(&r); }
     for (int i = 0; i < out->nmark; i++) { out->mark[i].x_dm = r32(&r); out->mark[i].y_dm = r32(&r); rstr(&r, out->mark[i].name, CP_ISL_NAME); rstr(&r, out->mark[i].kind, 16); }
     for (int m = 0; m < out->nmask; m++) for (int i = 0; i < CP_ISL_MASK_RES * CP_ISL_MASK_RES; i++) out->mask[m][i] = r8(&r);
+    if (blob[6] & CP_ISL_FLAG_CALIB) {
+        out->has_calib = 1;
+        for (int i = 0; i < CP_ISL_CALIB_N; i++) out->calib[i] = r32(&r);
+    }
     if (r.err) return r.err;
     if (r.pos != r.len) return CP_TERR_ERR_ISL_TRUNC;
 
@@ -415,6 +420,7 @@ int cp_island_parse(const uint8_t *blob, size_t len, CpIslandDesc *out)
     if (bad(&r, !in_int(out->lake_x_dm) || !in_int(out->lake_y_dm) || out->lake_r_dm < 10 || out->lake_r_dm > out->size_dm ||
                out->lake_depth_cm < 0 || out->lake_depth_cm > 200000)) return r.err;
     if (bad(&r, out->lake_x_dm < -out->size_dm || out->lake_x_dm > out->size_dm || out->lake_y_dm < -out->size_dm || out->lake_y_dm > out->size_dm)) return r.err;
+    for (int i = 0; i < CP_ISL_CALIB_N; i++) if (bad(&r, out->calib[i] < 0 || out->calib[i] > 1000000)) return r.err;
     if (bad(&r, out->stream_iters < 0 || out->stream_iters > 256 || out->droplets < 0 || out->droplets > 2000000)) return r.err;
     if (validate_features(out, &r)) return r.err;
     for (int i = 0; i < out->ntrail; i++) {

@@ -98,8 +98,45 @@ uint32_t *ct_desc_hash(void) {
     hash_words[0]=(uint32_t)h; hash_words[1]=(uint32_t)(h>>32); return hash_words;
 }
 int ct_desc_n(void) { return desc_ok ? island.n : 0; }
+static void climate_attach(void);
 int ct_generate_desc(void) {
     if(!configured || !desc_ok) return CP_TERR_ERR_BUFFER;
     last_desc=1;
+    /* the climate maps (climate.h, part II) come with every desc generation when n >= 64: see the block below */
+    climate_attach();
     return cp_terrain_generate_desc(&params,&island,&terrain,&workspace,progress,0);
+}
+
+/* ---- climate maps (island-realism plan part II, step M2; owned by the climate lane, kept in one block) -----------------------
+ * ct_generate_desc fills them; ct_climate_run() re-runs only the climate on the current heights (the editor calls it after a
+ * calibration or mask change: ct_desc_set with the new blob, then this; the shape is untouched, and so is the snow material,
+ * which is decided at generation). Layers of ct_climate(layer): 0 climate RGBA8 (ct_climate_n()^2 * 4: R precipitation
+ * 0..4000 mm/yr, G temperature -10..+30 C, B cloud water, A fog), 1 biome (n*n, CP_BIOME_*), 2 veg (n*n*4: canopy,
+ * undergrowth, grass, litter). ct_climate_hash() is cp_terrain_climate_hash. */
+static uint8_t climate_bytes[CP_TERRAIN_CLIMATE_N*CP_TERRAIN_CLIMATE_N*4];
+static uint8_t biome_map[MAX_N*MAX_N];
+static uint8_t veg_map[4*MAX_N*MAX_N];
+static float climate_work[1200000];   /* cp_terrain_climate_work_floats() is 1,167,360 */
+static void climate_attach(void) {
+    if(cp_terrain_climate_work_floats()>sizeof climate_work/sizeof climate_work[0] || params.n<64) {
+        terrain.climate=0; terrain.biome=0; terrain.veg=0; workspace.climate_work=0; return;
+    }
+    terrain.climate=climate_bytes; terrain.biome=biome_map; terrain.veg=veg_map; workspace.climate_work=climate_work;
+}
+int ct_climate_run(void) {
+    if(!configured || !desc_ok) return CP_TERR_ERR_BUFFER;
+    climate_attach();
+    if(!workspace.climate_work) return CP_TERR_ERR_N;
+    CpTerrainParams q=params; cp_island_apply(&island,&q);
+    terrain.n=q.n;
+    return cp_terrain_climate(&q,&island,&terrain,&workspace);
+}
+uint8_t *ct_climate(int layer) {
+    if(!configured || terrain.climate_n<=0) return 0;
+    return layer==0 ? terrain.climate : layer==1 ? terrain.biome : layer==2 ? terrain.veg : 0;
+}
+int ct_climate_n(void) { return configured ? terrain.climate_n : 0; }
+uint32_t *ct_climate_hash(void) {
+    uint64_t h=configured ? cp_terrain_climate_hash(&terrain) : 0;
+    hash_words[0]=(uint32_t)h; hash_words[1]=(uint32_t)(h>>32); return hash_words;
 }

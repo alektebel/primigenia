@@ -20,6 +20,11 @@ public:
     godot::Dictionary generate(const godot::Dictionary &params);
     godot::Dictionary progress() const;
     static godot::String hash(const godot::Dictionary &data);
+    // Authored islands (island.h) and their climate maps (part II, M2): generate({..., island_blob: PackedByteArray}) also returns
+    // climate (RGBA8 climate_n^2), biome (n*n), veg (n*n*4), climate_n, climate_hash, island and island_hash (the cache key parts).
+    static godot::Dictionary island_info(const godot::PackedByteArray &blob);
+    static godot::String climate_hash(const godot::Dictionary &data);
+    static int climate_version();
     // Derived render maps (see docs/godot/M0.md): {surface: RGBA8 n*n*4, chunk_bounds: min/max per 64-cell chunk}.
     static godot::Dictionary surface_maps(const godot::Dictionary &data);
     // Optional baked sun visibility (PLAN-rock step 9, off by default): n*n bytes, 255 lit .. 0 shadowed, for a sun direction given as

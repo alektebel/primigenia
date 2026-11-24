@@ -40,6 +40,29 @@ extern "C" {
 #define CP_ISL_MAX_MASK 4
 #define CP_ISL_MASK_RES 128
 #define CP_ISL_NAME 32
+/* Climate calibration (part II, step M2): header flag bit 0 says 16 more i32 follow the masks. A slot of 0 means "use the
+ * kernel's default" (climate.c, cp_climate_defaults), so a blob without the block (flag clear) behaves like all zeros. */
+#define CP_ISL_CALIB_N 16
+#define CP_ISL_FLAG_CALIB 1
+enum {
+    CP_ISL_CAL_RAIN_SCALE_PM = 0,   /* fraction of the year the regimes rain, permille (starting value 110) */
+    CP_ISL_CAL_P_INF_MM,            /* background precipitation, mm/yr (200) */
+    CP_ISL_CAL_QC_REF_PM,           /* cloud water that counts as 1.0, permille of a kg/m^2 (1000) */
+    CP_ISL_CAL_SNOW_CC,             /* snow below this mean annual temperature, centi-degrees C (315) */
+    CP_ISL_CAL_ASPECT_CC,           /* cooling on slopes facing away from the sun, cC (150) */
+    CP_ISL_CAL_FOEHN_CC,            /* warming on lee slopes, cC (100) */
+    CP_ISL_CAL_TRADE_W_PM,          /* share of the year under the trade wind, permille (750); the storms get the rest */
+    CP_ISL_CAL_STORM_CMS,           /* storm speed, cm/s (1500) */
+    CP_ISL_CAL_TREELINE_CC,         /* forest needs a mean annual temperature above this, cC (700) */
+    CP_ISL_CAL_TUNDRA_CC,           /* tundra below this, alpine up to the treeline, cC (450) */
+    CP_ISL_CAL_P_SCRUB_MM,          /* desert below, scrub above (250) */
+    CP_ISL_CAL_P_MEADOW_MM,         /* scrub below, meadow above (450) */
+    CP_ISL_CAL_P_DRYFOREST_MM,      /* meadow below, dry forest above (900) */
+    CP_ISL_CAL_P_JUNGLE_MM,         /* dry forest below, cloud forest above (1700) */
+    CP_ISL_CAL_CANOPY_P_FULL_MM,    /* canopy density reaches 1 at this precipitation (1800); it starts at a third of it */
+    CP_ISL_CAL_TAU_S,               /* cloud-water conversion and fall-out time, seconds (1000: the abstract's value) */
+    CP_ISL_CAL_RESERVED
+};
 /* Evaluator entries: one per non-polyline feature, one per straight polyline segment, CP_ISL_SPLINE_SEG per span of a
  * spline polyline. cp_island_prepare (hence parse) refuses a desc that needs more (CP_TERR_ERR_ISL_LIMIT). */
 #define CP_ISL_SPLINE_SEG 16
@@ -108,6 +131,7 @@ typedef struct CpIslandDesc {
     int32_t size_dm, island_radius_dm, n, scale_pm, wind_mdeg, wind_cms;
     int32_t reef_x_pm, reef_y_pm, cliff_x_pm, cliff_y_pm;        /* sheltered reef coast and exposed cliff coast, unit directions */
     int32_t nest_r_dm, nest_floor_cm, lake_x_dm, lake_y_dm, lake_r_dm, lake_depth_cm;
+    int32_t has_calib, calib[CP_ISL_CALIB_N];                    /* the climate calibration block (CP_ISL_CAL_*), see above */
     int32_t stream_iters, droplets;                              /* recommended erosion; 0 = the caller's value */
     int32_t clim_scale_h_pm, clim_scale_z_pm, clim_t_sea_cC, clim_lapse_cK_per_km;   /* the moisture model (part II) */
     char id[CP_ISL_NAME];
@@ -156,6 +180,12 @@ size_t cp_island_meta_json(const CpIslandDesc *d, char *buf, size_t cap);
  * layout-0 river-gap trail. */
 int cp_terrain_generate_desc(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *out,
                              const CpTerrainWorkspace *ws, CpTerrainProgressFn fn, void *user);
+
+/* The climate maps of t (t->height must be the final height; climate, biome, veg and ws->climate_work set; p->n == t->n >= 64),
+ * made from the desc's climate block, wind, calibration and masks (climate.h; plan part II). cp_terrain_generate_desc calls it
+ * when those buffers are present; the editor calls it again after changing only the calibration or the masks. It does not
+ * touch the other maps (the snow material is decided at generation). Sets t->climate_n. */
+int cp_terrain_climate(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *t, const CpTerrainWorkspace *ws);
 
 #ifdef __cplusplus
 }
