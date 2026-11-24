@@ -31,7 +31,8 @@ def build(lid, stats):
     plan = PLAN[lid]
     shots = []
     for name, pos, look, fov in plan["aerial"]:
-        s = {"name": name, "pos": [pos[0], pos[1] or 0, pos[2]], "look": [look[0], look[1] or 0, look[2]], "fov": fov}
+        k = 1.56   # design coordinates to metres (LSCALE in terrain_layouts.inc)
+        s = {"name": name, "pos": [pos[0] * k, (pos[1] or 0) * k, pos[2] * k], "look": [look[0] * k, (look[1] or 0), look[2] * k], "fov": fov}
         if pos[1] is None:
             s["agl"] = 25
         if look[1] is None:

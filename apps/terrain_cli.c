@@ -337,6 +337,8 @@ static void maps(const CpTerrain *t, const CpTerrainParams *p, const char *prefi
         if (h <= 0.f) {
             float dp = h < -24.f ? 1.f : -h / 24.f;
             r = 40.f - 18.f * dp; g = 90.f - 30.f * dp; b = 130.f - 25.f * dp; sh = 0.85f + 0.15f * lit;
+            if (h > -12.f) { float a = (h + 12.f) / 12.f; r = 40.f + 40.f * a; g = 140.f + 70.f * a; b = 175.f + 20.f * a; }   /* warm shallows: reefs */
+            else if (h < -60.f) { float a = h < -140.f ? 1.f : (-60.f - h) / 80.f; r = 24.f - 14.f * a; g = 70.f - 40.f * a; b = 112.f - 50.f * a; }   /* abyss */
             c = 0;
         } else {
             float u = h / 420.f; u = u > 1.f ? 1.f : u;

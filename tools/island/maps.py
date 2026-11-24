@@ -9,12 +9,16 @@ with Pillow and writes jpg maps plus stats.json (reachability per region for a p
 import argparse, heapq, json, os, subprocess, sys, tempfile
 from PIL import Image, ImageDraw, ImageFont
 
-SIZE_M = 3600.0
+SIZE_M = 8000.0
 FONT = "/usr/share/fonts/TTF/DejaVuSansCondensed-Bold.ttf"
 KIND_COLOR = {
     "nest": (255, 214, 96), "forest": (40, 170, 70), "canyon": (240, 120, 40), "badlands": (230, 90, 60),
     "plateau": (170, 90, 220), "islet": (60, 200, 230), "coast": (240, 210, 90), "terraces": (210, 170, 90),
+    "mountain": (190, 190, 200), "cliffs": (120, 140, 170), "reef": (60, 230, 200), "trench": (40, 70, 200),
 }
+SEA_KINDS = ("reef", "trench")
+BIOME_NAME = {"meadow": "meadow", "mountain": "mountain range", "jungle": "jungle / forest", "desert": "desert / badlands + canyon",
+              "tundra": "tundra", "cliffs": "cliffs", "reef": "Caribbean reef sea", "trench": "abyssal trench"}
 SLOPE_RGB = {0: (30, 70, 120), 1: (140, 200, 110), 2: (232, 214, 96), 3: (240, 150, 60), 4: (205, 50, 50), 5: (90, 170, 215)}
 
 
@@ -62,7 +66,7 @@ def overlay(img, meta, labels, land=None, paths=None):
             c = KIND_COLOR.get(r["kind"], (255, 255, 255))
             pts = [P.pt(*p) for p in r["pts"]]
             wpx = P.m(r["w"]) * 2
-            if r["kind"] == "nest":
+            if r["kind"] == "nest" or r["kind"] in SEA_KINDS:
                 continue
             if len(pts) > 1:
                 fd.line(pts, fill=c + (58,), width=int(wpx), joint="curve")
@@ -71,7 +75,17 @@ def overlay(img, meta, labels, land=None, paths=None):
                 fd.ellipse((p[0] - rr, p[1] - rr, p[0] + rr, p[1] + rr), fill=c + (58,))
     if land is not None:
         a = fill.getchannel('A'); from PIL import ImageChops; fill.putalpha(ImageChops.multiply(a, land))
+    sea = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    sd = ImageDraw.Draw(sea)
+    if labels:
+        for r in meta["regions"]:
+            if r["kind"] in SEA_KINDS:
+                c = KIND_COLOR[r["kind"]]
+                for p_ in r["pts"]:
+                    px, py = P.pt(*p_); rr = P.m(r["w"])
+                    sd.ellipse((px - rr, py - rr, px + rr, py + rr), fill=c + (90,), outline=c + (255,), width=3)
     base = Image.alpha_composite(base, fill)
+    base = Image.alpha_composite(base, sea)
     d = ImageDraw.Draw(base)
     f_big, f_mid, f_sm = font(int(W * 0.0155)), font(int(W * 0.0125)), font(int(W * 0.0105))
     # region outlines + gate dashes
@@ -128,19 +142,45 @@ def overlay(img, meta, labels, land=None, paths=None):
             if r["gate"] or r["kind"] == "nest":
                 continue
             px, py = P.pt(*r["pts"][len(r["pts"]) // 2])
-            text_box(d, (px - 30, py - 8), r["name"], f_mid, fill=tuple(min(255, int(v * 0.6 + 120)) for v in KIND_COLOR.get(r["kind"], (255, 255, 255))))
+            text_box(d, (px - 30, py - 8), "%s [%s]" % (r["name"], r["biome"]) if r["biome"] not in ("none",) else r["name"], f_mid, fill=tuple(min(255, int(v * 0.6 + 120)) for v in KIND_COLOR.get(r["kind"], (255, 255, 255))))
         for m in meta["marks"]:
             if m["kind"] in ("plateau",):
                 continue
             px, py = P.pt(m["x"], m["y"])
+            if m["kind"] in ("volcano", "reactor"):
+                col = (255, 90, 40, 255) if m["kind"] == "volcano" else (190, 255, 60, 255)
+                d.regular_polygon((px, py, 13), 6 if m["kind"] == "reactor" else 3, fill=col, outline=(20, 20, 20, 255))
+                text_box(d, (px + 16, py - 10), m["name"], f_sm, fill=col[:3], bg=(10, 14, 20, 200))
+                continue
             d.polygon([(px, py - 9), (px - 8, py + 6), (px + 8, py + 6)], fill=(255, 255, 255, 255), outline=(20, 20, 20, 255))
             text_box(d, (px + 11, py - 20), m["name"], f_sm, fill=(235, 235, 235), bg=(10, 14, 20, 150))
     # scale bar and compass
     bar = P.m(500)
     x0, y0 = 20, W - 34
+    bar = P.m(1000)
     d.rectangle((x0 - 4, y0 - 20, x0 + bar + 90, y0 + 14), fill=(10, 14, 20, 200))
     d.line((x0, y0, x0 + bar, y0), fill=(255, 255, 255, 255), width=4)
-    d.text((x0 + bar + 8, y0 - 10), "500 m", font=f_sm, fill=(255, 255, 255, 255))
+    d.text((x0 + bar + 8, y0 - 10), "1 km", font=f_sm, fill=(255, 255, 255, 255))
+    if labels:
+        wx, wy = meta["wind"]
+        cx0, cy0 = 90, 80
+        d.rectangle((14, 14, 250, 118), fill=(10, 14, 20, 190))
+        d.text((22, 18), "Prevailing wind (wet side)", font=f_sm, fill=(210, 235, 255, 255))
+        d.line((cx0 - wx * 40, cy0 - wy * 30 + 10, cx0 + wx * 40, cy0 + wy * 30 + 10), fill=(130, 200, 255, 255), width=5)
+        hx, hy = cx0 + wx * 40, cy0 + wy * 30 + 10
+        d.ellipse((hx - 8, hy - 8, hx + 8, hy + 8), fill=(130, 200, 255, 255))
+        d.text((22, 98), "lee side = rain shadow", font=f_sm, fill=(240, 200, 150, 255))
+        # biome key
+        present = []
+        for r in meta["regions"]:
+            if r["biome"] != "none" and r["biome"] not in [b for b, _ in present]:
+                present.append((r["biome"], KIND_COLOR.get(r["kind"], (255, 255, 255))))
+        ky = W - 40 - 22 * len(present) - 8
+        d.rectangle((10, ky - 24, 300, W - 46), fill=(10, 14, 20, 200))
+        d.text((18, ky - 20), "Biomes (%d of 8)" % len(present), font=f_sm, fill=(255, 255, 255, 255))
+        for k, (b, c) in enumerate(present):
+            d.rectangle((18, ky + 2 + k * 22, 36, ky + 16 + k * 22), fill=c + (255,), outline=(255, 255, 255, 255))
+            d.text((44, ky + k * 22), BIOME_NAME[b], font=f_sm, fill=(235, 235, 235, 255))
     d.text((W - 36, 10), "N", font=f_big, fill=(255, 255, 255, 255))
     d.polygon([(W - 28, 40), (W - 36, 62), (W - 20, 62)], fill=(255, 255, 255, 255))
     return base.convert("RGB")
@@ -277,7 +317,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cli", default="build/terrain_cli")
     ap.add_argument("--out", default="web/gaitlab/island")
-    ap.add_argument("--n", type=int, default=1024)
+    ap.add_argument("--n", type=int, default=1536)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--layouts", default="1,2,3,4")
     ap.add_argument("--px", type=int, default=1100)
@@ -295,6 +335,8 @@ def main():
             shade = Image.open(pre + "-shade.pgm").resize((a.px, a.px), Image.BILINEAR)
             reach = Image.open(pre + "-reach.pgm").resize((a.px, a.px), Image.NEAREST)
             name = meta["id"]
+            global SIZE_M
+            SIZE_M = float(meta["size_m"])
             land = cls.point([0, 255, 255, 255, 255, 255] + [255] * 250).convert("L")
             paths = grid_paths(Image.open(pre + "-cls.pgm"), meta)
             overlay(relief, meta, True, land, paths).save(os.path.join(a.out, "%s-map.jpg" % name), quality=a.quality, optimize=True)

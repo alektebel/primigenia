@@ -1,0 +1,1796 @@
+{
+ "star-massif": {
+  "id": "star-massif",
+  "layout": 1,
+  "land_km2": 16.92,
+  "plain_reach_pct": 87.7,
+  "climb_reach_pct": 98.0,
+  "regions": [
+   {
+    "core_plain_pct": 100.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Nest valley",
+    "kind": "nest",
+    "gate": 0,
+    "land_px": 2276,
+    "plain_pct": 100.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 71.6,
+    "core_climb_only_pct": 0.0,
+    "name": "Forest vale",
+    "kind": "forest",
+    "gate": 0,
+    "land_px": 41664,
+    "plain_pct": 91.1,
+    "climb_only_pct": 2.6
+   },
+   {
+    "core_plain_pct": 99.7,
+    "core_climb_only_pct": 0.0,
+    "name": "Delta and terraces",
+    "kind": "coast",
+    "gate": 0,
+    "land_px": 38673,
+    "plain_pct": 100.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 95.7,
+    "core_climb_only_pct": 1.5,
+    "name": "Canyon badlands",
+    "kind": "canyon",
+    "gate": 0,
+    "land_px": 31852,
+    "plain_pct": 98.8,
+    "climb_only_pct": 1.2
+   },
+   {
+    "core_plain_pct": 0.6,
+    "core_climb_only_pct": 93.9,
+    "name": "Mesa",
+    "kind": "plateau",
+    "gate": 1,
+    "land_px": 10733,
+    "plain_pct": 0.9,
+    "climb_only_pct": 84.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Islet",
+    "kind": "islet",
+    "gate": 2,
+    "land_px": 2954,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 51.7,
+    "core_climb_only_pct": 44.0,
+    "name": "Mountain spine",
+    "kind": "mountain",
+    "gate": 0,
+    "land_px": 42066,
+    "plain_pct": 68.5,
+    "climb_only_pct": 28.3
+   },
+   {
+    "core_plain_pct": 3.5,
+    "core_climb_only_pct": 0.0,
+    "name": "Exposed cliff coast",
+    "kind": "cliffs",
+    "gate": 0,
+    "land_px": 2995,
+    "plain_pct": 94.0,
+    "climb_only_pct": 6.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Warm reef shallows",
+    "kind": "reef",
+    "gate": 0,
+    "land_px": 320,
+    "plain_pct": 100.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Abyssal trench",
+    "kind": "trench",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   }
+  ],
+  "routes_walkable": {
+   "Exit 1: river valley": true,
+   "Exit 2: north pass": true,
+   "Exit 3: south pass": true,
+   "Exit 4: west saddle": true
+  },
+  "route_paths": {
+   "Exit 1: river valley": [
+    [
+     16,
+     16
+    ],
+    [
+     109,
+     109
+    ],
+    [
+     203,
+     203
+    ],
+    [
+     297,
+     297
+    ],
+    [
+     391,
+     391
+    ],
+    [
+     484,
+     422
+    ],
+    [
+     578,
+     484
+    ],
+    [
+     641,
+     578
+    ],
+    [
+     703,
+     641
+    ],
+    [
+     797,
+     703
+    ],
+    [
+     891,
+     734
+    ],
+    [
+     984,
+     828
+    ],
+    [
+     1078,
+     891
+    ],
+    [
+     1172,
+     953
+    ],
+    [
+     1266,
+     1047
+    ],
+    [
+     1359,
+     1141
+    ],
+    [
+     1453,
+     1234
+    ],
+    [
+     1516,
+     1266
+    ],
+    [
+     1609,
+     1266
+    ],
+    [
+     1703,
+     1297
+    ],
+    [
+     1797,
+     1297
+    ],
+    [
+     1891,
+     1359
+    ]
+   ],
+   "Exit 2: north pass": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     -78
+    ],
+    [
+     78,
+     -172
+    ],
+    [
+     172,
+     -266
+    ],
+    [
+     266,
+     -359
+    ],
+    [
+     328,
+     -453
+    ],
+    [
+     391,
+     -516
+    ],
+    [
+     391,
+     -609
+    ],
+    [
+     484,
+     -703
+    ],
+    [
+     516,
+     -797
+    ],
+    [
+     578,
+     -891
+    ],
+    [
+     672,
+     -984
+    ],
+    [
+     766,
+     -1016
+    ],
+    [
+     859,
+     -1078
+    ],
+    [
+     859,
+     -1141
+    ],
+    [
+     922,
+     -1234
+    ],
+    [
+     953,
+     -1328
+    ],
+    [
+     1047,
+     -1359
+    ],
+    [
+     1078,
+     -1453
+    ],
+    [
+     1141,
+     -1547
+    ],
+    [
+     1172,
+     -1641
+    ]
+   ],
+   "Exit 3: south pass": [
+    [
+     16,
+     16
+    ],
+    [
+     -78,
+     109
+    ],
+    [
+     -172,
+     203
+    ],
+    [
+     -234,
+     297
+    ],
+    [
+     -297,
+     391
+    ],
+    [
+     -328,
+     453
+    ],
+    [
+     -328,
+     547
+    ],
+    [
+     -359,
+     641
+    ],
+    [
+     -422,
+     734
+    ],
+    [
+     -516,
+     797
+    ],
+    [
+     -578,
+     891
+    ],
+    [
+     -672,
+     953
+    ],
+    [
+     -766,
+     1047
+    ],
+    [
+     -859,
+     1141
+    ],
+    [
+     -922,
+     1172
+    ],
+    [
+     -922,
+     1266
+    ],
+    [
+     -953,
+     1359
+    ],
+    [
+     -984,
+     1453
+    ],
+    [
+     -1047,
+     1547
+    ],
+    [
+     -1109,
+     1641
+    ],
+    [
+     -1141,
+     1734
+    ],
+    [
+     -1203,
+     1828
+    ],
+    [
+     -1203,
+     1922
+    ],
+    [
+     -1203,
+     2016
+    ]
+   ],
+   "Exit 4: west saddle": [
+    [
+     16,
+     16
+    ],
+    [
+     -78,
+     78
+    ],
+    [
+     -172,
+     141
+    ],
+    [
+     -266,
+     141
+    ],
+    [
+     -359,
+     141
+    ],
+    [
+     -453,
+     141
+    ],
+    [
+     -516,
+     141
+    ],
+    [
+     -609,
+     141
+    ],
+    [
+     -703,
+     172
+    ],
+    [
+     -797,
+     172
+    ],
+    [
+     -891,
+     172
+    ],
+    [
+     -984,
+     203
+    ],
+    [
+     -1078,
+     203
+    ],
+    [
+     -1172,
+     203
+    ]
+   ]
+  },
+  "params": {
+   "layout": 1,
+   "valley_radius_m": 190,
+   "size_m": 8000,
+   "island_radius_m": 2450,
+   "n": 1536,
+   "stream_iters": 48,
+   "droplets": 80000
+  },
+  "marks": [
+   {
+    "name": "Crown Horn",
+    "kind": "peak",
+    "x": -468,
+    "y": -374
+   },
+   {
+    "name": "Meteor crater",
+    "kind": "crater",
+    "x": -140,
+    "y": 62
+   },
+   {
+    "name": "Split Spire",
+    "kind": "spire",
+    "x": -998,
+    "y": 1435
+   },
+   {
+    "name": "Great tree",
+    "kind": "tree",
+    "x": 967,
+    "y": -1186
+   },
+   {
+    "name": "Sea arch",
+    "kind": "arch",
+    "x": 1841,
+    "y": -1654
+   },
+   {
+    "name": "Mesa",
+    "kind": "plateau",
+    "x": -1654,
+    "y": -874
+   },
+   {
+    "name": "Volcano site",
+    "kind": "volcano",
+    "x": -1716,
+    "y": 1014
+   },
+   {
+    "name": "Oklo reactor site",
+    "kind": "reactor",
+    "x": -998,
+    "y": 1841
+   }
+  ]
+ },
+ "great-rift": {
+  "id": "great-rift",
+  "layout": 2,
+  "land_km2": 16.32,
+  "plain_reach_pct": 78.3,
+  "climb_reach_pct": 98.3,
+  "regions": [
+   {
+    "core_plain_pct": 100.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Nest valley",
+    "kind": "nest",
+    "gate": 0,
+    "land_px": 2276,
+    "plain_pct": 100.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 99.1,
+    "core_climb_only_pct": 0.0,
+    "name": "Forest corridor",
+    "kind": "forest",
+    "gate": 0,
+    "land_px": 27217,
+    "plain_pct": 99.9,
+    "climb_only_pct": 0.1
+   },
+   {
+    "core_plain_pct": 100.0,
+    "core_climb_only_pct": 0.0,
+    "name": "North terraces",
+    "kind": "terraces",
+    "gate": 0,
+    "land_px": 37511,
+    "plain_pct": 98.6,
+    "climb_only_pct": 1.4
+   },
+   {
+    "core_plain_pct": 96.3,
+    "core_climb_only_pct": 3.7,
+    "name": "South badlands",
+    "kind": "badlands",
+    "gate": 0,
+    "land_px": 32174,
+    "plain_pct": 93.2,
+    "climb_only_pct": 6.8
+   },
+   {
+    "core_plain_pct": 97.2,
+    "core_climb_only_pct": 0.0,
+    "name": "Rift gorge",
+    "kind": "canyon",
+    "gate": 0,
+    "land_px": 5310,
+    "plain_pct": 100.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 96.5,
+    "name": "Cloud mesa",
+    "kind": "plateau",
+    "gate": 1,
+    "land_px": 9228,
+    "plain_pct": 0.3,
+    "climb_only_pct": 84.6
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Islet",
+    "kind": "islet",
+    "gate": 2,
+    "land_px": 2750,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 49.2,
+    "core_climb_only_pct": 48.9,
+    "name": "Mountain spine",
+    "kind": "mountain",
+    "gate": 0,
+    "land_px": 63043,
+    "plain_pct": 65.0,
+    "climb_only_pct": 33.5
+   },
+   {
+    "core_plain_pct": 62.6,
+    "core_climb_only_pct": 0.0,
+    "name": "Exposed cliff coast",
+    "kind": "cliffs",
+    "gate": 0,
+    "land_px": 6663,
+    "plain_pct": 98.4,
+    "climb_only_pct": 1.6
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Warm reef shallows",
+    "kind": "reef",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Abyssal trench",
+    "kind": "trench",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   }
+  ],
+  "routes_walkable": {
+   "River corridor": true,
+   "North pass": true,
+   "South pass": true,
+   "West col": true
+  },
+  "route_paths": {
+   "River corridor": [
+    [
+     16,
+     16
+    ],
+    [
+     109,
+     16
+    ],
+    [
+     203,
+     16
+    ],
+    [
+     297,
+     47
+    ],
+    [
+     391,
+     47
+    ],
+    [
+     484,
+     47
+    ],
+    [
+     547,
+     47
+    ],
+    [
+     641,
+     -16
+    ],
+    [
+     734,
+     -16
+    ],
+    [
+     828,
+     -16
+    ],
+    [
+     922,
+     -16
+    ],
+    [
+     1016,
+     -16
+    ],
+    [
+     1109,
+     -16
+    ],
+    [
+     1203,
+     -16
+    ],
+    [
+     1297,
+     -16
+    ],
+    [
+     1391,
+     -16
+    ],
+    [
+     1484,
+     -16
+    ],
+    [
+     1578,
+     -16
+    ],
+    [
+     1641,
+     16
+    ],
+    [
+     1734,
+     16
+    ],
+    [
+     1828,
+     16
+    ],
+    [
+     1922,
+     47
+    ],
+    [
+     2016,
+     141
+    ],
+    [
+     2078,
+     172
+    ],
+    [
+     2172,
+     172
+    ],
+    [
+     2266,
+     172
+    ]
+   ],
+   "North pass": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     -78
+    ],
+    [
+     16,
+     -172
+    ],
+    [
+     16,
+     -266
+    ],
+    [
+     -16,
+     -359
+    ],
+    [
+     -47,
+     -453
+    ],
+    [
+     -109,
+     -516
+    ],
+    [
+     -109,
+     -609
+    ],
+    [
+     -16,
+     -703
+    ],
+    [
+     78,
+     -797
+    ],
+    [
+     141,
+     -891
+    ],
+    [
+     234,
+     -984
+    ],
+    [
+     266,
+     -1047
+    ],
+    [
+     359,
+     -1141
+    ],
+    [
+     422,
+     -1234
+    ],
+    [
+     484,
+     -1328
+    ],
+    [
+     578,
+     -1391
+    ],
+    [
+     641,
+     -1484
+    ]
+   ],
+   "South pass": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     109
+    ],
+    [
+     -16,
+     203
+    ],
+    [
+     -78,
+     297
+    ],
+    [
+     -78,
+     391
+    ],
+    [
+     -78,
+     484
+    ],
+    [
+     -78,
+     547
+    ],
+    [
+     -78,
+     641
+    ],
+    [
+     -47,
+     734
+    ],
+    [
+     -16,
+     828
+    ],
+    [
+     47,
+     922
+    ],
+    [
+     47,
+     1016
+    ]
+   ],
+   "West col": [
+    [
+     16,
+     16
+    ],
+    [
+     -78,
+     16
+    ],
+    [
+     -172,
+     -16
+    ],
+    [
+     -266,
+     -16
+    ],
+    [
+     -359,
+     -16
+    ],
+    [
+     -453,
+     -47
+    ],
+    [
+     -516,
+     -47
+    ],
+    [
+     -609,
+     -47
+    ],
+    [
+     -703,
+     -47
+    ],
+    [
+     -797,
+     -141
+    ],
+    [
+     -891,
+     -234
+    ]
+   ]
+  },
+  "params": {
+   "layout": 2,
+   "valley_radius_m": 190,
+   "size_m": 8000,
+   "island_radius_m": 2450,
+   "n": 1536,
+   "stream_iters": 48,
+   "droplets": 80000
+  },
+  "marks": [
+   {
+    "name": "Anvil",
+    "kind": "peak",
+    "x": -1560,
+    "y": 0
+   },
+   {
+    "name": "Meteor crater",
+    "kind": "crater",
+    "x": -140,
+    "y": 62
+   },
+   {
+    "name": "Gate Rock",
+    "kind": "spire",
+    "x": 998,
+    "y": -94
+   },
+   {
+    "name": "Great tree",
+    "kind": "tree",
+    "x": 624,
+    "y": 281
+   },
+   {
+    "name": "Sea arch",
+    "kind": "arch",
+    "x": 1591,
+    "y": 1763
+   },
+   {
+    "name": "Cloud mesa",
+    "kind": "plateau",
+    "x": -1404,
+    "y": -1248
+   },
+   {
+    "name": "Volcano site",
+    "kind": "volcano",
+    "x": 1404,
+    "y": -1560
+   },
+   {
+    "name": "Oklo reactor site",
+    "kind": "reactor",
+    "x": 468,
+    "y": 1638
+   }
+  ]
+ },
+ "stepped-plateau": {
+  "id": "stepped-plateau",
+  "layout": 3,
+  "land_km2": 17.16,
+  "plain_reach_pct": 92.0,
+  "climb_reach_pct": 98.8,
+  "regions": [
+   {
+    "core_plain_pct": 50.0,
+    "core_climb_only_pct": 33.3,
+    "name": "Nest valley",
+    "kind": "nest",
+    "gate": 0,
+    "land_px": 2268,
+    "plain_pct": 97.9,
+    "climb_only_pct": 2.0
+   },
+   {
+    "core_plain_pct": 95.2,
+    "core_climb_only_pct": 4.8,
+    "name": "Forest tier",
+    "kind": "forest",
+    "gate": 0,
+    "land_px": 70775,
+    "plain_pct": 96.8,
+    "climb_only_pct": 3.2
+   },
+   {
+    "core_plain_pct": 75.8,
+    "core_climb_only_pct": 8.4,
+    "name": "Stair canyon",
+    "kind": "canyon",
+    "gate": 0,
+    "land_px": 22975,
+    "plain_pct": 85.7,
+    "climb_only_pct": 14.3
+   },
+   {
+    "core_plain_pct": 99.1,
+    "core_climb_only_pct": 0.9,
+    "name": "Red steps",
+    "kind": "badlands",
+    "gate": 0,
+    "land_px": 18972,
+    "plain_pct": 99.1,
+    "climb_only_pct": 0.9
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 93.0,
+    "name": "Sky terrace",
+    "kind": "plateau",
+    "gate": 1,
+    "land_px": 7140,
+    "plain_pct": 9.0,
+    "climb_only_pct": 86.3
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Islet",
+    "kind": "islet",
+    "gate": 2,
+    "land_px": 2628,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 50.4,
+    "core_climb_only_pct": 45.8,
+    "name": "Mountain spine",
+    "kind": "mountain",
+    "gate": 0,
+    "land_px": 42374,
+    "plain_pct": 70.2,
+    "climb_only_pct": 27.6
+   },
+   {
+    "core_plain_pct": 71.6,
+    "core_climb_only_pct": 12.8,
+    "name": "Exposed cliff coast",
+    "kind": "cliffs",
+    "gate": 0,
+    "land_px": 9443,
+    "plain_pct": 81.9,
+    "climb_only_pct": 18.1
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Warm reef shallows",
+    "kind": "reef",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Abyssal trench",
+    "kind": "trench",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   }
+  ],
+  "routes_walkable": {
+   "Exit 1: SE ramp": true,
+   "Exit 2: west ramp": true,
+   "Exit 3: north ramp": true,
+   "Exit 4: south ramp": true
+  },
+  "route_paths": {
+   "Exit 1: SE ramp": [
+    [
+     16,
+     16
+    ],
+    [
+     109,
+     78
+    ],
+    [
+     203,
+     109
+    ],
+    [
+     266,
+     172
+    ],
+    [
+     359,
+     172
+    ],
+    [
+     453,
+     203
+    ],
+    [
+     547,
+     203
+    ],
+    [
+     641,
+     234
+    ],
+    [
+     734,
+     297
+    ],
+    [
+     797,
+     328
+    ],
+    [
+     859,
+     234
+    ],
+    [
+     891,
+     141
+    ],
+    [
+     953,
+     47
+    ]
+   ],
+   "Exit 2: west ramp": [
+    [
+     16,
+     16
+    ],
+    [
+     -47,
+     -47
+    ],
+    [
+     -141,
+     -78
+    ],
+    [
+     -234,
+     -109
+    ],
+    [
+     -297,
+     -109
+    ],
+    [
+     -391,
+     -109
+    ],
+    [
+     -484,
+     -109
+    ],
+    [
+     -578,
+     -109
+    ],
+    [
+     -672,
+     -109
+    ],
+    [
+     -766,
+     -172
+    ]
+   ],
+   "Exit 3: north ramp": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     -78
+    ],
+    [
+     16,
+     -172
+    ],
+    [
+     -16,
+     -266
+    ],
+    [
+     16,
+     -328
+    ],
+    [
+     16,
+     -422
+    ],
+    [
+     16,
+     -516
+    ],
+    [
+     16,
+     -609
+    ],
+    [
+     16,
+     -703
+    ]
+   ],
+   "Exit 4: south ramp": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     109
+    ],
+    [
+     16,
+     203
+    ],
+    [
+     -47,
+     266
+    ],
+    [
+     -47,
+     359
+    ],
+    [
+     -109,
+     453
+    ],
+    [
+     -203,
+     547
+    ],
+    [
+     -297,
+     641
+    ],
+    [
+     -297,
+     734
+    ]
+   ]
+  },
+  "params": {
+   "layout": 3,
+   "valley_radius_m": 190,
+   "size_m": 8000,
+   "island_radius_m": 2450,
+   "n": 1536,
+   "stream_iters": 8,
+   "droplets": 10000
+  },
+  "marks": [
+   {
+    "name": "Sky terrace",
+    "kind": "plateau",
+    "x": 671,
+    "y": -655
+   },
+   {
+    "name": "Meteor crater",
+    "kind": "crater",
+    "x": -140,
+    "y": 62
+   },
+   {
+    "name": "Stair falls",
+    "kind": "falls",
+    "x": 1186,
+    "y": 359
+   },
+   {
+    "name": "Giant tree",
+    "kind": "tree",
+    "x": -811,
+    "y": -811
+   },
+   {
+    "name": "Sea arch",
+    "kind": "arch",
+    "x": -1841,
+    "y": 1576
+   },
+   {
+    "name": "Red spire",
+    "kind": "spire",
+    "x": -1092,
+    "y": 702
+   },
+   {
+    "name": "Volcano site",
+    "kind": "volcano",
+    "x": 1716,
+    "y": -1404
+   },
+   {
+    "name": "Oklo reactor site",
+    "kind": "reactor",
+    "x": -780,
+    "y": 1092
+   }
+  ]
+ },
+ "windward-crescent": {
+  "id": "windward-crescent",
+  "layout": 4,
+  "land_km2": 16.64,
+  "plain_reach_pct": 76.3,
+  "climb_reach_pct": 97.6,
+  "regions": [
+   {
+    "core_plain_pct": 100.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Nest valley",
+    "kind": "nest",
+    "gate": 0,
+    "land_px": 2276,
+    "plain_pct": 100.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 95.1,
+    "core_climb_only_pct": 0.8,
+    "name": "Lee forest belt",
+    "kind": "forest",
+    "gate": 0,
+    "land_px": 64862,
+    "plain_pct": 97.3,
+    "climb_only_pct": 1.6
+   },
+   {
+    "core_plain_pct": 93.3,
+    "core_climb_only_pct": 6.7,
+    "name": "Windward bench",
+    "kind": "terraces",
+    "gate": 0,
+    "land_px": 25485,
+    "plain_pct": 89.9,
+    "climb_only_pct": 10.1
+   },
+   {
+    "core_plain_pct": 88.9,
+    "core_climb_only_pct": 11.1,
+    "name": "Red canyon",
+    "kind": "canyon",
+    "gate": 0,
+    "land_px": 18752,
+    "plain_pct": 93.9,
+    "climb_only_pct": 6.1
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 98.8,
+    "name": "Karst plateau",
+    "kind": "plateau",
+    "gate": 1,
+    "land_px": 7852,
+    "plain_pct": 0.0,
+    "climb_only_pct": 84.9
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Islet",
+    "kind": "islet",
+    "gate": 2,
+    "land_px": 2720,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 32.5,
+    "core_climb_only_pct": 60.6,
+    "name": "Mountain spine",
+    "kind": "mountain",
+    "gate": 0,
+    "land_px": 120513,
+    "plain_pct": 47.7,
+    "climb_only_pct": 48.5
+   },
+   {
+    "core_plain_pct": 20.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Exposed cliff coast",
+    "kind": "cliffs",
+    "gate": 0,
+    "land_px": 5214,
+    "plain_pct": 91.6,
+    "climb_only_pct": 8.4
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Warm reef shallows",
+    "kind": "reef",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   },
+   {
+    "core_plain_pct": 0.0,
+    "core_climb_only_pct": 0.0,
+    "name": "Abyssal trench",
+    "kind": "trench",
+    "gate": 0,
+    "land_px": 0,
+    "plain_pct": 0.0,
+    "climb_only_pct": 0.0
+   }
+  ],
+  "routes_walkable": {
+   "Exit E: lee valley": true,
+   "Exit S: red canyon": true,
+   "Exit W: bench pass": true,
+   "Exit N: north col": true
+  },
+  "route_paths": {
+   "Exit E: lee valley": [
+    [
+     16,
+     16
+    ],
+    [
+     109,
+     16
+    ],
+    [
+     203,
+     16
+    ],
+    [
+     297,
+     16
+    ],
+    [
+     391,
+     16
+    ],
+    [
+     484,
+     78
+    ],
+    [
+     547,
+     109
+    ],
+    [
+     641,
+     109
+    ],
+    [
+     734,
+     141
+    ],
+    [
+     828,
+     141
+    ],
+    [
+     922,
+     203
+    ],
+    [
+     1016,
+     234
+    ],
+    [
+     1109,
+     234
+    ],
+    [
+     1203,
+     234
+    ],
+    [
+     1266,
+     266
+    ],
+    [
+     1359,
+     266
+    ],
+    [
+     1453,
+     297
+    ],
+    [
+     1547,
+     297
+    ],
+    [
+     1641,
+     359
+    ],
+    [
+     1734,
+     391
+    ],
+    [
+     1828,
+     391
+    ],
+    [
+     1922,
+     391
+    ],
+    [
+     2016,
+     391
+    ]
+   ],
+   "Exit S: red canyon": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     109
+    ],
+    [
+     47,
+     203
+    ],
+    [
+     78,
+     297
+    ],
+    [
+     78,
+     391
+    ],
+    [
+     141,
+     453
+    ],
+    [
+     172,
+     547
+    ],
+    [
+     234,
+     609
+    ],
+    [
+     328,
+     703
+    ],
+    [
+     422,
+     797
+    ],
+    [
+     422,
+     891
+    ],
+    [
+     422,
+     984
+    ],
+    [
+     422,
+     1047
+    ],
+    [
+     422,
+     1141
+    ],
+    [
+     453,
+     1234
+    ],
+    [
+     484,
+     1328
+    ],
+    [
+     516,
+     1391
+    ],
+    [
+     516,
+     1484
+    ],
+    [
+     547,
+     1578
+    ],
+    [
+     547,
+     1672
+    ],
+    [
+     516,
+     1766
+    ],
+    [
+     453,
+     1859
+    ],
+    [
+     391,
+     1953
+    ],
+    [
+     359,
+     2047
+    ],
+    [
+     359,
+     2141
+    ],
+    [
+     297,
+     2234
+    ]
+   ],
+   "Exit W: bench pass": [
+    [
+     16,
+     16
+    ],
+    [
+     -78,
+     16
+    ],
+    [
+     -172,
+     -16
+    ],
+    [
+     -266,
+     -16
+    ],
+    [
+     -359,
+     -16
+    ],
+    [
+     -453,
+     -16
+    ],
+    [
+     -516,
+     -47
+    ],
+    [
+     -609,
+     -109
+    ],
+    [
+     -703,
+     -141
+    ],
+    [
+     -797,
+     -141
+    ],
+    [
+     -891,
+     -109
+    ]
+   ],
+   "Exit N: north col": [
+    [
+     16,
+     16
+    ],
+    [
+     16,
+     -78
+    ],
+    [
+     -16,
+     -172
+    ],
+    [
+     -16,
+     -266
+    ],
+    [
+     -16,
+     -359
+    ],
+    [
+     -16,
+     -453
+    ],
+    [
+     -16,
+     -516
+    ],
+    [
+     16,
+     -609
+    ],
+    [
+     16,
+     -703
+    ],
+    [
+     47,
+     -797
+    ],
+    [
+     78,
+     -891
+    ],
+    [
+     172,
+     -984
+    ],
+    [
+     172,
+     -1078
+    ]
+   ]
+  },
+  "params": {
+   "layout": 4,
+   "valley_radius_m": 190,
+   "size_m": 8000,
+   "island_radius_m": 2450,
+   "n": 1536,
+   "stream_iters": 48,
+   "droplets": 80000
+  },
+  "marks": [
+   {
+    "name": "Gale Horn",
+    "kind": "peak",
+    "x": -1841,
+    "y": -515
+   },
+   {
+    "name": "Meteor crater",
+    "kind": "crater",
+    "x": -140,
+    "y": 62
+   },
+   {
+    "name": "Red Arch",
+    "kind": "spire",
+    "x": 515,
+    "y": 1529
+   },
+   {
+    "name": "Giant tree",
+    "kind": "tree",
+    "x": 1092,
+    "y": 312
+   },
+   {
+    "name": "Sea arch",
+    "kind": "arch",
+    "x": 1638,
+    "y": 1778
+   },
+   {
+    "name": "Karst plateau",
+    "kind": "plateau",
+    "x": -1841,
+    "y": -515
+   },
+   {
+    "name": "Volcano site",
+    "kind": "volcano",
+    "x": 1560,
+    "y": -1092
+   },
+   {
+    "name": "Oklo reactor site",
+    "kind": "reactor",
+    "x": 234,
+    "y": 1716
+   }
+  ]
+ }
+}
