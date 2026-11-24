@@ -313,9 +313,10 @@ def species_all():
             for idx, ch in enumerate(chs):
                 bi = match(b.get("chains"), ch["trait"], idx) or {}
                 si = match(v.get("chains"), ch["trait"], idx) or {}
-                bio_items.append({"trait": ch["trait"], "score": VERD.get(bi.get("verdict"), 6), "fix": bi.get("fix") or bi.get("why", ""),
+                # no referee answer = no score (verdict "unreviewed"); never default to 6/"fixable" (A102.2)
+                bio_items.append({"trait": ch["trait"], "score": VERD.get(bi.get("verdict")), "fix": bi.get("fix") or bi.get("why", ""),
                                   "analogue": bi.get("analogue", ""), "reference": bi.get("reference", "")})
-                sk_items.append({"trait": ch["trait"], "score": si.get("score", 6) if isinstance(si.get("score"), (int, float)) else 6, "fix": si.get("fix", "")})
+                sk_items.append({"trait": ch["trait"], "score": si.get("score") if isinstance(si.get("score"), (int, float)) else None, "fix": si.get("fix", "")})
             json.dump(bio_items, open(os.path.join(sdir, f"3_score_r0_{sname(name)}_astrobio.json"), "w"), indent=1, ensure_ascii=False)
             json.dump(sk_items, open(os.path.join(sdir, f"3_score_r0_{sname(name)}_skeptic.json"), "w"), indent=1, ensure_ascii=False)
     json.dump({"chains": chains, "graph": {"edges": edges}}, open(os.path.join(sdir, "graph.json"), "w"), indent=1, ensure_ascii=False)

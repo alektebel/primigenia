@@ -21,7 +21,7 @@ sem = threading.Semaphore(int(os.environ.get("QWEN_CONC", "5")))  # NAN qwen all
 
 
 # advisors served by opencode free-tier models instead of qwen (model diversity)
-from voices import OC_MODEL, down_file
+from voices import OC_MODEL, REFEREE_FALLBACK, down_file
 ocsem = threading.Semaphore(2)
 ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
@@ -71,13 +71,18 @@ def cur_chat(model, system, user):
     pf = os.path.join(wd, "prompt.md")
     msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. You may search the web for references. "
            "Do not create or edit files. Your final message must be ONLY the requested answer.")
+    down = os.path.join(os.path.dirname(D), "cursor_down_until_" + re.sub(r"\W+", "_", model))  # plan rejected the model: do not retry 8 times per call
     for a in range(8):
+        if os.path.exists(down) and time.time() < float(open(down).read() or 0):
+            print("cursor cooldown: skipping", model, file=sys.stderr, flush=True); return "(failed)"
         with cursem:
             r = subprocess.run(["agent", "-p", "--trust", "--mode", "ask", "--model", model, "--workspace", wd, msg], cwd=wd,
                                stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=2400)
         out = ANSI.sub("", r.stdout).strip()
         if r.returncode == 0 and len(out) > 300:
             return out
+        if "Model unavailable" in (r.stdout + r.stderr) or "usage limit" in (r.stdout + r.stderr).lower():
+            open(down, "w").write(str(time.time() + 1800)); print("cursor model unavailable on this plan: cooling down 30 min", file=sys.stderr, flush=True); return "(failed)"
         print("cursor retry", model, a, r.returncode, len(out), r.stderr[-300:], file=sys.stderr, flush=True); time.sleep(30)
     return "(failed)"
 
@@ -121,7 +126,12 @@ def ask(k, system, user, **kw):
         if not t.startswith("(failed)"): return t
         t = oc_chat(OC_MODEL["skeptic"], system, user)
         return t if not t.startswith("(failed)") else chat(system, user, **kw)
-    if k in CUR_MODEL: return cur_chat(CUR_MODEL[k], system, user)
+    if k in CUR_MODEL:
+        t = cur_chat(CUR_MODEL[k], system, user)
+        if t.startswith("(failed)"):
+            print("referee fallback: cursor unavailable; trying", REFEREE_FALLBACK, file=sys.stderr, flush=True)
+            t = oc_chat(REFEREE_FALLBACK, system, user)
+        return t
     return oc_chat(OC_MODEL[k], system, user) if k in OC_MODEL else chat(system, user, **kw)
 
 
