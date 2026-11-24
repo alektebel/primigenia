@@ -2,7 +2,7 @@
 
 These are acceptance fixtures, including currently failing routes. A red certification is not a waiver.
 
-`seed{1,7,42}.json` pins terrain v5 at n=1024 (v5 only added the version word and the desc hash to the terrain hash: the arrays are the v4 ones), the terrain hash, the actual initial Merodeador profile,
+(Retired after B1: the ring island fixtures `seed{1,7,42}.json`.) They pinned terrain v5 at n=1024 (v5 only added the version word and the desc hash to the terrain hash: the arrays are the v4 ones), the terrain hash, the actual initial Merodeador profile,
 StageSetup nest and herd home positions, every generated cave record and the volcano descriptor.
 `route_places` and `required_pairs` define the required graph. Every pair is tested in both directions,
 with all nine bodies: Merodeador (4 legs, radius 3 m), and 2/4/6/8 legs at radii 0.5 and 4 m.
@@ -63,4 +63,4 @@ Run with `routes_test --island star <seed>`; export with `godot ... --script res
 - **Places:** nest, the six homes, the four exits (the second point of each island trail, 300 to 650 m out, snapped to dry gentle ground), the cave mouth apron, five shards, the chamber. No river gap, start valley or lake shore (they belong to the ring island).
 - **The chamber is certified from the mouth** (`hidden-cave-entrance -> cave-chamber`): the nav grid of the 8 km field is 7.8 m, and a GO order from far away into the passage is refused as unreachable.
 - **`min_legs`**: the north and south passes are not certified for two-legged bodies (their grip, 0.5 and 4 m, cannot take the grade of the passes). The fixture lists them in `min_legs`; the test skips a pair when the body has fewer legs than either end asks for.
-- The ring island fixtures (`seed*.json`) are retired in the commit after the one that adds these.
+- The ring island fixtures (`seed*.json`, the v4 n=1024 graph described above, evidence `docs/evidence/routes/seed*.md`) were retired in the commit after the one that added these; they stay in git history. `routes_test` takes only `--island star`.

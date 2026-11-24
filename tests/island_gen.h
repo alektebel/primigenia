@@ -1,11 +1,11 @@
 /* Shared by the stage tests that run on a generated island (nav, routes, first quest, secrets).
- *   island_args(&argc, argv)           removes "--island star" (or "--island ring") from the arguments and returns 1 for star;
- *                                      the default is the layout-0 ring island until its variants are retired.
+ *   island_args(&argc, argv)           removes "--island star" from the arguments; always returns 1 (the layout-0 ring variants of the stage
+ *                                      tests were retired after B1 certified the star ones; "--island ring" is refused).
  *   island_generate(t, ws, p, seed, star, n)
  *                                      allocates the maps and generates the island: the ring island (cp_terrain_generate, n as given,
  *                                      0 = default) or the frozen Star massif (A101, the blob compiled into libcpore, n 1536 unless given,
  *                                      no climate maps: the tests do not read them). p comes back with the size the desc set.
- * B1 (island-realism plan): the star variants are the certified ones; the ring variants are retired in a later commit. */
+ * B1 (island-realism plan): the star variants are the certified ones. */
 #ifndef CPORE_TESTS_ISLAND_GEN_H
 #define CPORE_TESTS_ISLAND_GEN_H
 #include "cpore/island.h"
@@ -21,11 +21,10 @@ static CpIslandDesc g_island_desc;
 
 static int island_args(int *argc, char **argv)
 {
-    int star = 0;
+    int star = 1;
     for (int i = 1; i + 1 < *argc; i++) {
         if (!strcmp(argv[i], "--island")) {
-            star = !strcmp(argv[i + 1], "star");
-            assert(star || !strcmp(argv[i + 1], "ring"));
+            assert(!strcmp(argv[i + 1], "star"));
             for (int k = i; k + 2 < *argc; k++) argv[k] = argv[k + 2];
             *argc -= 2;
             break;

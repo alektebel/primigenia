@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(__doc__)
 parser.add_argument("--check", action="store_true")
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[2]
-names = [f"seed{seed}" for seed in (1, 7, 42)] + [f"star-seed{seed}" for seed in (1, 7, 42)]
+names = [f"star-seed{seed}" for seed in (1, 7, 42)]   # the ring island fixtures (seed*.json) were retired after B1
 for name in names:
     source = root / f"tests/routes/{name}.json"
     if not source.exists():

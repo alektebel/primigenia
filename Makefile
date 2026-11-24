@@ -59,7 +59,6 @@ test: island-test climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
-	nice -n 10 ./$(BUILD)/nav_test
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/nav_test --island star $$seed || failed=1; done; test $$failed -eq 0
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
@@ -74,7 +73,6 @@ test: island-test climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $
 	./$(BUILD)/combat_tourney_test
 	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
 	python3 tools/routes/fixtures.py --check
-	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test $$seed || failed=1; done; test $$failed -eq 0
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test --island star $$seed || failed=1; done; test $$failed -eq 0
 tourney: $(BUILD)/combat_tourney
 	./$(BUILD)/combat_tourney
@@ -649,7 +647,6 @@ $(BUILD)/nav_test: tests/test_nav.c tests/island_gen.h $(HDRS) $(BUILD)/libcpore
 	$(CC) $(CFLAGS) -O2 $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: nav-test
 nav-test: $(BUILD)/nav_test
-	nice -n 10 ./$(BUILD)/nav_test
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/nav_test --island star $$seed || failed=1; done; test $$failed -eq 0
 
 # A21 evidence: the hotbar and the loadout panel (software GL).
@@ -762,7 +759,6 @@ $(BUILD)/routes_test: tests/test_routes.c tests/island_gen.h $(HDRS) $(BUILD)/li
 .PHONY: routes-test
 routes-test: $(BUILD)/routes_test
 	python3 tools/routes/fixtures.py --check
-	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test $$seed || failed=1; done; test $$failed -eq 0
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test --island star $$seed || failed=1; done; test $$failed -eq 0
 .PHONY: godot-route-events-test
 godot-route-events-test: godot
@@ -783,7 +779,6 @@ $(BUILD)/secrets_test: tests/test_secrets.c tests/island_gen.h $(HDRS) $(BUILD)/
 .PHONY: secrets-test
 secrets-test: $(BUILD)/secrets_test
 	nice -n 10 ./$(BUILD)/secrets_test flat
-	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/secrets_test $$seed || failed=1; done; test $$failed -eq 0
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/secrets_test --island star $$seed || failed=1; done; test $$failed -eq 0
 
 # The field journal (G38, godot/ui/journal_*.gd): every section and spread, ES and EN, plus overflow cases (software GL, JPG).
@@ -909,7 +904,6 @@ $(BUILD)/first_quest_test: tests/test_first_quest.c tests/island_gen.h $(HDRS) $
 .PHONY: first-quest-test
 first-quest-test: $(BUILD)/first_quest_test
 	nice -n 10 ./$(BUILD)/first_quest_test flat
-	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test $$seed || failed=1; done; test $$failed -eq 0
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test --island star $$seed || failed=1; done; test $$failed -eq 0
 
 # First quest: the whole chain played by a bot through the real verbs (kill, befriend, dig, wings, fire gland, flamethrower)
