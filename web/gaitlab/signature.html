@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Signature attacks</title>
+<style>
+:root{color-scheme:dark;--bg:#14181c;--panel:#1e2328;--ink:#efebe2;--dim:#aab0b6;--line:#3b424a;--gold:#edc578}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.35 system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;background:#2b3238;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:5px 10px;cursor:pointer;transition:transform 160ms ease-out,background 160ms ease-out}
+button:hover{background:#38414a}button:active{transform:scale(.97)}button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}
+header{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex:none}
+h1{font-size:16px;margin:0;line-height:1.2}h1 small{display:block;font-size:11.5px;font-weight:400;color:var(--dim);max-width:620px}
+.group{display:flex;gap:4px;align-items:center}.group>span{font-size:12px;color:var(--dim);margin-right:3px}
+#check{font-size:12px;color:var(--dim)}#check.pass{color:#a3d4ad}#check.fail{color:#ff998c}
+#stage{position:relative;flex:1;min-height:0}#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:3px;padding:3px}
+.cell{position:relative;border:1px solid var(--line);border-radius:6px;cursor:zoom-in;min-width:0;min-height:0;overflow:hidden}
+.cell:hover{border-color:#66707a}.cell.starred{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.cap{position:absolute;left:8px;top:5px;right:104px;pointer-events:none;text-shadow:0 1px 3px #000,0 0 6px #000}
+.cap b{font-size:13.5px;color:var(--gold)}.cap b i{font-style:normal;color:var(--ink);margin-right:5px;font-size:11px;opacity:.8}
+.cap .an{display:block;font-size:11px;color:#d9dde0}.cap .org{display:none;font-size:12px;color:#d9dde0;margin-top:2px}
+.eff{position:absolute;left:8px;right:8px;bottom:12px;font-size:11.5px;color:#eceff1;text-shadow:0 1px 3px #000,0 0 6px #000;pointer-events:none}
+.role{display:inline-block;font-size:10px;letter-spacing:.03em;background:#000a;border:1px solid #fff3;border-radius:9px;padding:0 6px;margin-left:5px;color:#cfe3ff;vertical-align:1px;text-shadow:none}
+.ctl{position:absolute;right:4px;top:3px;display:flex;gap:3px;align-items:center}
+.star{width:28px;height:26px;padding:0;font-size:16px;line-height:1;background:#2b3238cc;border-radius:6px}
+.pri{display:none;gap:2px}.starred .pri{display:flex}.pri button{width:22px;height:22px;padding:0;font-size:11px;background:#2b3238cc;border-radius:5px}
+.bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:#0008;pointer-events:none}.bar i{position:absolute;top:0;bottom:0;width:2px;background:#fff}.bar u{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:#ffd36b;text-decoration:none}
+#stage.focus .cell{display:none}#stage.focus .cell.on{display:block;grid-column:1/-1;grid-row:1/-1;cursor:zoom-out}#stage.focus #cells{grid-template-columns:1fr;grid-template-rows:1fr}
+#stage.focus .cap b{font-size:24px}#stage.focus .cap .an{font-size:15px}#stage.focus .cap .org{display:block;font-size:15px}#stage.focus .eff{font-size:17px;bottom:18px}#stage.focus .bar{height:9px}
+footer{flex:none;padding:5px 12px;color:var(--dim);font-size:12px;background:var(--panel);border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}kbd{font:inherit;color:var(--ink);background:#2b3238;border-radius:3px;padding:0 4px}
+#choices{flex:1;min-width:260px;background:#14181c;color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:3px 7px;font:12px ui-monospace,monospace}
+</style>
+<script src="../biome/three.min.js"></script>
+<script src="sing_notes.js"></script>
+<script src="bb_core.js"></script>
+<script src="signature_core.js"></script>
+</head>
+<body>
+<header>
+<h1>Signature attacks<small>Design-first picker (A60): 16 real-animal-inspired signature attacks, each a short loop of a suitable body on a target dummy. Star the ones to prioritise and give each a priority 1 (first) to 3 (later). Gold tick on the bar = the moment of impact. Not final art.</small></h1>
+<div class="group"><button id="play" aria-pressed="true">Pause</button><button id="back" aria-label="Step back one frame">&lsaquo; frame</button><button id="fwd" aria-label="Step forward one frame">frame &rsaquo;</button><button id="restart">Restart</button></div>
+<div class="group" id="rates"><span>Speed</span><button data-rate="1" aria-pressed="true">1×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate=".25" aria-pressed="false">0.25×</button></div>
+<div class="group" id="cams"><span>Camera</span><button data-cam="game" aria-pressed="true">Game</button><button data-cam="side" aria-pressed="false">Side</button><button data-cam="front" aria-pressed="false">Front ¾</button></div>
+<div class="group"><button id="copy">Copy choices</button><button id="clear">Clear stars</button></div>
+<div id="check"></div>
+</header>
+<div id="stage"><canvas id="gl"></canvas><div id="cells"></div></div>
+<footer><span><kbd>P</kbd> play · <kbd>,</kbd> <kbd>.</kbd> frame · <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> speed · <kbd>C</kbd> camera · <kbd>S</kbd> star hovered · <kbd>7</kbd> <kbd>8</kbd> <kbd>9</kbd> priority 1/2/3 on hovered · <kbd>F</kbd> or click to enlarge · <kbd>&larr;</kbd> <kbd>&rarr;</kbd> next cell · <kbd>Esc</kbd> back</span><input id="choices" readonly aria-label="Starred choices" placeholder="Star the attacks you want, then Copy choices"></footer>
+<script>
+'use strict';
+(()=>{
+const T_=BB.T,$=id=>document.getElementById(id),{A,L}=SIG,FRAME=1000/60;
+const stage=$('stage'),cellsEl=$('cells'),canvas=$('gl');
+const renderer=new T_.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setClearColor('#171c21');renderer.setScissorTest(true);
+window.__errs=[];addEventListener('error',e=>window.__errs.push(String(e.message)));
+let STARS={};try{STARS=JSON.parse(localStorage.getItem('sigStars')||'{}')||{};}catch(e){STARS={};}
+const save=()=>{try{localStorage.setItem('sigStars',JSON.stringify(STARS));}catch(e){}};
+function choicesText(){const out=[];for(const p of [1,2,3]){const l=A.filter(a=>STARS[a.id]===p).map(a=>a.id);if(l.length)out.push('P'+p+': '+l.join(', '));}return out.length?'signature attacks, '+out.join(' | '):'';}
+function ui(c){const p=STARS[c.def.id];c.star.setAttribute('aria-pressed',String(!!p));c.el.classList.toggle('starred',!!p);c.pri.forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.p)===p)));}
+function setStar(c,p){if(p)STARS[c.def.id]=p;else delete STARS[c.def.id];save();ui(c);$('choices').value=choicesText();}
+const cells=[];let hover=null;
+A.forEach((def,i)=>{
+  const c=SIG.build(def,i),el=document.createElement('div');el.className='cell';
+  el.innerHTML=`<div class="cap"><b><i>${i+1}</i>${def.name}</b><span class="an">${def.animal}<span class="role">${def.role}</span></span><span class="org">organ: ${def.organ}</span></div><div class="eff">${def.effect}</div><div class="ctl"><span class="pri"><button data-p="1" aria-label="Priority 1">1</button><button data-p="2" aria-label="Priority 2">2</button><button data-p="3" aria-label="Priority 3">3</button></span><button class="star" aria-label="Star ${def.name}" aria-pressed="false" title="Star: prioritise this attack">&#9733;</button></div><div class="bar"><u style="left:${def.ti/L*100}%"></u><i></i></div>`;
+  cellsEl.appendChild(el);Object.assign(c,{el,star:el.querySelector('.star'),pri:[...el.querySelectorAll('.pri button')],ph:el.querySelector('.bar i'),idx:i});
+  el.addEventListener('click',e=>{if(e.target.closest('.ctl'))return;toggleFocus(c);});el.addEventListener('mouseenter',()=>{hover=c;});
+  c.star.addEventListener('click',e=>{e.stopPropagation();setStar(c,STARS[def.id]?0:2);});c.pri.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setStar(c,Number(b.dataset.p));}));
+  ui(c);cells.push(c);});
+const S={T:0,play:true,rate:1,cam:'game',focus:null,over:null};
+const CAMS={game:{az:100,el:16},side:{az:90,el:5},front:{az:140,el:12}};
+function aim(c,aspect){const d=CAMS[S.cam],az=d.az*Math.PI/180,el=d.el*Math.PI/180,k=c.def.cam;let h=k.h*(S.focus?.86:1);h=Math.max(h,3.3/aspect+.3);
+  const dist=(h/2)/Math.tan(c.cam.fov*Math.PI/360);c.cam.aspect=aspect;c.cam.position.set(k.cx-dist*Math.cos(el)*Math.cos(az),k.ty+dist*Math.sin(el),dist*Math.cos(el)*Math.sin(az));c.cam.lookAt(new T_.Vector3(k.cx,k.ty,0));c.cam.updateProjectionMatrix();}
+const cellS=c=>S.over!==null?S.over:(S.T/1000)%L;
+function applyCell(c){const s=cellS(c);c.fx.reset();c.inst.pose(s,c.fx);c.fx.flush();c.ph.style.left=(s/L*100)+'%';}
+function render(){
+  const W=canvas.clientWidth,H=canvas.clientHeight,dpr=Math.min(window.devicePixelRatio||1,1.5);
+  if(canvas.width!==Math.round(W*dpr)||canvas.height!==Math.round(H*dpr)){renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);}
+  renderer.setScissor(0,0,W,H);renderer.setViewport(0,0,W,H);renderer.clear();const sr=stage.getBoundingClientRect();
+  for(const c of cells){if(S.focus&&S.focus!==c)continue;const r=c.el.getBoundingClientRect();if(r.width<2)continue;
+    const x=r.left-sr.left,y=H-(r.top-sr.top)-r.height;try{applyCell(c);}catch(e){window.__errs.push(String(e&&e.stack||e));}
+    aim(c,r.width/r.height);renderer.setViewport(x,y,r.width,r.height);renderer.setScissor(x,y,r.width,r.height);renderer.render(c.sc,c.cam);}
+}
+let frames=0,last=performance.now();
+function tick(now){const dt=Math.max(0,Math.min(250,now-last));last=now;if(S.play)S.T+=dt*S.rate;render();frames++;window.__frames=frames;requestAnimationFrame(tick);}
+function setPlay(p){S.play=p;$('play').textContent=p?'Pause':'Play';$('play').setAttribute('aria-pressed',String(p));}
+function step(n){setPlay(false);S.over=null;S.T=Math.max(0,Math.round(S.T/FRAME)*FRAME+n*FRAME);}
+function setRate(r){S.rate=r;document.querySelectorAll('#rates button').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.rate)===r)));}
+function setCam(n){S.cam=n;document.querySelectorAll('#cams button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cam===n)));}
+function toggleFocus(c){S.focus=(S.focus===c)?null:c;stage.classList.toggle('focus',!!S.focus);cells.forEach(x=>x.el.classList.toggle('on',x===S.focus));}
+function nextFocus(d){if(!S.focus)return;const n=cells[(S.focus.idx+d+cells.length)%cells.length];toggleFocus(S.focus);toggleFocus(n);}
+$('play').onclick=()=>setPlay(!S.play);$('back').onclick=()=>step(-1);$('fwd').onclick=()=>step(1);$('restart').onclick=()=>{S.T=0;S.over=null;setPlay(true);};
+document.querySelectorAll('#rates button').forEach(b=>b.onclick=()=>setRate(Number(b.dataset.rate)));document.querySelectorAll('#cams button').forEach(b=>b.onclick=()=>setCam(b.dataset.cam));
+$('clear').onclick=()=>{STARS={};save();cells.forEach(ui);$('choices').value='';};
+$('copy').onclick=async()=>{const txt=choicesText();$('choices').value=txt;try{await navigator.clipboard.writeText(txt);}catch(e){$('choices').removeAttribute('readonly');$('choices').select();try{document.execCommand('copy');}catch(e2){}$('choices').setAttribute('readonly','');}};
+addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;
+  if(k==='p'||k==='P'||k===' '){e.preventDefault();setPlay(!S.play);}else if(k===',')step(-1);else if(k==='.')step(1);
+  else if(k==='1')setRate(1);else if(k==='2')setRate(.5);else if(k==='3')setRate(.25);
+  else if(k==='c'||k==='C'){const o=['game','side','front'];setCam(o[(o.indexOf(S.cam)+1)%3]);}
+  else if(k==='s'||k==='S'){const c=S.focus||hover;if(c)setStar(c,STARS[c.def.id]?0:2);}
+  else if(k==='7'||k==='8'||k==='9'){const c=S.focus||hover;if(c)setStar(c,Number(k)-6);}
+  else if(k==='f'||k==='F'){if(hover||S.focus)toggleFocus(S.focus||hover);}else if(k==='Escape'&&S.focus)toggleFocus(S.focus);
+  else if(k==='ArrowRight')nextFocus(1);else if(k==='ArrowLeft')nextFocus(-1);});
+window.SG={S,cells,setT(t){setPlay(false);S.over=t;},setCam,setRate,toggleFocus,render,step,STARS,setStar,cellAt:id=>cells.find(c=>c.def.id===id)};
+$('check').textContent=A.length+' attacks';$('check').className='pass';$('choices').value=choicesText();
+if(new URL(location.href).searchParams.get('test')==='1')setPlay(false);
+render();window.__ready=true;requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
