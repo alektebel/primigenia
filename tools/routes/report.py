@@ -13,10 +13,10 @@ subprocess.run([sys.executable, "tools/routes/fixtures.py", "--check"], cwd=root
 subprocess.run(["make", "build/routes_test"], cwd=root, check=True)
 failed = False
 for seed in args.seeds:
-    result = subprocess.run(["nice", "-n", "10", "build/routes_test", str(seed)],
+    result = subprocess.run(["nice", "-n", "10", "build/routes_test", "--island", "star", str(seed)],
                             cwd=root, text=True, stdout=subprocess.PIPE, check=False)
     print(result.stdout, end="")
-    target = root / f"docs/evidence/routes/seed{seed}.md"
+    target = root / f"docs/evidence/routes/star-seed{seed}.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(result.stdout)
     failed |= result.returncode != 0
