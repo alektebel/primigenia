@@ -311,6 +311,11 @@ godot-render-test: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/render_tests.gd
+# Sky H1: CPU atmosphere LUTs (extension) against tools/atmo/ref.py. Software GL, for the ImageTexture round trip.
+.PHONY: godot-atmo-test
+godot-atmo-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 300 xvfb-run -a -s "-screen 0 640x360x24" \
+	  $(GODOT) --rendering-driver opengl3 --resolution 640x360 --path godot --script res://game/tests/atmo_test.gd
 godot-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
