@@ -115,36 +115,51 @@ SIGB.ground_pound=function(sc,def){
     if(b>.78&&b<1.2){const u=(b-.78)/.42;for(let k=0;k<5;k++)fx.p(V(2.7+.55+Math.cos(k*1.3)*.4*eo(u),.08+.1*u,Math.sin(k*1.3)*.3*eo(u)),.2+.2*u,.4*(1-u),'#c9b48a',TX.puff,false,k);}
     return Math.exp(-Math.pow((s-TC-.05)/.12,2))*1.0+(s>TC&&s<TC+.6?.2*Math.sin(s*50)*Math.exp(-(s-TC)*5):0);}};
 };
-// 13 ------------------------------------------------------------------------------------------ death roll
+// 13 ------------------------------------------------------------------------------------------ death roll (Nile/saltwater crocodile; Fish et al. 2007, J. Exp. Zool. 307A)
+// The croc clamps the prey at the shoulders, pins its own legs against the body, bows head and tail to opposite sides (C shape) and rolls along its own long axis in the water.
+// The jaws turn first; the prey's rear half lags (drag + inertia), so the prey is wrung and dragged, not spun like a propeller. Foam and spray at the surface; after two rolls the
+// jaws open, a scrap of hide tears free and the prey is flung off, dazed.
 SIGB.death_roll=function(sc,def){
   const wh=lam('#f4f1e2'),c=Quad(sc,{col:'#4c6b3a',belly:'#cfc88a',dark:'#2c4026',x0:-.2,sl:.95,pr:[.42,.12,.17],cr:[.36,.12,.16],legU:.13,legL:.15,lr:.055,sprawl:1.0,hip:.7,nl:.08,ns:3,nr0:.12,nr1:.1,na0:.0,nc0:0,hlev:0,hfol:0,hl:.19,hh:.08,hw:.11,sn:.5,snh:.05,snw:.075,tl:1.35,ts:14,tr0:.11,tr1:.012,ta0:.02,eye:.03,eyeY:1.0,toeL:.07,
-    skin:(i,a,out,part,top,bot)=>{const m=Math.sin(i*2.6)*.5+.5;out[0]*=.85+.2*m;out[1]*=.85+.2*m;}}),d=Pip(sc,2.45),T0=def.ti,dm=lam('#2f4228');
+    skin:(i,a,out,part,top,bot)=>{const m=Math.sin(i*2.6)*.5+.5;out[0]*=.85+.2*m;out[1]*=.85+.2*m;}}),d=Pip(sc,2.45),dm=lam('#2f4228'),WL=.3;
   for(let k=0;k<7;k++){spike(c.pel,dm,.03,.07,-.28+k*.1,.1,.0,0,.15);if(k<5)spike(c.chest,dm,.03,.07,-.15+k*.1,.095,0,0,.1);for(const z of [-1,1])if(k<5)spike(c.pel,dm,.022,.05,-.2+k*.1,.1,z*.08,z*.4,.1);}
-  const sx=c.head;for(let k=0;k<7;k++)for(const z of [-1,1]){spike(sx,wh,.009,.04,c.o.hl*.9+k*.07,-.02,z*(.05),0,PI).scale.set(1,1,1);}
+  const sx=c.head;for(let k=0;k<7;k++)for(const z of [-1,1]){spike(sx,wh,.009,.04,c.o.hl*.9+k*.07,-.02,z*(.05),0,PI);}
   for(const z of [-1,1])for(let k=0;k<6;k++)spike(c.jaw,wh,.008,.035,.1+k*.07,.01,z*.05,0,0);
+  // the water surface: the croc and the prey stand in the shallows, half under a tinted sheet
+  const wp=new T.Mesh(new T.PlaneGeometry(60,60),new T.MeshBasicMaterial({color:'#4f9a98',transparent:true,opacity:.34,depthWrite:false}));wp.rotation.x=-PI/2;wp.position.set(2,WL,0);wp.renderOrder=1;sc.add(wp);
+  const scrap=ell(sc,lam('#d8b878'),.07,.04,.05),tuft=ell(sc,lam('#efe0b4'),.05,.03,.04);
+  const RT0=1.32,RT1=2.42,R=t=>4*PI*sm(rp(t,RT0,RT1)),LAG=.09,TX0=2.11;
+  const HX=s=>TX0+.12*R(s)/(4*PI);
   return {pose(s,fx){
-    const creep=kf(s,[[0,-.15],[.5,-.05],[1.0,.35],[1.1,.78],[1.14,.8],[2.45,.8],[3.3,-.15]]),roll=kf(s,[[1.24,0],[1.4,.5],[2.4,PI*2*3.2],[2.5,PI*2*3.35]]),rollAmt=s2(s,1.2,1.3)*(1-s2(s,2.47,2.52)),hold=s2(s,1.12,1.16)*(1-s2(s,2.46,2.5));
-    const lunge=s2(s,.95,1.1),P=S.idleP(s);P.x=-.2+creep*1.25*(s<2.46?1:1)*0+(-.2+ (creep+.15)*1.0);P.x=-.2+(creep+.15);
-    const jaw=kf(s,[[.5,0],[.9,.15],[1.05,.95],[1.1,.95],[1.145,0],[1.3,.0],[2.46,.0],[2.52,.7],[2.9,.1],[3.2,0]]);
-    P.y=c.h+.06*lunge*(1-s2(s,1.15,1.3))+.01*Math.sin(s*3);P.pitch=.12*lunge*(1-s2(s,1.15,1.3))-.04*s2(s,.6,.95)*(1-lunge);P.na=.1*lunge;P.hp=.45*lunge*(1-s2(s,1.15,1.3));P.jaw=jaw;P.roll=roll*rollAmt;P.limp=.85*rollAmt;P.lt=s;P.follow=1;
-    P.gait={ph:s*9,amp:.09*win(s,.3,1.1,.2),lift:.04*win(s,.3,1.1,.2)};P.ta=0;P.tx=u=>[.0,(.35*Math.sin(s*3.2-u*5)+.35*s2(s,1.2,1.6)*(1-s2(s,2.5,3.0))*Math.sin(s*9-u*4))*Math.min(1,u*2)*(1-.5*rollAmt)];
-    c.pose(P);
-    const m=c.mouth(.82),spin=roll*rollAmt;
-    // the target: watches, is seized in the jaws, spun with the croc, released and flung, dazed, gets up
-    const b=s-T0,rel=s-2.5;let A={};
-    if(s<1.14){const bk=kf(s,[[1.0,0],[1.12,.12],[1.14,.2]]);A={dx:-bk*.5*0,pitch:0,na:.3*s2(s,.8,1.0),ear:.5*s2(s,.8,1.0),jaw:.2*s2(s,.8,1.0)};}
-    else if(s<2.5){const grab=s2(s,1.14,1.24);A={dx:m.x-2.45,dy:m.y-d.h,dz:m.z,yaw:-PI,roll:spin+.05*Math.sin(s*30),pitch:0,limp:.85,lt:s,jaw:.5,stars:0};}
-    else{const u=rp(rel,0,.6),R0=(PI*2*3.35)%(PI*2),lyi=1-s2(s,2.85,3.25),land=s2(rel,.35,.55);
-      A={dx:(.15+.7*eo(u))*(1-s2(s,2.9,3.35)),dy:(.3-d.h)*(1-eo(u))+(.3*Math.sin(PI*u))-(d.h-.14)*land*lyi*0+(-(d.h-.14))*land*lyi,dz:0,yaw:-PI,roll:(R0*(1-s2(rel,0,.45))+(-PI*.5)*s2(rel,0,.45))*lyi,limp:.9*lyi,lt:s,stars:s2(s,2.75,2.9)*(1-s2(s,3.1,3.3)),sq:.15*Math.exp(-Math.max(0,rel-.45)*12)*(rel>.45?1:0),pitch:0};}
+    const sink=s2(s,.2,.8)*(1-s2(s,1.0,1.2)),lunge=s2(s,.95,1.2),rolling=s2(s,RT0-.05,RT0+.12)*(1-s2(s,RT1-.1,RT1)),spin=R(s),b=s2(s,1.14,1.46)*(1-s2(s,2.38,2.6));
+    const P=S.idleP(s),jaw=kf(s,[[.5,0],[.9,.12],[1.05,.95],[1.18,.95],[1.22,0],[1.3,.0],[2.46,.0],[2.52,.8],[2.9,.1],[3.2,0]]);
+    P.y=c.h-.07*sink+.05*lunge*(1-s2(s,1.22,1.4))+.015*Math.sin(s*3)+.03*rolling*Math.sin(spin*2);P.pitch=.1*lunge*(1-s2(s,1.22,1.4))-.04*sink;P.na=.05*lunge;P.hp=.35*lunge*(1-s2(s,1.2,1.4));P.jaw=jaw;P.roll=spin;P.limp=.88*s2(s,1.15,1.35)*(1-s2(s,2.5,2.8));P.lt=s;P.follow=1;
+    P.gait={ph:s*9,amp:.09*win(s,.3,1.0,.2),lift:.04*win(s,.3,1.0,.2)};P.cyaw=.4*b;P.ny=.35*b;P.ta=0;P.ty=-.95*b+.15*rolling*Math.sin(spin*.5);
+    P.tx=u=>[0,(.3*Math.sin(s*3.2-u*5)*(1-b)+.35*rolling*Math.sin(s*11-u*5))*Math.min(1,u*2)];
+    // the jaw point must meet the prey (held at HX while the roll lasts): nudge the whole croc along x
+    const w=s2(s,.8,1.18)*(1-s2(s,2.55,2.9)),xg=kf(s,[[0,-.2],[.9,.5],[1.1,.8],[2.5,.8],[3.3,-.2]]);P.x=xg;c.pose(P);let m=c.mouth(.82);const fix=(HX(s)-m.x)*w;P.x=xg+fix;P.z=.1*spin/(4*PI)*w;c.pose(P);m=c.mouth(.82);
+    // the prey: seized by the shoulders, rear half lags behind the jaws, wrung along its length, head lolls, legs flail then hang limp
+    const rel=s-2.5,out=rel>0,Rp=R(s-LAG),tw=spin-Rp,y0=m.y+.04;let A;
+    if(s<1.2){const al=s2(s,.9,1.1);A={na:.5*al,ear:.8*al,hp:-.2*al,jaw:.2*al,pitch:.05*al,dx:.03*al*Math.sin(s*30)};}
+    else if(!out){const th=Math.sin(s*22)*(1-s2(s,1.2,1.5))*.5;A={dx:m.x+.34-2.45,dy:y0-d.h,dz:m.z+.04*Math.sin(Rp),roll:Rp,ctw:tw,yaw:0,na:.9+.3*Math.sin(s*13+1)*rolling,hp:.4*Math.sin(s*17)*rolling,hy:.5*Math.sin(s*9)*(.3+rolling),jaw:.55,limp:.85,lt:s,stars:0,ta:.6*Math.sin(s*12),tc:.6*Math.sin(s*7)*rolling,tx:u=>[.1*Math.sin(s*14-u*4)*rolling,.7*Math.sin(s*10-u*5)*u*(.3+.7*rolling)+.4*Math.sin(Rp)*u],bend:.25*Math.sin(s*8)*rolling,foot:[[.12*th,.1*th,0],[-.1*th,.1*th,0],[.1*th,-.05*th,0],[0,.1*th,0]]};}
+    else{const u=rp(rel,0,.6),land=s2(rel,.4,.55),ly=1-s2(s,2.85,3.25),xe=HX(2.5)+.34-2.45,fly=eo(u),ret=s2(s,2.95,3.45);
+      A={dx:(xe+.7*fly)*(1-ret),dy:((y0-d.h)*(1-fly)+.3*Math.sin(PI*u))*(1-land)+(-(d.h-.15)*land)*ly,roll:(-PI*1.5)*s2(rel,.0,.5)*ly,yaw:0,limp:.9*ly,lt:s,na:-.4*(1-land),jaw:.4*(1-land),stars:s2(s,2.75,2.9)*(1-s2(s,3.1,3.3)),sq:.15*Math.exp(-Math.max(0,rel-.5)*12)*(rel>.5?1:0),ear:.9*s2(s,2.5,2.55)*(1-s2(s,2.9,3.2)),gait:{ph:s*12,amp:.09*win(s,3.0,3.45,.1),lift:.05*win(s,3.0,3.45,.1)},follow:1};}
     d.set(s,A);
-    if(s>=1.14&&s<2.5){d.root.position.copy(m);d.root.position.y=m.y;}
-    // water: splash on the bite, foam spiral while spinning, droplets flung off tangentially
-    const a=s-1.15;if(a>0&&a<.5)fx.hit(m.clone().add(V(0,.05,0)),a,{n:8,r:.6,c:'#dff4ff',c2:'#9fd8ff'});
-    if(rollAmt>.3)for(let k=0;k<12;k++){const ang=spin+k*.52+s*8,u=fr(s*1.8+k*.19),r=.22+.45*u;fx.p(V(m.x-.2*u+.2*Math.cos(k),.14+r*Math.cos(ang)*.9,r*Math.sin(ang)),.05+.03*(1-u),.8*(1-u)*rollAmt,k%3?'#dff4ff':'#ffffff',TX.drop,false);}
-    if(rollAmt>.3)for(let k=0;k<4;k++){const u=fr(s*1.1+k/4);fx.ring(m.x-.3,.012,0,.3+1.2*u,.5*(1-u)*rollAmt,'#dff4ff');}
-    if(rollAmt>.3)for(let k=0;k<5;k++){const u=fr(s*.9+k*.21);fx.p(V(m.x-.4+.1*k,.1+.3*u,(k-2)*.15),.18+.2*u,.35*(1-u)*rollAmt,'#e8f6ff',TX.puff,false,k);}
-    if(rel>0&&rel<.5)fx.hit(m.clone().add(V(.6*eo(rel/.5),.05,0)),rel,{n:5,r:.5,c:'#dff4ff',c2:'#9fd8ff'});
-    return win(s,1.25,2.5,.1)*.16*(.5+.5*Math.sin(s*30))+(a>0&&a<.3?.5*Math.exp(-a*9):0);}};
+    // water: crown on the bite, foam and spray all through the roll, a ring and a splash where the prey lands
+    const a=s-1.2;
+    if(a>0&&a<.5){fx.hit(m.clone().add(V(0,.08,0)),a,{n:7,r:.6,c:'#dff4ff',c2:'#9fd8ff'});const u=a/.5;for(let k=0;k<4;k++){const az=k*1.57+.5;fx.p(V(m.x+Math.cos(az)*.35*eo(u),WL+.12+.25*Math.sin(PI*u*.9),m.z+Math.sin(az)*.3*eo(u)),.3+.3*u,.65*(1-u),'#f2f7f4',TX.puff,false,k);}}
+    fx.em(s,{t0:1.2,dt:.012,n:22,life:.55,pos:k=>V(m.x,WL+.05,m.z),vel:k=>V((rnd(k)-.3)*1.2,1.6+rnd(k+4)*1.4,(rnd(k+8)-.5)*2),g:9,size:(u,k)=>.05+.03*rnd(k+2),op:(u,k)=>.85*(1-u*.6),c:()=>'#e6f6ff',tx:TX.drop,add:false});
+    if(rolling>.05){
+      for(let k=0;k<14;k++){const u=fr(s*1.25+k/14),px=m.x+.1+.45*Math.cos(k*2.1)+.6*(u-.5),pz=m.z+.25*Math.sin(k*3.3+spin*.3);fx.p(V(px,WL+.02+.36*u,pz),.42+.6*u,.8*(1-u)*rolling,'#f2f7f4',TX.puff,false,k);}
+      // spray thrown sideways, to whichever side the flank is going up
+      fx.em(s,{t0:RT0,dt:.025,n:46,life:.55,pos:k=>V(m.x+.25*rnd(k)-.1+.3*Math.sin(k),WL,m.z+.12*(rnd(k+5)-.5)),vel:k=>{const dir=Math.cos(R(RT0+k*.025))>0?1:-1;return V((rnd(k+1)-.5)*.9,1.4+rnd(k+3)*1.8,dir*(.9+rnd(k+7)*1.4));},g:8,size:(u,k)=>.05+.035*rnd(k+9),op:(u,k)=>.9*(1-u*.5)*rolling,c:(u,k)=>k%3?'#eaf8ff':'#ffffff',tx:TX.drop,add:false});
+      for(let k=0;k<4;k++){const u=fr(s*1.1+k/4);fx.ring(m.x-.2+.3*k,WL+.01,m.z,.3+1.3*u,.5*(1-u)*rolling,'#e8f6f4');}
+      for(let k=0;k<6;k++){const u=fr(s*.8+k*.17);fx.p(V(m.x-.4+.15*k,WL+.02+.08*u,(k-2.5)*.1),.3+.3*u,.28*(1-u)*rolling,'#7a6d4a',TX.puff,false,k);}}
+    // the torn scrap of hide and tufts, flung from the jaws at the release
+    const ts=s-2.5;scrap.visible=tuft.visible=ts>0&&ts<.9;if(scrap.visible){const g=4.6;scrap.position.set(m.x+.3+1.3*ts,Math.max(WL,m.y+.05+1.3*ts-.5*g*ts*ts),m.z+.35*ts);scrap.rotation.set(ts*14,ts*9,0);tuft.position.set(m.x+.15+.7*ts,Math.max(WL,m.y+.12+1.7*ts-.5*g*ts*ts),m.z-.3*ts);tuft.rotation.set(ts*8,ts*5,1);for(let k=0;k<4;k++)fx.p(V(m.x+.2+.8*ts*(.6+.2*k),m.y+.1+(1.4+.3*k)*ts-.5*g*ts*ts,m.z+(k-1.5)*.15*ts),.1,.7*(1-ts/.9),'#efe0b4',TX.puff,false,k);}
+    // splash where the prey comes down
+    const lt=rel-.5;if(lt>0&&lt<.6){const lx=HX(2.5)+1.04;fx.hit(V(lx,WL+.05,m.z),lt,{n:6,r:.5,c:'#dff4ff',c2:'#9fd8ff'});const u=lt/.6;fx.ring(lx,WL+.01,m.z,.3+1.4*eo(u),.6*(1-u),'#e8f6f4');for(let k=0;k<4;k++)fx.p(V(lx+Math.cos(k*1.6)*.35*eo(u),WL+.1+.2*u,Math.sin(k*1.6)*.3*eo(u)),.3+.25*u,.55*(1-u),'#f2f7f4',TX.puff,false,k);}
+    return .22*rolling*(.5+.5*Math.sin(s*30))+(a>0&&a<.3?.5*Math.exp(-a*9):0);}};
 };
 // 14 ------------------------------------------------------------------------------------------ ink cloud
 SIGB.ink_cloud=function(sc,def){
