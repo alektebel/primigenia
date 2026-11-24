@@ -115,50 +115,80 @@ SIGB.ground_pound=function(sc,def){
     if(b>.78&&b<1.2){const u=(b-.78)/.42;for(let k=0;k<5;k++)fx.p(V(2.7+.55+Math.cos(k*1.3)*.4*eo(u),.08+.1*u,Math.sin(k*1.3)*.3*eo(u)),.2+.2*u,.4*(1-u),'#c9b48a',TX.puff,false,k);}
     return Math.exp(-Math.pow((s-TC-.05)/.12,2))*1.0+(s>TC&&s<TC+.6?.2*Math.sin(s*50)*Math.exp(-(s-TC)*5):0);}};
 };
-// 13 ------------------------------------------------------------------------------------------ death roll (Nile/saltwater crocodile; Fish et al. 2007, J. Exp. Zool. 307A)
-// The croc clamps the prey at the shoulders, pins its own legs against the body, bows head and tail to opposite sides (C shape) and rolls along its own long axis in the water.
-// The jaws turn first; the prey's rear half lags (drag + inertia), so the prey is wrung and dragged, not spun like a propeller. Foam and spray at the surface; after two rolls the
-// jaws open, a scrap of hide tears free and the prey is flung off, dazed.
+// 13 ------------------------------------------------------------------------------------------ death roll (crocodiles; Fish et al. 2007, J. Exp. Biol. 210)
+// References studied (frames in ~/Desarrollo/cpore-refs/videos, never in the repo): croc-KCb7tcoo6vs (Nile croc + wildebeest, Mara River, real time), croc-jSWRkv2e53M (alligator, high-speed:
+// belly flashes pale as the flank comes out of the water, the surface heaps up along the body and sheets of spray leave tangentially), croc-wN1eQ9sfuk4 (foam bursts).
+// Measured in the Mara footage: ~1.7 s per turn for an adult in a crowd, pale (belly / prey) and dark (back) phases alternate, the prey surfaces and goes under again, brown-white churn around the pair.
+// Here: the croc clamps the shoulders, tucks its legs, bows head and tail to opposite sides and rolls about its long axis at the water line (2 turns, ~0.55 s/turn, speed-ramped so the loop fits;
+// the rate is inside Fish et al. but faster than the adult footage). The prey hangs from the jaws on a cone that swings round the axis with a lag (inertia + drag) and is wrung along its length.
+// The water is a live displaced surface: heap along the body, radiating waves that keep going after the stop, foam patches; spray is thrown tangentially from the waterline.
 SIGB.death_roll=function(sc,def){
-  const wh=lam('#f4f1e2'),c=Quad(sc,{col:'#4c6b3a',belly:'#cfc88a',dark:'#2c4026',x0:-.2,sl:.95,pr:[.42,.12,.17],cr:[.36,.12,.16],legU:.13,legL:.15,lr:.055,sprawl:1.0,hip:.7,nl:.08,ns:3,nr0:.12,nr1:.1,na0:.0,nc0:0,hlev:0,hfol:0,hl:.19,hh:.08,hw:.11,sn:.5,snh:.05,snw:.075,tl:1.35,ts:14,tr0:.11,tr1:.012,ta0:.02,eye:.03,eyeY:1.0,toeL:.07,
-    skin:(i,a,out,part,top,bot)=>{const m=Math.sin(i*2.6)*.5+.5;out[0]*=.85+.2*m;out[1]*=.85+.2*m;}}),d=Pip(sc,2.45),dm=lam('#2f4228'),WL=.3;
+  const wh=lam('#f4f1e2'),c=Quad(sc,{col:'#4a5c36',belly:'#d8d09a',dark:'#2c4026',x0:-.2,sl:.95,pr:[.42,.12,.17],cr:[.36,.12,.16],legU:.13,legL:.15,lr:.055,sprawl:1.0,hip:.7,nl:.08,ns:3,nr0:.12,nr1:.1,na0:.0,nc0:0,hlev:0,hfol:0,hl:.19,hh:.08,hw:.11,sn:.5,snh:.05,snw:.075,tl:1.35,ts:14,tr0:.11,tr1:.012,ta0:.02,eye:.03,eyeY:1.0,toeL:.07,
+    skin:(i,a,out,part,top,bot)=>{const m=Math.sin(i*2.6)*.5+.5;out[0]*=.85+.2*m;out[1]*=.85+.2*m;}}),d=Pip(sc,2.45),dm=lam('#2f4228'),WL=.31;
   for(let k=0;k<7;k++){spike(c.pel,dm,.03,.07,-.28+k*.1,.1,.0,0,.15);if(k<5)spike(c.chest,dm,.03,.07,-.15+k*.1,.095,0,0,.1);for(const z of [-1,1])if(k<5)spike(c.pel,dm,.022,.05,-.2+k*.1,.1,z*.08,z*.4,.1);}
   const sx=c.head;for(let k=0;k<7;k++)for(const z of [-1,1]){spike(sx,wh,.009,.04,c.o.hl*.9+k*.07,-.02,z*(.05),0,PI);}
   for(const z of [-1,1])for(let k=0;k<6;k++)spike(c.jaw,wh,.008,.035,.1+k*.07,.01,z*.05,0,0);
-  // the water surface: the croc and the prey stand in the shallows, half under a tinted sheet
-  const wp=new T.Mesh(new T.PlaneGeometry(60,60),new T.MeshBasicMaterial({color:'#4f9a98',transparent:true,opacity:.34,depthWrite:false}));wp.rotation.x=-PI/2;wp.position.set(2,WL,0);wp.renderOrder=1;sc.add(wp);
   const scrap=ell(sc,lam('#d8b878'),.07,.04,.05),tuft=ell(sc,lam('#efe0b4'),.05,.03,.04);
-  const RT0=1.32,RT1=2.42,R=t=>4*PI*sm(rp(t,RT0,RT1)),LAG=.09,TX0=2.11;
-  const HX=s=>TX0+.12*R(s)/(4*PI);
+  const RT0=1.3,RT1=2.5,RAMP=.22,WROLL=4*PI/(RT1-RT0-RAMP),R=t=>{const u=t-RT0,T=RT1-RT0;if(u<=0)return 0;if(u>=T)return 4*PI;const a=RAMP;let r;if(u<a)r=.5*WROLL*u*u/a;else if(u<T-a)r=WROLL*(.5*a+(u-a));else{const v=T-u;r=4*PI-.5*WROLL*v*v/a;}return r;},LAG=.12,TX0=2.11,HX=s=>TX0+.12*R(s)/(4*PI),ZC=t=>.1*R(t)/(4*PI);
+  // live water surface: non-uniform grid (fine around the action, coarse out to the horizon), heights + foam colours rebuilt each frame from the loop time
+  const gx=[],gz=[];{for(let x=-30;x<-1.2;x+=3.5)gx.push(x);for(let x=-1.2;x<=5.2;x+=.1)gx.push(x);for(let x=8;x<=34;x+=3.5)gx.push(x);for(let z=-26;z<-1.9;z+=3.5)gz.push(z);for(let z=-1.9;z<=1.9;z+=.1)gz.push(z);for(let z=5;z<=26;z+=3.5)gz.push(z);}
+  const NX=gx.length,NZ=gz.length,pos=new Float32Array(NX*NZ*3),colA=new Float32Array(NX*NZ*3),idx=[];
+  for(let j=0;j<NZ;j++)for(let i=0;i<NX;i++){const k=(j*NX+i)*3;pos[k]=gx[i];pos[k+1]=WL;pos[k+2]=gz[j];}
+  for(let j=0;j<NZ-1;j++)for(let i=0;i<NX-1;i++){const a=j*NX+i,b=a+1,cc=a+NX,e=cc+1;idx.push(a,cc,b,b,cc,e);}
+  const wg=new T.BufferGeometry();wg.setAttribute('position',new T.BufferAttribute(pos,3));wg.setAttribute('color',new T.BufferAttribute(colA,3));wg.setIndex(idx);
+  const wmesh=new T.Mesh(wg,new T.MeshLambertMaterial({vertexColors:true,transparent:true,opacity:.42,depthWrite:false}));wmesh.renderOrder=1;wmesh.frustumCulled=false;sc.add(wmesh);
+  const WD=new T.Color('#2f6a6c'),WF=new T.Color('#ece6d4'),WB=new T.Color('#9a8c68'),tmpC=new T.Color();
+  const wave=(x,z,s,rollI,stopI,lc)=>{let h=0,f=0;
+    const ring=(cx,cz,t0,A,life)=>{const a=s-t0;if(a<0||a>life)return;const r=Math.hypot(x-cx,z-cz),rf=1.5*a+.05,e=Math.exp(-a/(life*.35));const q=(r-rf)/.28;if(Math.abs(q)<3){const w=Math.exp(-q*q);h+=A*e*w*Math.cos((r-rf)*17);f+=.35*e*w;}};
+    ring(lc.x,lc.z,1.2,.05,1.6);ring(HX(2.5)+1.04,0,3.0,.045,1.4);
+    // heap along the body and radiating waves from the roll, which die away slowly after it stops
+    const dx=x-lc.x,dz=z-lc.z,r=Math.hypot(dx*.8,dz),A=.075*(rollI+.55*stopI);
+    if(A>.002){h+=A*Math.sin(17*r-13*s)*Math.exp(-r/1.5);}
+    const hx=Math.exp(-Math.pow((dx+.35)/.95,2)),hz=Math.exp(-Math.pow((dz-.1*Math.sin(R(s)))/.3,2));h+=.075*rollI*hx*hz;f+=rollI*hx*(.45*hz+.3*Math.exp(-Math.pow(dz/.8,2)))*(.6+.4*Math.sin(x*9+z*7+s*11));
+    h+=.006*Math.sin(x*3.1+s*1.3)*Math.sin(z*2.3-s*.9);return [h,Math.min(1,f)];};
+  // my own sprite pools (foam clouds, droplets): independent of the shared fx pools
+  const mkPool=(n,tex,order)=>{const a=[];for(let k=0;k<n;k++){const sp=new T.Sprite(new T.SpriteMaterial({map:tex,transparent:true,depthWrite:false,fog:false}));sp.visible=false;sp.renderOrder=order;sc.add(sp);a.push(sp);}let u=0;return {begin(){u=0;},p(pos_,size,op,col){if(op<=.004||u>=a.length)return;const sp=a[u++];sp.visible=true;sp.position.copy(pos_);sp.scale.set(size,size,1);sp.material.opacity=Math.min(1,op);sp.material.color.set(col);},end(){for(let k=u;k<a.length;k++)a[k].visible=false;}};};
+  const foam=mkPool(84,TX.puff,3),drops=mkPool(70,TX.drop,3);
   return {pose(s,fx){
-    const sink=s2(s,.2,.8)*(1-s2(s,1.0,1.2)),lunge=s2(s,.95,1.2),rolling=s2(s,RT0-.05,RT0+.12)*(1-s2(s,RT1-.1,RT1)),spin=R(s),b=s2(s,1.14,1.46)*(1-s2(s,2.38,2.6));
+    const sink=s2(s,.2,.8)*(1-s2(s,1.0,1.2)),lunge=s2(s,.95,1.2),rolling=s2(s,RT0-.05,RT0+.12)*(1-s2(s,RT1-.12,RT1)),spin=R(s),b=s2(s,1.14,1.5)*(1-s2(s,2.4,2.65)),stop=s2(s,RT1-.05,RT1+.1)*(1-s2(s,3.0,3.5));
     const P=S.idleP(s),jaw=kf(s,[[.5,0],[.9,.12],[1.05,.95],[1.18,.95],[1.22,0],[1.3,.0],[2.46,.0],[2.52,.8],[2.9,.1],[3.2,0]]);
-    P.y=c.h-.07*sink+.05*lunge*(1-s2(s,1.22,1.4))+.015*Math.sin(s*3)+.03*rolling*Math.sin(spin*2);P.pitch=.1*lunge*(1-s2(s,1.22,1.4))-.04*sink;P.na=.05*lunge;P.hp=.35*lunge*(1-s2(s,1.2,1.4));P.jaw=jaw;P.roll=spin;P.limp=.88*s2(s,1.15,1.35)*(1-s2(s,2.5,2.8));P.lt=s;P.follow=1;
-    P.gait={ph:s*9,amp:.09*win(s,.3,1.0,.2),lift:.04*win(s,.3,1.0,.2)};P.cyaw=.4*b;P.ny=.35*b;P.ta=0;P.ty=-.95*b+.15*rolling*Math.sin(spin*.5);
-    P.tx=u=>[0,(.3*Math.sin(s*3.2-u*5)*(1-b)+.35*rolling*Math.sin(s*11-u*5))*Math.min(1,u*2)];
-    // the jaw point must meet the prey (held at HX while the roll lasts): nudge the whole croc along x
-    const w=s2(s,.8,1.18)*(1-s2(s,2.55,2.9)),xg=kf(s,[[0,-.2],[.9,.5],[1.1,.8],[2.5,.8],[3.3,-.2]]);P.x=xg;c.pose(P);let m=c.mouth(.82);const fix=(HX(s)-m.x)*w;P.x=xg+fix;P.z=.1*spin/(4*PI)*w;c.pose(P);m=c.mouth(.82);
-    // the prey: seized by the shoulders, rear half lags behind the jaws, wrung along its length, head lolls, legs flail then hang limp
-    const rel=s-2.5,out=rel>0,Rp=R(s-LAG),tw=spin-Rp,y0=m.y+.04;let A;
-    if(s<1.2){const al=s2(s,.9,1.1);A={na:.5*al,ear:.8*al,hp:-.2*al,jaw:.2*al,pitch:.05*al,dx:.03*al*Math.sin(s*30)};}
-    else if(!out){const th=Math.sin(s*22)*(1-s2(s,1.2,1.5))*.5;A={dx:m.x+.34-2.45,dy:y0-d.h,dz:m.z+.04*Math.sin(Rp),roll:Rp,ctw:tw,yaw:0,na:.9+.3*Math.sin(s*13+1)*rolling,hp:.4*Math.sin(s*17)*rolling,hy:.5*Math.sin(s*9)*(.3+rolling),jaw:.55,limp:.85,lt:s,stars:0,ta:.6*Math.sin(s*12),tc:.6*Math.sin(s*7)*rolling,tx:u=>[.1*Math.sin(s*14-u*4)*rolling,.7*Math.sin(s*10-u*5)*u*(.3+.7*rolling)+.4*Math.sin(Rp)*u],bend:.25*Math.sin(s*8)*rolling,foot:[[.12*th,.1*th,0],[-.1*th,.1*th,0],[.1*th,-.05*th,0],[0,.1*th,0]]};}
-    else{const u=rp(rel,0,.6),land=s2(rel,.4,.55),ly=1-s2(s,2.85,3.25),xe=HX(2.5)+.34-2.45,fly=eo(u),ret=s2(s,2.95,3.45);
-      A={dx:(xe+.7*fly)*(1-ret),dy:((y0-d.h)*(1-fly)+.3*Math.sin(PI*u))*(1-land)+(-(d.h-.15)*land)*ly,roll:(-PI*1.5)*s2(rel,.0,.5)*ly,yaw:0,limp:.9*ly,lt:s,na:-.4*(1-land),jaw:.4*(1-land),stars:s2(s,2.75,2.9)*(1-s2(s,3.1,3.3)),sq:.15*Math.exp(-Math.max(0,rel-.5)*12)*(rel>.5?1:0),ear:.9*s2(s,2.5,2.55)*(1-s2(s,2.9,3.2)),gait:{ph:s*12,amp:.09*win(s,3.0,3.45,.1),lift:.05*win(s,3.0,3.45,.1)},follow:1};}
+    P.y=c.h-.06*sink+.05*lunge*(1-s2(s,1.22,1.4))+.015*Math.sin(s*3)+.025*rolling*Math.sin(spin*2);P.pitch=.1*lunge*(1-s2(s,1.22,1.4))-.04*sink;P.na=.05*lunge;P.hp=.35*lunge*(1-s2(s,1.2,1.4));P.jaw=jaw;P.roll=spin;P.limp=.9*s2(s,1.15,1.35)*(1-s2(s,2.5,2.8));P.lt=s;P.follow=1;
+    P.gait={ph:s*9,amp:.09*win(s,.3,1.0,.2),lift:.04*win(s,.3,1.0,.2)};P.cyaw=.55*b;P.ny=.4*b;P.ta=0;P.ty=-1.3*b+.2*rolling*Math.sin(spin*.5);
+    P.tx=u=>[0,(.3*Math.sin(s*3.2-u*5)*(1-b)+.4*rolling*Math.sin(s*11-u*5))*Math.min(1,u*2)];
+    const w=s2(s,.8,1.18)*(1-s2(s,2.55,2.9)),xg=kf(s,[[0,-.2],[.9,.5],[1.1,.8],[2.5,.8],[3.3,-.2]]);P.x=xg;c.pose(P);let m=c.mouth(.82);P.x=xg+(HX(s)-m.x)*w;P.z=ZC(s)*w;c.pose(P);m=c.mouth(.82);
+    // the prey: seized by the shoulders, the body hangs from the jaws on a cone that swings round the axis behind the croc (lag), twisted along its length, head and limbs loose
+    const rel=s-2.5,Rp=R(s-LAG),Rw=Rp-2*PI*Math.round(Rp/(2*PI)),tw=spin-Rp,sw=rolling*(1-.0);let A;
+    const al=(.22+.5*rolling)*(1-s2(rel,0,.3)),be=R(s-.22)*.8+.6,dd=V(Math.cos(al),Math.max(-.12,Math.sin(al)*(.3+.7*Math.cos(be))),Math.sin(al)*Math.sin(be)).normalize(),F=dd.clone().negate(),anchor=m.clone().add(V(0,.04,0)),rootH=anchor.clone().addScaledVector(dd,.34);
+    if(s<1.2){const a0=s2(s,.9,1.1);A={na:.5*a0,ear:.8*a0,hp:-.2*a0,jaw:.2*a0,pitch:.05*a0,dx:.03*a0*Math.sin(s*30)};}
+    else{const th=Math.sin(s*22)*(1-s2(s,1.2,1.5))*.5,out=rel>0,u=out?rp(rel,0,.6):0,fly=eo(u),land=s2(rel,.4,.55),ly=1-s2(s,2.85,3.25),ret=s2(s,2.95,3.45),q=out?s2(rel,0,.5):0;
+      const rx=rootH.x+(out?.7*fly:0),ry=rootH.y+(out?.3*Math.sin(PI*u)-(rootH.y-.15)*land*ly:0),rz=rootH.z;
+      A={dx:(rx-2.45)*(1-ret)+0*ret,dy:(ry-d.h)*(1-ret*.0)-(out?0:0),dz:rz*(1-ret),yaw:Math.atan2(-F.z,F.x)-PI,pitch:Math.asin(clamp(F.y,-1,1)),roll:(Rw*(1-q)+(-PI*1.5)*q*ly),ctw:out?0:tw,
+        na:out?-.4*(1-land):.9+.3*Math.sin(s*13+1)*sw,hp:.4*Math.sin(s*17)*sw,hy:.5*Math.sin(s*9)*(.3+sw),jaw:out?.4*(1-land):.55,limp:out?.9*ly:.88,lt:s,
+        ta:.6*Math.sin(s*12)*(out?0:1),tc:.6*Math.sin(s*7)*sw,tx:u2=>[.1*Math.sin(s*14-u2*4)*sw,.8*Math.sin(s*10-u2*5)*u2*(.3+.7*sw)+.5*Math.sin(Rp)*u2*sw],bend:.3*Math.sin(s*8)*sw,
+        foot:[[.12*th+.06*Math.sin(s*15)*sw,.1*th,.05*Math.sin(s*12)*sw],[-.1*th,.1*th+.05*Math.sin(s*17+1)*sw,0],[.1*th,-.05*th+.05*Math.sin(s*14)*sw,0],[.05*Math.sin(s*13)*sw,.1*th,0]],
+        stars:out?s2(s,2.75,2.9)*(1-s2(s,3.1,3.3)):0,sq:out?.15*Math.exp(-Math.max(0,rel-.5)*12)*(rel>.5?1:0):0,ear:out?.9*s2(s,2.5,2.55)*(1-s2(s,2.9,3.2)):0,gait:{ph:s*12,amp:.09*win(s,3.0,3.45,.1),lift:.05*win(s,3.0,3.45,.1)},follow:1};
+      if(ret>0){A.yaw=A.yaw*(1-ret);A.pitch*=(1-ret);}}
     d.set(s,A);
-    // water: crown on the bite, foam and spray all through the roll, a ring and a splash where the prey lands
+    // water surface rebuild
+    const lc={x:m.x-.3,z:m.z},rollI=rolling;
+    for(let j=0;j<NZ;j++)for(let i=0;i<NX;i++){const k=(j*NX+i)*3,x=gx[i],z=gz[j];let h=0,f=0;if(x>-1.3&&x<5.3&&z>-2&&z<2){[h,f]=wave(x,z,s,rollI,stop,lc);}pos[k+1]=WL+h;tmpC.copy(WD).lerp(WB,.25*Math.min(1,f*1.5)).lerp(WF,Math.min(1,f*(.8+.3*Math.max(0,h*14))));colA[k]=tmpC.r;colA[k+1]=tmpC.g;colA[k+2]=tmpC.b;}
+    wg.attributes.position.needsUpdate=true;wg.attributes.color.needsUpdate=true;wg.computeVertexNormals();
+    // foam clouds, droplets thrown tangentially from the waterline, mist
+    foam.begin();drops.begin();
     const a=s-1.2;
-    if(a>0&&a<.5){fx.hit(m.clone().add(V(0,.08,0)),a,{n:7,r:.6,c:'#dff4ff',c2:'#9fd8ff'});const u=a/.5;for(let k=0;k<4;k++){const az=k*1.57+.5;fx.p(V(m.x+Math.cos(az)*.35*eo(u),WL+.12+.25*Math.sin(PI*u*.9),m.z+Math.sin(az)*.3*eo(u)),.3+.3*u,.65*(1-u),'#f2f7f4',TX.puff,false,k);}}
-    fx.em(s,{t0:1.2,dt:.012,n:22,life:.55,pos:k=>V(m.x,WL+.05,m.z),vel:k=>V((rnd(k)-.3)*1.2,1.6+rnd(k+4)*1.4,(rnd(k+8)-.5)*2),g:9,size:(u,k)=>.05+.03*rnd(k+2),op:(u,k)=>.85*(1-u*.6),c:()=>'#e6f6ff',tx:TX.drop,add:false});
-    if(rolling>.05){
-      for(let k=0;k<14;k++){const u=fr(s*1.25+k/14),px=m.x+.1+.45*Math.cos(k*2.1)+.6*(u-.5),pz=m.z+.25*Math.sin(k*3.3+spin*.3);fx.p(V(px,WL+.02+.36*u,pz),.42+.6*u,.8*(1-u)*rolling,'#f2f7f4',TX.puff,false,k);}
-      // spray thrown sideways, to whichever side the flank is going up
-      fx.em(s,{t0:RT0,dt:.025,n:46,life:.55,pos:k=>V(m.x+.25*rnd(k)-.1+.3*Math.sin(k),WL,m.z+.12*(rnd(k+5)-.5)),vel:k=>{const dir=Math.cos(R(RT0+k*.025))>0?1:-1;return V((rnd(k+1)-.5)*.9,1.4+rnd(k+3)*1.8,dir*(.9+rnd(k+7)*1.4));},g:8,size:(u,k)=>.05+.035*rnd(k+9),op:(u,k)=>.9*(1-u*.5)*rolling,c:(u,k)=>k%3?'#eaf8ff':'#ffffff',tx:TX.drop,add:false});
-      for(let k=0;k<4;k++){const u=fr(s*1.1+k/4);fx.ring(m.x-.2+.3*k,WL+.01,m.z,.3+1.3*u,.5*(1-u)*rolling,'#e8f6f4');}
-      for(let k=0;k<6;k++){const u=fr(s*.8+k*.17);fx.p(V(m.x-.4+.15*k,WL+.02+.08*u,(k-2.5)*.1),.3+.3*u,.28*(1-u)*rolling,'#7a6d4a',TX.puff,false,k);}}
+    if(a>0&&a<.6){const u=a/.6;for(let k=0;k<6;k++){const az=k*1.05+.5;foam.p(V(m.x+Math.cos(az)*.4*eo(u),WL+.1+.28*Math.sin(PI*u*.9),m.z+Math.sin(az)*.35*eo(u)),.4+.45*u,.75*(1-u),'#efe9d9');}}
+    const cx=HX(s)-.25,cz=ZC(s);
+    for(let k=0;k<30;k++){const u=fr(s*.9+k*.137),an=k*2.4+s*(1.5+rolling*3),rx=.55+.55*rnd(k),rz=.3+.3*rnd(k+3);const e=Math.max(rollI,stop*.5)*(1-.0);foam.p(V(cx+Math.cos(an)*rx-.1*u,WL+.03+.1*u,cz+Math.sin(an)*rz),.3+.3*rnd(k+5)+.2*u,.4*e*(1-u*.7),k%3?'#efe9d9':'#b9a77f');}
+    for(let k=0;k<14;k++){const u=fr(s*1.2+k/14);foam.p(V(m.x+.2*Math.cos(k*2.3)-.5*u,WL+.1+.5*u,m.z+.3*Math.sin(k*3.1+spin)),.3+.5*u,.45*rollI*(1-u),'#f3efe4');}
+    for(let k=0;k<110;k++){const tb=RT0+k*.012,ag=s-tb;if(ag<0||ag>.6)continue;const om=(R(tb+.01)-R(tb-.01))/.02,pw=clamp(om/WROLL,0,1.1),sd=(k%2)?1:-1,x0=HX(tb)-.85*rnd(k+11)+.25,z0=ZC(tb)+sd*.15,vy=(1.2+1.8*rnd(k+3))*(.4+.6*pw),vz=sd*(.7+1.7*rnd(k+7))*(.4+.6*pw),vx=(rnd(k+1)-.5)*.9;
+      const px=x0+vx*ag,py=WL+vy*ag-4.5*9.8*0+(-.5*9*ag*ag)+.02,pz=z0+vz*ag;if(py<WL-.02)continue;drops.p(V(px,py,pz),.045+.03*rnd(k+9),.9*(1-ag/.75),'#e6f2f2');}
+    // droplets after the bite, and where the prey comes down
+    for(let k=0;k<26;k++){const ag=s-(1.2+k*.01);if(ag<0||ag>.55)continue;const px=m.x+(rnd(k)-.3)*1.2*ag,py=WL+.05+(1.6+rnd(k+4)*1.4)*ag-4.5*ag*ag,pz=m.z+(rnd(k+8)-.5)*2*ag;if(py>WL-.02)drops.p(V(px,py,pz),.05+.03*rnd(k+2),.85*(1-ag/.6),'#e6f2f2');}
+    const lt=rel-.5,lx=HX(2.5)+1.04;if(lt>0&&lt<.7){const u=lt/.7;for(let k=0;k<5;k++)foam.p(V(lx+Math.cos(k*1.3)*.4*eo(u),WL+.1+.3*Math.sin(PI*Math.min(1,u*1.2)),Math.sin(k*1.3)*.35*eo(u)),.4+.45*u,.7*(1-u),'#efe9d9');for(let k=0;k<20;k++){const ag=lt-k*.008;if(ag<0||ag>.5)continue;drops.p(V(lx+(rnd(k)-.5)*1.1*ag,WL+(1.5+rnd(k+4)*1.5)*ag-4.5*ag*ag,(rnd(k+8)-.5)*1.5*ag),.05+.03*rnd(k+2),.85*(1-ag/.55),'#e6f2f2');}}
+    foam.end();drops.end();
+    if(a>0&&a<.5)fx.hit(m.clone().add(V(0,.08,0)),a,{n:7,r:.6,c:'#dff4ff',c2:'#9fd8ff'});
     // the torn scrap of hide and tufts, flung from the jaws at the release
     const ts=s-2.5;scrap.visible=tuft.visible=ts>0&&ts<.9;if(scrap.visible){const g=4.6;scrap.position.set(m.x+.3+1.3*ts,Math.max(WL,m.y+.05+1.3*ts-.5*g*ts*ts),m.z+.35*ts);scrap.rotation.set(ts*14,ts*9,0);tuft.position.set(m.x+.15+.7*ts,Math.max(WL,m.y+.12+1.7*ts-.5*g*ts*ts),m.z-.3*ts);tuft.rotation.set(ts*8,ts*5,1);for(let k=0;k<4;k++)fx.p(V(m.x+.2+.8*ts*(.6+.2*k),m.y+.1+(1.4+.3*k)*ts-.5*g*ts*ts,m.z+(k-1.5)*.15*ts),.1,.7*(1-ts/.9),'#efe0b4',TX.puff,false,k);}
-    // splash where the prey comes down
-    const lt=rel-.5;if(lt>0&&lt<.6){const lx=HX(2.5)+1.04;fx.hit(V(lx,WL+.05,m.z),lt,{n:6,r:.5,c:'#dff4ff',c2:'#9fd8ff'});const u=lt/.6;fx.ring(lx,WL+.01,m.z,.3+1.4*eo(u),.6*(1-u),'#e8f6f4');for(let k=0;k<4;k++)fx.p(V(lx+Math.cos(k*1.6)*.35*eo(u),WL+.1+.2*u,Math.sin(k*1.6)*.3*eo(u)),.3+.25*u,.55*(1-u),'#f2f7f4',TX.puff,false,k);}
     return .22*rolling*(.5+.5*Math.sin(s*30))+(a>0&&a<.3?.5*Math.exp(-a*9):0);}};
 };
 // 14 ------------------------------------------------------------------------------------------ ink cloud
