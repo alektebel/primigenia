@@ -1,6 +1,6 @@
 """Graph-of-Thoughts lore council (A22), world-parametric.
 
-Unit of thought = one causal chain:  trait <- why ... <- world fact(s) -> skill (+ weakness).
+Unit of thought = one causal chain:  trait <- why ... <- world fact(s) -> skill NAME and ROLE with a plain-language behaviour (+ weakness).
 Operations (each step is resumable; outputs in <runs>/got/):
   1 GENERATE   advisors write chains for every creature (JSON)
   2 AGGREGATE  per creature, merge the candidate chains into the best distinct ones (combining links, keeping provenance)
@@ -35,7 +35,7 @@ BASE = CANON + NOTES + "\n\n# THE WORLD CANON (cite facts by id)\n" + PLANET + "
 CHAIN_SCHEMA = """{"creature": str, "trait": str (the observable trait, 3-8 words),
  "links": [str, ...] (the 'why' steps from the trait down to the root, 2-4 steps, each one short and causal),
  "roots": ["F3", ...] (world fact ids from the canon),
- "skill": {"name": str, "role": "Basic|Engage|Poke|Control|Defence|Signature|Passive|Social", "effect": str (what it does in play, with a number)},
+ "skill": {"name": str, "role": "Basic|Engage|Poke|Control|Defence|Signature|Passive|Social", "effect": str (what the creature does, in plain words: a behaviour the player can see and answer; NEVER numbers, turns, percentages, seconds, metres or any game stats: moves and numbers are designed later in the game labs)},
  "weakness": str (how the player can exploit it), "observe": [str, str, str] (three things the player must SEE to reveal the chain),
  "journal": str (one terse, curious line),
  "references": [{"author": "Family, G.", "year": int, "title": str, "venue": str}] (OPTIONAL, 0-2 real published works behind the biology; only if you are sure they exist)}"""
@@ -148,9 +148,9 @@ def aggregate(gen):
 
 
 JUDGES = {"physicist": "causality and physics: does every link follow from the previous one and from the cited world facts?",
-          "skeptic": "honesty: is anything arbitrary ('because it looks cool'), are numbers plausible, is there a better contrarian cause?",
+          "skeptic": "honesty: is anything arbitrary ('because it looks cool'), are the PLANET numbers plausible, is there a better contrarian cause? (game numbers on skills are forbidden)",
           "astrobio": "biological plausibility for THIS creature in THIS world: does selection favour it, is the physiology/energy budget possible, what is the closest real Earth analogue (name it, cite author/year if known, else say unverified)? Where the chemistry or physics is speculative say 'highly speculative' and grade honestly.",
-          "designer": "play: is the skill fun, readable and balanced in its role, is the weakness exploitable, are the 3 observe steps visible in a 3D game?"}
+          "designer": "play: is the skill behaviour fun and readable (judge only the behaviour: numbers, turns and percentages are NOT the council's job, flag them as an error if present), is the weakness exploitable, are the 3 observe steps visible in a 3D game?"}
 if JUDGE_SET: JUDGES = {k: v for k, v in JUDGES.items() if k in JUDGE_SET}
 
 

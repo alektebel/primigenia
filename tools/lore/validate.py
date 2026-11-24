@@ -8,7 +8,7 @@ Exit 1 on errors; warnings (unresolved relation targets of draft creatures) do n
 import argparse, os, sys
 import jsonschema
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from lorelib import ROOT, load, creature_files, flora_files
+from lorelib import ROOT, load, creature_files, flora_files, has_game_numbers
 
 
 def _path(err):
@@ -100,6 +100,9 @@ def validate_all(root):
                 if sk in skill_ids: errors.append(f"{fn}: {base}.skill.id: duplicate skill id '{sk}' (also in {skill_ids[sk]})")
                 skill_ids.setdefault(sk, fn)
                 if not sk.startswith(cid + "."): errors.append(f"{fn}: {base}.skill.id: skill id '{sk}' is not prefixed by '{cid}.'")
+            skx = ch.get("skill", {})
+            if has_game_numbers(skx.get("effect", "")):
+                warnings.append(f"{fn}: {base}.skill: game numbers in skill text (digits with %/turns/s/m) ; skills are name + role + plain behaviour (A102.3)")
             pl = ch.get("plausibility", {})
             for k, a in enumerate(pl.get("analogues", [])):
                 check_refs(fn, f"{base}.plausibility.analogues[{k}].refs", a.get("refs", []))

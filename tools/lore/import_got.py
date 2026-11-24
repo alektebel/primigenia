@@ -9,7 +9,7 @@ Never overwrites a creature whose status is reviewed or canon; drafts are merged
 """
 import argparse, datetime, glob, json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from lorelib import ROOT, load, dump, slug
+from lorelib import ROOT, load, dump, slug, behaviour_only
 
 ROLES = {"Basic", "Engage", "Poke", "Control", "Defence", "Signature", "Passive", "Social"}
 KINDS = {"predation", "prey", "convergent", "opposite", "symbiosis", "mimicry", "rivalry", "counter", "cousin"}
@@ -98,7 +98,7 @@ def convert_chain(cid, n, ch, scores, idx, total, run, date, refs_out=None):
     out = {"id": f"{cid}.c{n}", "trait": str(ch["trait"]),
            "links": [str(x) for x in (ch.get("links") or [])][:5] or ["(no links recorded)"],
            "roots": [r for r in (ch.get("roots") or []) if re.fullmatch(r"F[0-9]+", str(r))] or [],
-           "skill": {"id": f"{cid}.{slug(sname) or 'skill_' + str(n)}", "name": {"en": sname}, "role": role, "effect": str(sk.get("effect", "")), "numbers": {}},
+           "skill": {"id": f"{cid}.{slug(sname) or 'skill_' + str(n)}", "name": {"en": sname}, "role": role, "effect": behaviour_only(str(sk.get("effect", "")), f"Shows its {str(ch['trait']).lower()} (behaviour to be described in play-lab)."), "numbers": {}},  # A102.3: no game numbers from the council
            "weakness": str(ch.get("weakness", "")),
            "observe": [str(x) for x in (ch.get("observe") or [])][:4] or ["(nothing recorded)"],
            "journal": jr,

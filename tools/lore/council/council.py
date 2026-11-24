@@ -156,8 +156,11 @@ star (type, light, UV, flares) -> planet (gravity, day length, tilt, atmosphere 
 radiation, oceans, chemistry, moons, tides) -> habitat on the {HABITAT} (biome, food, light, temperature, terrain) -> selection pressure
 -> trait (body part, sense, behaviour) -> what the PLAYER can do with it (a skill or move, a befriend preference, a weakness, a secret).
 Style example: "They talk in low hums. Why? Sound carries far in the dense air, and valley fog blinds eyes most mornings. Why fog? Cold
-sea against warm volcanic ground. Root: 1.6 bar atmosphere + active volcanism. -> Skill 'Long hum' (Control): calls the herd from 120 m
-and calms allies. Weakness: deaf to high pitches, so a whistle startles them."
+sea against warm volcanic ground. Root: 1.6 bar atmosphere + active volcanism. -> Skill 'Long hum' (Control): a low call that carries
+through the fog, gathers the herd and calms its members. Weakness: deaf to high pitches, so a whistle startles them."
+GAME NUMBERS ARE NOT YOURS: the game is real time and moves are designed in our labs. A skill is only a name, a role and a plain
+description of the behaviour. Never write damage, durations, turns, percentages, cooldowns, ranges or any stat for a skill or move.
+(Planet and physics numbers, with units, are still required in the world facts and links.)"
 Write each chain as:  TRAIT  <- why  <- why  <- PHYSICAL ROOT   ->  SKILL/MECHANIC (+ weakness).
 Reuse the same planet facts across creatures; where two creatures face the same pressure, show convergent or opposite solutions."""
 FP = FP.replace("{HABITAT}", HABITAT)
