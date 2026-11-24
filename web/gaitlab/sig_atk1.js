@@ -219,8 +219,8 @@ SIGB.smash_punch=function(sc,def){
     const hp=d.chest.localToWorld(V(.3,.0,0)),n1=s>=H[0],n2=s>=H[1],a3=s-H[2];
     const jolt=H.reduce((m,h)=>s>=h?Math.max(m,Math.exp(-(s-h)*9)):m,0),sw=H.map((h,i)=>.045*s2(s,h,h+.05)*(i<2?1:0)),step=sw[0]+sw[1];
     const fly=a3>0?eo(rp(a3,0,.6)):0,fl3=s2(s,H[2],H[2]+.55)*(1-s2(s,2.5,2.9)),lim=Math.max(s2(s,H[2]+.1,H[2]+.5)*(1-s2(s,2.4,2.8)),.5*s2(s,H[1],H[1]+.3)*(1-s2(s,H[2],H[2]+.1)));
-    d.set(s,{dx:(step+.55*fly)*(1-s2(s,2.6,3.3)),dy:a3>0?.35*Math.sin(Math.PI*rp(a3,0,.7))*(a3<.7?1:0):0,roll:a3>0?-(Math.PI*1.5)*fl3:0,pitch:.3*jolt+(a3>0?.6*Math.exp(-a3*5):0),na:-.45*jolt,jaw:.3*(jolt>.2?1:0),ear:.9*s2(s,H[0],H[0]+.05)*(1-s2(s,2.7,3.1)),nosh:s>H[1],stars:s2(s,H[2]+.5,H[2]+.7)*(1-s2(s,2.4,2.8)),flash:.7*Math.exp(-Math.min(...H.map(h=>Math.abs(s-h)+(s<h?9:0)))*9)*(s>H[0]?1:0),sq:.12*jolt,limp:lim,lt:s});
-    // shield: cracks after the first hit, burst on the second
+    d.set(s,{dx:(step+.55*fly)*(1-s2(s,2.6,3.3)),dy:a3>0?.35*Math.sin(Math.PI*rp(a3,0,.7))*(a3<.7?1:0):0,roll:a3>0?-(Math.PI*1.5)*fl3:0,pitch:.45*jolt+(a3>0?.6*Math.exp(-a3*5):0),na:-.45*jolt,jaw:.3*(jolt>.2?1:0),ear:.9*s2(s,H[0],H[0]+.05)*(1-s2(s,2.7,3.1)),nosh:s>H[0],stars:s2(s,H[2]+.5,H[2]+.7)*(1-s2(s,2.4,2.8)),flash:.7*Math.exp(-Math.min(...H.map(h=>Math.abs(s-h)+(s<h?9:0)))*9)*(s>H[0]?1:0),sq:.12*jolt,limp:lim,lt:s});
+    // shield: the first strike shatters it outright (A94: one hit breaks any armour)
     shMat.color.copy(shC0).lerp(T0c,.3*(n1?1:0));d.shield.rotation.y=.12*Math.sin((s-H[0])*40)*Math.exp(-(s-H[0])*8)*(n1?1:0);
     const lie=s2(s,H[2]+.5,H[2]+.7)*(1-s2(s,2.3,2.9));if(lie>0)d.root.position.y=Math.max(.14,d.root.position.y*(1-lie)+.14*lie);
     // blur streak along the club arc during each swing, and the swing's tip flare
@@ -228,13 +228,13 @@ SIGB.smash_punch=function(sc,def){
     for(const [S,pp,ai] of all)for(const t0 of S){if(s<t0-.056||s>t0+.012)continue;let prev=null;for(let k=0;k<9;k++){const t=Math.min(s,t0)-.0055*k,q=c.W(local(t,S,pp.sh.z/L).tip);if(prev)bm.seg(prev,q,.1*(1-k/10),k%2?'#ffe0b0':'#ffc080',.9*(1-k/9));fx.p(q,.5*(1-k/10)+.1,.95*(1-k/9),'#ffd090',TX.soft,true);prev=q;}
       fx.p(c.W(pp.tip),.5,.5*(1-Math.abs(s-t0+.02)/.04>0?1:0),'#ffe0b0',TX.soft,true);}
     // impacts: flash, cavitation bubble blooms behind the club and collapses ~35 ms later with a second flash and shock ring
-    H.forEach((h,i)=>{const a=s-h,big=i===2,cp=hp.clone().add(V(.04,i===1?.05:-.02,i===1?-.04:.03));
-      if(a>0&&a<.5)fx.hit(cp,a,{n:big?9:6,r:big?.75:.5,sz:.09,c:'#fff0b8',c2:'#ff9a40'});
+    H.forEach((h,i)=>{const a=s-h,big=i!==1,cp=hp.clone().add(V(.04,i===1?.05:-.02,i===1?-.04:.03));
+      if(a>0&&a<.5)fx.hit(cp,a,{n:i===0?12:big?9:6,r:i===0?.95:big?.75:.5,sz:.09,c:'#fff0b8',c2:'#ff9a40'});
       if(a>-.004&&a<.036){const u=clamp((a+.004)/.04,0,1);fx.p(cp.clone().add(V(-.09*u,0,0)),.1+.34*Math.sin(Math.PI*u*.5),.9,'#d8f4ff',TX.bubble,true);}
       if(a>.036&&a<.2){const u=(a-.036)/.164;fx.p(cp.clone().add(V(-.1,0,0)),1.1*(1-u)+.15,1-u,'#ffffff',TX.star,true,.5+i);fx.p(cp.clone().add(V(-.1,0,0)),.35+.9*u,.4*(1-u),'#9fe0ff',TX.soft,true);bm.vring(cp.clone().add(V(-.1,0,0)),.2+.7*eo(u),.7*(1-u),'#bff2ff');}
     });bm.end();
-    // shell fragments of the shield (burst at the second hit, a few more at the third)
-    const sa=s-H[1];d.shards.forEach((m,k)=>{if(sa<0){m.visible=false;return;}m.visible=sa<1.1;const v=V(.6+.5*rnd(k),.9+rnd(k+3)*1.2,(rnd(k+7)-.5)*1.6);m.position.set(hp.x+.1+v.x*sa,Math.max(.03,hp.y+v.y*sa-4.5*sa*sa),hp.z+v.z*sa);m.rotation.set(sa*9+k,sa*7,sa*5);m.scale.setScalar(Math.max(.01,1-sa*.5));if(m.position.y<=.031)m.rotation.set(0,0,0);});
+    // shell fragments of the shield: all burst at the first hit, a few more at the third
+    const sa=s-H[0];d.shards.forEach((m,k)=>{if(sa<0){m.visible=false;return;}m.visible=sa<1.1;const v=V(.6+.5*rnd(k),.9+rnd(k+3)*1.2,(rnd(k+7)-.5)*1.6);m.position.set(hp.x+.1+v.x*sa,Math.max(.03,hp.y+v.y*sa-4.5*sa*sa),hp.z+v.z*sa);m.rotation.set(sa*9+k,sa*7,sa*5);m.scale.setScalar(Math.max(.01,1-sa*.5));if(m.position.y<=.031)m.rotation.set(0,0,0);});
     if(a3>0&&a3<1.0)for(let k=0;k<4;k++){const v=V(.8+.5*rnd(k+20),.8+rnd(k+23),(rnd(k+27)-.5)*1.4);fx.p(V(hp.x+.1+v.x*a3,Math.max(.04,hp.y+v.y*a3-4.5*a3*a3),hp.z+v.z*a3),.05,.8*(1-a3),'#bfe0e4',TX.drop,false);}
     bubbles(fx,s,0,2.5,0,6);
     return .8*Math.max(...H.map(h=>Math.exp(-Math.pow((s-h)/.05,2))));}};

@@ -12,7 +12,7 @@ const A=[
  M('boiling_spray','Boiling spray','bombardier beetle','rear gland + armour','control / signature','Short-range hot spray from the rear: burn and fear.','land',2.3,{cx:1.2,ty:.5,h:2.2},1.18,.8,.05),
  M('sonic_snap','Sonic snap','pistol shrimp','oversized claw; strongest underwater','control / signature','Cavitation shockwave: stun at range, in water.','water',2.5,{cx:1.3,ty:.5,h:2.4},1.22,.9,.06),
  M('blinding_spit','Blinding spit','spitting cobra','spit gland + fangs','control / signature','Twin venom jets at the eyes: target is blind, accuracy drops.','land',2.4,{cx:1.1,ty:.6,h:2.3},1.27,.85,.04),
- M('smash_punch','Smash punch','mantis shrimp','club arm (smasher, A58)','control / signature','Blur-fast heavy hit: stuns, breaks shells and guard.','water',2.15,{cx:1.15,ty:.5,h:2.3},1.1,.75,.09),
+ M('smash_punch','Smash punch','mantis shrimp','club arm (smasher, A58)','control / signature','Blur-fast hammer strike: the first hit shatters any armour, shell or guard; massive damage, stuns.','water',2.15,{cx:1.15,ty:.5,h:2.3},1.1,.75,.09),
  M('electric_discharge','Electric discharge','electric eel','electric organ','control / signature','Stun in contact, chains to a second target; stronger in water.','water',2.0,{cx:.95,ty:.5,h:3.0},1.1,.85,0),
  M('tongue_snatch','Tongue snatch','chameleon','long tongue','poke / utility','Pulls small prey or items to you from range.','land',1.55,{cx:.85,ty:.42,h:1.9},1.12,.75,.0),
  M('water_jet','Water jet','archerfish','spit gland, near water','poke / signature','Knocks a target off a branch from range.','land',2.0,{cx:1.2,ty:1.0,h:3.3},1.34,.9,.05),
