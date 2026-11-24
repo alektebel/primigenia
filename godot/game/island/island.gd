@@ -35,6 +35,7 @@ const MODEL_OFF_Z := 0.85
 const DEN_SEEN := 60.0
 const ActionFeed := preload("res://actions/action_feed.gd")
 const PlantGaze := preload("res://game/island/plant_gaze.gd")
+const CameraOccluders := preload("res://game/player/camera_occluders.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -65,6 +66,8 @@ var player_pos := Vector3.INF
 var flight                         # FlightMode: the dev-flag flight test (null before the stage is built)
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
+var _cam_prev_player = null     # Vector2: where the player was at the last camera update
+const CAM_CUT_M := 25.0          # a player move this big in one frame is a teleport: the camera cuts
 var icons: CanvasLayer
 var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
@@ -436,6 +439,9 @@ func _build_stage() -> void:
 	chase = ChaseCamera.new(player_host.height(), yaw, ground)
 	chase.strategic_distance = Game.data.size_m * 0.85
 	chase.free_orbit = bool(Game.settings.get("camera/free_orbit", false))
+	var occ := CameraOccluders.new()          # trunks, bushes and rocks as camera-only proxies (the flora has no physics)
+	occ.build(props.records, props)
+	chase.occluders = occ
 	icons = StrategicIcons.new()
 	icons.camera = camera
 	icons.ground_fn = ground
@@ -793,6 +799,8 @@ func _profile__update_actors(dt: float) -> void:
 # A landing after a fall: a small, short camera shake (presentation only: a decaying sine, no random numbers).
 # `impact` 0..1 is the strength (the drop beyond the safe height, saturating); a soft landing is a faint thump.
 var _shake_amp := 0.0
+var _cave_k := 0.0                 # 0 = the chase camera, 1 = the cave camera (eased)
+const CAVE_BLEND_TAU := 0.25
 var _shake_clock := 0.0
 const SHAKE_DECAY := 5.0
 const SHAKE_MAX := 0.12                # metres at the full strength
@@ -861,10 +869,22 @@ func _profile__update_camera(dt: float) -> void:
 	chase.kick = bool(Game.settings.get("camera/kick", true))
 	chase.top_speed = _run_top_speed()
 	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
+	# An explicit cut (a teleport, a respawn, a return from the editor): the eased camera state restarts instead of gliding across the map.
+	var here := Vector2(p.pos.x, p.pos.z)
+	if _cam_prev_player != null and here.distance_to(_cam_prev_player) > CAM_CUT_M:
+		chase.cut()
+	_cam_prev_player = here
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.05, 40.0)       # keep the depth buffer precise at 3 km
-	var view := _cave_camera(r, p.pos)
+	var in_cave: bool = cave_site != null and cave_site.on and cave_site.zone(p.pos.x, p.pos.z) != 0
+	_cave_k = lerpf(_cave_k, 1.0 if in_cave else 0.0, 1.0 - exp(-dt / CAVE_BLEND_TAU) if dt > 0.0 else 1.0)       # the cave's close camera blends in and out, it never cuts
+	if not in_cave and _cave_k < 0.002:
+		_cave_k = 0.0
+	var view := {"position": r.position, "aim": r.aim}
+	if _cave_k > 0.0:
+		var cave := _cave_camera(r, p.pos)
+		view = {"position": (r.position as Vector3).lerp(cave.position, _cave_k), "aim": (r.aim as Vector3).lerp(cave.aim, _cave_k)}
 	camera.position = view.position + _landing_shake(dt)
 	camera.look_at(view.aim)
 	if absf(float(r.get("roll", 0.0))) > 1e-4:
@@ -876,7 +896,7 @@ func _profile__update_camera(dt: float) -> void:
 # Inside the hidden cave the chase camera is replaced by a close one under the roof: 6.5 m back along the chase direction and 2.4 m
 # up, pulled toward the player until it is inside the shell (or in front of the mouth, in the open air), no higher than the roof.
 func _cave_camera(r: Dictionary, player: Vector3) -> Dictionary:
-	if cave_site == null or not cave_site.on or cave_site.zone(player.x, player.z) == 0:
+	if cave_site == null or not cave_site.on:
 		return {"position": r.position, "aim": r.aim}
 	var back := Vector3(r.position.x - player.x, 0.0, r.position.z - player.z)
 	back = Vector3(0, 0, 1) if back.length() < 0.1 else back.normalized()

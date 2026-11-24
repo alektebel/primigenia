@@ -144,7 +144,8 @@ func run(t) -> void:
 	var r5 = {}
 	for i in 80:
 		r5 = c5.update(player, null, false, 0.05)
-	t.check(r5.actual_distance < c5.distance - 1.0, "a ridge behind the player shortens the boom (%.2f < %.2f)" % [r5.actual_distance, c5.distance])
+	# T4: the view either shortens or rises over the obstacle (it never ends up inside the ridge wall)
+	t.check(r5.actual_distance < c5.distance - 1.0 or (c5.lift > 0.1 and r5.position.z < 4.0), "a ridge behind the player shortens the boom or lifts the view over it (%.2f of %.2f, lift %.2f, camera z %.2f)" % [r5.actual_distance, c5.distance, c5.lift, r5.position.z])
 	t.check(r5.position.y >= ridge.call(r5.position.x, r5.position.z) + 0.65 - 1e-6, "camera stays 0.65 m above the ground")
 	# Fight framing keeps both fighters in the frustum.
 	var c6 = ChaseCamera.new(h, 0.0, flat)
