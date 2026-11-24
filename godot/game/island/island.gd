@@ -470,6 +470,12 @@ func _build_stage() -> void:
 		if plan.is_empty():
 			plan = await _offload(func() -> Dictionary: return preload("res://game/island/radial_fauna.gd").plan(Game.data, int(Game.settings.seed), setup.nest))
 		await radial_fauna.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position, plan, _slice, Game.creature_cache)
+		await _slice()
+		var fliers := preload("res://game/island/fliers/flier_flock.gd").new()     # A59 ambient fliers: visual-only flocks over the valley
+		fliers.name = "Fliers"
+		add_child(fliers)
+		fliers.night_fn = func() -> float: return 1.0 - smoothstep(0.0, 0.8, day_night.k) if day_night != null else 0.0
+		fliers.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position, func() -> Vector3: return player_pos)
 	await _slice()
 	_build_secrets(ground)      # before the part nodes: the cave fossil stands on the chamber floor, not on the rock above it
 	await _slice()

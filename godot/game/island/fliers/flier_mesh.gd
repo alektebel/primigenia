@@ -218,8 +218,8 @@ static func _zancuilla(b: MB) -> void:
 	b.loft_z([[0.1, 0.022, 0.026, 0.02], [0.14, 0.03, 0.032, 0.03], [0.18, 0.024, 0.026, 0.028], [0.215, 0.008, 0.01, 0.024]], 7, green.lightened(0.1), pale)
 	b.loft_z([[0.2, 0.006, 0.007, 0.024], [0.26, 0.004, 0.005, 0.02], [0.3, 0.001, 0.002, 0.017]], 5, Color(0.2, 0.17, 0.12), Color(0.2, 0.17, 0.12))
 	for s in [-1.0, 1.0]:
-		# the long stilt legs trail behind in flight
-		b.tube(Vector3(0.02 * s, -0.02, -0.06), Vector3(0.025 * s, -0.045, -0.26), 0.008, 0.004, 4, Color(0.55, 0.42, 0.25), true)
+		# the long stilt legs: down when perched, tucked back and short in cruise (the shader scales them)
+		b.tube(Vector3(0.02 * s, -0.02, -0.06), Vector3(0.025 * s, -0.2, -0.16), 0.008, 0.004, 4, Color(0.55, 0.42, 0.25), true)
 		# patagium: four finger rays carry a scalloped membrane
 		var st := _stations(0.33, 0.2, 0.08, 0.12, 0.015, 0.0, 6, 0.05, 0.035)
 		b.strip(st, s, green.lightened(0.04), mem.darkened(0.2), 0.2)
