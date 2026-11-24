@@ -1,0 +1,443 @@
+{
+	"ap_atlas_alpha_all_slices": {
+		"max_abs_alpha_err": 0.000472530241935498
+	},
+	"ap_atlas_direct": {
+		"alpha_expected": 0.330645173788071,
+		"alpha_got": 0.33056640625,
+		"format": "RGBAF",
+		"rgb_err": 0.0
+	},
+	"ap_atlas_trilinear sky w=0.00": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"note": "R = max(u,v) err, G = w err, B = alpha err",
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"ap_atlas_trilinear sky w=0.37": {
+		"format": "RGBAF",
+		"max_rel_B": 0.00041,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"note": "R = max(u,v) err, G = w err, B = alpha err",
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"ap_atlas_trilinear sky w=1.00": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"note": "R = max(u,v) err, G = w err, B = alpha err",
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"ap_atlas_trilinear spatial w=0.00": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"note": "R = max(u,v) err, G = w err, B = alpha err",
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"ap_atlas_trilinear spatial w=0.37": {
+		"format": "RGBAF",
+		"max_rel_B": 0.00041,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"note": "R = max(u,v) err, G = w err, B = alpha err",
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"ap_atlas_trilinear spatial w=1.00": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"note": "R = max(u,v) err, G = w err, B = alpha err",
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"cost": {
+		"ap_atlas_1024x32_30steps": {
+			"delta_ms": 1.9472,
+			"frame_ms": 2.36785
+		},
+		"empty_frame_ms": 0.42065,
+		"multiscatter_32x32_64dirs_20steps": {
+			"delta_ms": 11.4578,
+			"frame_ms": 11.87845
+		},
+		"sky_const": {
+			"delta_ms": 0.9495,
+			"frame_ms": 1.37015
+		},
+		"sky_sample_skyview": {
+			"delta_ms": 1.1122,
+			"frame_ms": 1.53285
+		},
+		"skyview_192x108_30steps": {
+			"delta_ms": 1.91865,
+			"frame_ms": 2.3393
+		},
+		"skyview_96x50_8steps_low": {
+			"delta_ms": 0.25355,
+			"frame_ms": 0.6742
+		},
+		"spatial_plain": {
+			"delta_ms": 1.0165,
+			"frame_ms": 1.43715
+		},
+		"spatial_sample_ap_atlas": {
+			"delta_ms": 1.1946,
+			"frame_ms": 1.61525
+		},
+		"transmittance_256x64_40steps": {
+			"delta_ms": 0.68285,
+			"frame_ms": 1.1035
+		}
+	},
+	"cpu_RGBA8_RGBM -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.49581,
+		"max_rel_G": 1.0,
+		"max_rel_R": 1.0,
+		"of": 16384,
+		"texels_over_1pct": 14897
+	},
+	"cpu_RGBA8_RGBM -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.49137,
+		"max_rel_G": 0.99105,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 14878
+	},
+	"cpu_RGBA8_RGBM -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.49137,
+		"max_rel_G": 0.99105,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 14878
+	},
+	"cpu_RGBAF -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"cpu_RGBAF -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"cpu_RGBAF -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"cpu_RGBAH -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 1.0,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"cpu_RGBAH -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"cpu_RGBAH -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"cpu_RGBH -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 1.0,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"cpu_RGBH -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"cpu_RGBH -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"direct_viewport_hdr=false": {
+		"R_read_as_zero": 5376,
+		"format": "RGBA8",
+		"max_R": 1.0,
+		"max_rel_B": 0.874015748031496,
+		"max_rel_G": 1.0,
+		"max_rel_R_normal_range": 1.0
+	},
+	"direct_viewport_hdr=true": {
+		"R_read_as_zero": 0,
+		"format": "RGBAF",
+		"max_R": 99.9375,
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R_normal_range": 0.00090371525535478
+	},
+	"env": {
+		"adapter": "llvmpipe (LLVM 23.1.4, 256 bits)",
+		"driver": "opengl3",
+		"godot": "4.7.2-stable (official)",
+		"method": "gl_compatibility"
+	},
+	"filter cpu_RGBAF -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"filter cpu_RGBAF -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"filter cpu_RGBAF -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"filter cpu_RGBAH -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 1.0,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"filter cpu_RGBAH -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"filter cpu_RGBAH -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"filter gpu_viewport_hdr -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00429,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"filter gpu_viewport_hdr -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00426,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"filter gpu_viewport_hdr -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00426,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"global sampler (cpu RGBAH) -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"global sampler (cpu RGBAH) -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 1856
+	},
+	"global sampler (gpu hdr) -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"global sampler (gpu hdr) -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"global sampler (gpu hdr) -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"gpu_viewport_hdr -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"gpu_viewport_hdr -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"gpu_viewport_hdr -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 16384,
+		"texels_over_1pct": 0
+	},
+	"gpu_viewport_ldr -> canvas": {
+		"format": "RGBAF",
+		"max_rel_B": 0.87379,
+		"max_rel_G": 1.0,
+		"max_rel_R": 1.0,
+		"of": 16384,
+		"texels_over_1pct": 16080
+	},
+	"gpu_viewport_ldr -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.86596,
+		"max_rel_G": 0.99105,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 16080
+	},
+	"gpu_viewport_ldr -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.86596,
+		"max_rel_G": 0.99105,
+		"max_rel_R": 0.99105,
+		"of": 16384,
+		"texels_over_1pct": 16080
+	},
+	"lut 192x108 gpu hdr -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.00092,
+		"max_rel_G": 0.00064,
+		"max_rel_R": 0.00457,
+		"of": 20736,
+		"texels_over_1pct": 0
+	},
+	"lut 192x108 gpu hdr -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.00092,
+		"max_rel_G": 0.00064,
+		"max_rel_R": 0.00457,
+		"of": 20736,
+		"texels_over_1pct": 0
+	},
+	"lut 32x32 gpu hdr -> sky": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"lut 32x32 gpu hdr -> spatial": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.00457,
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"range_hdr_viewport": {
+		"1000": 1000.0,
+		"1e-6": 0.00000095367431640625,
+		"1e-8": 0.0,
+		"3e-5": 0.0000299811363220215,
+		"60000": 60000.0,
+		"70000": 65504.0,
+		"format": "RGBAF"
+	},
+	"rgbm_roundtrip_sky_like": {
+		"max_rel_err_L_0.001_to_0.01": 0.0838718435657429,
+		"max_rel_err_L_0.01_to_8": 0.00939579387218343
+	},
+	"texture3d_static_RGBAH sky (create err=0)": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 1024,
+		"texels_over_1pct": 0
+	},
+	"texture3d_static_RGBAH spatial (create err=0)": {
+		"format": "RGBAF",
+		"max_rel_B": 0.0,
+		"max_rel_G": 0.0,
+		"max_rel_R": 0.0,
+		"of": 1024,
+		"texels_over_1pct": 0
+	}
+}
