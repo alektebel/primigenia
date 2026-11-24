@@ -13,7 +13,7 @@ const TIERS={
  3:{name:'Zanco elder (smart species)',gain:.65,loss:1.4,fear:1.5,bondX:.75,bondY:-.05,hold:3,chain:4,wrong:.18,off:.15,fav:'sing',gate:3,cd:6}};
 const RULES={run:{speed:5,fearPerS:.28,closeMult:2,radius:14},walk:2.0,sneak:.9,back:1.2,turnRate:2.2,passiveCap:.2,roar:{dx:-.45,dy:.45,range:14,cd:1.5,chase:7},
  observe:{secs:1.5,range:14},pred:{dx:-.4,dy:.5,near:10},predSpeed:3.2,chainBonus:{dx:.12,dy:-.08},fruit:{dx:.45,dy:-.25},eggCapFor:.5,nightCap:.15,gateCap:.1,gateMult:.1,favMult:1.4,
- flee:{x:-.85,secs:7,speed:4.2,resetX:-.55,resetY:.35},raidSecs:25,herdPanic:2.5};
+ flee:{x:-.85,secs:7,speed:4.2,resetX:-.55,resetY:.35},raidSecs:25,herdPanic:2.5,aggDecay:.2};
 const clamp=(x,a,b)=>x<a?a:x>b?b:x;
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const angd=(a,b)=>{let d=(a-b)%(2*Math.PI);if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;return d;};
@@ -21,7 +21,7 @@ const angd=(a,b)=>{let d=(a-b)%(2*Math.PI);if(d>Math.PI)d-=2*Math.PI;if(d<-Math.
 function create(o){o=o||{};
  const s={pin:!!o.pin,t:0,beatIdx:0,tier:o.tier||1,brain:o.brain||1,egg:o.egg||'none',night:!!o.night,predToggle:!!o.pred,predT:3,rng:mulberry(o.seed||7),
   B:{x:0,z:0,yaw:0,v:0,mode:'idle',act:null,fruit:false,streak:0,roarCd:0,pressed:0},
-  T:{x:20,z:0,yaw:Math.PI,mx:-.6,my:.3,noticed:false,flee:0,bondHold:0,bonded:false,bondT:null,react:0,reactKind:null,startle:0,call:null,side:1,fruitGiven:false,defended:false,alarm:0,predSeen:false,moving:0},
+  T:{x:20,z:0,yaw:Math.PI,mx:-.6,my:.3,noticed:false,agg:0,flee:0,bondHold:0,bonded:false,bondT:null,react:0,reactKind:null,startle:0,call:null,side:1,fruitGiven:false,defended:false,alarm:0,predSeen:false,moving:0},
   herd:[],pred:[],fruit:{x:9,z:6,taken:false},raid:null,chain:null,chainCd:3,obs:0,observeT:0,notes:[],log:[],events:[],trace:[],
   stats:{beats:0,combos:0,maxStreak:0,mistakes:0,hits:0,flees:0,chainsWon:0,chainsLost:0}};
  [[-1.8,2.2],[2.4,-2.0],[1.2,3.4]].slice(0,3).forEach((p,i)=>s.herd.push({x:s.T.x+p[0],z:s.T.z+p[1],yaw:Math.PI,home:p,mode:'graze',tm:0,speed:0,seed:i}));
@@ -30,6 +30,17 @@ const P_=s=>TIERS[s.tier];
 const dist=s=>Math.hypot(s.T.x-s.B.x,s.T.z-s.B.z);
 const band=d=>d>10?'far':d>4?'approach':'close';
 function moodState(s){const T=s.T;return T.bonded?'bonded':T.flee>0?'fled':T.mx<-.2?'wary':T.mx<.2?'curious':'trusting';}
+// Mood card axes (A81), a pure read of the state above, nothing feeds back into the sim.
+//  x = avoid(-1) <-> approach(+1) toward the player:  x = clamp(mx + .2 + 1.3*agg), mx+.2 so the curious band (-.2..+.2) sits on the approach side;
+//      an unnoticed target is capped at -.1 (it has not decided anything about you yet); fleeing pins x at -.9.
+//  y = calm(-1) <-> aroused(+1):                      y = clamp(1.25*(my-.2) + .6*startle + .7*agg); fleeing pins y at +.8; a noticed target that avoids you (mx < -.2) is also tense: +.25*(-(mx+.2)); raid keeps my >= .7 so it reads aroused.
+//  agg = provocation (0..1): a roar at a creature that does not bolt sets it to 1, it decays .2/s (RULES.aggDecay) and is cleared by fleeing or bonding.
+//  Corners: curious (x+, y-), aggressive (x+, y+), fear (x-, y+), indifferent (x-, y-).
+function moodAxes(s){const T=s.T;
+ if(T.flee>0)return {x:-.9,y:.8};
+ let x=clamp(T.mx+.2+1.3*T.agg,-1,1);if(!T.noticed&&T.agg<=0)x=Math.min(x,-.1);
+ const y=clamp(1.25*(T.my-.2)+.6*Math.min(T.startle,.9)+.7*T.agg+(T.noticed?.25*Math.max(0,-(T.mx+.2)):0),-1,1);
+ return {x,y};}
 function msg(s,text,kind){s.log.push({t:s.t,text,kind:kind||''});s.events.push({t:s.t,type:'msg',text,kind});if(s.log.length>40)s.log.shift();}
 function ev(s,type,x){s.events.push(Object.assign({t:s.t,type},x||{}));}
 function capX(s){const P=P_(s),T=s.T;let c=1;
@@ -77,7 +88,7 @@ function applyAction(s,a){const T=s.T,P=P_(s),A=ACT[a.k],d=dist(s),st=s.stats;
 function roar(s){const B=s.B;if(B.roarCd>0)return false;B.roarCd=RULES.roar.cd;ev(s,'roar');
  let chased=0;for(const p of s.pred)if(p.mode!=='flee'&&Math.hypot(p.x-B.x,p.z-B.z)<=RULES.roar.chase){p.mode='flee';chased++;}
  if(chased){msg(s,'you roar: '+chased+' predator'+(chased>1?'s':'')+' run','good');return true;}
- if(dist(s)<=RULES.roar.range&&!s.T.bonded){s.stats.mistakes++;push(s,RULES.roar.dx*P_(s).fear,RULES.roar.dy);msg(s,'you roared at it: fear!','bad');}
+ if(dist(s)<=RULES.roar.range&&!s.T.bonded){s.stats.mistakes++;s.T.agg=1;push(s,RULES.roar.dx*P_(s).fear,RULES.roar.dy);msg(s,'you roared at it: fear!','bad');}
  return true;}
 function interact(s){const f=s.fruit,B=s.B;if(!f.taken&&Math.hypot(f.x-B.x,f.z-B.z)<=2.2){f.taken=true;B.fruit=true;ev(s,'pickup');msg(s,'you carry the special fruit: offer it with charm (3) up close','egg');return true;}return false;}
 function observe(s){if(s.observeT>0)return false;const B=s.B;if(dist(s)>RULES.observe.range){msg(s,'too far to observe','dim');return false;}s.observeT=RULES.observe.secs;msg(s,'observing, keep still...','dim');return true;}
@@ -137,7 +148,7 @@ function step(s,dt,inp){inp=inp||{};const B=s.B,T=s.T,P=P_(s);s.events.length=0;
  targetMove(s,dt);
  herdMove(s,dt);
  // decay timers
- T.react=Math.max(0,T.react-dt);T.startle=Math.max(0,T.startle-dt);T.alarm=Math.max(0,T.alarm-dt);
+ T.agg=T.flee>0||T.bonded?0:Math.max(0,T.agg-RULES.aggDecay*dt);T.react=Math.max(0,T.react-dt);T.startle=Math.max(0,T.startle-dt);T.alarm=Math.max(0,T.alarm-dt);
  if(T.call&&s.t-T.call.t0>1.1)T.call=null;
  // flee trigger
  if(!T.bonded&&T.flee<=0&&!s.raid&&T.mx<=RULES.flee.x){T.flee=RULES.flee.secs;s.stats.flees++;T.noticed=false;alarm(s);ev(s,'flee');msg(s,'it bolted! (fear too high)','bad');s.chain=null;}
@@ -275,7 +286,16 @@ function selfCheck(){const fails=[],R={};const ok=(c,m)=>{if(!c)fails.push(m);re
  {const s=create({tier:1});s.B.x=s.T.x-12;s.T.noticed=true;const x0=s.T.mx;startPass(s);for(let i=0;i<60*8;i++)step(s,STEP,{});R.pass={dx:+(s.T.mx-x0).toFixed(2)};ok(s.T.mx<x0-.15,'a passing predator must knock its trust back');
   const o=create({tier:1,egg:'fruit'});o.B.x=o.T.x-9;for(let k=0;k<3;k++){observe(o);for(let i=0;i<120;i++)step(o,STEP,{});}R.notes=o.notes;ok(o.notes.length===3&&/fruit/.test(o.notes[2])&&/dance/.test(o.notes[0]),'observing three times must reveal favourite, reading and the easter-egg hint');
   const f=create({tier:1});f.B.x=f.T.x-16;for(const k of ['dance','charm','pose']){f.t=BEAT*4-ACT[k].W;f.B.act=null;press(f,k);for(let i=0;i<120;i++)step(f,STEP,{});}ok(!f.T.noticed&&f.T.mx<=-.59,'at far range only a call registers (dance/charm/pose are ignored)');f.t=BEAT*8-ACT.sing.W;f.B.act=null;press(f,'sing');for(let i=0;i<120;i++)step(f,STEP,{});ok(f.T.noticed,'a sing at far range registers as noticed');}
+ // 8 mood card corners (A81): each of the four corners is reachable with a real in-game cause
+ {const q=m=>({x:+m.x.toFixed(2),y:+m.y.toFixed(2)});R.corners={};
+  {const a=create({tier:1,brain:3,pin:true});a.B.x=a.T.x-12;for(let i=0;i<60*20;i++)step(a,STEP,{});const m=moodAxes(a);R.corners.indifferent=q(m);ok(m.x<0&&m.y<0,'ignoring it must read indifferent (avoid, calm): '+JSON.stringify(m));}
+  {const a=create({tier:1,brain:3,pin:true});a.B.x=a.T.x-3;a.T.noticed=true;a.T.mx=.1;a.T.my=-.05;const m=moodAxes(a);R.corners.curious=q(m);ok(m.x>0&&m.y<0,'good beats must read curious (approach, calm): '+JSON.stringify(m));
+   const b=create({tier:1,brain:3,seed:11});runBot(b,{stop:t=>t.T.mx>.1&&t.T.my<.1},120);const mb=moodAxes(b);R.corners.curiousPlay=q(mb);ok(mb.x>0&&mb.y<0,'a bot playing good beats must pass through curious: '+JSON.stringify(mb));}
+  {const a=create({tier:1,brain:3,pin:true});a.B.x=a.T.x-8;a.T.noticed=true;a.T.mx=.1;a.T.my=-.05;roar(a);for(let i=0;i<30;i++)step(a,STEP,{});const m=moodAxes(a);R.corners.aggressive=q(m);ok(a.T.flee<=0&&m.x>0&&m.y>0,'a roar at a creature that holds its ground must read aggressive (approach, aroused): '+JSON.stringify(m));
+   for(let i=0;i<60*8;i++)step(a,STEP,{});ok(a.T.agg===0,'provocation fades');}
+  {const a=create({tier:1,brain:3,pin:true});a.B.x=a.T.x-12;a.T.noticed=true;a.T.mx=-.2;a.T.my=0;startPass(a);for(let i=0;i<60*8;i++)step(a,STEP,{});const m=moodAxes(a);R.corners.fear=q(m);ok(m.x<0&&m.y>0,'a predator pass must read fear (avoid, aroused): '+JSON.stringify(m));
+   const r=create({tier:1,brain:3,pin:true});r.B.x=r.T.x-8;r.T.noticed=true;startRaid(r);for(let i=0;i<120;i++)step(r,STEP,{});const mr=moodAxes(r);ok(mr.x<0&&mr.y>0,'a raid must read fear: '+JSON.stringify(mr));}}
  return {pass:fails.length===0,fails,R};}
-const api={BEAT,WIN,STEP,KEYS,ACT,TIERS,RULES,create,step,press,roar,interact,observe,startRaid,startPass,dist,band,bandMult,moodState,capX,predict,bot,runBot,selfCheck,clamp,angd};
+const api={BEAT,WIN,STEP,KEYS,ACT,TIERS,RULES,create,step,press,roar,interact,observe,startRaid,startPass,dist,band,bandMult,moodState,moodAxes,capX,predict,bot,runBot,selfCheck,clamp,angd};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SDCORE=api;
 })(typeof window!=='undefined'?window:globalThis);
