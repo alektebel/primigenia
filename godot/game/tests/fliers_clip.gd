@@ -107,12 +107,17 @@ func _run() -> void:
 		# camera: a framed three-quarter view that follows the bird with a soft lag
 		var fwd := Vector3(sin(bird.yaw), 0, cos(bird.yaw))
 		var right := fwd.cross(Vector3.UP).normalized()
-		var dist := size * (3.2 if mode != "flock" else 9.0)
+		var dist := size * (2.4 if mode != "flock" else 9.0)
 		if mode == "flee" or mode == "takeoff":
 			dist = size * 5.5 + 2.0
 		var want: Vector3 = bird.pos + right * dist * 0.85 + fwd * dist * 0.45 + Vector3.UP * dist * 0.28
 		if mode == "flee" or mode == "takeoff":
-			want = look + Vector3(sin(0.9), 0.4, cos(0.9)) * dist if first else want
+			if first:
+				# the player's own view: from the side the walker comes from, a little above, looking at the flock
+				var tw: Vector3 = (walker - bird.pos) if walker != Vector3.INF else Vector3(1, 0, 0.4)
+				tw.y = 0.0
+				tw = tw.normalized()
+				want = bird.pos + tw * (size * 6.0 + 2.5) + Vector3.UP * (size * 3.0 + 1.0) + tw.cross(Vector3.UP) * (size * 2.0)
 		if first:
 			cam_pos = want
 			look = bird.pos
