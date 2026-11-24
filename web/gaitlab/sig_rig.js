@@ -36,9 +36,9 @@ function Beams(sc){const cyl=new T.CylinderGeometry(1,1,1,5),segs=[],rings=[];le
     vring(pos,r,op,c){if(ur>=rings.length)return;const m=rings[ur++];m.visible=true;m.position.copy(pos);m.scale.set(r,r,1);m.material.opacity=op;m.material.color.copy(col(c));},
     end(){for(let k=us;k<segs.length;k++)segs[k].visible=false;for(let k=ur;k<rings.length;k++)rings[k].visible=false;}};}
 // ---------------------------------------------------------------- effects pool: sprites (additive and normal) + ballistic emitters on top of BB.FXPool (ground rings)
-function mkFx(sc){const fx=BB.FXPool(sc),pa=[],pn=[];let ua=0,un=0;
+function mkFx(sc,NA,NN){const fx=BB.FXPool(sc),pa=[],pn=[];let ua=0,un=0;
   const mk=(add,n,arr)=>{for(let k=0;k<n;k++){const m=new T.SpriteMaterial({map:TX.soft,transparent:true,depthWrite:false,blending:add?T.AdditiveBlending:T.NormalBlending,fog:false});const sp=new T.Sprite(m);sp.visible=false;sp.renderOrder=add?3:2;sc.add(sp);arr.push(sp);}};
-  mk(true,76,pa);mk(false,60,pn);const r0=fx.reset,f0=fx.flush;
+  mk(true,NA||76,pa);mk(false,NN||60,pn);const r0=fx.reset,f0=fx.flush;
   fx.reset=()=>{r0();ua=un=0;};fx.flush=()=>{f0();for(let k=ua;k<pa.length;k++)pa[k].visible=false;for(let k=un;k<pn.length;k++)pn[k].visible=false;};
   fx.p=(pos,size,op,c,tx,add,rot,sy)=>{if(op<=.004||size<=0)return;let sp;if(add){if(ua>=pa.length)return;sp=pa[ua++];}else{if(un>=pn.length)return;sp=pn[un++];}
     sp.visible=true;sp.position.copy(pos);sp.scale.set(size,sy?size*sy:size,1);const m=sp.material;m.opacity=op>1?1:op;m.color.copy(col(c));const t=tx||TX.soft;if(m.map!==t)m.map=t;m.rotation=rot||0;};
@@ -107,7 +107,7 @@ function Quad(sc,o){
     const cm=ch.matrixWorld,np=[],nb=V(o.cr[0]*o.nb[0],o.cr[1]*o.nb[1],0);np.push(nb.clone());let th=0,ph=0;const st=o.nl/o.ns;
     for(let j=0;j<o.ns;j++){const u=(j+.5)/o.ns;th=o.na0+(P.na||0)+(o.nc0+(P.nc||0))*u;ph=(P.ny||0)*u;if(P.nx){const e=P.nx(u);th+=e[0];ph+=e[1];}
       nb.x+=Math.cos(th)*Math.cos(ph)*st;nb.y+=Math.sin(th)*st;nb.z+=Math.cos(th)*Math.sin(ph)*st;np.push(nb.clone());}
-    np.forEach(p=>p.applyMatrix4(cm));const nrad=np.map((p,i)=>o.nr0+(o.nr1-o.nr0)*i/o.ns);c.neck.update(np,nrad,c.ncol,Y);
+    np.forEach(p=>p.applyMatrix4(cm));const nrad=np.map((p,i)=>(o.nr0+(o.nr1-o.nr0)*i/o.ns)*(P.nrf?P.nrf(i/o.ns):1));c.neck.update(np,nrad,c.ncol,Y);
     const thE=th,hp=thE*o.hfol+o.hlev+(P.hp||0);ch.getWorldQuaternion(Q);E.set(P.hr||0,ph+(P.hy||0),hp,'YZX');hd.position.copy(np[o.ns]);hd.quaternion.copy(Q).multiply(new T.Quaternion().setFromEuler(E));
     c.jaw.rotation.z=-(P.jaw||0);c.mouthIn.visible=(P.jaw||0)>.05;c.neckPts=np;
     c.ears.forEach(pv=>{const e=P.ear||0;pv.rotation.set(pv.userData.z*(.35+.35*(P.earOut||0)),0,e*1.3+(P.ear2?P.ear2*Math.sin((P.lt||0)*20):0));});
@@ -118,7 +118,7 @@ function Quad(sc,o){
     const pm=pel.matrixWorld;tp.forEach(p=>p.applyMatrix4(pm));const trad=tp.map((p,i)=>(o.tr0+(o.tr1-o.tr0)*i/o.ts)*(o.tprof?o.tprof(i/o.ts):1));c.tail.update(tp,trad,c.tcol,Y);c.tailPts=tp;
     const te=tp[o.ts],td=te.clone().sub(tp[o.ts-1]);c.tailEnd.position.copy(te);orient(c.tailEnd,td,Y);
     c.shadow.position.set(root.position.x,.004,root.position.z);c.shadow.rotation.z=-(P.yaw===undefined?o.yaw0:P.yaw);
-    c.shadow.material.opacity=1;
+    c.shadow.material.opacity=1;hd.updateMatrixWorld(true);
   };
   c.mouth=(f)=>c.head.localToWorld(V(c.tipX*(f||1),-o.hh*.3,0));
   c.root0=V(0,0,0);c.pose({});c.root0=root.position.clone();for(let i=0;i<4;i++)c.foot0[i].set(c.hipW[i].x,.015,c.hipW[i].z);c.pose({});
