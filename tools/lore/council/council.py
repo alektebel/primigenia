@@ -21,7 +21,7 @@ sem = threading.Semaphore(int(os.environ.get("QWEN_CONC", "5")))  # NAN qwen all
 
 
 # advisors served by opencode free-tier models instead of qwen (model diversity)
-OC_MODEL = {"skeptic": "opencode/deepseek-v4.1-flash-free", "senses": "opencode/glm-5.3-flash-free"}
+from voices import OC_MODEL, down_file
 ocsem = threading.Semaphore(2)
 ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
@@ -34,7 +34,7 @@ def oc_chat(model, system, user):
     msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. "
            "Do not edit or create any files and do not run commands other than reading that one file. "
            "Your final message must be ONLY the requested Markdown answer.")
-    down = os.path.join(os.path.dirname(D), "oc_down_until_" + re.sub(r"\W+", "_", model))  # shared cooldown when opencode's free quota is exhausted
+    down = down_file(os.path.dirname(D), model)  # shared cooldown when opencode's free quota is exhausted
     for a in range(8):
         if os.path.exists(down) and time.time() < float(open(down).read() or 0):
             print("oc cooldown: skipping", model, file=sys.stderr, flush=True); return "(failed)"
