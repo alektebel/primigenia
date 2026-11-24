@@ -150,15 +150,19 @@ function FXPool(scene){
   for(let k=0;k<18;k++){const m=new T.Mesh(arcG,new T.MeshBasicMaterial({color:'#e8f4ff',transparent:true,opacity:0,side:T.DoubleSide,depthWrite:false,blending:T.AdditiveBlending}));m.visible=false;scene.add(m);arcs.push(m);}
   for(let k=0;k<8;k++){const m=new T.Mesh(new T.PlaneGeometry(2,2),new T.MeshBasicMaterial({map:BB.TEX.ring,transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending}));m.rotation.x=-Math.PI/2;m.visible=false;scene.add(m);rings.push(m);}
   for(let k=0;k<40;k++){const m=new T.Mesh(GEO.sph,new T.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:0,depthWrite:false}));m.visible=false;scene.add(m);dots.push(m);}
-  const used={a:0,r:0,d:0};
+  const used={a:0,r:0,d:0},notes=SingNotes.Pool(T,scene,12);
   return {
-    reset(){used.a=used.r=used.d=0;},
+    notes,
+    reset(){used.a=used.r=used.d=0;notes.begin();},
     arc(pos,q,r,op,col){if(used.a>=arcs.length)return;const m=arcs[used.a++];m.visible=true;m.position.copy(pos);m.quaternion.copy(q);m.scale.setScalar(r);m.material.opacity=op;m.material.color.set(col||'#e8f4ff');},
     ring(x,y,z,r,op,col){if(used.r>=rings.length)return;const m=rings[used.r++];m.visible=true;m.position.set(x,y,z);m.scale.set(r,r,1);m.material.opacity=op;m.material.color.set(col||'#ffffff');},
     dot(pos,s,op,col,sy){if(used.d>=dots.length)return;const m=dots[used.d++];m.visible=true;m.position.copy(pos);m.scale.set(s,sy||s,s);m.material.opacity=op;m.material.color.set(col||'#ffffff');},
-    flush(){for(let k=used.a;k<arcs.length;k++)arcs[k].visible=false;for(let k=used.r;k<rings.length;k++)rings[k].visible=false;for(let k=used.d;k<dots.length;k++)dots[k].visible=false;}
+    note(o){notes.add(o);},
+    flush(){notes.end();for(let k=used.a;k<arcs.length;k++)arcs[k].visible=false;for(let k=used.r;k<rings.length;k++)rings[k].visible=false;for(let k=used.d;k<dots.length;k++)dots[k].visible=false;}
   };
 }
-Object.assign(BB,{FXPool});
+// sing notes (A80): one note per throat pulse, rising from the mouth (times = pulse times in ms, g = ms now, h = body height in m, side = sway direction)
+function noteBurst(fx,times,g,mouth,color,h,side){times.forEach((t,i)=>fx.note({pos:mouth,age:g-t,seed:i+1+Math.round(t%97),color,size:.14+.08*h,rise:.6*h,kind:[1,0,2][i%3],side:side||{x:0,y:0,z:1}}));}
+Object.assign(BB,{FXPool,noteBurst});
 root.BB=BB;
 })(typeof window!=='undefined'?window:globalThis);

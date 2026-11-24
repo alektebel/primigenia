@@ -121,6 +121,7 @@ function draw(o,S,act,g){
   const lift=Math.max(0,Math.min(...S.feet.map(f=>f.y))-.03);o.shadow.position.set(0,.003,0);o.shadow.scale.set(1.0+lift*.5,.55,1);o.shadow.material.opacity=Math.max(.1,.9-lift*2);
   const fx=o.fx;fx.reset();
   for(const t of S.arcs)for(let j=0;j<3;j++){const ph=(g-t-j*85)/700;if(ph>0&&ph<1)fx.arc(S.tip.clone().addScaledVector(S.axis,.02),S.Qh,.08+.8*Math.pow(ph,.75),.62*Math.sin(Math.PI*Math.min(1,ph*1.1))*(1-ph*.4),'#e8f4ff');}
+  if(act==='sing')BB.noteBurst(fx,S.arcs,g,S.tip.clone().addScaledVector(S.axis,.02),BODY,BB.rigs.bird.height);
   fx.flush();
 }
 const ACTS={

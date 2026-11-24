@@ -112,6 +112,7 @@ function draw(o,S,act,g){
   const fx=o.fx;fx.reset();const tipP=S.sipP.clone().addScaledVector(S.sipDir,.11);
   for(const t of S.fx.jet){for(let j=0;j<5;j++){const ph=(g-t-j*55)/800;if(ph>0&&ph<1){const sp=.28+.06*j;fx.dot(tipP.clone().addScaledVector(S.sipDir,sp*Math.sqrt(ph)*.55).add(V(.04*Math.sin(j*2.3)*ph,.34*ph*(1-.2*j/5),.06*Math.cos(j*1.7)*ph)),.012+.011*(j%3)+.01*ph,.65*Math.sin(Math.PI*Math.min(1,ph*1.1)),'#dff0ff');}}
     const ph=(g-t)/1100;if(ph>0&&ph<1)fx.ring(.0,.007,.0,.3+1.3*Math.pow(ph,.8),.5*Math.sin(Math.PI*Math.min(1,ph*1.05))*(1-ph*.5),'#cfe6ff');}
+  if(act==='sing')BB.noteBurst(fx,S.fx.jet,g,tipP.clone(),'#c9743f',BB.rigs.octo.height);
   fx.flush();
 }
 const ACTS={
