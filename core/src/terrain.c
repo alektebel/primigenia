@@ -2009,3 +2009,17 @@ int cp_terrain_generate_desc(const CpTerrainParams *p, const CpIslandDesc *d, Cp
     cp_island_apply(d, &q);
     return generate_impl(&q, d, out, ws, fn, user);
 }
+
+/* The shape of a desc without erosion: the same pipeline as cp_terrain_generate_desc with droplets, thermal and stream passes
+ * forced to 0 (also over the desc's own recommended erosion). Cheap enough to run while an author drags a point. */
+int cp_terrain_shape_desc(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *out,
+                          const CpTerrainWorkspace *ws, CpTerrainProgressFn fn, void *user)
+{
+    CpTerrainParams q;
+    if (!p || !d) return CP_TERR_ERR_NULL;
+    if (d->neval < 0 || d->neval > CP_ISL_MAX_EVAL || !(d->scale > 0.f)) return CP_TERR_ERR_ISL_FIELD;   /* not prepared */
+    q = *p;
+    cp_island_apply(d, &q);
+    q.droplets = 0; q.thermal_iters = 0; q.stream_iters = 0;
+    return generate_impl(&q, d, out, ws, fn, user);
+}

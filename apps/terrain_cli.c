@@ -115,12 +115,12 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
 }
 
 static CpIslandDesc island;         /* --desc FILE: an ISL1 blob (core/include/cpore/island.h) */
-static int have_desc;
+static int have_desc, shape_only;   /* shape_only: --base with --desc runs cp_terrain_shape_desc (no erosion whatever the desc recommends) */
 
 static int run_gen(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws, double *sec)
 {
     double t0 = now_s();
-    int rc = have_desc ? cp_terrain_generate_desc(p, &island, t, ws, NULL, NULL) : cp_terrain_generate(p, t, ws, NULL, NULL);
+    int rc = have_desc ? (shape_only ? cp_terrain_shape_desc(p, &island, t, ws, NULL, NULL) : cp_terrain_generate_desc(p, &island, t, ws, NULL, NULL)) : cp_terrain_generate(p, t, ws, NULL, NULL);
     *sec = now_s() - t0;
     return rc;
 }
@@ -397,7 +397,7 @@ int main(int argc, char **argv)
             len = fread(blob, 1, sizeof blob, fp); fclose(fp);
             drc = cp_island_parse(blob, len, &island);
             if (drc != CP_TERR_OK) { fprintf(stderr, "bad island blob %d\n", drc); return 2; }
-            have_desc = 1;
+            have_desc = 1; shape_only = has(argc, argv, "--base");
             p.n = island.n;
             apply_overrides(&p, argc, argv);
             cp_island_apply(&island, &p);

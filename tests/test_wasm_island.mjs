@@ -44,6 +44,15 @@ for (const [name, file, blob] of [['plain', 'build/island/star_f0.isl', plain], 
   }
 }
 assert.notEqual(rows[0].hash, rows[3].hash, 'the rich desc changes the terrain');
+// F2: the editor's shape level (cp_terrain_shape_desc, _ct_shape_desc) is the CLI's `--base` run; erosion stays off even for a desc that recommends it
+for (const [name, file, blob] of [['plain', 'build/island/star_f0.isl', plain], ['rich', 'build/island/rich.isl', rich]]) {
+  const native = execFileSync('build/terrain_cli', ['hash', '--desc', file, '--seed', '1', '--n', '256', '--base'], { encoding: 'utf8' }).trim().split(/\s+/)[0];
+  const w = engine.generate({ seed: 1, n: 256, desc: new Uint8Array(blob), shape: true });
+  assert.equal(w.hash, native, `${name} shape level: native --base == WASM _ct_shape_desc`);
+  const full = execFileSync('build/terrain_cli', ['hash', '--desc', file, '--seed', '1', '--n', '256'], { encoding: 'utf8' }).trim().split(/\s+/)[0];
+  assert.notEqual(w.hash, full, 'the shape level differs from the eroded terrain');
+}
+console.log('island WASM: shape level (_ct_shape_desc) == terrain_cli --base');
 // a plain seed run after a desc run is the seed's terrain again (nothing leaks between the two)
 const seedHash = execFileSync('build/terrain_cli', ['hash', '--seed', '1', '--n', '256'], { encoding: 'utf8' }).trim().split(/\s+/)[0];
 const again = engine.generate({ seed: 1, n: 256 });

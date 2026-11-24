@@ -1,0 +1,30 @@
+{
+ "git": "ccb7fbaf",
+ "desc_hash": "5e5e122d75819632",
+ "entries": [
+  {
+   "seed": 1,
+   "n": 256,
+   "mode": "shape",
+   "hash": "806e9b944aeec8cc"
+  },
+  {
+   "seed": 1,
+   "n": 512,
+   "mode": "full",
+   "hash": "811fc7c5bc9b0101"
+  },
+  {
+   "seed": 1,
+   "n": 1024,
+   "mode": "bake",
+   "hash": "1faf1adc9b24ea77"
+  },
+  {
+   "seed": 1,
+   "n": 1536,
+   "mode": "bake",
+   "hash": "57fac84e80ca0e8e"
+  }
+ ]
+}
