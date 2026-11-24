@@ -12,7 +12,7 @@ var distance: float
 var orbit_pitch := 0.0
 var manual := 0.0
 # One zoom parameter (docs/godot/CAMERA-ZOOM.md section 2): 0 = close-up ... 1 = strategic island map.
-const Z_CHASE := 0.15            # the default gameplay view
+const Z_CHASE := 0.0             # the default gameplay view: the close band (owner 2026-11-22, loop-03 "Close"; A54). It was 0.15 (4 body heights).
 const Z_KEYS := [0.0, 0.15, 0.40, 0.70, 1.0]
 const KEY_DIST_H := [1.8, 4.0, 12.0]       # body heights, for z 0, 0.15, 0.40
 const MIN_DISTANCE := 1.6                  # m: the closest view never gets nearer than this, whatever the body (a 0.65 m hatchling)
@@ -45,6 +45,24 @@ var _last_wheel := -10.0
 var target = null            # Vector3, eased look-at point
 var boom = null              # float, eased boom length
 var fight_blend := 0.0
+# Occlusion (CameraOccluders: tree trunks, bushes, rocks as cheap proxies; null = terrain only)
+var occluders = null
+var legacy := false            # test switch: the terrain-only, instantly shortened boom of before T4 (the before numbers of the camera test)
+var lift := 0.0                # rad: extra camera elevation while something low blocks the view (eased)
+var _cap = null                # float, eased cap on the boom length from what blocks the view
+var _cap_hold := 0.0
+var _lift_hold := 0.0
+const CAM_R := 0.35            # m: radius of the sphere swept from the creature to the camera
+const CAST_MAX := 60.0         # m: beyond this boom the camera is high above everything but the terrain
+const CAP_IN_TAU := 0.11       # s: the boom shortens this fast when something moves into the line
+const CAP_IN_MAX := 14.0       # m/s: ...and never faster than this (0.23 m per frame at 60 fps), whatever the boom
+const CAP_OUT_TAU := 0.45      # s: and lengthens this slowly...
+const CAP_HOLD := 0.35         # s: ...after the way has been clear for this long
+const LIFT_STEPS := [0.12, 0.25, 0.4, 0.58, 0.8]   # rad of extra elevation tried, smallest first
+const LIFT_TRIGGER := 0.7      # the view rises when the clear boom is below this share of the wanted one
+const LIFT_GOOD := 0.85        # ...to the smallest elevation that frees this share of it
+const LIFT_HOLD := 0.5         # s the view stays raised after the obstacle is gone
+const LIFT_DOWN_TAU := 0.6     # s: and then comes back down
 var view_yaw: float
 var ground: Callable
 # Calm follow (PLAN-feel S6)
@@ -58,7 +76,7 @@ var AWAY_MAX := 1.9199       # rad (110 deg): follow only when running away from
 var PIVOT_RATE := 2.5        # rad/s: no swing while the creature pivots
 var ENGAGE_TIME := 0.25      # s: the heading must have been steady (within 20 deg) over this time
 var ENGAGE_TOL := 0.3491     # rad (20 deg)
-var kick := false              # optional speed cues (settings camera/kick): wider fov and boom near sprint speed
+var kick := true               # speed cues (settings camera/kick, on by default since A54): wider fov, longer boom and a little follow lag at a gallop
 var top_speed := 8.84
 var fov_add := 0.0
 # Flight (F1): the island sets `air_y` (world height of the flyer) and `air_on`; the camera pulls back x1.6, rises with the
@@ -79,6 +97,13 @@ var _ring: Array = []          # [time, player yaw] over the last 0.3 s
 var _last_player_yaw = null
 var _player_rate := 0.0
 var _kick_k := 0.0
+var _burst_k := 0.0           # A54: a run burst (hard acceleration): a quick extra fov kick and follow lag that fade as the speed settles
+var _prev_speed := 0.0
+const BURST_FOV := 3.0
+const BURST_LAG := 0.06
+const KICK_FOV := 4.0          # degrees of extra field of view at a gallop (A54, subtle; was 5, off by default)
+const KICK_BOOM := 0.05        # share of extra boom length at a gallop
+const KICK_LAG := 0.07         # s: the look-at point follows this much slower at a gallop (the creature pulls ahead of the frame a little)
 
 func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> void:
 	height = maxf(0.5, creature_height)
@@ -88,6 +113,13 @@ func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> voi
 	min_distance = curve_distance(0.0)
 	max_distance = curve_distance(1.0)
 	distance = curve_distance(z)
+
+# Height of the look-at point in body heights: 1.5 from the chase band up; lowered towards the close band (A54) so the legs and feet stay in
+# frame (at z 0 the view is 1.8 h away and only +-0.8 h tall, so looking at 1.5 h cropped everything under the shoulders).
+const LOOK_H := 1.5
+const LOOK_H_CLOSE := 0.7
+func look_height() -> float:
+	return lerpf(LOOK_H_CLOSE, LOOK_H, clampf(z / Z_KEYS[1], 0.0, 1.0))
 
 # ---- the zoom curve (pure functions of z) ---------------------------------------------------------
 func _key_distances() -> Array:
@@ -188,7 +220,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	_air_k = lerpf(_air_k, 1.0 if air_on else 0.0, 1.0 - exp(-dt / (0.3 if air_on else 0.17)) if dt > 0.0 else 1.0)
 	_air_dive_k = lerpf(_air_dive_k, 1.0 if (air_on and air_dive) else 0.0, 1.0 - exp(-dt / 0.25) if dt > 0.0 else 1.0)
 	var ground_y: float = ground.call(player.x, player.z)
-	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * 1.5, maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
+	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * look_height(), maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
 	if mb > 0.0:
 		tgt.x = lerpf(tgt.x, map_center.x, mb)
 		tgt.z = lerpf(tgt.z, map_center.y, mb)
@@ -198,8 +230,11 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	var desired := distance * (1.25 if aspect < 0.7 else 1.0)
 	var kick_goal := clampf((float(player.speed) - 0.8 * top_speed) / (0.2 * top_speed), 0.0, 1.0) if kick else 0.0
 	_kick_k = lerpf(_kick_k, kick_goal, 1.0 - exp(-dt / 0.3) if dt > 0.0 else 1.0)
-	fov_add = 5.0 * _kick_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
-	desired *= 1.0 + 0.06 * _kick_k
+	var accel_p: float = (float(player.speed) - _prev_speed) / dt if dt > 0.0 else 0.0
+	_prev_speed = float(player.speed)
+	_burst_k = lerpf(_burst_k, clampf((accel_p - 1.5) / 3.0, 0.0, 1.0) if kick else 0.0, 1.0 - exp(-dt / 0.15) if dt > 0.0 else 1.0)
+	fov_add = KICK_FOV * _kick_k + BURST_FOV * _burst_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
+	desired *= 1.0 + KICK_BOOM * _kick_k
 	desired *= 1.0 + 0.6 * _air_k
 	fov_add += 8.0 * _air_dive_k
 	if fighting and enemy != null:
@@ -209,7 +244,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 		var sep := Vector2(player.x - enemy.x, player.z - enemy.z).length()
 		var half_fov := atan(tan(deg_to_rad(24.0)) * minf(1.0, aspect))
 		desired = maxf(desired + sep * 0.6, (sep / 2.0 + h * 1.5) / sin(half_fov * 0.85))
-	var ease_t := 1.0 - exp(-dt / POS_TAU) if dt > 0.0 else 1.0
+	var ease_t := 1.0 - exp(-dt / (POS_TAU + KICK_LAG * _kick_k + BURST_LAG * _burst_k)) if dt > 0.0 else 1.0      # the lead above uses the base tau, so the extra tau is a real lag
 	if target == null:
 		target = tgt
 	target = (target as Vector3).lerp(tgt, ease_t)
@@ -219,17 +254,48 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	target = tv
 	var boom_tau := 0.3 if (fighting or fight_blend > 0.01) else 0.1
 	boom = desired if boom == null else lerpf(boom, desired, 1.0 - exp(-dt / boom_tau) if dt > 0.0 else 1.0)
-	var dir := Vector3(sin(view_yaw) * cos(pitch), sin(pitch), cos(view_yaw) * cos(pitch))
-	var length: float = boom
-	var d := 0.2
-	while float(boom) <= 400.0 and d <= float(boom) + 0.2:      # far away the camera is high above the ground: only the floor clamp below
-		var s := minf(d, float(boom))
-		var sx := tv.x + dir.x * s
-		var sz := tv.z + dir.z * s
-		if tv.y + dir.y * s < ground.call(sx, sz) + 0.65:
-			length = maxf(0.0, s - 0.25)
-			break
-		d += maxf(0.2, d * 0.02)
+	# Occlusion (creature-loop T4): terrain, trunks, bushes and rocks between the creature and the camera shorten the boom; a blocked
+	# view first rises over the obstacle. Both are eased (no snap): shortening fast, lengthening slowly after a hold.
+	var gy_p: float = ground.call(player.x, player.z)
+	var body := [Vector3(player.x, gy_p + h * 0.5, player.z), Vector3(player.x, gy_p + h, player.z)]
+	var want_lift := 0.0
+	if not legacy and float(boom) <= CAST_MAX and mb < 0.5:
+		var cap0 := _free_length(tv, body, view_yaw, pitch, float(boom))
+		if cap0 < float(boom) * LIFT_TRIGGER:
+			for extra in LIFT_STEPS:
+				if pitch + extra > MAX_PITCH:
+					break
+				want_lift = extra
+				if _free_length(tv, body, view_yaw, pitch + extra, float(boom)) >= float(boom) * LIFT_GOOD:
+					break
+			if _free_length(tv, body, view_yaw, pitch + want_lift, float(boom)) < maxf(cap0 * 1.5, float(boom) * LIFT_GOOD * 0.6):
+				want_lift = 0.0                  # raising the view does not clear it (a cliff, a wall of trunks): keep the short boom
+	var lift_tau := 0.22 if want_lift > lift else LIFT_DOWN_TAU
+	if _lift_hold > 0.0 and want_lift < lift:
+		_lift_hold -= dt
+		want_lift = lift
+	elif want_lift >= lift:
+		_lift_hold = LIFT_HOLD
+	lift = lerpf(lift, want_lift, 1.0 - exp(-dt / lift_tau) if dt > 0.0 else 1.0)
+	var free_pitch := pitch + lift
+	var dir := Vector3(sin(view_yaw) * cos(free_pitch), sin(free_pitch), cos(view_yaw) * cos(free_pitch))
+	var raw := float(boom) * 1.5 + 2.0
+	if legacy:
+		raw = _ground_length(tv, dir, float(boom)) if float(boom) <= 400.0 else float(boom)
+	elif float(boom) <= CAST_MAX and mb < 0.5:
+		raw = minf(raw, _free_length(tv, body, view_yaw, free_pitch, float(boom)))
+	elif float(boom) <= 400.0:
+		raw = minf(raw, _ground_length(tv, dir, float(boom)))
+	if _cap == null or dt <= 0.0 or legacy:
+		_cap = raw
+	elif raw < float(_cap):
+		_cap = maxf(lerpf(float(_cap), raw, 1.0 - exp(-dt / CAP_IN_TAU)), float(_cap) - CAP_IN_MAX * dt)       # eased, and never faster than CAP_IN_MAX (no snap)
+		_cap_hold = CAP_HOLD
+	elif _cap_hold > 0.0:
+		_cap_hold -= dt
+	else:
+		_cap = minf(raw, lerpf(float(_cap), raw, 1.0 - exp(-dt / CAP_OUT_TAU)))
+	var length := minf(float(boom), float(_cap))
 	var pos := tv + dir * length
 	# Looking up: the camera sinks towards the ground (never under it) and its aim goes up past the horizon.
 	var up_amount := clampf((FLOOR_PITCH - look_pitch) / (FLOOR_PITCH - LOOK_MIN), 0.0, 1.0)
@@ -241,6 +307,53 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 		var f := -look_pitch
 		aim = pos + Vector3(-sin(view_yaw) * cos(f), sin(f), -cos(view_yaw) * cos(f)) * 20.0
 	return {"fov_add": fov_add, "position": pos, "target": tv, "aim": aim, "look_pitch": look_pitch, "yaw": view_yaw, "pitch": pitch, "distance": boom, "actual_distance": length, "z": z, "roll": roll}
+
+# The boom length the view can have along (yaw, pitch) from the look-at point `tv`: terrain and props, seen from the look-at point
+# and from the creature's body and head (so a low rock or bush between camera and body counts, not only one on the aim line).
+func _free_length(tv: Vector3, body: Array, yaw_: float, pitch_: float, want: float) -> float:
+	var dir := Vector3(sin(yaw_) * cos(pitch_), sin(pitch_), cos(yaw_) * cos(pitch_))
+	var best := _ground_length(tv, dir, want, body)
+	if occluders != null:
+		var cand := tv + dir * want
+		var t: float = occluders.cast(tv, cand, CAM_R)
+		best = minf(best, t * want)
+		for src: Vector3 in body:
+			t = occluders.cast(src, cand, CAM_R)
+			best = minf(best, t * want)
+	return best
+
+# Terrain: the old rule (the boom ray stays 0.65 m over the ground) plus the lines from the creature's body and head to the camera.
+func _ground_length(tv: Vector3, dir: Vector3, want: float, body: Array = []) -> float:
+	var length := want
+	var d := 0.2
+	while d <= want + 0.2:
+		var s := minf(d, want)
+		var sx := tv.x + dir.x * s
+		var sz := tv.z + dir.z * s
+		if tv.y + dir.y * s < ground.call(sx, sz) + 0.65:
+			length = maxf(0.0, s - 0.25)
+			break
+		d += maxf(0.2, d * 0.02)
+	if not body.is_empty() and length > 0.5:
+		var cand := tv + dir * want
+		var steps := clampi(ceili(want / 0.5), 4, 24)
+		for src: Vector3 in body:
+			for i in range(1, steps + 1):
+				var f := float(i) / steps
+				var q := src.lerp(cand, f)
+				if q.y < ground.call(q.x, q.z) + 0.35:
+					length = minf(length, maxf(0.0, f * want - 0.3))
+					break
+	return length
+
+## An explicit cut (teleport, entering or leaving the editor): the eased state restarts at the next update.
+func cut() -> void:
+	target = null
+	boom = null
+	_cap = null
+	lift = 0.0
+	_cap_hold = 0.0
+	_lift_hold = 0.0
 
 # Auto-follow of the creature's heading with a rate cap and an acceleration cap. It does not swing when the creature
 # runs towards the camera (more than 110 degrees away), pivots, has not held its heading for a quarter of a second

@@ -25,7 +25,7 @@ var _meadow: AudioStreamPlayer
 var _rustle: AudioStreamPlayer3D
 var sound_dir := SOUND_DIR
 
-func _init(settings_path: String = "user://settings.cfg") -> void:
+func _init(settings_path: String = "") -> void:
 	settings = Settings.new(settings_path)
 
 func _ready() -> void:
@@ -163,8 +163,10 @@ func footstep(pos: Vector3, speed: float, radius_cm: float = 60.0) -> void:
 func cry(kind: String, pos: Vector3, radius_cm: float = 60.0, volume: float = 0.5) -> void:
 	play_at(kind, pos, volume, size_rate(radius_cm))
 
-func hit(pos: Vector3) -> void:
-	play_at("hit", pos, 0.5)
+## A64: the weight of the body shows in the hit: a big one thumps lower and louder, a small one is a lighter tick.
+func hit(pos: Vector3, radius_cm: float = 60.0) -> void:
+	var rate := clampf(size_rate(radius_cm) / size_rate(60.0), 0.6, 1.5)     # 1.0 at the 60 cm body the sound was made for
+	play_at("hit", pos, clampf(0.5 / sqrt(rate), 0.35, 0.7), rate)
 
 func block(pos: Vector3) -> void:
 	play_at("block", pos, 0.5)
@@ -217,7 +219,7 @@ func combat_event(type: int, pos: Vector3, radius_cm: float = 60.0) -> void:
 	match type:
 		1:
 			cry("hurt", pos, radius_cm, 0.35)
-			hit(pos)
+			hit(pos, radius_cm)
 		2, 3:
 			block(pos)
 		4:

@@ -8,7 +8,8 @@ extends RefCounted
 const FORMAT := "primigenia.tuning/1"
 const DBG_PARAM := 7
 const DEV_DIR := "res://tuning"
-const USER_DIR := "user://tuning"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+static var USER_DIR := TestIsolation.user("tuning")
 const CAMERA := {"lead": [0.0, 0.5, 0.01], "pos_tau": [0.02, 0.5, 0.01], "vel_tau": [0.02, 0.6, 0.01], "yaw_tau": [0.1, 2.0, 0.05],
 	"yaw_max": [0.5, 6.0, 0.05], "yaw_acc": [1.0, 20.0, 0.5], "away_max": [0.5, 3.1, 0.05], "pivot_rate": [0.5, 8.0, 0.1],
 	"engage_time": [0.0, 1.0, 0.01], "engage_tol": [0.05, 1.0, 0.01]}

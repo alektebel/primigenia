@@ -135,13 +135,13 @@ int cp_stage_part_find(CpStageWorld *w,int id,int source){
  event(w,CP_STAGE_EV_PART_FOUND,id,source,duplicate);w->hash=cp_stage_hash(w);return 0;
 }
 void cp_stage_parts_ally(CpStageWorld *w,int sp){
- if(sp<0||sp>=CP_STAGE_SPECIES_COUNT||w->parts.ally_paid[sp])return;
+ if(sp<0||sp>=CP_STAGE_SPECIES_DEFINED||w->parts.ally_paid[sp])return;
  w->parts.ally_paid[sp]=1;cp_stage_part_find(w,cp_stage_part_id(signature[sp]),CP_PART_ALLY);
 }
 void cp_stage_parts_kill(CpStageWorld *w,int i){
  if(i<0||i>=w->setup.n||w->parts.kill_paid[i]||!cp_stage_species_counts_progress(w,i+1))return;
  CpStageParts *p=&w->parts;int sp=w->wild[i].species;
- if(sp<0||sp>=CP_STAGE_SPECIES_COUNT)return;
+ if(sp<0||sp>=CP_STAGE_SPECIES_DEFINED)return;
  p->kill_paid[i]=1;
  if(w->ancestry.count){const CpLineageForm *f=&w->ancestry.forms[w->ancestry.count-1].form;for(int k=0;k<CP_STAGE_PART_COUNT;k++)if(f->parts[k]&&p->kills[k]<UINT32_MAX)p->kills[k]++;}
  unsigned roll=cp_rng_u32(&p->loot)%1000,pick=cp_rng_u32(&p->loot);
@@ -243,7 +243,8 @@ uint64_t cp_stage_parts_hash(const CpStageWorld *w){
  for(int i=6;i<CB_MOVE_COUNT;i++)extra|=p->move_hits[i]|p->move_wins[i];
  for(int i=47;i<CP_STAGE_PART_COUNT;i++)if(p->level[i]||p->tier[i]||p->hits[i]||p->wins[i]||p->kills[i]){hu(&h,0x46513032u+(uint32_t)i);hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}   /* first-quest parts: only once they matter, so older goldens hold */
  if(extra){hu(&h,0x43325054);hu(&h,p->level[46]);hu(&h,p->tier[46]);hu(&h,p->hits[46]);hu(&h,p->wins[46]);hu(&h,p->kills[46]);for(int i=6;i<CB_MOVE_COUNT;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}}
- for(int i=0;i<CP_STAGE_MAX_WILD;i++)hu(&h,p->kill_paid[i]);
+ for(int i=0;i<24;i++)hu(&h,p->kill_paid[i]);   /* the first 24 slots always (the v8 roster), later ones only once set, so older goldens hold */
+ for(int i=24;i<CP_STAGE_MAX_WILD;i++)if(p->kill_paid[i]){hu(&h,0x4b503235u+(uint32_t)i);hu(&h,p->kill_paid[i]);}
  if(p->tiers_on||p->clues){hu(&h,0x41323521u);hu(&h,p->tiers_on);hu(&h,p->clues);}
  hu(&h,p->eggs);hu(&h,p->lost);hu(&h,p->hatchling);hu(&h,p->n_nodes);hu(&h,p->inspect_id);hu(&h,p->inspect_ticks);
  uint32_t f;memcpy(&f,&p->adult_hp,4);hu(&h,f);

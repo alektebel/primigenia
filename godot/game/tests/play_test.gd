@@ -173,13 +173,16 @@ func _walk_check(name: String, c, desc: Dictionary, m) -> void:
 			var sole: Vector3 = l.foot.global_position
 			lowest = minf(lowest, sole.y)
 			if ctl.pose.contact[j]:
-				worst_reach = maxf(worst_reach, (sole - l.foot_target).length())
-				if ctl.pose.foot_pitch[j] < 0.01:
+				# A54: the foot pivots about the ankle (on its own up axis), so with the heel raised its origin is no longer the target;
+				# the IK is checked where it acts: the ankle sits a sole-height above the target along world up
+				var ankle_w: Vector3 = l.creature.global_transform * l.ankle
+				worst_reach = maxf(worst_reach, (ankle_w - (l.foot_target + Vector3.UP * (l.width * 0.6))).length())
+				if ctl.pose.foot_pitch[j] < 0.003:
 					worst_flat = maxf(worst_flat, absf(sole.y))
 			else:
 				swing_feet += 1
 	if not desc.leg_ids.is_empty():
-		check(worst_reach < 0.002, "%s: point 3, the IK reaches the planted soles (%.2f mm)" % [name, worst_reach * 1000.0])
+		check(worst_reach < 0.002, "%s: point 3, the IK reaches the planted ankles (%.2f mm)" % [name, worst_reach * 1000.0])
 		check(worst_flat < Adapter.SOLE_TOLERANCE + 0.001, "%s: point 3, flat-footed soles on the ground (%.2f mm)" % [name, worst_flat * 1000.0])
 		check(lowest > -0.01, "%s: no foot below the ground (%.1f mm)" % [name, lowest * 1000.0])
 		check(swing_feet > 0, "%s: feet really swing" % name)
@@ -269,33 +272,33 @@ func _stage() -> void:
 	var sui = island.stage_ui
 	ui.set_mode(&"attack")            # no default mode: the loadout slots show once Attack is chosen
 	var lo0: Dictionary = game.stage.cur.loadout
-	# A25: a new run starts with the starter parts (pico, pata, ojo): it knows bite, spit and peck (parts decide what a creature can slot)
-	check(lo0.slots == [0, 3, 7, 10] and lo0.can_edit and int(lo0.known) == 3209, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
-	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 3 and ui.abilities[2].move == 7, "the hotbar carries the C move ids of the slots")
-	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(1) == "spit" and ui.petals.id_at(3) != "" and ui.petals.state_at(3) != &"empty", "the petals show the glyph of each loadout move, the fourth slot carries the starter's own move (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(1)])
-	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout
+	# A25/A62: starter B (pico, zanca legs, ojo, crest) knows bite, spit, peck, pounce and roar (the hoof stomp went with the pezuna legs); the slots are bite, pounce, spit, roar (parts decide what a creature can slot)
+	check(lo0.slots == [0, 8, 3, 10] and lo0.can_edit and int(lo0.known) == 1417, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
+	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 8 and ui.abilities[2].move == 3, "the hotbar carries the C move ids of the slots")
+	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(2) == "spit" and ui.petals.id_at(3) != "" and ui.petals.state_at(3) != &"empty", "the petals show the glyph of each loadout move, the fourth slot carries the starter's own move (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(2)])
+	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout, spit's own slot (3) empties
 	await sim_ticks(2)
-	check(game.stage.cur.loadout.slots == [3, -1, 7, 10], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
-	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(1) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 2 empty")
+	check(game.stage.cur.loadout.slots == [3, 8, -1, 10], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
+	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(2) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 3 empty")
 	sui.assign_loadout(2, 4)                  # tail_strike: this creature has no tail, C says not_known
 	await sim_ticks(1)                        # (the next tick's walking input would overwrite the error)
-	check(game.stage.cur.loadout.slots == [3, -1, 7, 10] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
+	check(game.stage.cur.loadout.slots == [3, 8, -1, 10] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
 	sui.selected_id = 1
 	var orders0: int = sui.attack_orders.size()
 	_key(KEY_1)
 	check(sui.attack_orders.size() > orders0 and str(sui.attack_orders.back().order) == "attack #1 spit", "key 1 fires the move in slot 1 (%s)" % [sui.attack_orders.back()])
 	sui._pending_attack = null
 	orders0 = sui.attack_orders.size()
-	_key(KEY_2)
-	check(sui.attack_orders.size() == orders0, "key 2 on an empty slot fires nothing")
+	_key(KEY_3)
+	check(sui.attack_orders.size() == orders0, "key 3 on an empty slot fires nothing")
 	sui.toggle_loadout_panel()
 	check(ui.loadout_panel.visible_open and game.modal_open == false, "the panel opens at the nest (key L)")
 	await frames(2)
 	check(game.modal_open, "an open panel blocks movement input (modal_open)")
 	ui.loadout_panel.choose(0, 0)
-	ui.loadout_panel.choose(1, 3)
+	ui.loadout_panel.choose(2, 3)
 	await sim_ticks(3)
-	check(game.stage.cur.loadout.slots == [0, 3, 7, 10], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
+	check(game.stage.cur.loadout.slots == [0, 8, 3, 10], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
 	ui.loadout_panel.close_panel()
 	await frames(2)
 	sui.selected_id = -1
@@ -321,6 +324,50 @@ func _stage() -> void:
 		lowest = minf(lowest, l.foot.global_position.y - game.visual_ground(l.foot.global_position.x, l.foot.global_position.z))
 	check(lowest > -0.03, "feet are on the visible ground, Game.visual_ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.25, "the actor stands on Game.ground (within the owner style sprawl crouch, A42)")
+
+	print("== jump (Space): up, down, no damage, a running jump goes further")
+	await sim_ticks(8)
+	var hp_j: float = float(game.stage.cur.entities[0].hp)
+	var y_ground: float = float(game.stage.cur.player.y)
+	var jx0: Vector3 = island.player_pos
+	var press := {"forward": false, "back": false, "left": false, "right": false, "sprint": false, "jump": true}
+	island.player_input.keys_override = press
+	var peak := 0.0
+	var air_ticks := 0
+	var seen_jumping := false
+	var seen_pose_lift := false
+	for i in 40:
+		await process_frame
+		var pl: Dictionary = game.stage.cur.player
+		if bool(pl.get("jumping", false)):
+			seen_jumping = true
+			air_ticks += 1
+			peak = maxf(peak, float(pl.y) - y_ground)
+			var lift_now: float = island.player_pos.y - y_ground
+			seen_pose_lift = seen_pose_lift or lift_now > 0.1
+		if seen_jumping and not bool(pl.get("falling", false)):
+			break
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	check(seen_jumping, "Space makes the player airborne by a jump (C: player.jumping)")
+	check(peak > 0.25 and peak < 0.7, "the hop of starter B reaches %.2f m (about 0.8 x hip height)" % peak)
+	check(seen_pose_lift, "the actor rises with the jump")
+	await sim_ticks(8)
+	check(not bool(game.stage.cur.player.falling) and absf(float(game.stage.cur.player.y) - y_ground) < 0.3, "and lands")
+	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a jump on flat ground does no damage")
+	check(Vector2(island.player_pos.x - jx0.x, island.player_pos.z - jx0.z).length() < 0.5, "a standing jump stays in place")
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "run": false}
+	await sim_ticks(5)      # short: the shore is a few metres ahead on the current island, and C refuses a jump in deep water
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "jump": true}
+	await sim_ticks(1)
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
+	await until(func() -> bool: return bool(game.stage.cur.player.get("jumping", false)), 60)
+	var air_start: Vector2 = Vector2(island.player_pos.x, island.player_pos.z)
+	await until(func() -> bool: return not bool(game.stage.cur.player.get("falling", false)), 120)
+	var air_dist := Vector2(island.player_pos.x - air_start.x, island.player_pos.z - air_start.y).length()
+	check(air_dist > 0.5, "a running jump carries its speed: %.1f m through the air" % air_dist)
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	await sim_ticks(10)
+	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a running jump on flat ground does no damage either")
 
 	print("== pause menu: save game / load game")
 	var Scenario = load("res://devtools/scenario.gd")
@@ -434,6 +481,9 @@ func _stage() -> void:
 	_key(KEY_1)
 	await sim_ticks(40)
 	var p_now: Dictionary = game.stage.cur.entities[0]
+	check(p_now.has("grip_deg") and p_now.has("sliding"), "A59 exposes grip and slipping to animation")
+	var gp: Dictionary = CporeWorld.grip_profile(JSON.stringify({"nodes": [{"y": 0, "z": 0, "r": 1}], "parts": [{"type": "leg_sucker"}]}))
+	check(int(gp.get("grip_deg", 0)) == 75, "A59 sucker preview clings at 75 degrees")
 	var e_now: Dictionary = game.stage.cur.entities[1]
 	check(events_seen > 0, "combat events reached the stage (%d)" % events_seen)
 	check(windup_seen, "the wind-up tell was shown for an enemy wind-up")
@@ -498,6 +548,9 @@ func _actions_begin(island) -> Dictionary:
 				f1 = f
 		if f1 == null or int(f1.phase) != 1 or int(f1.move) < 0:
 			st.wind.n = 0
+			return
+		if w.driver.layer.paused():
+			st.wind.n = 0            # A64 hit-pause: the layer clock stands still, so the fade-in restarts after it
 			return
 		st.wind.n += 1
 		st.wind.seen += 1

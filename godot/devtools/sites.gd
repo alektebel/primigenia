@@ -8,7 +8,8 @@ const MAT_SAND := 4
 var list: Array = []
 var bookmarks: Array = []     # [{name, pos: [x, y, z], camera: {}}], persisted per seed
 var seed_id := 1
-var bookmark_dir := "user://bookmarks"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+var bookmark_dir := TestIsolation.user("bookmarks")
 
 static func _site(id: String, name: String, kind: String, x: float, z: float, data, source: String, hidden := false) -> Dictionary:
 	return {"id": id, "name": name, "kind": kind, "pos": Vector3(x, data.ground(x, z), z), "hidden": hidden, "source": source}

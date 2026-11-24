@@ -1,4 +1,5 @@
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -40,8 +41,8 @@ int main(void){
     reset(0);w.run_stamina=149;cp_stage_set_run(&w,1);assert(!w.running);
     cp_stage_step(&w,&wait);assert(w.run_stamina==154);
     cp_stage_set_run(&w,1);cp_stage_step(&w,&wait);assert(w.run_stamina==159);
-    /* Full gradient matters even for contour motion; morphology sets the limit, capped at 1.26. */
-    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=10+1.4f*(i*.5f-64);
+    /* Full gradient matters even for contour motion; morphology sets the limit (8 legs: 59.6 degrees, so 1.8 slides). */
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=10+1.8f*(i*.5f-64);
     w.player.x=0;w.player.z=0;w.player.legs=8;
     CpStageInput contour={.verb=CP_STAGE_HEADING,.hz=32767};
     cp_stage_step(&w,&contour);assert(w.falling&&w.player.sliding&&w.player.x<0);
@@ -56,7 +57,41 @@ int main(void){
     /* a hero-size body at its run (5 m/s, about the old jog); a slow walker stops at the foot of the facet instead (A39) */
     w.player.profile.radius_cm=300;CpStageInput east_run=east;east_run.sprint=1;
     int slid=0;for(int i=0;i<80;i++){cp_stage_step(&w,&east_run);slid|=w.falling;}
-    assert(slid);
+    assert(slid||w.player.x<0);
+    /* A59: plain body 51.6 slides on a 55-degree slope; digging claws (61.6) hold it; suckers (75) hold 75 degrees. */
+    for(int adapted=0;adapted<3;adapted++){
+        reset(0);float grade=adapted==2?3.7320508f:1.4281480f;
+        for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=100+grade*(i*.5f-64);
+        w.player.x=0;w.player.profile.grip_traits=0;
+        if(adapted==1)w.player.profile.grip_traits|=CP_GRIP_CLAW;
+        if(adapted==2)w.player.profile.grip_traits=CP_GRIP_CLING;
+        cp_stage_step(&w,&wait);
+        if(!adapted)assert(w.player.sliding&&w.player.x<0);
+        else {printf("grip case %d: x=%f slide=%d fall=%d limit=%f\n",adapted,w.player.x,w.player.sliding,w.falling,cp_stage_grip_grade(&w.player.profile,w.player.legs));assert(!w.player.sliding&&!w.falling&&w.player.x==0);}
+    }
+    /* A slide carries the player across a cliff and through A31 landing damage. */
+    reset(0);
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=i<120?0:12+1.5f*(i*.5f-60);
+    w.player.x=0;w.player.hp=w.player.profile.hp;int saw_slide=0,saw_damage=0;
+    for(int i=0;i<160&&!saw_damage;i++){
+        cp_stage_step(&w,&wait);saw_slide|=w.player.sliding;
+        for(unsigned k=0;k<w.ev_total&&k<CP_STAGE_MAX_EVENTS;k++)if(w.events[k].type==CP_STAGE_EV_FELL&&w.events[k].value>0)saw_damage=1;
+    }
+    assert(saw_slide&&saw_damage);
+    /* Wildlife slides and takes the same capped A31 damage after leaving the slope. */
+    reset(0);
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=i<120?0:12+1.5f*(i*.5f-60);
+    w.setup.n=1;w.wild[0]=w.player;w.wild[0].x=0;w.wild[0].home_x=0;w.player.x=30;
+    float wild_hp=w.wild[0].hp;int wild_slide=0;
+    for(int i=0;i<160&&w.wild[0].hp==wild_hp;i++){cp_stage_step(&w,&wait);wild_slide|=w.wild[0].sliding;}
+    assert(wild_slide&&w.wild[0].hp<wild_hp);
+    /* A nearby hostile cannot capture a sliding body into a flat combat arena. */
+    reset(0);
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=100+1.5f*(i*.5f-64);
+    w.player.profile.grip_traits=CP_GRIP_CLING;w.player.x=2;
+    w.setup.n=1;w.wild[0]=w.player;w.wild[0].profile.grip_traits=0;w.wild[0].species=3;w.wild[0].x=0;
+    cp_stage_step(&w,&wait);assert(w.wild[0].slip_air&&w.active<0);
+
     /* The confirmed body's actual bone lengths determine safe drop. */
     reset(0);w.ancestry.count=1;
     strcpy(w.ancestry.forms[0].form.body,"{\"parts\":[{\"type\":\"pata\",\"k\":[0,-1,0],\"f\":[0,-2,0]}]}");
@@ -133,6 +168,36 @@ int main(void){
         int differ=0;for(int i=0;i<150;i++)differ|=h1[i]!=h3[i];assert(differ);
         assert(cp_stage_replay_run(&su,NULL,0,NULL,ent,1,NULL,0,runs,-1,150,NULL)==0);
         free(m);
+    }
+    /* Jump (Space): apex 0.8 x hip height, no damage on flat ground, the run-up speed carries over, one jump per landing, stamina cost. */
+    {
+        reset(0);for(int i=0;i<5;i++)cp_stage_step(&w,&wait);
+        float st0=w.player.stamina,apex=cp_stage_jump_height(&w);
+        assert(fabsf(apex-.8f*.56f*.6f)<.01f);
+        assert(cp_stage_jump(&w)==0&&w.falling&&w.jumping);
+        assert(fabsf(st0-w.player.stamina-w.player.profile.stamina*CP_JUMP_STAMINA_PCT*.01f)<.01f);
+        assert(cp_stage_jump(&w)!=0);                       /* no double jump */
+        int32_t top=0,x0=(int32_t)(w.player.x*1000);float hp=w.player.hp;int ticks=0;
+        while(w.falling&&ticks<100){cp_stage_step(&w,&wait);if(w.fall_y_mm>top)top=w.fall_y_mm;ticks++;}
+        assert(!w.falling&&!w.jumping&&w.player.hp==hp);
+        float rise=(top-ground_mm0())*.001f;assert(rise>apex*.9f&&rise<apex*1.2f);
+        assert((int32_t)(w.player.x*1000)==x0);              /* standing jump: straight up */
+        assert(cp_stage_jump(&w)!=0);                        /* cooldown */
+        for(int i=0;i<CP_JUMP_COOLDOWN_TICKS;i++)cp_stage_step(&w,&wait);
+        assert(cp_stage_jump(&w)==0);
+        while(w.falling)cp_stage_step(&w,&wait);
+        /* a running jump travels further and lands still moving */
+        reset(0);for(int i=0;i<30;i++)cp_stage_step(&w,&east);
+        float sp=w.player.speed,xa=w.player.x;assert(sp>.3f);
+        assert(cp_stage_jump(&w)==0);hp=w.player.hp;
+        while(w.falling)cp_stage_step(&w,&east);
+        assert(w.player.x-xa>sp*.3f&&w.player.hp==hp&&fabsf(w.player.speed-sp)<sp*.5f);
+        /* exhausted, in a fight and in the water: refused */
+        reset(0);w.player.stamina=1;assert(cp_stage_jump(&w)==CP_STAGE_ERR_NO_STAMINA);
+        reset(0);w.player.stamina=w.player.profile.stamina;w.active=0;assert(cp_stage_jump(&w)!=0);
+        /* big bodies are clamped; the apex never exceeds half the safe drop */
+        reset(0);w.player.profile.radius_cm=300;assert(cp_stage_jump_height(&w)<=1.2f+1e-4f);
+        w.player.profile.radius_cm=20;assert(cp_stage_jump_height(&w)<=.5f*cp_stage_safe_drop(&w)+1e-4f);
     }
     puts("PASS run/fall");return 0;
 }

@@ -13,11 +13,17 @@ func run(t) -> void:
 	var r: Dictionary = {}
 	for i in 100:
 		r = cam.update(player, null, false, 0.05)
-	# CAMERA-ZOOM s2 changes the default view from 6h / 0.24 rad to the chase band: z 0.15 = 4h, 15 deg.
-	t.check(absf(cam.distance - 4.0 * h) < 1e-9, "default distance is 4h (z 0.15)")
-	t.check(absf(cam.pitch - deg_to_rad(15.0)) < 1e-9, "default pitch is 15 deg")
-	t.check(absf(r.target.y - (10.0 + 1.5 * h)) < 0.01, "look-at is ground + 1.5h after settling")
-	t.check(absf(r.actual_distance - 4.0 * h) < 0.3, "boom settles at 4h")
+	# A54: the default view is the close band (z 0 = 1.8h, 8 deg), the owner's pick; it was the chase band z 0.15 = 4h, 15 deg.
+	t.check(absf(cam.distance - 1.8 * h) < 1e-9, "default distance is 1.8h (z 0, the close view)")
+	t.check(absf(cam.pitch - deg_to_rad(8.0)) < 1e-9, "default pitch is 8 deg")
+	t.check(absf(r.target.y - (10.0 + 0.7 * h)) < 0.01, "look-at is ground + 0.7h in the close view (A54: the legs stay in frame), 1.5h from the chase band up")
+	var c1 = ChaseCamera.new(h, PI, flat)
+	c1.set_zoom(0.15, true)
+	var r1: Dictionary = {}
+	for i in 100:
+		r1 = c1.update(player, null, false, 0.05)
+	t.check(absf(r1.target.y - (10.0 + 1.5 * h)) < 0.01, "look-at is ground + 1.5h in the chase band")
+	t.check(absf(r.actual_distance - 1.8 * h) < 0.3, "boom settles at 1.8h")
 	# Horizon in the upper third for a 1280x720 viewport (fov 48 vertical).
 	var fwd = (r.target - r.position).normalized()
 	var up = Vector3.UP
@@ -29,7 +35,7 @@ func run(t) -> void:
 	var y = rel.dot(cam_up)
 	var ndc_y = (y / z) / tan(deg_to_rad(24.0))
 	var screen_y = (1.0 - ndc_y) * 0.5   # 0 top, 1 bottom
-	t.check(screen_y < 1.0 / 3.0, "the horizon sits in the upper third (%.2f of the height from the top)" % screen_y)
+	t.check(screen_y < 0.4, "the horizon sits in the upper two fifths at the close default view (%.2f of the height from the top)" % screen_y)
 	t.check(screen_y > 0.1, "and is not at the very top (%.2f)" % screen_y)
 
 	# Auto-follow (PLAN-feel S6): a rate cap, an acceleration cap, an engage delay, no swing towards the camera.
@@ -92,6 +98,7 @@ func run(t) -> void:
 	t.check(worst <= 1.75, "reversal: camera yaw rate <= 100 deg/s (max %.1f deg/s)" % rad_to_deg(worst))
 	# The look-at point leads the creature: no steady lag at sprint speed.
 	var c2f = ChaseCamera.new(h, PI, flat)
+	c2f.kick = false             # the speed cues (A54) add a deliberate follow lag at a gallop; this checks the plain follow
 	var run = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 8.84, "vx": 0.0, "vz": 8.84}
 	var lag := 0.0
 	for i in 240:
@@ -99,6 +106,16 @@ func run(t) -> void:
 		var rr: Dictionary = c2f.update(run, null, false, 1.0 / 60.0)
 		lag = Vector2(rr.target.x - run.x, rr.target.z - run.z).length()
 	t.check(lag < 0.05, "steady target lag at 8.84 m/s is %.3f m (< 0.05)" % lag)
+	# A54: at a gallop the speed cues are on by default: a little follow lag (KICK_LAG x speed), a wider fov and a longer boom
+	var c2k = ChaseCamera.new(h, PI, flat)
+	var runk = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 8.84, "vx": 0.0, "vz": 8.84}
+	var rk: Dictionary = {}
+	for i in 240:
+		runk.z += 8.84 / 60.0
+		rk = c2k.update(runk, null, false, 1.0 / 60.0)
+	var lag_k := Vector2(rk.target.x - runk.x, rk.target.z - runk.z).length()
+	t.check(c2k.kick and absf(lag_k - ChaseCamera.KICK_LAG * 8.84) < 0.1, "gallop: a deliberate follow lag of about KICK_LAG x speed (%.2f m)" % lag_k)
+	t.check(absf(float(rk.fov_add) - ChaseCamera.KICK_FOV) < 0.2, "gallop: the field of view widens by KICK_FOV (%.2f deg)" % float(rk.fov_add))
 	# Orbit gives a manual grace during which auto-follow is off.
 	var c3 = ChaseCamera.new(h, 0.0, flat)
 	c3.orbit(10.0, 0.0)
@@ -123,10 +140,12 @@ func run(t) -> void:
 	# A ridge between target and camera shortens the boom; the camera stays above ground.
 	var ridge = func(x: float, zz: float) -> float: return 10.0 + (30.0 if (zz > 4.0 and zz < 9.0) else 0.0)
 	var c5 = ChaseCamera.new(h, 0.0, ridge)
+	c5.set_zoom(0.15, true)      # the ridge sits at the chase band's boom (4h); the close default is shorter than that
 	var r5 = {}
 	for i in 80:
 		r5 = c5.update(player, null, false, 0.05)
-	t.check(r5.actual_distance < c5.distance - 1.0, "a ridge behind the player shortens the boom (%.2f < %.2f)" % [r5.actual_distance, c5.distance])
+	# T4: the view either shortens or rises over the obstacle (it never ends up inside the ridge wall)
+	t.check(r5.actual_distance < c5.distance - 1.0 or (c5.lift > 0.1 and r5.position.z < 4.0), "a ridge behind the player shortens the boom or lifts the view over it (%.2f of %.2f, lift %.2f, camera z %.2f)" % [r5.actual_distance, c5.distance, c5.lift, r5.position.z])
 	t.check(r5.position.y >= ridge.call(r5.position.x, r5.position.z) + 0.65 - 1e-6, "camera stays 0.65 m above the ground")
 	# Fight framing keeps both fighters in the frustum.
 	var c6 = ChaseCamera.new(h, 0.0, flat)

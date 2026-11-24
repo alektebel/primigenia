@@ -229,6 +229,7 @@ func add_part(type: String, t := -1.0, ang := NAN, params := {}) -> int:
 		p["t"] = clampf(t, 0.0, 1.0)
 	if not is_nan(ang):
 		p["ang"] = _fit_ang(type, ang)
+	fit_default_size(p)                      # A73: the part starts in proportion to the creature
 	for k in params:
 		p[k] = params[k]
 	doc["parts"].append(p)
@@ -237,6 +238,79 @@ func add_part(type: String, t := -1.0, ang := NAN, params := {}) -> int:
 	_touch()
 	end()
 	return selected
+
+# ---- A73: default part size scales to the creature. A part's `size` 1.0 was drawn for a body whose local spine radius is
+# about REF_RADIUS (the Merodeador's torso); the starters and the hatchling are 3 to 6 times thinner, so a fresh part came out huge.
+# size = (local radius / REF_RADIUS) ^ SIZE_EXP * category factor, clamped to the genome limits (.1 .. 2.2 here).
+# Starting values, checked against the starters' own hand-tuned part sizes (eye .26 at r .12) by tests/test_studio.gd.
+const REF_RADIUS := .4
+const SIZE_EXP := .85
+const CATEGORY_SIZE := {"details": .7, "arms": .9, "fins": 1.0}
+
+## Local spine radius at t (0 = tail tip, 1 = head), interpolated along the node polyline by arc length.
+func local_radius(t: float) -> float:
+	var N: Array = doc.get("nodes", [])
+	if N.is_empty():
+		return REF_RADIUS
+	if N.size() == 1:
+		return float(N[0]["r"])
+	var cum: Array = [0.0]
+	for i in range(1, N.size()):
+		cum.append(cum[i - 1] + Vector2(N[i]["y"] - N[i - 1]["y"], N[i]["z"] - N[i - 1]["z"]).length())
+	var at: float = clampf(t, 0.0, 1.0) * float(cum[N.size() - 1])
+	for i in range(1, N.size()):
+		if at <= cum[i] or i == N.size() - 1:
+			var seg: float = maxf(float(cum[i]) - float(cum[i - 1]), 1e-6)
+			return lerpf(float(N[i - 1]["r"]), float(N[i]["r"]), clampf((at - float(cum[i - 1])) / seg, 0.0, 1.0))
+	return REF_RADIUS
+
+## Local spine height (editor y) at t, the same interpolation as local_radius.
+func local_height(t: float) -> float:
+	var N: Array = doc.get("nodes", [])
+	if N.is_empty():
+		return 1.0
+	var f: float = clampf(t, 0.0, 1.0) * float(N.size() - 1)
+	var i: int = mini(int(f), N.size() - 2) if N.size() > 1 else 0
+	if N.size() == 1:
+		return float(N[0]["y"])
+	return lerpf(float(N[i]["y"]), float(N[i + 1]["y"]), f - i)
+
+func default_scale_at(type: String, t: float) -> float:
+	var cat: String = parts_db.by_id[type]["category"]
+	var k: float = pow(maxf(local_radius(t), .01) / REF_RADIUS, SIZE_EXP) * float(CATEGORY_SIZE.get(cat, 1.0))
+	return clampf(k, .1, PartsDB.RANGES["size"][1])
+
+## Scale a default part dictionary `p` (from parts_db.defaults) to the creature at its attach point. Legs scale reach (the
+## knee and foot vectors) to the hip height and thickness to the radius; every other part scales size (and len).
+func fit_default_size(p: Dictionary) -> void:
+	var type: String = p["type"]
+	var t: float = float(p["t"])
+	var k := default_scale_at(type, t)
+	if parts_db.is_leg(type):
+		var f: Array = p["f"]
+		var kn: Array = p["k"]
+		var drop: float = maxf(absf(float(f[1])), .1)
+		var fac: float = clampf(local_height(t) * .8 / drop, .15, 3.0)
+		p["k"] = [kn[0] * fac, kn[1] * fac, kn[2] * fac]
+		p["f"] = [f[0] * fac, f[1] * fac, f[2] * fac]
+		p["w"] = clampf(float(p["w"]) * k, PartsDB.RANGES["w"][0], PartsDB.RANGES["w"][1])
+		return
+	if p.has("size"):
+		p["size"] = k
+	if p.has("len"):
+		p["len"] = clampf(float(p["len"]) * k, PartsDB.RANGES["len"][0], PartsDB.RANGES["len"][1])
+
+## While a new part is dragged over the body its attach point changes: keep the proportion in step (inside the open drag transaction).
+func refit_part(i: int) -> void:
+	if i < 0 or i >= doc["parts"].size():
+		return
+	var p: Dictionary = parts_db.defaults(doc["parts"][i]["type"])
+	p["t"] = doc["parts"][i]["t"]
+	fit_default_size(p)
+	for key in ["size", "len", "w", "k", "f"]:
+		if p.has(key):
+			doc["parts"][i][key] = p[key]
+	_touch()
 
 func remove_part(i: int) -> bool:
 	if i < 0 or i >= doc["parts"].size():
@@ -291,7 +365,7 @@ func set_param(i: int, key: String, value: float) -> void:
 ## Wheel scaling of one part (creator direct manipulation). `factor` multiplies the part's size; a leg scales its
 ## reach (knee and foot vectors) and thickness together. Clamped to the genome limits. The mirrored pair is one genome
 ## entry, so both sides follow. Returns {kind: "size"|"reach", value, at_limit, changed}.
-const LEG_REACH_MIN := .5
+const LEG_REACH_MIN := .15
 const LEG_REACH_MAX := 6.0
 
 func scale_part(i: int, factor: float) -> Dictionary:

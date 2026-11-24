@@ -1,5 +1,6 @@
 /* Bounded JSON reader for the nest contract. No host parser or profile is trusted. */
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -174,6 +175,7 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
    }
   }f.body[n]=0;
  }else memcpy(f.body,json,strlen(json)+1);
+ cp_stage_grip_project(json,&f.profile);
  *out=f;ok=1;
  done:free(j);return ok?0:-1;
 }
@@ -227,6 +229,8 @@ int cp_stage_apply(CpStageWorld *w,const char *genome){
  uint8_t ta[CB_PART_COUNT],tb[CB_PART_COUNT];cp_stage_genome_tiers(cur->body,ta);cp_stage_genome_tiers(f.body,tb);
  if(memcmp(a->extra,b->extra,sizeof a->extra)||a->carnivore!=b->carnivore||memcmp(cur->parts,f.parts,sizeof cur->parts)||memcmp(ta,tb,sizeof ta)||a->mouth!=b->mouth||a->charge!=b->charge||a->spit!=b->spit||a->tail!=b->tail||a->guard!=b->guard||a->fire!=b->fire||a->hp!=b->hp||a->stamina!=b->stamina||a->speed!=b->speed)return CP_STAGE_ERR_NEEDS_EVOLVE;
  memcpy(cur->body,f.body,strlen(f.body)+1);memcpy(cur->name,f.name,strlen(f.name)+1);
+ cur->profile.grip_traits=w->player.profile.grip_traits=w->setup.player.grip_traits=b->grip_traits;
+ cur->profile.grip_legs=w->player.profile.grip_legs=w->setup.player.grip_legs=b->grip_legs;
  cur->profile.radius_cm=b->radius_cm;w->player.profile.radius_cm=b->radius_cm;w->setup.player.radius_cm=b->radius_cm;
  w->hash=cp_stage_hash(w);return 0;
 }
@@ -278,4 +282,32 @@ float cp_stage_safe_drop(const CpStageWorld *w){
   sum+=sqrtf(a)+sqrtf(b);n++;
  }
  free(j);return n?1.5f*sum/n:fallback;
+}
+
+/* Shared projection for studio previews and accepted genomes. Geometry is read in C. */
+int cp_stage_grip_project(const char *json,CpCombatProfile *p){
+ if(!json||!p||strlen(json)>=CP_LINEAGE_BODY_CAP)return -1;
+ Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=json;
+ if(value(j)!=0){free(j);return -1;}
+ int parts=field(j,0,"parts"),nodes=field(j,0,"nodes");
+ if(parts<0||nodes<0||j->t[parts].kind!='['||j->t[nodes].kind!='['){free(j);return -1;}
+ unsigned traits=0;int legs=0,sprawl=0;double maxr=0,stand=0,miny=1e9,maxy=-1e9;
+ for(int i=nodes+1;i<j->t[nodes].next;i=j->t[i].next){double r=0,y=0;num(j,field(j,i,"r"),0,3,&r);num(j,field(j,i,"y"),-5,20,&y);if(r>maxr)maxr=r;if(y<miny)miny=y;if(y>maxy)maxy=y;}
+ for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){char n[80];if(!text(j,field(j,i,"type"),n,sizeof n))continue;
+  double single=0;num(j,field(j,i,"single"),-1,1,&single);
+  int leg=!strcmp(n,"pata")||!strcmp(n,"zanca")||!strcmp(n,"pezuna")||!strncmp(n,"leg_",4)||!strncmp(n,"foot_",5);
+  if(leg){legs+=single?1:2;int a=field(j,i,"f");if(a>=0&&j->t[a].kind=='['&&j->t[a].count==3){int y=j->t[a+1].next;double fy=0;if(num(j,y,-20,20,&fy)){if(-fy>stand)stand=-fy;double fx=0;num(j,a+1,-20,20,&fx);if(fabs(fx)>=fabs(fy)*.4)sprawl=1;}}}
+  if(!strcmp(n,"excavadora"))traits|=CP_GRIP_CLAW;
+  if(!strcmp(n,"leg_sucker")||!strcmp(n,"foot_gecko"))traits|=CP_GRIP_CLING;
+  if(!strcmp(n,"pezuna")||!strcmp(n,"foot_hoof"))traits|=CP_GRIP_HOOF;
+ }
+ if(legs&&sprawl&&stand>0&&stand<=3*maxr&&maxy-miny<=2*maxr)traits|=CP_GRIP_LOW;
+ for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next)if(eq(j,field(j,i,"type"),"arm_grasper")){
+  double size=1;num(j,field(j,i,"size"),.1,4,&size);
+  if(stand>0&&size*1.5>=stand+maxy-miny)traits|=CP_GRIP_ARM;
+ }
+ int plan=field(j,0,"plan"),arm=field(j,plan,"arm");
+ if(eq(j,field(j,plan,"sym"),"radial")&&(eq(j,field(j,arm,"act"),"tubefeet")||eq(j,field(j,arm,"act"),"hydrostat")))traits|=CP_GRIP_CLING;
+ p->grip_traits=(uint16_t)traits;p->grip_legs=(uint8_t)(legs>255?255:legs);
+ free(j);return 0;
 }

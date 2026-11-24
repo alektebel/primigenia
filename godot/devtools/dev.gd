@@ -25,6 +25,8 @@ const NoteMeta := preload("res://devtools/notes/note_meta.gd")
 const NoteCommands := preload("res://devtools/notes/note_commands.gd")
 const QuestionCard := preload("res://devtools/questions/question_card.gd")
 const QuestionCommands := preload("res://devtools/questions/question_commands.gd")
+const LoopRecorder := preload("res://devtools/loop/loop_recorder.gd")
+const LoopCommands := preload("res://devtools/loop/loop_commands.gd")
 const OptionDefs := preload("res://devtools/tuning/option_defs.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -51,6 +53,7 @@ var flag: CanvasLayer         # flag mode and in-game notes (Shift+F8)
 var note_card: CanvasLayer    # the N note card (Ctrl+N quick note)
 var browser: CanvasLayer      # the notes browser (Shift+N)
 var meta_overlay: CanvasLayer # the live metadata overlay (F11)
+var loop: Node                # LoopRecorder: the creature-loop JSONL (always on in play and in tests, not only with dev tools)
 var questions: CanvasLayer    # owner question cards and the pause-menu list
 var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
@@ -64,6 +67,9 @@ static func compute_enabled(args: PackedStringArray, debug_build: bool) -> bool:
 
 func _ready() -> void:
 	enabled = compute_enabled(OS.get_cmdline_user_args(), OS.is_debug_build())
+	loop = LoopRecorder.new()
+	loop.name = "LoopRecorder"
+	add_child(loop)
 	legend = Legend.new()
 	legend.name = "Legend"
 	add_child(legend)
@@ -109,6 +115,7 @@ func _ready() -> void:
 		questions.name = "Questions"
 		add_child(questions)
 		QuestionCommands.register(console.registry, questions)
+		LoopCommands.register(console.registry, loop)
 		if "--agent" in OS.get_cmdline_user_args():
 			agent = AgentServer.new()
 			agent.name = "AgentServer"

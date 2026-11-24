@@ -1,0 +1,223 @@
+{
+ "pass": true,
+ "fails": [],
+ "rows": [
+  {
+   "id": "cat",
+   "name": "Cat pounce",
+   "startDistance": 4.3,
+   "contactDist": -0.007137651231676034,
+   "legErrAtContact": 0,
+   "plantedDrift": 0.008427794782068244,
+   "maxReachErr": 0.008427794782068232,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1,
+   "flights": [
+    {
+     "t0": 960,
+     "t1": 1460,
+     "gErr": 1.2295069255379918e-13,
+     "plantedInFlight": 0,
+     "apex": 0.31935227299323904,
+     "ms": 500
+    }
+   ],
+   "landing": {
+    "reachAtTouch": 0.9082654162124795,
+    "reachMin": 0.839952638974537,
+    "compress": 0.06831277723794249
+   },
+   "preyMinY": 0.01680004979910482,
+   "preyMoved": 0.029409722222221824,
+   "preyRoll": 0.15196929472598214,
+   "freezeMs": 280,
+   "flightPhases": [
+    500
+   ],
+   "windupMs": 960,
+   "activeMs": 500,
+   "timing": {
+    "crouch": 200,
+    "stalk": 410,
+    "freeze": 280,
+    "coil": 70,
+    "leap": 500,
+    "pin": 490,
+    "step off": 350,
+    "recovery": 550
+   }
+  },
+  {
+   "id": "tackle",
+   "name": "Low dash-tackle",
+   "startDistance": 4.699999999999999,
+   "contactDist": -0.017400000000000387,
+   "legErrAtContact": 0,
+   "plantedDrift": 1.7554167342883506e-16,
+   "maxReachErr": 0,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1.220727717639042,
+   "flights": [
+    {
+     "t0": 620,
+     "t1": 740,
+     "gErr": 4.3458271300311935e-15,
+     "plantedInFlight": 0,
+     "apex": -0.18,
+     "ms": 120
+    },
+    {
+     "t0": 790,
+     "t1": 890,
+     "gErr": 9.778111042570186e-15,
+     "plantedInFlight": 0,
+     "apex": -0.22,
+     "ms": 100
+    },
+    {
+     "t0": 940,
+     "t1": 1070,
+     "gErr": 4.3458271300311935e-15,
+     "plantedInFlight": 0,
+     "apex": -0.18,
+     "ms": 130
+    }
+   ],
+   "landing": {
+    "reachAtTouch": 0.6581899591303516,
+    "reachMin": 0.483004628619637,
+    "compress": 0.1751853305107146
+   },
+   "preyMinY": 0.01680004979910482,
+   "preyMoved": 0.6188224313028691,
+   "preyRoll": 1.4989586758605022,
+   "freezeMs": 260,
+   "flightPhases": [
+    270,
+    180
+   ],
+   "windupMs": 560,
+   "activeMs": 510,
+   "timing": {
+    "crouch": 300,
+    "freeze": 260,
+    "push": 60,
+    "stride 1": 270,
+    "stride 2": 180,
+    "slam": 300,
+    "stand over": 130,
+    "recovery": 500
+   }
+  },
+  {
+   "id": "dive",
+   "name": "High leap dive",
+   "startDistance": 3.9,
+   "contactDist": -0.005947205278944101,
+   "legErrAtContact": 0.0034369604819758925,
+   "plantedDrift": 1.3877787807814457e-16,
+   "maxReachErr": 0.01607785675249329,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1.25,
+   "flights": [
+    {
+     "t0": 850,
+     "t1": 1490,
+     "gErr": 1.794464452442047e-13,
+     "plantedInFlight": 0,
+     "apex": 0.8351494715881553,
+     "ms": 640
+    }
+   ],
+   "landing": {
+    "reachAtTouch": 0.7296799387181145,
+    "reachMin": 0.681337513917365,
+    "compress": 0.04834242480074957
+   },
+   "preyMinY": 0.01680004979910482,
+   "preyMoved": 0.017296313154301135,
+   "preyRoll": 0.04942618605289434,
+   "freezeMs": 290,
+   "flightPhases": [
+    640
+   ],
+   "windupMs": 760,
+   "activeMs": 730,
+   "timing": {
+    "alert": 250,
+    "crouch": 220,
+    "freeze": 290,
+    "push": 90,
+    "leap": 640,
+    "dive hit": 360,
+    "heavy landing": 400,
+    "recovery": 750
+   }
+  },
+  {
+   "id": "hop",
+   "name": "Hop-hop-pounce",
+   "startDistance": 4.5,
+   "contactDist": -0.00865333367345189,
+   "legErrAtContact": 0,
+   "plantedDrift": 0.019681615239038185,
+   "maxReachErr": 0.01968161523903811,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1,
+   "flights": [
+    {
+     "t0": 500,
+     "t1": 730,
+     "gErr": 9.778111042570186e-15,
+     "plantedInFlight": 0,
+     "apex": 0.023651468750000015,
+     "ms": 230
+    },
+    {
+     "t0": 870,
+     "t1": 1100,
+     "gErr": 9.778111042570186e-15,
+     "plantedInFlight": 0,
+     "apex": 0.023651468750000015,
+     "ms": 230
+    },
+    {
+     "t0": 1260,
+     "t1": 1690,
+     "gErr": 7.514659412345606e-14,
+     "plantedInFlight": 0,
+     "apex": 0.19876241147045215,
+     "ms": 430
+    }
+   ],
+   "landing": {
+    "reachAtTouch": 0.8323140900289615,
+    "reachMin": 0.6714416470283902,
+    "compress": 0.16087244300057135
+   },
+   "preyMinY": 0.01680004979910482,
+   "preyMoved": 0.17807832780193802,
+   "preyRoll": 0.02751818415409631,
+   "freezeMs": 260,
+   "flightPhases": [
+    340,
+    370,
+    430
+   ],
+   "windupMs": 440,
+   "activeMs": 1330,
+   "timing": {
+    "crouch": 180,
+    "freeze": 260,
+    "hop 1": 340,
+    "hop 2": 370,
+    "coil": 110,
+    "pounce": 430,
+    "bite": 80,
+    "hold on": 280,
+    "pull out": 200,
+    "recovery": 600
+   }
+  }
+ ]
+}

@@ -53,6 +53,7 @@ func run(t) -> void:
 	_creature_wings(t)
 	_kinematics(t)
 	_physics(t)
+	_picks(t)
 	_ground_takeoff(t)
 	_creator_panel(t)
 
@@ -498,3 +499,170 @@ func _ground_takeoff(t) -> void:
 	var mr := mm.takeoff(Vector3.ZERO, Vector3(0, 0, 8.8), Vector2(0, 1))
 	t.check(not mr.ok and mr.reason.contains("cannot take off"), "Merodeador still cannot take off at lift_mul 1 and says why")
 	mc.free()
+
+
+# ---- the owner's picks (A56 starter B, A57 hatchling): flap-glide cruise, wingover, flare and running landings, wingbeat scaling -------
+func _starter_b() -> FlightTest:
+	# the lab's starter B: 36 kg, 2 wings of 1.35 m2 and 2.4 m (span 5.3 m with the body), L/D 11
+	var info := {"type": "wing_vane", "span": 2.4, "area": 1.35, "chord": 0.56, "muscle": 0.18, "flaps": true, "ld": 11.0, "e": 0.8}
+	return FlightTest.new(FlightTest.make_spec(36.0, [info, info], 1.45, 0.78))
+
+func _level(f: FlightTest, speed: float, alt: float) -> void:
+	f.mode = "glide"
+	f.pos = Vector3(0, alt + float(f.spec.com_h), 0)
+	f.vel = Vector3(0, 0, speed)
+	f.yaw_dir = Vector2(0, 1)
+	f.climb_out = 0.0
+	f.bank_t = 0.0
+	f.roll_rate = 0.0
+
+func _picks(t) -> void:
+	var flat := Callable(self, "_flat")
+	var dt := 1.0 / 60.0
+	# wingbeat scaling: both laws, live
+	LocoWing.scaling = "game"
+	t.check(absf(LocoWing.beat_hz(36.0) - 2.48) < 0.03 and absf(LocoWing.beat_hz(30.0) - 2.55) < 0.03, "game law: B 2.5 Hz, hatchling 2.6 Hz (%.2f, %.2f)" % [LocoWing.beat_hz(36.0), LocoWing.beat_hz(30.0)])
+	t.check(absf(LocoWing.beat_hz(36.0, "lab") - 1.45) < 0.03 and absf(LocoWing.beat_hz(30.0, "lab") - 1.55) < 0.03, "lab law: B 1.5 Hz, hatchling 1.5 Hz (%.2f, %.2f)" % [LocoWing.beat_hz(36.0, "lab"), LocoWing.beat_hz(30.0, "lab")])
+	var b := _starter_b()
+	var hz_game := b.beat_hz()
+	LocoWing.scaling = "lab"
+	t.check(b.beat_hz() < hz_game * 0.7, "the option changes the model's beat rate live (%.2f -> %.2f)" % [hz_game, b.beat_hz()])
+	LocoWing.scaling = "game"
+	t.check(absf(b.stall_speed() - 11.9) < 0.6, "the lab's starter B stalls near 11.9 m/s (%.1f)" % b.stall_speed())
+
+	# A56 cruise = flap-glide: bursts until fast, glide until slow; the average power is a fraction of a continuous flap
+	var fg := _starter_b()
+	fg.cruise_style = "flapglide"
+	_level(fg, fg.cruise_speed(), 500.0)
+	var cont := _starter_b()
+	_level(cont, cont.cruise_speed(), 500.0)
+	var on_ticks := 0
+	var n := 0
+	var vmin := 99.0
+	var vmax := 0.0
+	var switches := 0
+	var was := false
+	for i in int(20.0 / dt):
+		fg.step(dt, {"flap": true}, flat)
+		cont.step(dt, {"flap": true}, flat)
+		if i > int(5.0 / dt):
+			var on := fg.mode == "flap"
+			on_ticks += 1 if on else 0
+			n += 1
+			if on != was:
+				switches += 1
+			was = on
+			vmin = minf(vmin, fg.vel.length())
+			vmax = maxf(vmax, fg.vel.length())
+	var duty := float(on_ticks) / float(n)
+	t.check(duty > 0.1 and duty < 0.7, "flap-glide: the wings burst for a share of the time, not always (duty %.2f)" % duty)
+	t.check(switches >= 4, "and they alternate (%d switches in 15 s)" % switches)
+	t.check(vmin > 0.8 * fg.cruise_speed() and vmax < 1.3 * fg.cruise_speed(), "the speed stays around cruise %.1f m/s (%.1f .. %.1f)" % [fg.cruise_speed(), vmin, vmax])
+	t.check(fg.stamina > cont.stamina + 0.15, "flap-glide costs much less stamina than continuous flapping (%.2f vs %.2f after 20 s)" % [fg.stamina, cont.stamina])
+	# the held energy follows the pilot's pitch: nose up (S) climbs on bursts, hands-off holds the height
+	var hold := _starter_b()
+	hold.cruise_style = "flapglide"
+	_level(hold, hold.cruise_speed(), 500.0)
+	var up := _starter_b()
+	up.cruise_style = "flapglide"
+	_level(up, up.cruise_speed(), 500.0)
+	for i in int(15.0 / dt):
+		hold.step(dt, {"flap": true}, flat)
+		up.step(dt, {"flap": true, "pitch": 0.4}, flat)
+	t.check(absf(hold.pos.y - 500.0 - float(hold.spec.com_h)) < 6.0, "flap-glide hands-off holds the height (%.1f m drift in 15 s)" % (hold.pos.y - 500.0 - float(hold.spec.com_h)))
+	t.check(up.pos.y > hold.pos.y + 10.0, "with the nose up it climbs on bursts (%.1f m above the hands-off flight)" % (up.pos.y - hold.pos.y))
+	# a tap is never gated: one beat, whatever the speed
+	var tap := _starter_b()
+	tap.cruise_style = "flapglide"
+	_level(tap, 1.6 * tap.stall_speed(), 300.0)
+	tap.press_flap()
+	tap.step(dt, {}, flat)
+	t.check(tap.mode == "flap", "a tap of Space still gives one beat above the cruise speed")
+
+	# A56/A57 turn = wingover, both directions
+	for dir in [1, -1]:
+		var w := _starter_b()
+		w.cruise_style = "flapglide"
+		_level(w, w.cruise_speed(), 120.0)
+		var y0 := 120.0
+		var r := w.start_wingover(dir, flat)
+		t.check(r.ok, "the wingover starts at cruise speed (dir %d)" % dir)
+		var y_max := 0.0
+		var bank_peak := 0.0
+		var v_min := 99.0
+		var worst_roll := 0.0
+		var last_bank := 0.0
+		var time := 0.0
+		var landed := false
+		var nan := false
+		while w.wo_phase != "" and time < 25.0:
+			var ev := w.step(dt, {"flap": false}, flat)
+			time += dt
+			y_max = maxf(y_max, w.pos.y - float(w.spec.com_h))
+			bank_peak = maxf(bank_peak, absf(w.bank_t))
+			v_min = minf(v_min, w.vel.length())
+			worst_roll = maxf(worst_roll, absf(atan(w.bank_t) - atan(last_bank)) / dt)
+			last_bank = w.bank_t
+			landed = landed or ev.landed
+			nan = nan or is_nan(w.pos.x) or is_nan(w.vel.y)
+		t.check(not nan and not landed, "the wingover is finite and does not hit the ground")
+		t.check(w.wo_phase == "", "it ends by itself (%.1f s)" % time)
+		t.check(w.yaw_dir.y < -0.5, "the heading reversed (forward is now %s)" % w.yaw_dir)
+		t.check(y_max > y0 + 4.0, "the zoom climbs (peak %.1f m above %.0f)" % [y_max, y0])
+		t.check(bank_peak > 6.0, "it rolls over the top (tan bank %.1f: more than 80 degrees)" % bank_peak)
+		t.check(v_min > 0.5 * w.stall_speed(), "it is slowest over the top but never falls out of the sky (%.1f m/s vs %.1f)" % [v_min, w.stall_speed()])
+		t.check(worst_roll < 3.2, "the roll is smooth: at most %.2f rad/s" % worst_roll)
+		t.check(absf(w.bank_t) < 0.3, "rolled out level (tan %.2f)" % w.bank_t)
+		t.check(w.yaw_dir.y < -0.8 and w.vel.length() > 0.9 * w.stall_speed(), "it leaves on the reverse heading at flying speed (%s, %.1f m/s)" % [w.yaw_dir, w.vel.length()])
+	var low := _starter_b()
+	_level(low, low.cruise_speed(), 4.0)
+	t.check(not low.start_wingover(1, flat).ok, "too low for a wingover: refused")
+	var slow := _starter_b()
+	_level(slow, 0.9 * slow.stall_speed(), 300.0)
+	t.check(not slow.start_wingover(1, flat).ok, "too slow for a wingover: refused")
+	# Ctrl cuts it short, and the opposite key too: still smooth and finite
+	for how in ["dive", "key"]:
+		var c := _starter_b()
+		_level(c, c.cruise_speed(), 300.0)
+		c.start_wingover(1, flat)
+		for i in int(1.5 / dt):
+			c.step(dt, {}, flat)
+		for i in int(8.0 / dt):
+			var held: bool = i < int(0.4 / dt)       # a quick press of the opposite key / Ctrl
+			c.step(dt, {"dive": how == "dive" and held, "roll": 1.0 if (how == "key" and held) else 0.0}, flat)
+		t.check(c.wo_phase == "" and absf(c.bank_t) < BANK_OK, "%s cuts the wingover short and the wings level out (phase '%s', tan %.2f)" % [how, c.wo_phase, c.bank_t])
+
+	# A56 landing = flare + stall touchdown; A57 hatchling = running landing
+	var res := {}
+	for style in ["flare", "run"]:
+		var l := _starter_b()
+		l.landing_style = style
+		_level(l, 1.3 * l.stall_speed(), 40.0)
+		var legs_flare := [0.0, 0.0]
+		var v_td := 0.0
+		var dist := 0.0
+		var x0 := l.pos.z
+		var time := 0.0
+		var dmg := 0.0
+		var got := false
+		while l.mode != "ground" and time < 90.0:
+			var ev := l.step(dt, {}, flat)
+			time += dt
+			if l.mode == "flare":
+				legs_flare = [l.legs_tuck, l.legs_fwd]
+			if ev.landed:
+				v_td = Vector2(l.vel.x, l.vel.z).length()
+				dmg = ev.damage
+				got = true
+				x0 = l.pos.z
+		dist = l.pos.z - x0
+		res[style] = {"v": v_td, "run": dist, "legs": legs_flare}
+		t.check(got and dmg == 0.0, "%s landing: no damage (%.1f)" % [style, dmg])
+		t.check(legs_flare[0] < 0.3, "%s landing: the legs are extended (tuck %.2f)" % [style, legs_flare[0]])
+		t.check(l.mode == "ground", "%s landing: comes to rest" % style)
+	t.check(res.flare.legs[1] > res.run.legs[1] + 0.2, "the flare swings the legs forward more than the running landing (%.2f vs %.2f)" % [res.flare.legs[1], res.run.legs[1]])
+	t.check(res.flare.v < res.run.v + 0.01 or res.flare.v < 1.15 * 11.9, "the flare touches down slow, near the stall speed (%.1f m/s)" % res.flare.v)
+	t.check(res.run.run > res.flare.run + 2.0, "the running landing runs out further (%.1f m vs %.1f m)" % [res.run.run, res.flare.run])
+	t.check(b.legs_tuck > 0.99, "legs are tucked in cruise")
+
+const BANK_OK := 0.35

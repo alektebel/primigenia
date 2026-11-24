@@ -1,0 +1,151 @@
+{
+ "schema": "cpore.action/1",
+ "id": "fear_cower",
+ "class": "reaction",
+ "driver": {
+  "kind": "c_event",
+  "event": "fear"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 9,
+  "r": 0
+ },
+ "settle": 0.0,
+ "priority": 25,
+ "fade": {
+  "in": 0.04,
+  "out": 0.12,
+  "cancel": 0.06
+ },
+ "legs": "free",
+ "side": 1,
+ "note": "A74: a creature a roar frightens flinches low for about a second (the C fear status makes it run away; this is the pose).",
+ "tracks": [
+  {
+   "ch": "root.lift",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.12,
+     -0.14,
+     "out"
+    ],
+    [
+     "a",
+     0.7,
+     -0.1
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "root.pitch",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.15,
+     0.12,
+     "out"
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "head.pitch",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.15,
+     0.45,
+     "out"
+    ],
+    [
+     "a",
+     0.7,
+     0.4
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "tail.pitch",
+   "kin": 0,
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.15,
+     -0.5,
+     "out"
+    ],
+    [
+     "a",
+     0.7,
+     -0.45
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "lids",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.15,
+     0.5,
+     "out"
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  }
+ ]
+}

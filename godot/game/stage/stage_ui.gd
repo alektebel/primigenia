@@ -1,6 +1,8 @@
 extends Node
 
 const FrameProfile := preload("res://devtools/frame_profile.gd")
+const ActionClock := preload("res://actions/action_clock.gd")
+const HOLD_MS := 450      # A74/A69: a spit key held this long throws the charged glob (the charged lob from far)
 # Glue between the stage (C world bridge, island, actors) and the g-ui / g-audio modules (docs/godot/UI.md).
 #
 #   world tick   -> vitals, selection card, wind-up tell, damage numbers, flashes, combat sounds
@@ -41,7 +43,15 @@ var player_name := "Merodeador"
 var selected_id := -1
 var attack_orders: Array = []        # log of orders sent, for tests: {tick, text|input}
 var last_outcome := 0
-var _pending_attack = null           # {target, move}
+var _pending_attack = null           # {target, move, chain?}
+## A64 chain: pressing bite again within CHAIN_TICKS of our own bite landing sends the quick peck instead (C has no new
+## concept: it is a normal peck order, so it is validated, logged and replayed like any other); the standing attack then
+## goes back to bite. The animation plays the chained peck for any peck that starts inside the same window (action_layer.CHAIN_TICKS).
+const MOVE_BITE := 0
+const MOVE_SPIT := 3
+const MOVE_PECK := 7
+const CHAIN_TICKS := 7
+var _bite_hit_tick := -1000
 # Verb-first targeting (docs/briefs/verb-target.md): `verb` is the armed verb (Modes.*, NONE when nothing is armed), `locked_id` the
 # creature the player clicked with it (0 or less: none). The marker follows it; C does the pursuit and the verb.
 var verb: StringName = Modes.NONE
@@ -88,7 +98,9 @@ func setup(island_node: Node3D, name_text: String) -> void:
 		ui.bind_audio(get_tree().root.get_node("Audio"))
 	ui.mode_changed.connect(_on_mode)
 	ui.ability_pressed.connect(_on_ability)
-	ui.guard_pressed.connect(func() -> void: _send({"verb": V_GUARD}, "guard"))
+	ui.guard_pressed.connect(func() -> void:
+		if stage.cur.active >= 0:          # Space guards only in a fight; everywhere else it is the jump (island.gd)
+			_send({"verb": V_GUARD}, "guard"))
 	ui.dodge_pressed.connect(func(d: int) -> void:
 		island.dodge_hint = {"dir": d, "until": Time.get_ticks_msec() + 700}      # which way the dodge animation leans
 		_send({"verb": V_DODGE, "dir": DODGE_LEFT if d < 0 else DODGE_RIGHT}, "dodge"))
@@ -173,6 +185,10 @@ func _valid_for(mode: StringName, id: int) -> bool:
 	if mode == Modes.EAT:
 		return bool(e.get("dead", false)) and int(e.get("meat", 0)) > 0
 	return not bool(e.get("dead", false))
+
+## A65: a body the player can eat by clicking it: remains with meat, and a diet that takes meat (C refuses herbivores).
+func _edible(id: int) -> bool:
+	return _valid_for(Modes.EAT, id) and int(stage.cur.get("social", {}).get("diet", 2)) != 0
 
 # The click / hover pick of an armed verb: the nearest valid creature to the mouse in screen space, generous radius.
 func pick_for_verb(mouse: Vector2, mode: StringName = Modes.NONE) -> int:
@@ -269,13 +285,24 @@ func _verb_hover() -> void:
 	if ui == null or stage == null or stage.cur.is_empty():
 		return
 	var want := -1
+	var hover_verb: StringName = verb
 	if verb != Modes.NONE and not Game.movement_blocked() and not ui.paused:
 		want = pick_for_verb(get_viewport().get_mouse_position())
+	elif verb == Modes.NONE and not Game.movement_blocked() and not ui.paused:
+		# A65: with no verb armed, an edible body under the mouse offers "eat" (a click walks there and eats)
+		want = pick_for_verb(get_viewport().get_mouse_position(), Modes.EAT)
+		if want > 0 and not _edible(want):
+			want = -1
+		hover_verb = Modes.EAT
 	hover_id = want
 	if hover_id > 0 and hover_id != locked_id:
-		ui.marker.set_hover(hover_id, verb, str(info_for(hover_id).name))
+		ui.marker.set_hover(hover_id, hover_verb, str(info_for(hover_id).name))
+		if verb == Modes.NONE:
+			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 	else:
 		ui.marker.set_hover(-1, Modes.NONE, "")
+		if verb == Modes.NONE:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 # Select first, then choose: picking a mode only changes the hotbar; nothing is ordered until an ability key (1-4) is pressed.
 func _on_mode(mode: StringName) -> void:
@@ -336,9 +363,23 @@ func _attack(index: int) -> void:
 	var ent: Dictionary = stage.cur.entities[selected_id] if selected_id < stage.cur.entities.size() else {}
 	if ent.is_empty() or ent.dead:
 		return
-	_pending_attack = {"target": selected_id, "move": move}
+	var chain := false
+	if move == MOVE_BITE and chain_open():
+		move = MOVE_PECK
+		move_id = MOVE_IDS[MOVE_PECK]
+		chain = true
+	_pending_attack = {"target": selected_id, "move": move, "chain": chain, "tick": int(stage.cur.tick), "t0": Time.get_ticks_msec(), "key": "ability_%d" % (index + 1)}
 	player_input.clear_destination()
 	attack_orders.append({"tick": stage.cur.tick, "order": "attack #%d %s" % [selected_id, move_id]})
+
+## True when our bite connected within the last CHAIN_TICKS ticks and the peck is in the loadout.
+func chain_open() -> bool:
+	if int(stage.cur.tick) - _bite_hit_tick > CHAIN_TICKS:
+		return false
+	for a in ui.abilities:
+		if int(a.get("move", -1)) == MOVE_PECK and not bool(a.get("empty", false)):
+			return true
+	return false
 
 # --- loadout (A21) --------------------------------------------------------------
 
@@ -427,7 +468,23 @@ func provide() -> Dictionary:
 		if tgt >= st.entities.size() or st.entities[tgt].dead or (active and st.active + 1 != tgt):
 			_pending_attack = null
 		else:
-			return {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
+			if _pending_attack.get("chain", false) and int(st.tick) - int(_pending_attack.get("tick", 0)) > CHAIN_TICKS + 4:
+				_pending_attack.move = MOVE_BITE          # the chained peck was never thrown: back to the bite
+				_pending_attack.chain = false
+			var order := {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
+			if int(_pending_attack.move) == MOVE_SPIT:
+				# A74/A69: tap = the jet (the lob from far), hold the key = the charged glob (the charged lob). Set B (A75): the glob without holding.
+				if not _pending_attack.has("hold"):
+					var held := Time.get_ticks_msec() - int(_pending_attack.get("t0", 0))
+					var down: bool = Input.is_action_pressed(str(_pending_attack.get("key", "ability_1")))
+					if ActionClock.attack_set == "b":
+						_pending_attack["hold"] = 1
+					elif down and held < HOLD_MS:
+						return {"verb": 0}            # still charging
+					else:
+						_pending_attack["hold"] = 1 if (down and held >= HOLD_MS) else 0
+				order["dir"] = int(_pending_attack["hold"])      # ATTACK carries the hold in `dir` (logged as is)
+			return order
 	if _pursuit != null:
 		var pu: Dictionary = _pursuit
 		var pid: int = pu.id
@@ -483,6 +540,12 @@ func info_for(id: int) -> Dictionary:
 func _on_clicked(id: int, _pos: Vector3) -> void:
 	if id <= 0 or id >= stage.cur.entities.size():
 		return
+	if verb == Modes.NONE and int(stage.cur.active) < 0 and _edible(id):
+		# A65 click to eat: no verb armed and an edible body: the creature walks or runs there and eats (the order verb R sends)
+		ui.select(info_for(id), false)
+		ui.set_mode(Modes.EAT)
+		social_order("eat", id, 0)
+		return
 	if int(stage.cur.active) >= 0 and id == int(stage.cur.active) + 1:
 		var inf := info_for(id)         # clicking the one you are fighting keeps Attack (no ring in the middle of a fight)
 		inf["fight"] = true
@@ -511,7 +574,12 @@ func _fight_selection(state: Dictionary) -> void:
 	ui.set_fight(active)
 
 
+var _slip_hint_shown := false
+
 func _on_tick(state: Dictionary) -> void:
+	if not _slip_hint_shown and bool(state.get("player", {}).get("sliding", false)):
+		_slip_hint_shown = true
+		ui.show_message("Too steep for your feet — claws or suckers would help", "warn")
 	if bool(state.get("parts", {}).get("lost", false)):
 		_lineage_ended()
 	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
@@ -595,6 +663,12 @@ func _on_events(events: Array) -> void:
 		var vid: int = 0 if ev.b == 0 else int(state.active) + 1
 		if vid < state.entities.size():
 			radius = float(state.entities[vid].get("radius_cm", 60))
+		if int(ev.type) == 1 and int(ev.a) == 0:
+			if int(ev.move) == MOVE_BITE:
+				_bite_hit_tick = int(state.tick)
+			elif int(ev.move) == MOVE_PECK and _pending_attack != null and _pending_attack.get("chain", false):
+				_pending_attack.move = MOVE_BITE          # the chain is done: the standing attack goes back to the bite
+				_pending_attack.chain = false
 		match int(ev.type):
 			1:
 				ui.show_damage(at + Vector3(0, 2.2, 0), ev.amount, ev.b == 0)
@@ -905,7 +979,8 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 			ui.show_moment(Strings.t("shard_found", [Strings.t("shard_%d" % k), int(ev.value)]), "journal")
 		return
 	if int(ev.type) == EV_FELL:  # landing after a fall: move = drop in cm, value = damage in HP
-		_landed(float(ev.move) * 0.01, float(ev.value), state)
+		if int(ev.by) == 0:
+			_landed(float(ev.move) * 0.01, float(ev.value), state)
 		return
 	if int(ev.type) == 26:       # the cave: the passage, then the chamber
 		ui.show_message(Strings.t("cave_chamber" if int(ev.move) == 2 else "cave_passage"), "info")
@@ -995,13 +1070,18 @@ func open_nest_editor() -> void:
 	layer.layer = 30
 	island.add_child(layer)
 	layer.add_child(editor)
+	Game.loop_event.emit("editor_open", {"dna": int(stage.cur.get("social", {}).get("dna_balance", 0))})
+	layer.tree_exited.connect(func() -> void: Game.loop_event.emit("editor_close", {"dna": int(Game.stage.cur.get("social", {}).get("dna_balance", 0)) if Game.stage != null else -1}))
 	var reload := func(genome: Dictionary) -> void:
 		stage.paused = false                 # the scenario records the time state: save it running
 		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)
 		built.json.genome = genome
 		layer.queue_free()
+		var changed: bool = JSON.stringify(genome) != JSON.stringify(island._genome)
 		island.load_scenario({"dict": built.json, "state": built.state, "recipe": ""})
 		stage.paused = false                 # a loaded scenario starts paused; the nest edit resumes play
+		if changed:
+			play_hatch()
 	editor.exit_requested.connect(func() -> void:
 		if not editor.applied_genome.is_empty():
 			reload.call(editor.applied_genome)       # free repaint/rearrange kept on leaving
@@ -1010,6 +1090,23 @@ func open_nest_editor() -> void:
 		stage.paused = false
 		layer.queue_free())
 	editor.nest_confirmed.connect(func(genome: Dictionary) -> void: reload.call(genome))
+
+## A73: the new body hatches from an egg at the nest. Purely visual: the C change is already done; the sim waits (stage.paused) while
+## it plays and resumes when it ends or is skipped. Headless runs skip it unless `force`.
+var hatch: Node3D
+func play_hatch(force := false) -> void:
+	if hatch != null and is_instance_valid(hatch):
+		return
+	hatch = preload("res://game/stage/hatch_sequence.gd").new()
+	stage.paused = true
+	var was_visible: bool = ui.visible
+	hatch.finished.connect(func() -> void:
+		ui.visible = was_visible
+		stage.paused = false
+		hatch = null)
+	hatch.start(island, force)
+	if hatch != null and not hatch.done:
+		ui.visible = false               # a clean frame: no game HUD while the egg hatches (the dev time-control tag, dev builds only, stays)
 
 # A25: no eggs left. The stage is frozen by C; show the end of the lineage and return to the last save.
 var _lineage_end: CanvasLayer

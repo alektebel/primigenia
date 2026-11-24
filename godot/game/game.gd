@@ -12,15 +12,16 @@ signal creature_clicked(id: int, world_pos: Vector3)
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
-const SETTINGS_PATH := "user://settings.cfg"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+static var SETTINGS_PATH := TestIsolation.user("settings.cfg")
 
 # controls/strafe_latch: WASD is relative to the camera as it was when the keys changed (a held S or A runs
 # straight); off = the live camera (a held S circles). controls/tank: Spore-style steering, A/D turn the
 # creature, W forward, S reverse (overrides the latch).
 var settings: Dictionary = {"seed": 1, "grass": 252000, "flora_density": -1.0, "flora_lod_scale": 1.0, "quality": "auto", "sun_shadows": false, "wild": true,
-	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false,
+	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": true,
 	"ui_scale": 1.0, "language": "", "names_always": false, "numbers": false, "strong_outlines": false, "reduced_motion": false,
-	"onboarding": 0, "minimap": true, "edit_anywhere": true,
+	"onboarding": 0, "minimap": true, "edit_anywhere": true, "hint_dig_seen": false,
 	"renderer": "auto"}   # auto | forward_plus | compatibility, read at launch by RenderChoice (relaunches into Forward+ on discrete GPUs)
 var terrain: Dictionary = {}
 var data = null          # TerrainData
@@ -35,7 +36,7 @@ var console_open := false # the dev console (devtools/console) sets this while i
 var zoo_args: Dictionary = {}           # {morphs, course} for the locomotion zoo (devtools/zoo), set by the `zoo` console command
 var pending_scenario: Dictionary = {}   # a read() scenario (devtools/scenario.gd) the island applies once it is built
 var startup_error := ""                 # set when a --scenario could not be loaded (read by the agent server and tests)
-var studio_dir := "user://studio"   # where the studio saves and Play looks for the newest creature (tests point it elsewhere)
+var studio_dir := TestIsolation.user("studio")   # where the studio saves and Play looks for the newest creature (tests point it elsewhere)
 
 func _ready() -> void:
 	load_settings()
@@ -171,7 +172,7 @@ func _notification(what: int) -> void:
 
 # What the cell stage passes on (docs/CELL-STAGE.md): {} when the player has not finished the cell yet.
 const CellLegacy := preload("res://cell/cell_legacy.gd")
-var legacy_path := CellLegacy.PATH
+var legacy_path: String = CellLegacy.default_path()
 
 func cell_legacy() -> Dictionary:
 	return CellLegacy.read(legacy_path)

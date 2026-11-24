@@ -14,6 +14,7 @@ var pos := [Vector2(0, 0), Vector2(3.0, 0)]     # entity x,z
 var face := [Vector2(1, 0), Vector2(-1, 0)]     # facing (fx, fz) -> toward the other
 var dead := [false, false]
 var in_fight := true
+var projectiles: Array = []     # A69: shots in flight as the state lists them ({owner, kind, ticks, x, z})
 var _events: Array = []
 var _pending: Array = []
 
@@ -21,8 +22,8 @@ func _init() -> void:
 	cur = _state()
 	prev = cur
 
-func begin(k: int, move: int) -> void:
-	_pending.append(["begin", k, move])
+func begin(k: int, move: int, ctx := 0, hold := false) -> void:
+	_pending.append(["begin", k, move, ctx, hold])
 
 func interrupt(k: int, stagger_ticks: int) -> void:
 	_pending.append(["interrupt", k, stagger_ticks])
@@ -46,7 +47,7 @@ func _advance(f: Dictionary) -> void:
 	if f.move < 0:
 		f.phase = 0; f.ptick = 0; f.plen = 0
 		return
-	var t: Array = Clock.TICKS[f.move]
+	var t: Array = Clock.ticks_for(f.move, int(f.get("ctx", 0)))
 	f.ptick = 0
 	if f.phase == 1:
 		f.phase = 2; f.plen = t[1]
@@ -62,8 +63,10 @@ func step() -> void:
 		var f: Dictionary = fighters[p[1]]
 		match p[0]:
 			"begin":
-				var t: Array = Clock.TICKS[p[2]]
+				var ctx: int = p[3] if p.size() > 3 else 0
+				var t: Array = Clock.ticks_for(p[2], ctx)
 				f.move = p[2]; f.phase = 1; f.ptick = 0; f.plen = t[0]
+				f.ctx = ctx; f.hold = 1 if (p.size() > 4 and p[4]) else 0
 			"interrupt":
 				f.move = -1; f.phase = 3; f.ptick = 0; f.plen = p[2]
 			"release":
@@ -91,5 +94,6 @@ func _state() -> Dictionary:
 	if in_fight:
 		for k in 2:
 			var f: Dictionary = fighters[k]
-			fl.append({"world_id": k, "move": f.move, "phase": f.phase, "phase_tick": f.ptick, "phase_length": f.plen, "hp": 100.0, "stamina": 10.0})
-	return {"tick": tick, "entities": ents, "active": 0 if in_fight else -1, "combat": {"tick": tick, "fighters": fl, "events": []}}
+			fl.append({"world_id": k, "move": f.move, "phase": f.phase, "phase_tick": f.ptick, "phase_length": f.plen, "hp": 100.0, "stamina": 10.0,
+				"ctx": f.get("ctx", 0), "hold": f.get("hold", 0), "over": 0, "fear": f.get("fear", 0), "spd": 0.0})
+	return {"tick": tick, "entities": ents, "active": 0 if in_fight else -1, "combat": {"tick": tick, "fighters": fl, "events": [], "projectiles": projectiles}}

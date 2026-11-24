@@ -174,6 +174,8 @@ func step_once() -> void:
 		input = input_provider.call()
 	if input.has("run"):
 		world.set_run(int(input.run) != 0)       # before the step, so it is part of that tick; the C log has no setter record
+	if int(input.get("jump", 0)) != 0:
+		world.jump()                             # likewise (log v5: bit 1 of the run column); a refusal changes nothing
 	var h := world.step(input)
 	if h == "":
 		push_error("stage: the C world rejected an input: %s" % [input])
@@ -300,8 +302,11 @@ func _profile_sample(id: int, a: float = -1.0) -> Dictionary:
 	# C owns airborne height; the animation consumer receives falling separately.
 	if id == 0 and (bool(cur.get("player", {}).get("falling", false)) or bool(prev.get("player", {}).get("falling", false))):
 		y = lerpf(float(prev.get("player", {}).get("y", y)), float(cur.get("player", {}).get("y", y)), a)
+	if id != 0 and bool(c.get("falling", false)):
+		y = float(c.get("y", y))
 	return {"pos": Vector3(pos2.x, y, pos2.y), "yaw": wrapf(yaw, -PI, PI), "speed": vel2.length(), "speed_c": c.speed,
-		"vel": Vector3(vel2.x, 0.0, vel2.y)}
+		"vel": Vector3(vel2.x, 0.0, vel2.y), "sliding": bool(c.get("sliding", false)),
+		"grip_deg": float(c.get("grip_deg", 51.6))}
 
 # The v3 text log of the session. `snapshot_name` is written as the `snapshot` line when the session started
 # from a snapshot (the caller saves start_snapshot next to the log under that name).

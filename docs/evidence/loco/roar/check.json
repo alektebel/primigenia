@@ -1,0 +1,312 @@
+{
+ "pass": true,
+ "fails": [],
+ "rows": [
+  {
+   "id": "rear",
+   "name": "Rear-up roar",
+   "ringPeak": 4,
+   "ringMax": 4,
+   "ringMs": 460,
+   "dummies": [
+    {
+     "id": "charger",
+     "kind": "charge",
+     "r0": 3,
+     "tHit": 976,
+     "reacts": true,
+     "moved": 3.3663871771289866,
+     "distAtHit": 3.000202747144043,
+     "ringAtHit": 3.0085966557070307,
+     "preMove": 0,
+     "speedAfter": 0.003949911570377532,
+     "vHit": 5,
+     "dHit": 2.9952027471440434,
+     "minDistToB": 2.258612822871013,
+     "minY": 0
+    },
+    {
+     "id": "near",
+     "kind": "timid",
+     "r0": 2.9,
+     "tHit": 965,
+     "reacts": true,
+     "moved": 3.0836018463964368,
+     "distAtHit": 2.9,
+     "ringAtHit": 2.9076013403869707,
+     "preMove": 0,
+     "fled": 3.0836018463964368,
+     "minY": 0
+    },
+    {
+     "id": "back",
+     "kind": "timid",
+     "r0": 3.3,
+     "tHit": 1012,
+     "reacts": true,
+     "moved": 2.914713276209725,
+     "distAtHit": 3.3,
+     "ringAtHit": 3.302198178858707,
+     "preMove": 0,
+     "fled": 2.914713276209725,
+     "minY": 0
+    },
+    {
+     "id": "far",
+     "kind": "idle",
+     "r0": 5,
+     "tHit": null,
+     "reacts": false,
+     "moved": 0,
+     "minY": 0
+    }
+   ],
+   "plantedDrift": 1.6883057536160649e-16,
+   "maxReachErr": 0,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1.200831592036177,
+   "mouthOpenMs": 668,
+   "windupMs": 620,
+   "headMax": 1.7110735696548989,
+   "timing": {
+    "crouch": 220,
+    "rear up": 400,
+    "roar": 600,
+    "drop": 300,
+    "recover": 430
+   },
+   "preMs": 140,
+   "endReal": 2090
+  },
+  {
+   "id": "bellow",
+   "name": "Low threat bellow",
+   "ringPeak": 4,
+   "ringMax": 4,
+   "ringMs": 820,
+   "dummies": [
+    {
+     "id": "charger",
+     "kind": "charge",
+     "r0": 3,
+     "tHit": 904,
+     "reacts": true,
+     "moved": 3.3643702093456223,
+     "distAtHit": 2.991681981496882,
+     "ringAtHit": 3.0033566060405406,
+     "preMove": 0,
+     "speedAfter": 0.0038988950458527325,
+     "vHit": 5,
+     "dHit": 2.996665766648076,
+     "minDistToB": 2.2606297906543777,
+     "minY": 0
+    },
+    {
+     "id": "near",
+     "kind": "timid",
+     "r0": 2.9,
+     "tHit": 884,
+     "reacts": true,
+     "moved": 3.666522404726724,
+     "distAtHit": 2.9,
+     "ringAtHit": 2.9000013049523723,
+     "preMove": 0,
+     "fled": 3.666522404726724,
+     "minY": 0
+    },
+    {
+     "id": "back",
+     "kind": "timid",
+     "r0": 3.3,
+     "tHit": 969,
+     "reacts": true,
+     "moved": 3.5505218098675604,
+     "distAtHit": 3.3,
+     "ringAtHit": 3.301297789511123,
+     "preMove": 0,
+     "fled": 3.5505218098675604,
+     "minY": 0
+    },
+    {
+     "id": "far",
+     "kind": "idle",
+     "r0": 5,
+     "tHit": null,
+     "reacts": false,
+     "moved": 0,
+     "minY": 0
+    }
+   ],
+   "plantedDrift": 1.6653345369377348e-16,
+   "maxReachErr": 0,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1.13,
+   "mouthOpenMs": 1162,
+   "windupMs": 520,
+   "headMax": 0.98,
+   "timing": {
+    "brace": 420,
+    "breath in": 100,
+    "rumble": 1220,
+    "ease": 220,
+    "recover": 440
+   },
+   "preMs": 0,
+   "endReal": 2400
+  },
+  {
+   "id": "screech",
+   "name": "Screech burst",
+   "ringPeak": 4,
+   "ringMax": 4,
+   "ringMs": 250,
+   "dummies": [
+    {
+     "id": "charger",
+     "kind": "charge",
+     "r0": 3,
+     "tHit": 832,
+     "reacts": true,
+     "moved": 3.3620571546591576,
+     "distAtHit": 3.0093493191000236,
+     "ringAtHit": 3.002149263108508,
+     "preMove": 0,
+     "speedAfter": 0.02154606478771793,
+     "vHit": 5,
+     "dHit": 2.9993493191000233,
+     "minDistToB": 2.262942845340842,
+     "minY": 0
+    },
+    {
+     "id": "near",
+     "kind": "timid",
+     "r0": 2.9,
+     "tHit": 826,
+     "reacts": true,
+     "moved": 2.594206782797603,
+     "distAtHit": 2.9,
+     "ringAtHit": 2.9004258211621172,
+     "preMove": 0,
+     "fled": 2.594206782797603,
+     "minY": 0
+    },
+    {
+     "id": "back",
+     "kind": "timid",
+     "r0": 3.3,
+     "tHit": 852,
+     "reacts": true,
+     "moved": 2.4747750066606207,
+     "distAtHit": 3.3,
+     "ringAtHit": 3.302788490299853,
+     "preMove": 0,
+     "fled": 2.4747750066606207,
+     "minY": 0
+    },
+    {
+     "id": "far",
+     "kind": "idle",
+     "r0": 5,
+     "tHit": null,
+     "reacts": false,
+     "moved": 0,
+     "minY": 0
+    }
+   ],
+   "plantedDrift": 1.415262216750919e-16,
+   "maxReachErr": 0,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1.1675949188094872,
+   "mouthOpenMs": 278,
+   "windupMs": 195,
+   "headMax": 1.2706792518137733,
+   "hopApex": 0.07063199999999997,
+   "timing": {
+    "inhale": 150,
+    "snap": 45,
+    "shriek": 275,
+    "hop back": 250,
+    "recover": 430
+   },
+   "preMs": 520,
+   "endReal": 1670
+  },
+  {
+   "id": "display",
+   "name": "Display roar",
+   "ringPeak": 4,
+   "ringMax": 4,
+   "ringMs": 640,
+   "dummies": [
+    {
+     "id": "charger",
+     "kind": "charge",
+     "r0": 3,
+     "tHit": 1000,
+     "reacts": true,
+     "moved": 3.365843329661807,
+     "distAtHit": 2.9959342568960596,
+     "ringAtHit": 3.005241483352462,
+     "preMove": 0,
+     "speedAfter": 0.003924320406554658,
+     "vHit": 5,
+     "dHit": 2.9959342568960596,
+     "minDistToB": 2.2591566703381933,
+     "minY": 0
+    },
+    {
+     "id": "near",
+     "kind": "timid",
+     "r0": 2.9,
+     "tHit": 985,
+     "reacts": true,
+     "moved": 4.010380721786977,
+     "distAtHit": 2.9,
+     "ringAtHit": 2.9061282027368627,
+     "preMove": 0,
+     "fled": 4.010380721786977,
+     "minY": 0
+    },
+    {
+     "id": "back",
+     "kind": "timid",
+     "r0": 3.3,
+     "tHit": 1051,
+     "reacts": true,
+     "moved": 3.9271355076587455,
+     "distAtHit": 3.2999999999999994,
+     "ringAtHit": 3.3042722876010253,
+     "preMove": 0,
+     "fled": 3.9271355076587455,
+     "minY": 0
+    },
+    {
+     "id": "far",
+     "kind": "idle",
+     "r0": 5,
+     "tHit": null,
+     "reacts": false,
+     "moved": 0,
+     "minY": 0
+    }
+   ],
+   "plantedDrift": 2.220446049250313e-16,
+   "maxReachErr": 0,
+   "minY": -8.326672684688674e-17,
+   "neckStretch": 1.1509131294999253,
+   "mouthOpenMs": 800,
+   "windupMs": 640,
+   "headMax": 1.2651144739647568,
+   "yawAtRoar": -0.45920367320510325,
+   "timing": {
+    "turn side-on": 330,
+    "stand tall": 310,
+    "sweep roar": 800,
+    "hold display": 320,
+    "relax, turn back": 690
+   },
+   "preMs": 60,
+   "endReal": 2510
+  }
+ ]
+}

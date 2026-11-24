@@ -20,6 +20,7 @@ const TESTS := [
 	"res://devtools/tests/test_curated.gd",
 	"res://devtools/tests/test_zoo.gd",
 	"res://devtools/tests/test_loco_score.gd",
+	"res://devtools/tests/test_loop.gd",
 ]
 
 var checks := 0

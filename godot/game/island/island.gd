@@ -35,6 +35,7 @@ const MODEL_OFF_Z := 0.85
 const DEN_SEEN := 60.0
 const ActionFeed := preload("res://actions/action_feed.gd")
 const PlantGaze := preload("res://game/island/plant_gaze.gd")
+const CameraOccluders := preload("res://game/player/camera_occluders.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -65,6 +66,8 @@ var player_pos := Vector3.INF
 var flight                         # FlightMode: the dev-flag flight test (null before the stage is built)
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
+var _cam_prev_player = null     # Vector2: where the player was at the last camera update
+const CAM_CUT_M := 25.0          # a player move this big in one frame is a teleport: the camera cuts
 var icons: CanvasLayer
 var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
@@ -292,7 +295,8 @@ func build() -> void:
 	Game.report_entry(build_ms, build_cpu_ms, build_stall_ms, slowest_frames)
 	set_process(true)
 	Game.island_ready.emit()
-	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else build_ms})
+	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else int(build_ms.get("total", 0)),
+		"phases": Game.entry_log[-1].phases if not Game.entry_log.is_empty() else build_ms, "entry": Game.entry_log.size()})
 
 ## Dev builds: the player owns every part of the creature it brought (C debug op GRANT, part ids = the manifest order).
 func _grant_genome_parts(genome: Dictionary) -> void:
@@ -435,6 +439,9 @@ func _build_stage() -> void:
 	chase = ChaseCamera.new(player_host.height(), yaw, ground)
 	chase.strategic_distance = Game.data.size_m * 0.85
 	chase.free_orbit = bool(Game.settings.get("camera/free_orbit", false))
+	var occ := CameraOccluders.new()          # trunks, bushes and rocks as camera-only proxies (the flora has no physics)
+	occ.build(props.records, props)
+	chase.occluders = occ
 	icons = StrategicIcons.new()
 	icons.camera = camera
 	icons.ground_fn = ground
@@ -730,6 +737,7 @@ func _profile__update_actors(dt: float) -> void:
 		var sm: Dictionary = samples[id]
 		if id == 0:
 			sm["falling"] = bool(stage.cur.get("player", {}).get("falling", false))
+			sm["jumping"] = bool(stage.cur.get("player", {}).get("jumping", false)) or (bool(stage.prev.get("player", {}).get("jumping", false)) and stage.alpha() < 1.0)
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
 		var d: float = (sm.pos as Vector3).distance_to(p0)
 		var sig: Dictionary = action_signals.get(id, {})
@@ -792,11 +800,40 @@ func _profile__update_actors(dt: float) -> void:
 # A landing after a fall: a small, short camera shake (presentation only: a decaying sine, no random numbers).
 # `impact` 0..1 is the strength (the drop beyond the safe height, saturating); a soft landing is a faint thump.
 var _shake_amp := 0.0
+var _cave_k := 0.0                 # 0 = the chase camera, 1 = the cave camera (eased)
+const CAVE_BLEND_TAU := 0.25
 var _shake_clock := 0.0
 const SHAKE_DECAY := 5.0
 const SHAKE_MAX := 0.12                # metres at the full strength
 func land_impact(impact: float) -> void:
 	_shake_amp = maxf(_shake_amp, SHAKE_MAX * clampf(impact, 0.15, 1.0))
+## A64 shared melee impact (actions/impact_fx.gd): the camera takes a small knock, scaled by the attacker's size and the damage, and
+## fading with the distance from the camera. Dust, sparks and the flash are spawned by the creatures themselves.
+const ImpactFx := preload("res://actions/impact_fx.gd")
+func melee_impact(data: Dictionary) -> void:
+	var strength: float = ImpactFx.shake_strength(float(data.size), float(data.amount))
+	var near: float = 1.0
+	if camera != null:
+		near = clampf(1.0 - (camera.global_position.distance_to(data.pos) - 4.0) / 24.0, 0.0, 1.0)
+	var mine: bool = int(data.attacker) == 0 or int(data.victim) == 0
+	if near <= 0.0:
+		return
+	land_impact(strength * near * (1.0 if mine else 0.5))
+var _sprint_idx := -2
+## The player's run speed (m/s), v = sqrt(Fr g h) with h = 0.56 x body radius and Fr = the C motion parameter sprint_k: the camera's speed
+## cues (wider fov, a little follow lag) start at 80% of it (A54).
+func _run_top_speed() -> float:
+	if stage == null or stage.cur == null or stage.cur.entities.is_empty():
+		return chase.top_speed
+	if _sprint_idx == -2:
+		_sprint_idx = -1
+		for p in CporeWorld.params():
+			if p.name == "sprint_k":
+				_sprint_idx = int(p.index)
+	var k: float = stage.world.param(_sprint_idx) if _sprint_idx >= 0 else 2.2
+	var r: float = maxf(0.6, float(stage.cur.entities[0].get("radius_cm", 60)) * 0.01)
+	return sqrt(k * 9.81 * 0.56 * r)
+
 func _landing_shake(dt: float) -> Vector3:
 	if _shake_amp < 0.001 or Game.settings.get("camera/shake", true) == false:
 		_shake_amp = 0.0
@@ -830,12 +867,25 @@ func _profile__update_camera(dt: float) -> void:
 		var e: Dictionary = state.entities[state.active + 1]
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
-	chase.kick = bool(Game.settings.get("camera/kick", false))
+	chase.kick = bool(Game.settings.get("camera/kick", true))
+	chase.top_speed = _run_top_speed()
 	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
+	# An explicit cut (a teleport, a respawn, a return from the editor): the eased camera state restarts instead of gliding across the map.
+	var here := Vector2(p.pos.x, p.pos.z)
+	if _cam_prev_player != null and here.distance_to(_cam_prev_player) > CAM_CUT_M:
+		chase.cut()
+	_cam_prev_player = here
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.05, 40.0)       # keep the depth buffer precise at 3 km
-	var view := _cave_camera(r, p.pos)
+	var in_cave: bool = cave_site != null and cave_site.on and cave_site.zone(p.pos.x, p.pos.z) != 0
+	_cave_k = lerpf(_cave_k, 1.0 if in_cave else 0.0, 1.0 - exp(-dt / CAVE_BLEND_TAU) if dt > 0.0 else 1.0)       # the cave's close camera blends in and out, it never cuts
+	if not in_cave and _cave_k < 0.002:
+		_cave_k = 0.0
+	var view := {"position": r.position, "aim": r.aim}
+	if _cave_k > 0.0:
+		var cave := _cave_camera(r, p.pos)
+		view = {"position": (r.position as Vector3).lerp(cave.position, _cave_k), "aim": (r.aim as Vector3).lerp(cave.aim, _cave_k)}
 	camera.position = view.position + _landing_shake(dt)
 	camera.look_at(view.aim)
 	if absf(float(r.get("roll", 0.0))) > 1e-4:
@@ -847,7 +897,7 @@ func _profile__update_camera(dt: float) -> void:
 # Inside the hidden cave the chase camera is replaced by a close one under the roof: 6.5 m back along the chase direction and 2.4 m
 # up, pulled toward the player until it is inside the shell (or in front of the mouth, in the open air), no higher than the roof.
 func _cave_camera(r: Dictionary, player: Vector3) -> Dictionary:
-	if cave_site == null or not cave_site.on or cave_site.zone(player.x, player.z) == 0:
+	if cave_site == null or not cave_site.on:
 		return {"position": r.position, "aim": r.aim}
 	var back := Vector3(r.position.x - player.x, 0.0, r.position.z - player.z)
 	back = Vector3(0, 0, 1) if back.length() < 0.1 else back.normalized()
@@ -943,6 +993,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null or _building:
 		return
 	if flight != null and flight.handle_input(event):
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.physical_keycode == KEY_SPACE and event.pressed and not event.echo:
+		# Space = jump on the ground, for every creature (a winged one flies if Space is pressed again in the air). In a fight Space keeps
+		# its combat meaning (guard, stage_ui.gd), so no jump is requested then.
+		if int(stage.cur.active) < 0:
+			player_input.request_jump()
 		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:

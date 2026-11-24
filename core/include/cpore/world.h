@@ -5,17 +5,29 @@
 #include "cpore/ledger.h"
 #include "cpore/creature_types.h"
 #define CP_STAGE_VERSION 3
-#define CP_STAGE_MAX_WILD 24
+/* Roster v9 (T9, docs/plans/creature-loop.md): 32 wild slots. The island setup fills at most CP_STAGE_ROSTER_CAP of them; the rest are
+ * reserved so evolving always finds a free slot for the cousin and the nest family can later be backed by C slots (godot/game/island/family.gd).
+ * It is a budget, not fixed indices (cp_stage_evolve and the debug spawn take the next free index, setup.n):
+ *   ROSTER_CAP (24)   slots the island setup may fill (radial animals, night and slug species)
+ *   RESERVE_COUSIN 4  kept free for cousins, one per evolve (the 3 evolves of a chain leave 3 cousins)
+ *   RESERVE_FAMILY 4  kept free for the nest family, not wired yet: the family is still visual only */
+#define CP_STAGE_MAX_WILD 32
+#define CP_STAGE_RESERVE_COUSIN 4
+#define CP_STAGE_RESERVE_FAMILY 4
+#define CP_STAGE_ROSTER_CAP (CP_STAGE_MAX_WILD-CP_STAGE_RESERVE_COUSIN-CP_STAGE_RESERVE_FAMILY)
+#define CP_STAGE_COUSIN_MAX_DIST 40.f /* a cousin spawns at most this far (m) from the nest */
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
 #define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
 #define CP_STAGE_WAKE_RADIUS 6.f
 #define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
-#define CP_STAGE_SNAPSHOT_VERSION 11   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8) */
+#define CP_STAGE_SNAPSHOT_VERSION 16   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59); 13: A59 slope grip traits and wildlife fall state; 15: A72/A74 context attacks (variant, momentum, knockback, projectiles, hold); 16: jump (jumping flag, landing cooldown; feat/jump, was 14) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
+#define CP_JUMP_STAMINA_PCT 6      /* % of max stamina per jump (starting value; play test checks it) */
+#define CP_JUMP_COOLDOWN_TICKS 3   /* 0.3 s after landing */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -31,7 +43,7 @@ enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
        CP_STAGE_EAT, CP_STAGE_INSPECT, CP_STAGE_BUY_PART, CP_STAGE_BUY_LEVEL, CP_STAGE_BUY_TIER,
        CP_STAGE_DIG,
-       CP_STAGE_QUEST };   /* QUEST: target = task step, move = DNA; instant, once per step (stage_dig.c); a logged input so replays agree */   /* DIG: no target; digs where the player stands (soft soil only), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
+       CP_STAGE_QUEST };   /* QUEST: target = task step, move = DNA; instant, once per step (stage_dig.c); a logged input so replays agree */   /* DIG: no target; digs where the player stands (anywhere dry; harder ground takes longer, A54), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
@@ -47,7 +59,7 @@ enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_B
        CP_STAGE_ERR_FULL=-22,
        CP_STAGE_ERR_NEEDS_EVOLVE=-23, /* nest apply: the change alters parts, levels or tiers; it needs Evolve */
        CP_STAGE_ERR_NO_DNA=-24,
-       CP_STAGE_ERR_HARD_GROUND=-27,  /* dig: not soft soil (rock, steep ground, water, cave) */
+       CP_STAGE_ERR_HARD_GROUND=-27,  /* dig: water or outside the island (any dry ground can be dug, A54) */
        CP_STAGE_ERR_ALREADY_DUG=-28 };  /* dig: there is a hole here already */    /* nest evolve: the DNA balance does not cover the purchases */      /* eat: the food meter is full */
 enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
 #define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
@@ -67,8 +79,9 @@ enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, C
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
 #define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
 #define CP_SOC_OBSERVE_RANGE 40.f
-#define CP_SOC_SPECIES 8      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona */
-#define CP_STAGE_SPECIES_COUNT 8
+#define CP_SOC_SPECIES 12     /* capacity; defined: Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona. 8..11 are reserved (T11 food web, A59 flying) */
+#define CP_STAGE_SPECIES_COUNT 12   /* table capacity */
+#define CP_STAGE_SPECIES_DEFINED 8  /* species 0..7 exist; spawning or listing 8..11 is refused until their rows are written */
 #define CP_SOC_CHAIN_ITEMS 3
 #define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
@@ -85,7 +98,7 @@ typedef struct {
 } CpStageSpecies;
 extern const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT];
 /* Stage locomotion (PLAN-feel, version 2; speed by body size A39). jog = sqrt(Fr_walk g h)*jog_k, run/sprint = sqrt(sprint_k g h)*jog_k
- * (sprint_k is the run Froude number, 1.5), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
+ * (sprint_k is the run Froude number, 2.2 since A54: starter B runs about 3.2 m/s), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
 typedef struct {
     float jog_k,sprint_k,wild_k;
     float accel,brake;               /* m/s2 caps on the per-tick speed change */
@@ -136,7 +149,7 @@ typedef struct {
     int32_t verb,target,move,dir,sprint;
     int16_t hx,hz;
     float x,z;
-} CpStageInput;
+} CpStageInput;   /* ATTACK: `dir` 1 = the key was held (A74: spit throws the charged glob, or the charged lob from far); the logs carry it as is */
 typedef struct {
     float x,z,fx,fz,hp,stamina,speed,acceleration,turn_rate;
     float home_x,home_z,goal_x,goal_z;
@@ -145,6 +158,8 @@ typedef struct {
     /* Steering (CP_STAGE_VERSION 3): yaw rate, legs (0 = 4) and the slide flag are state; grade is derived (not hashed). */
     float omega,grade;
     int32_t legs,sliding;
+    /* A59 wildlife airborne state; player keeps the A31 world fields. */
+    int32_t slip_air,slip_y,slip_v,slip_start,slip_dx,slip_dz;
 } CpStageCreature;
 /* Adapter state for the existing public apps/combat_bots.h API. No bot rules
  * are duplicated here; stage_world.c copies these fields to/from CpBot. */
@@ -272,7 +287,9 @@ typedef struct {
  * integer or + - * /, derived from the seed and the field, and hashed only once a dig was accepted (`used`). */
 #define CP_STAGE_BEDS 4
 #define CP_STAGE_HOLES 16
-#define CP_DIG_TICKS 20          /* 2 s standing still */
+#define CP_DIG_TICKS 20          /* 2 s standing still on soft soil */
+#define CP_DIG_TICKS_HARD 35     /* 3.5 s on hard ground (steep, shore sand) */
+#define CP_DIG_TICKS_ROCK 50     /* 5 s on rock (cliffs, caves) */
 #define CP_DIG_STAMINA 12.f
 #define CP_BED_RADIUS 3.f
 enum { CP_BED_WING, CP_BED_BONE };
@@ -325,6 +342,7 @@ typedef struct {
     /* Run stamina is separate from combat stamina; mm, mm/s for fixed-step gravity. */
     int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
     int32_t fall_dx_mm,fall_dz_mm;
+    int32_t jumping,jump_cd;         /* jump: the current air phase was a jump (keeps the run-up speed on landing); ticks until another jump is allowed */
     CpStageDig dig;                  /* first-quest: fossil beds, holes, the dig in progress (snapshot 9) */
     uint32_t grace_until,wake_until[CP_STAGE_MAX_WILD]; /* v8 AI clocks; zero keeps legacy hashes */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
@@ -335,12 +353,19 @@ int cp_stage_dig_order(CpStageWorld *w,const CpStageInput *a);
 void cp_stage_dig_step(CpStageWorld *w);
 int cp_stage_quest_award(CpStageWorld *w,int step,int dna);   /* pays a task step's DNA once; 0, or -1 when invalid or already paid */
 void cp_stage_dig_flame(CpStageWorld *w);                      /* the player started the flamethrower */
-int cp_stage_soft_soil(const CpStageWorld *w,float x,float z); /* diggable here: dry, gentle, outside the cave */
+int cp_stage_soft_soil(const CpStageWorld *w,float x,float z); /* soft soil here: dry, gentle, outside the cave (fossil beds sit on it, the dig is fastest on it) */
+int cp_stage_dig_hardness(const CpStageWorld *w,float x,float z); /* 0 soft, 1 hard, 2 rock, -1 cannot dig (water, outside); A54 */
+int cp_stage_dig_ticks(const CpStageWorld *w,float x,float z);    /* standing-still ticks the dig takes here: 20, 35 or 50 */
 uint64_t cp_stage_dig_hash(const CpStageWorld *w);
 int cp_stage_dig_json(const CpStageWorld *w,char *out,size_t cap);
 int cp_stage_dig_observe(const CpStageWorld *w,char *out,size_t cap);   /* the agent's view: progress, holes, and the cue of any bed within 30 m (no coordinates of the far ones) */
 /* --- C2 secrets (core/src/stage_secrets.c) --- */
 void cp_stage_set_run(CpStageWorld *w,int on);
+/* Space: a hop on the ground, applied before the step like set_run (log v5: bit 2 of the run column). Apex 0.8 x hip height, within
+ * [0.2, 1.2] m and at most half the safe drop, so a jump on flat ground never hurts; the horizontal speed carries over. Costs
+ * CP_JUMP_STAMINA_PCT % of max stamina. Returns 0 (jumped) or CP_STAGE_ERR_* / -1 when refused (nothing changes). */
+int cp_stage_jump(CpStageWorld *w);
+float cp_stage_jump_height(const CpStageWorld *w);   /* the apex in metres for the player's body */
 float cp_stage_safe_drop(const CpStageWorld *w); /* metres, 1.5 times mean leg length */
 int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
 int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: asleep by day, unless approached within 6 m or recently awake */
@@ -484,7 +509,7 @@ extern const int CP_STAGE_PARAM_COUNT;
 uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
                             uint32_t ticks,uint64_t *hashes);
-/* Input log v4: the run toggle of a tick (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
+/* Input log v4/v5: bit 0 of `on` is the run toggle of a tick, bit 1 (v5) a jump requested that tick (cp_stage_jump after set_run). Run toggle (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
  * step, as the Godot session does). Entries carry absolute world ticks, ascending. cp_stage_replay_ex is this with no run entries. */
 typedef struct { uint32_t tick; int32_t on; } CpStageRunEntry;
 uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,

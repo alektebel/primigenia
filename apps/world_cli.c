@@ -72,9 +72,10 @@ static int replay(const char *path){
     int version,ticks;
     CpStageDebugEntry *debug=NULL;
     int n_debug=0,legs_n=-1,legs[CP_STAGE_MAX_WILD+1]={0};
+    int grip_n=-1,grip_traits[CP_STAGE_MAX_WILD+1]={0},grip_legs[CP_STAGE_MAX_WILD+1]={0};
     int sec_bits=0,sec_clock=0,sec_cave=0;
     float sec_v[7]={0};   /* C2 secrets header line: `secrets <bits> <start_clock> <cave_on> <x z fx fz half length radius>` */
-    if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version<2||version>4))goto invalid;
+    if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version<2||version>5))goto invalid;
     if(version>=3){
         long mark;
         for(;;){
@@ -82,6 +83,10 @@ static int replay(const char *path){
             if(fscanf(f,"%31s",word)!=1)goto invalid;
             if(!strcmp(word,"snapshot")){
                 if(fscanf(f,"%1023s",snapshot_path)!=1)goto invalid;
+            }
+            else if(!strcmp(word,"grip")){
+                if(fscanf(f,"%d",&grip_n)!=1||grip_n<0||grip_n>CP_STAGE_MAX_WILD)goto invalid;
+                for(int i=0;i<=grip_n;i++)if(fscanf(f,"%d%d",&grip_traits[i],&grip_legs[i])!=2||grip_traits[i]<0||grip_traits[i]>63||grip_legs[i]<0||grip_legs[i]>255)goto invalid;
             }
             else if(!strcmp(word,"legs")){
                 /* legs <n_wild> <player> <wild...>: leg counts (0 = 4), written only when one is set */
@@ -116,6 +121,11 @@ static int replay(const char *path){
         CpStageObstacle *o=&setup.obstacles[i];
         if(fscanf(f,"%f%f%f%d",&o->x,&o->z,&o->r,&o->type)!=4)goto invalid;
     }
+    if(grip_n>=0){
+        if(grip_n!=setup.n)goto invalid;
+        setup.player.grip_traits=grip_traits[0];setup.player.grip_legs=grip_legs[0];
+        for(int i=0;i<setup.n;i++){setup.wild[i].profile.grip_traits=grip_traits[i+1];setup.wild[i].profile.grip_legs=grip_legs[i+1];}
+    }
     setup.secrets=sec_bits;
     setup.start_clock=sec_clock;
     if(sec_cave)setup.cave=(CpStageCave){1,sec_v[0],sec_v[1],sec_v[2],sec_v[3],0,sec_v[4],sec_v[5],sec_v[6]};
@@ -146,7 +156,7 @@ static int replay(const char *path){
     for(int i=0;i<ticks;i++){
         CpStageInput *a=&inputs[i];
         int hx,hz;
-        if(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)!=9||hx< -32768||hx>32767||hz< -32768||hz>32767||(version==4&&(fscanf(f,"%d",&runs[i])!=1||(runs[i]&~1)))){
+        if(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)!=9||hx< -32768||hx>32767||hz< -32768||hz>32767||(version>=4&&(fscanf(f,"%d",&runs[i])!=1||(runs[i]&~(version==5?3:1))))){
             free(inputs);free(runs);
             goto invalid;
         }
@@ -196,7 +206,7 @@ static int replay(const char *path){
             }
             cursor++;
         }
-        if(version==4)cp_stage_set_run(&world,runs[i]);
+        if(version>=4){cp_stage_set_run(&world,runs[i]&1);if(runs[i]&2)cp_stage_jump(&world);}
         printf("%016"PRIx64"\n",cp_stage_step(&world,&inputs[i]));
     }
     free(inputs);free(runs);
