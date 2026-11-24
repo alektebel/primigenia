@@ -51,12 +51,12 @@ class Ground{
 }
 
 /* ---------------- versions ---------------- */
-const LEAFTINT={A:[1,1,.9],B:[.96,1.02,.96],C:[1.02,1,.86],D:[.86,.95,.8]};
+const LEAFTINT={A:[1,1,.9],B:[.92,.98,.95],C:[1.02,1,.86],D:[.86,.95,.8]};
 const VERSIONS={
  A:{id:'A',name:'Laurisilva',org:'Tenerife Anaga / La Gomera Garajonay, Madeira Fanal',
   tag:'Closure about 85%. Two layers: a 15-22 m laurel canopy over a fern understory. Soft green diffuse light, no shafts. Narrow 1.2 m trails, few clearings.',
   classes:{
-   canopy:{dens:120,minD:.62,H:[15,22],dbh:[.38,1.0],firstBr:[3,6.5],crownR:[4.2,5.6],buttA:.3,buttN:5,buttH:1.6,limbs:6,clumpR:2.7,nClump:14,layers:2,lean:.07,moss:.4,epi:.5,hang:.35,vines:2,vineMoss:.25,leaf:'laurel',nv:5,cardSize:1.5,leafDensity:1.0},
+   canopy:{dens:150,minD:.6,H:[15,22],dbh:[.42,1.15],firstBr:[3,6.5],crownR:[4.2,5.6],buttA:.3,buttN:5,buttH:1.6,limbs:6,clumpR:2.7,nClump:14,layers:2,lean:.1,moss:.55,epi:.5,hang:.35,vines:3,vineMoss:.25,leaf:'laurel',nv:5,cardSize:1.5,leafDensity:1.1},
    under:{dens:95,minD:.7,H:[4.5,8],dbh:[.1,.22],firstBr:[2.3,3],crownR:[1.8,2.6],buttA:.1,buttN:4,buttH:.8,limbs:3,clumpR:1.5,nClump:5,layers:1,lean:.1,moss:.3,epi:.2,hang:.1,vines:0,vineMoss:0,leaf:'laurel',nv:3,cardSize:1.1,leafDensity:.9},
    tfern:{dens:22,minD:.9,H:[2.4,4.6],r:.12,fl:1.9}},
   ug:{fern:{lam:.6,r:[.5,.8],h:[.55,1.3]},fernL:{lam:.2,r:[.7,1.1],h:[1,1.5]},shrub:{lam:.05,r:[.7,1.1],h:[.8,1.6]},light:[.7,1.25]},
@@ -66,19 +66,19 @@ const VERSIONS={
  B:{id:'B',name:'Cloud forest',org:'Monteverde, Garajonay "Bosque Encantado", Fanal fog',
   tag:'Closure about 90%. Three layers with moss-draped limbs, epiphyte ferns, rope vines and tree ferns. Fog stands between the trunks, light is diffused and grey-green. Mossy logs; 1.5 m trails along streams, small spring clearings.',
   classes:{
-   giant:{dens:5,minD:.8,H:[22,27],dbh:[1.0,1.6],firstBr:[4,8],crownR:[6,7.5],buttA:.75,buttN:5,buttH:2.6,limbs:6,clumpR:3.1,nClump:14,layers:2,lean:.1,moss:.9,epi:1.6,hang:1.2,vines:6,vineMoss:.8,leaf:'cloud',nv:3,cardSize:1.6,leafDensity:1.0},
-   canopy:{dens:140,minD:.6,H:[13,19],dbh:[.3,.8],firstBr:[2.8,5.5],crownR:[3.8,5.2],buttA:.3,buttN:5,buttH:1.4,limbs:6,clumpR:2.6,nClump:15,layers:2,lean:.16,moss:.9,epi:1.2,hang:1.1,vines:5,vineMoss:.8,leaf:'cloud',nv:5,cardSize:1.45,leafDensity:1.05},
+   giant:{dens:6,minD:.8,H:[22,27],dbh:[1.0,1.6],firstBr:[4,8],crownR:[6,7.5],buttA:.75,buttN:5,buttH:2.6,limbs:6,clumpR:3.1,nClump:14,layers:2,lean:.1,moss:.9,epi:1.6,hang:1.2,vines:6,vineMoss:.8,leaf:'cloud',nv:3,cardSize:1.6,leafDensity:1.0},
+   canopy:{dens:140,minD:.6,H:[13,19],dbh:[.42,1.05],firstBr:[2.8,5.5],crownR:[3.8,5.2],buttA:.3,buttN:5,buttH:1.4,limbs:6,clumpR:2.6,nClump:15,layers:2,lean:.16,moss:.9,epi:1.2,hang:1.1,vines:5,vineMoss:.8,leaf:'cloud',nv:5,cardSize:1.45,leafDensity:1.05},
    under:{dens:125,minD:.7,H:[4,7],dbh:[.08,.2],firstBr:[2.3,3],crownR:[1.8,2.6],buttA:.1,buttN:4,buttH:.8,limbs:3,clumpR:1.5,nClump:5,layers:1,lean:.14,moss:.8,epi:.5,hang:.4,vines:0,vineMoss:0,leaf:'cloud',nv:3,cardSize:1.05,leafDensity:.9},
    tfern:{dens:55,minD:.9,H:[2.4,5.2],r:.13,fl:2.1}},
   ug:{fern:{lam:.72,r:[.5,.85],h:[.55,1.3]},fernL:{lam:.22,r:[.7,1.1],h:[1,1.5]},shrub:{lam:.06,r:[.7,1.1],h:[.8,1.5]},light:[.8,1.2]},
   logs:26,rocks:26,trail:{w:1.5,stream:true},clearings:'springs',
   light:{sunAz:.9,sunEl:.74,sunI:.55,sunCol:[1,.95,.85],hemiI:1.85,hemiSky:[.7,.84,.74],hemiGnd:[.18,.2,.14],exp:1.0,sky:[.7,.77,.8],hor:[.8,.86,.85]},
-  fog:{den:.019,k:.032,base:-8,far:.0032,col:[.7,.78,.76]},shafts:false,moss:.95,skyGamma:1,mossGround:.8},
+  fog:{den:.034,k:.03,base:-9,far:.0036,col:[.78,.84,.82]},shafts:false,moss:.95,skyGamma:1,mossGround:.8},
  C:{id:'C',name:'Cathedral',org:'tall emergent forest, Hoh and lowland rainforest light',
   tag:'Closure about 80% with buttressed emergents to 30 m over tall straight canopy trunks. Open understory except in gaps. Strong light shafts in 3-4 large clearings with fruit trees and a landmark giant; 2 m trails.',
   classes:{
-   giant:{dens:13,minD:.9,H:[26,32],dbh:[1.4,2.3],firstBr:[13,18],crownR:[7.5,9.5],buttA:1.35,buttN:5,buttH:3.6,limbs:7,clumpR:3.6,nClump:15,layers:1,lean:.03,moss:.3,epi:.5,hang:.15,vines:3,vineMoss:.2,leaf:'broad',nv:3,cardSize:1.8,leafDensity:1.0},
-   canopy:{dens:62,minD:.7,H:[19,25],dbh:[.5,1.0],firstBr:[9,14],crownR:[4.8,6],buttA:.55,buttN:5,buttH:2.2,limbs:6,clumpR:2.9,nClump:13,layers:1,lean:.03,moss:.25,epi:.2,hang:.1,vines:2,vineMoss:.2,leaf:'broad',nv:5,cardSize:1.6,leafDensity:.95},
+   giant:{dens:16,minD:.9,H:[26,32],dbh:[1.4,2.3],firstBr:[13,18],crownR:[7.5,9.5],buttA:1.35,buttN:5,buttH:3.6,limbs:7,clumpR:3.6,nClump:15,layers:1,lean:.03,moss:.3,epi:.5,hang:.15,vines:3,vineMoss:.2,leaf:'broad',nv:3,cardSize:1.8,leafDensity:1.0},
+   canopy:{dens:98,minD:.62,H:[19,25],dbh:[.5,1.0],firstBr:[9,14],crownR:[4.8,6],buttA:.55,buttN:5,buttH:2.2,limbs:6,clumpR:2.9,nClump:13,layers:1,lean:.03,moss:.25,epi:.2,hang:.1,vines:2,vineMoss:.2,leaf:'broad',nv:5,cardSize:1.6,leafDensity:.95},
    under:{dens:28,minD:.8,H:[4,8],dbh:[.1,.2],firstBr:[2.4,3.2],crownR:[1.8,2.8],buttA:.1,buttN:4,buttH:.8,limbs:3,clumpR:1.6,nClump:5,layers:1,lean:.08,moss:.2,epi:.1,hang:0,vines:0,vineMoss:0,leaf:'broad',nv:3,cardSize:1.2,leafDensity:.9},
    tfern:{dens:14,minD:.9,H:[2.5,4.5],r:.12,fl:2},
    fruit:{dens:0,minD:.8,H:[5,8],dbh:[.2,.34],firstBr:[2.4,3],crownR:[2.6,3.4],buttA:.15,buttN:4,buttH:1,limbs:4,clumpR:1.8,nClump:7,layers:1,lean:.1,moss:.1,epi:0,hang:0,vines:0,vineMoss:0,leaf:'broad',nv:2,cardSize:1.2,leafDensity:.9,fruit:.9}},
@@ -89,11 +89,11 @@ const VERSIONS={
  D:{id:'D',name:'Tangle',org:'dwarf cloud forest, Honduras Cusuco, Fanal scrub',
   tag:'Closure about 95%. Low 10-14 m crooked canopy hung with lianas. Darkest light, very dense undergrowth that slows you most; game trails are the only fast way.',
   classes:{
-   canopy:{dens:250,minD:.55,H:[9,14],dbh:[.2,.55],firstBr:[2.8,4.4],crownR:[3,4.2],buttA:.25,buttN:5,buttH:1,limbs:6,clumpR:2.2,nClump:13,layers:2,lean:.22,moss:.6,epi:.5,hang:.7,vines:9,vineMoss:.5,leaf:'small',nv:5,cardSize:1.25,leafDensity:1.15},
+   canopy:{dens:250,minD:.55,H:[9,14],dbh:[.3,.75],firstBr:[2.8,4.4],crownR:[3,4.2],buttA:.25,buttN:5,buttH:1,limbs:6,clumpR:2.2,nClump:13,layers:2,lean:.34,moss:.7,epi:.6,hang:.7,vines:9,vineMoss:.5,leaf:'small',nv:5,cardSize:1.2,leafDensity:.85},
    under:{dens:210,minD:.55,H:[3,5.5],dbh:[.06,.16],firstBr:[2.2,3],crownR:[1.5,2.3],buttA:.08,buttN:4,buttH:.6,limbs:3,clumpR:1.35,nClump:5,layers:1,lean:.2,moss:.5,epi:.2,hang:.3,vines:2,vineMoss:.4,leaf:'small',nv:3,cardSize:.95,leafDensity:1.0},
    tfern:{dens:75,minD:.8,H:[2,4.2],r:.12,fl:1.9}},
   ug:{fern:{lam:1.1,r:[.55,.95],h:[.7,1.5]},fernL:{lam:.36,r:[.8,1.2],h:[1.2,1.8]},shrub:{lam:.3,r:[.8,1.3],h:[1,1.9]},light:[.9,1.1]},
-  logs:14,rocks:14,trail:{w:1.0,stream:false},clearings:[[330,10,5]],
+  logs:14,rocks:14,ugR:55,trail:{w:1.0,stream:false},clearings:[[330,10,5]],
   light:{sunAz:.9,sunEl:.7,sunI:.45,sunCol:[1,.92,.8],hemiI:1.3,hemiSky:[.54,.74,.5],hemiGnd:[.13,.14,.08],exp:1.0,sky:[.55,.65,.7],hor:[.68,.76,.73]},
   fog:{den:.0075,k:.045,base:-6,far:.0022,col:[.52,.6,.56]},shafts:false,moss:.55,skyGamma:1,mossGround:.55}
 };
@@ -147,9 +147,9 @@ function patchMat(mat,U,o){
         vec3 d1=pow(texture2D(tDirt,wuv*0.42).rgb,vec3(2.2)),d2=pow(texture2D(tDirt,wuv*0.09).rgb,vec3(2.2));
         float lm=dot(uMeanL,vec3(.2126,.7152,.0722)),mm=dot(uMeanM,vec3(.2126,.7152,.0722)),dm=dot(uMeanD,vec3(.2126,.7152,.0722));
         vec3 W3=vec3(.2126,.7152,.0722);
-        vec3 litter=vec3(.085,.062,.04)*mix(vec3(dot(l1,W3)/lm),l1/uMeanL,.3)*pow(dot(l2,W3)/lm,.5)*pow(dot(l3,W3)/lm,.55);
-        vec3 mossC=vec3(.07,.11,.038)*mix(vec3(dot(m1,W3)/mm),m1/uMeanM,.35)*pow(dot(m2,W3)/mm,.5)*pow(dot(m3,W3)/mm,.5);
-        vec3 dirt=vec3(.21,.16,.115)*mix(vec3(dot(d1,W3)/dm),d1/uMeanD,.3)*pow(dot(d2,W3)/dm,.5);
+        vec3 litter=vec3(.098,.072,.046)*mix(vec3(dot(l1,W3)/lm),l1/uMeanL,.3)*pow(dot(l2,W3)/lm,.5)*pow(dot(l3,W3)/lm,.55);
+        vec3 mossC=vec3(.085,.135,.045)*mix(vec3(dot(m1,W3)/mm),m1/uMeanM,.35)*pow(dot(m2,W3)/mm,.5)*pow(dot(m3,W3)/mm,.5);
+        vec3 dirt=vec3(.52,.41,.31)*mix(vec3(1.0),vec3(dot(d1,W3)/dm),.4)*mix(1.0,dot(d2,W3)/dm,.3);
         vec3 rockC=mix(vec3(.13,.125,.115),mossC*.75,.5);
         vec3 gr=mix(litter,mossC,clamp(vMoss*uMossK,0.0,1.0));
         gr=mix(gr,rockC,vRock);
@@ -158,7 +158,7 @@ function patchMat(mat,U,o){
         
         ${RIB}
         diffuseColor.rgb*=gr;`);
-      f=f.replace('#include <aomap_fragment>','#include <aomap_fragment>\nreflectedLight.indirectDiffuse*=mix(1.0,0.07+0.93*pow(vSky,1.45),uAO);');
+      f=f.replace('#include <aomap_fragment>','#include <aomap_fragment>\nreflectedLight.indirectDiffuse*=mix(1.0,mix(0.09+0.91*pow(vSky,1.45),0.4+0.6*pow(vSky,.8),vTrail*0.7),uAO);');
     }
     f=f.replace('#include <dithering_fragment>',`#include <dithering_fragment>
       if(uMask>2.5){gl_FragColor=vec4(clamp(vWP.y/48.0,0.0,1.0),0.0,0.0,1.0);}
@@ -286,7 +286,7 @@ class Stand{
       const key=cls+vi;if(!protoParams[key])protoParams[key]=this.protoParams(cls,vi);
       const P=protoParams[key];
       const sc=(forceH?1:.9+rnd()*.22);
-      const t={cls,vi,key,x,z,y:g.at(x,z),sc,yaw:rnd()*6.283,rad:P.dbh/2*sc*1.2,H:P.H*sc,dbh:P.dbh*sc,firstBr:P.firstBr*sc,tint:[.9+rnd()*.2,.92+rnd()*.16,.88+rnd()*.24]};
+      const t={cls,vi,key,x,z,y:g.at(x,z),sc,yaw:rnd()*6.283,rad:P.dbh/2*sc*1.2,H:P.H*sc,dbh:P.dbh*sc,firstBr:P.firstBr*sc,tint:(()=>{const v=.82+rnd()*.38,y=rnd()<.18?1:0;return[v*(1+.12*y),v*(1+.05*y),v*(.92-.2*y)*(.9+rnd()*.2)];})()};
       out.push(t);let l=hash.get(hkey(x,z));if(!l)hash.set(hkey(x,z),l=[]);l.push(t);return t;
     };
     this.protoParamsMap=protoParams;
@@ -337,8 +337,8 @@ class Stand{
   metaFor(key){
     if(this.protoMeta[key])return this.protoMeta[key];
     const P=this.protoParamsMap[key],cls=key.slice(0,key.length-1),vi=+key.slice(-1);let m;
-    if(cls==='tfern'){const r=FT.treeFernParts(vi*5+3,P,2);m={Ht:P.H,H:P.H,trunkR:P.r,crown:r.meta.crown};}
-    else{const r=FT.treeParts(vi*53+cls.charCodeAt(0)+this.id.charCodeAt(0)*7,P,2);m=r.meta;}
+    if(cls==='tfern'){const r=FT.treeFernParts(vi*5+3,P,1);m={Ht:P.H,H:P.H,trunkR:P.r,crown:r.meta.crown};(this.l0Cache||(this.l0Cache={}))[key]=r;}
+    else{const r=FT.treeParts(vi*53+cls.charCodeAt(0)+this.id.charCodeAt(0)*7,P,0);m=r.meta;(this.l0Cache||(this.l0Cache={}))[key]=r;}
     return this.protoMeta[key]=m;
   }
   /* sky view factor on a grid: cosine-weighted mean transmittance over the zenith cone, 12 rays (the same quantity the closure measure uses) */

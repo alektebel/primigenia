@@ -81,16 +81,16 @@ function blobTexFrom(leafTexture,base){ /* opaque canopy surface: the leaf spray
   const t=tex(cv);t.repeat.set(3,3);return t;}
 function fernTex(seed,lush){
   const W=256,H=512,cv=cvs(W,H),g=cv.getContext('2d'),R=rng32(seed);g.lineCap='round';
-  g.strokeStyle='#2c3d1c';g.lineWidth=4;g.beginPath();g.moveTo(W/2,H-2);g.quadraticCurveTo(W/2+10,H*.5,W/2,12);g.stroke();
-  const NP=22;
+  g.strokeStyle='#2f4120';g.lineWidth=3.5;g.beginPath();g.moveTo(W/2,H-2);g.quadraticCurveTo(W/2+8,H*.5,W/2,10);g.stroke();
+  const NP=34;
   for(let i=0;i<NP;i++){
-    const t=i/(NP-1),y=H-14-(H-30)*t,len=(W*.5)*Math.pow(Math.sin(Math.PI*(.12+.88*(1-t))),.8)*(1-.5*t*t)+10;
+    const t=i/(NP-1),y=H-12-(H-26)*t,len=(W*.49)*Math.pow(Math.sin(Math.PI*(.1+.9*(1-t))),.75)*(1-.45*t*t)+8;
     for(const side of[-1,1]){
-      g.save();g.translate(W/2+Math.sin(t*3)*4,y);g.scale(side,1);g.rotate(-1.15+t*.35);
-      const hue=lerp(88,108,R()),lig=lerp(17,27,R())+(lush?3:0);
-      g.fillStyle=`hsl(${hue},${lerp(26,40,R())}%,${lig}%)`;g.beginPath();g.moveTo(0,0);
-      g.bezierCurveTo(len*.2,-len*.3,len*.7,-len*.27,len,-len*.05);g.bezierCurveTo(len*.7,len*.2,len*.2,len*.2,0,5);g.fill();
-      g.strokeStyle=`hsla(${hue},40%,${lig-9}%,.8)`;g.lineWidth=1.2;g.beginPath();g.moveTo(0,0);g.lineTo(len*.95,-len*.04);g.stroke();
+      g.save();g.translate(W/2+Math.sin(t*3)*3,y);g.scale(side,1);g.rotate(-1.2+t*.45);
+      const hue=lerp(78,100,R()),lig=lerp(26,38,R())+(lush?4:0)+(t>.6?5:0);
+      g.fillStyle=`hsl(${hue},${lerp(30,44,R())}%,${lig}%)`;g.beginPath();g.moveTo(0,0);
+      g.bezierCurveTo(len*.2,-len*.075,len*.7,-len*.07,len,-len*.015);g.bezierCurveTo(len*.7,len*.045,len*.2,len*.045,0,1.8);g.fill();
+      g.strokeStyle=`hsla(${hue},34%,${lig-8}%,.9)`;g.lineWidth=1.1;g.beginPath();g.moveTo(0,0);g.lineTo(len*.97,-len*.02);g.stroke();
       g.restore();
     }
   }
@@ -141,8 +141,9 @@ function floorTex(kind,seed){
       wrap(x,y,r,(X,Y)=>{g.fillStyle=c;g.beginPath();g.arc(X,Y,r,0,6.3);g.fill();hg.fillStyle=hg_(hh);hg.beginPath();hg.arc(X,Y,r,0,6.3);hg.fill();});}
     g.lineCap='round';for(let i=0;i<70;i++){const x=R()*N,y=R()*N,a=R()*6.28,L=30+R()*90,bend=(R()-.5)*60;wrap(x,y,L,(X,Y)=>{for(const[c,col,w]of[[g,'#2a1f16',2+R()*3],[hg,hg_(185),3]]){c.strokeStyle=col;c.lineWidth=w;c.beginPath();c.moveTo(X,Y);c.quadraticCurveTo(X+Math.cos(a)*L*.5+bend,Y+Math.sin(a)*L*.5,X+Math.cos(a)*L,Y+Math.sin(a)*L);c.stroke();}});}
   }
+  const hb=cvs(N,N),hbg=hb.getContext('2d');hbg.filter='blur(1.3px)';hbg.drawImage(hc,0,0);   /* soften the height so the bump shows leaf relief, not outlines */
   const m1=cvs(1,1),mg=m1.getContext('2d');mg.drawImage(cv,0,0,1,1);const md=mg.getImageData(0,0,1,1).data;
-  const lin=v=>Math.pow(v/255,2.2);return{map:tex(cv),height:tex(hc),mean:[lin(md[0]),lin(md[1]),lin(md[2])]};
+  const lin=v=>Math.pow(v/255,2.2);return{map:tex(cv),height:tex(hb),mean:[lin(md[0]),lin(md[1]),lin(md[2])]};
 }
 
 /* ---------------- geometry builder ---------------- */
@@ -218,8 +219,8 @@ function treeParts(seed,P,lod){
     return r*(1+.025*Math.sin(th*5+y*1.7+wp));};
   const barkCol=(y,th,wy)=>{ /* moss on the lower trunk and on fins, dirty at the root */
     const fin=Math.pow(Math.max(0,Math.cos(P.buttN*(th+fin0))),2.4);
-    const m=clamp(P.moss*(.25+.9*(1-sstep(1,Ht*.75,y))*(.55+.6*vnoise(th*2+wp,y*.35,seed)))+P.moss*.4*fin*Math.exp(-y/4),0,1);
-    const sh=lerp(.6,1,sstep(0,Ht*.55,y)),mc=[.17,.29,.08];
+    const m=clamp(P.moss*(.3+.95*(1-.45*sstep(1,Ht*.9,y))*(.5+.7*vnoise(th*2+wp,y*.35,seed)))+P.moss*.4*fin*Math.exp(-y/4),0,1);
+    const sh=lerp(.6,1,sstep(0,Ht*.55,y)),mc=[.42,.62,.2];
     return[lerp(BARK_BASE[0],mc[0],m)*sh*2,lerp(BARK_BASE[1],mc[1],m)*sh*2,lerp(BARK_BASE[2],mc[2],m)*sh*2];};
   /* trunk */
   const ys=[];for(let i=0;i<=NRING;i++)ys.push(Ht*Math.pow(i/NRING,lod===0?1.7:1.5));

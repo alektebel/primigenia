@@ -1,0 +1,12 @@
+A closure belt 0.83 (min/max 0.7/0.98) edge 0.44 | undergrowth off 0.58 trail 0 | climbable/ha 48.6 stems/ha 156.0 trees 23215
+   OG7 lumRatio 0.242 sunFrac 0.064 (all lit 0.32) traildL 0.061 creature dist_contrast 0.081 | OG5 trail dL n/a px 0 | CLR sunFrac 0.087 traildL 0.204 dist 0.126
+   inst/tris: OG7 31905/3.73M OG6 21367/2.10M OG5 18974/3.19M CLR 33539/3.92M
+B closure belt 0.89 (min/max 0.62/0.99) edge 0.62 | undergrowth off 0.65 trail 0 | climbable/ha 40.5 stems/ha 176.0 trees 26172
+   OG7 lumRatio 0.235 sunFrac 0.027 (all lit 0.26) traildL 0.05 creature dist_contrast 0.077 | OG5 trail dL 0.075 px 830 | CLR sunFrac 0.078 traildL 0.136 dist n/a
+   inst/tris: OG7 37848/4.24M OG6 23376/2.30M OG5 21441/3.58M CLR 39052/4.36M
+C closure belt 0.8 (min/max 0.61/0.88) edge 0.35 | undergrowth off 0.27 trail 0 | climbable/ha 41.6 stems/ha 88.0 trees 13114
+   OG7 lumRatio 0.132 sunFrac 0.017 (all lit 0.12) traildL 0.042 creature dist_contrast 0.05 | OG5 trail dL n/a px 0 | CLR sunFrac 0.003 traildL 0.096 dist n/a
+   inst/tris: OG7 14156/2.12M OG6 15239/1.37M OG5 10744/1.97M CLR 15329/2.06M
+D closure belt 0.87 (min/max 0.45/0.98) edge 0.59 | undergrowth off 0.96 trail 0.15 | climbable/ha 0 stems/ha 327.0 trees 48621
+   OG7 lumRatio 0.224 sunFrac 0.009 (all lit 0.5) traildL 0.044 creature dist_contrast 0.07 | OG5 trail dL n/a px 0 | CLR sunFrac 0.004 traildL 0.04 dist 0.05
+   inst/tris: OG7 50960/6.92M OG6 36726/3.92M OG5 39618/6.30M CLR 52099/7.05M

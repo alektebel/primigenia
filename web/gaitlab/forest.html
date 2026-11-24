@@ -94,7 +94,7 @@ function hud(){
     h+=row('On trail',fmt(c.undergrowthTrail,0,1),'<= 10%',c.undergrowthTrail<=.1);
   }else h+=`<tr><td colspan=3 class="na">canopy measures: waiting for the build</td></tr>`;
   if(o7){
-    h+=`<tr class="sec"><td colspan=3>OG7 frame (under the canopy)</td></tr>`;
+    h+=`<tr class="sec"><td colspan=3>OG7 under the canopy (mean of 5 frames on the trail)</td></tr>`;
     h+=row('Ground light, with / without canopy',fmt(o7.lumRatio,2),'0.12-0.25',inr(o7.lumRatio,.12,.25));
     h+=row('Direct sun in frame (below 5 m)',fmt(o7.sunFrac,1,1),'3-10%',inr(o7.sunFrac,.03,.10));
     h+=row('Trail vs surround, dL',fmt(o7.trailContrast,3),'>= 0.08',o7.trailContrast==null?null:o7.trailContrast>=.08);
@@ -118,7 +118,7 @@ async function measureVersion(id){
   M[id]=M[id]||{slots:{}};
   if(!M[id].cpu){M[id].cpu=v.st.measureCPU();}
   M[id].slots=M[id].slots||{};
-  for(const s of['OG7','OG6','OG5','CLR']){M[id].slots[s]=LAB.measureSlot(s);hud();await new Promise(r=>setTimeout(r,10));}
+  for(const s of['OG7','OG6','OG5','CLR']){M[id].slots[s]=s==='OG7'?LAB.measureOG7():LAB.measureSlot(s);hud();await new Promise(r=>setTimeout(r,10));}
   LAB.setSlot(oldSlot);if(old!==id)await LAB.setVersion(old);
   busy=false;$('status').textContent='';dirty=true;ui();return M[id];
 }
