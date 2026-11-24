@@ -5,7 +5,7 @@ extends SceneTree
 # island: "0" or "default" = the game's own island (CporeTerrain.defaults()); a path to a packed island (.isl: the authored Star massif with its
 # climate maps; `make godot-island-path ISLAND=godot/game/data/islands/star_massif.isl`); a path to a JSON file = terrain params (the "params"
 # object of `terrain_cli layout-json --layout N`, or that whole output; later steps point it at an island file). `make godot-island-path`
-# turns LAYOUT=N into that file. The shot list below is in world metres (nest at the origin, x east, z south) for the Star massif.
+# turns LAYOUT=N into that file. The shot list below is in world metres (x east, z south) for the Star massif; since B1 the nest is not the origin (seed 1: (0, 115), on the dry shore of the nest valley lake), so OG8 stands at the nest.
 # Writes <out>/<tier>_<tod>_<OGn>.jpg, <out>/times_<tier>.json (software-GL ms per frame, a relative number only) and
 # <out>/path_<tier>.json (the exact camera of every frame). Deterministic: frozen clouds, fixed times of day, no wildlife, fixed fps.
 
@@ -30,7 +30,7 @@ const SHOTS := [
 	{"name": "OG5", "pos": [874, 150, -1076], "agl": true, "look": [1248, 100, -1560], "look_agl": true, "fov": 62.0},
 	{"name": "OG6", "pos": [520, 4, -640], "agl": true, "look": [874, 10, -1076], "look_agl": true, "fov": 62.0},
 	{"name": "OG7", "pos": [940, 1.8, -1180], "agl": true, "look": [961, 1.6, -1214], "look_agl": true, "fov": 70.0},
-	{"name": "OG8", "pos": [0, 2.5, 40], "agl": true, "look": [390, 60, -515], "look_agl": true, "fov": 62.0},
+	{"name": "OG8", "pos": [0, 2.5, 115], "agl": true, "look": [390, 60, -515], "look_agl": true, "fov": 62.0},
 	{"name": "OG9", "chase": 0.45},
 ]
 
