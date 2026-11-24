@@ -1024,6 +1024,44 @@ static void context_attacks(void)
         CHECK(o.c[1].fear_t == 0, "outside the 4 m radius there is no fear");
     }
 
+    /* A75 set B: the existing attack hold byte selects the far bellow in stride. */
+    for (int set_b = 0; set_b <= 1; set_b++) {
+        CpCombatWorld r = ctxpair(10.0f, 0.0f);
+        CHECK(cp_combat_attack_hold(&r, 0, 1, CB_ROAR, set_b) == CB_OK, "far roar order accepted for either set");
+        int playing = 0, planted = 0, feared = 0, overshot = 0;
+        for (int t = 0; t < 50; t++) {
+            float x = r.c[0].x, y = r.c[0].y;
+            cp_combat_step(&r);
+            if (r.c[0].move == CB_ROAR) {
+                playing++;
+                if (r.c[0].spd < 0.01f) planted++;
+                if (set_b) CHECK(r.c[0].x != x || r.c[0].y != y, "B far roar moves on launch, windup, fire and recovery");
+            }
+            if (r.c[1].fear_t > 0) feared = 1;
+            if (r.c[0].over_t > 0) overshot = 1;
+        }
+        CHECK(playing > 0 && feared, "both far roar sets run in and frighten the target");
+        CHECK(set_b ? planted == 0 && overshot : planted > 0 && !overshot, "only B far roar carries momentum and overshoots");
+    }
+    {
+        CpCombatWorld r = ctxpair(10.0f, 0.0f);
+        cp_combat_attack_hold(&r, 0, 1, CB_ROAR, 1);
+        for (int t = 0; t < 40 && r.c[0].move != CB_ROAR; t++) cp_combat_step(&r);
+        CHECK(r.c[0].move == CB_ROAR && r.c[0].mctx == CB_CTX_FAR, "B far context survives the run-in");
+        /* Move the target perpendicular to the heading: a bellow turns by the same 0.4 rad as gallop. */
+        float fx = r.c[0].fx, fy = r.c[0].fy;
+        r.c[1].x = r.c[0].x - fy * 8.0f;
+        r.c[1].y = r.c[0].y + fx * 8.0f;
+        cp_combat_step(&r);
+        CHECK(fabsf(fx * r.c[0].fx + fy * r.c[0].fy - 0.92106099f) < 0.0001f, "B far bellow uses the gallop wide turn");
+        for (int t = 0; t < 20; t++) {
+            r.c[1].x = r.c[0].x + 8.0f;
+            r.c[1].y = r.c[0].y;
+            cp_combat_step(&r);
+            CHECK(r.c[1].fear_t == 0, "B far bellow cannot frighten a target outside normal roar range at fire time");
+        }
+    }
+
     /* deterministic: the same orders give the same hashes, with the new state hashed */
     CpCombatWorld a = ctxpair(10.0f, 0.0f), b = ctxpair(10.0f, 0.0f);
     uint64_t ha = 0, hb = 0;

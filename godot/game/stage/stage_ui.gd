@@ -50,6 +50,7 @@ var _pending_attack = null           # {target, move, chain?}
 const MOVE_BITE := 0
 const MOVE_SPIT := 3
 const MOVE_PECK := 7
+const MOVE_ROAR := 10
 const CHAIN_TICKS := 7
 var _bite_hit_tick := -1000
 # Verb-first targeting (docs/briefs/verb-target.md): `verb` is the armed verb (Modes.*, NONE when nothing is armed), `locked_id` the
@@ -484,6 +485,8 @@ func provide() -> Dictionary:
 					else:
 						_pending_attack["hold"] = 1 if (down and held >= HOLD_MS) else 0
 				order["dir"] = int(_pending_attack["hold"])      # ATTACK carries the hold in `dir` (logged as is)
+			if int(_pending_attack.move) == MOVE_ROAR:
+				order["dir"] = 1 if ActionClock.attack_set == "b" else 0  # A75: persisted by C as vhold/mhold
 			return order
 	if _pursuit != null:
 		var pu: Dictionary = _pursuit

@@ -553,7 +553,7 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
             if (c->calcium < CP_COMBAT_MOVES[a->move].meter_cost) return CB_ERR_NO_METER;
             if (c->cd[a->move]) return CB_ERR_ON_COOLDOWN;
             move = a->move;
-            if (c->ctx_on) { vctx = cp_combat_pick_ctx(w, id, target); vhold = a->hold && move == CB_SPIT; }   /* A72: the press picks the variant */
+            if (c->ctx_on) { vctx = cp_combat_pick_ctx(w, id, target); vhold = a->hold && (move == CB_SPIT || move == CB_ROAR); }   /* A72: the press picks the variant */
         }
         break;
     case CB_V_GUARD:
@@ -669,13 +669,13 @@ static void kill(CpCombatWorld *w, int i, int killer)
 }
 
 /* A74: which (move, context) pairs keep the legs going while the attack plays. Bite: on the move, in passing, the charge. Spit and roar:
- * on the move, on the run. Pounce: only the gather (the leap itself is the dash). Everything else stops, as before. */
-static int moving_ctx(int move, int ctx)
+ * on the move, on the run; A75 roar B also keeps running from far (mhold). Pounce: only the gather (the leap itself is the dash). Everything else stops, as before. */
+static int moving_ctx(const CpCombatCreature *c, int move, int ctx)
 {
     switch (move) {
     case CB_BITE:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP || ctx == CB_CTX_FAR;
-    case CB_SPIT:
-    case CB_ROAR:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP;
+    case CB_SPIT:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP;
+    case CB_ROAR:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP || (ctx == CB_CTX_FAR && c->mhold);
     case CB_POUNCE: return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP || ctx == CB_CTX_FAR;
     default: return 0;
     }
@@ -683,7 +683,7 @@ static int moving_ctx(int move, int ctx)
 /* the creature walks on while its attack plays */
 static int layered(const CpCombatCreature *c)
 {
-    if (!c->ctx_on || !c->mctx || c->move == CB_MOVE_NONE || !moving_ctx(c->move, c->mctx)) return 0;
+    if (!c->ctx_on || !c->mctx || c->move == CB_MOVE_NONE || !moving_ctx(c, c->move, c->mctx)) return 0;
     return c->move != CB_POUNCE || c->phase == CB_PH_WINDUP;
 }
 #define CB_WIDE_COS 0.92106099f   /* cos/sin(0.4 rad): half the turn rate, the wide turn of a moving attack and its overshoot */
@@ -800,8 +800,8 @@ static void begin_move(CpCombatCreature *c, int move)
     c->mctx = c->mhold = 0; c->mspd = 0.0f;
     if (c->ctx_on && c->verb == CB_V_ATTACK && c->verb_move == (uint8_t)move && c->vctx) {
         c->mctx = c->vctx;
-        c->mhold = (uint8_t)(c->vhold && move == CB_SPIT);
-        if (moving_ctx(move, c->mctx)) c->mspd = c->spd;
+        c->mhold = (uint8_t)(c->vhold && (move == CB_SPIT || move == CB_ROAR));
+        if (moving_ctx(c, move, c->mctx)) c->mspd = c->spd;
     }
     int windup=m->windup+tier_mod(c,m->part)->windup;
     if (c->mctx && move == CB_POUNCE) {        /* the gather shortens as the body already moves: a leap off the stride, from the gallop, out of the run-in */
@@ -827,7 +827,7 @@ static void finish_move(CpCombatCreature *c)
 {
     int was_verb = c->verb_started;
     /* a moving attack on the run overshoots: the body carries on, turns wide, and a miss costs more (exposure) */
-    if (c->ctx_on && c->mctx && moving_ctx(c->move, c->mctx) && c->mspd >= 0.5f * cp_combat_canter_speed(c)) {
+    if (c->ctx_on && c->mctx && moving_ctx(c, c->move, c->mctx) && c->mspd >= 0.5f * cp_combat_canter_speed(c)) {
         const int body = c->move == CB_BITE || c->move == CB_POUNCE;
         c->over_t = (uint8_t)((body && !c->hit_mask) ? CB_OVER_MISS : CB_OVER_HIT);
     } else c->mspd = 0.0f;
@@ -1248,7 +1248,7 @@ static int proj_arrive(CpCombatWorld *w, Hit *hits, int nh)
 /* momentum: a moving attack at speed hits harder (starting values, combat_test checks them) */
 static float momentum(const CpCombatCreature *a, const Hit *h)
 {
-    if (h->proj || !a->ctx_on || !a->mctx || !moving_ctx(h->move, a->mctx)) return 1.0f;
+    if (h->proj || !a->ctx_on || !a->mctx || !moving_ctx(a, h->move, a->mctx)) return 1.0f;
     float m = a->mspd / (2.0f * cp_combat_canter_speed(a));
     return 1.0f + CB_MOM_DMG * cb_clampf(m, 0.0f, 1.0f);
 }
