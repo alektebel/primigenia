@@ -22,6 +22,7 @@ $(BUILD)/%.o: %.c $(HDRS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 $(BUILD)/core/src/terrain.o: core/src/terrain_layouts.inc
+$(BUILD)/core/src/climate.o: core/src/climate_biomes.inc
 
 $(BUILD)/libcpore.a: $(CORE_OBJ)
 	ar rcs $@ $^
@@ -52,7 +53,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
+test: climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
 	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
@@ -165,6 +166,24 @@ studio-test:
 	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_touch.cjs
 	G48_TEST_OUTPUT=$(BUILD)/studio-tests/g48-tests.json nice -n 10 node tests/studio_procedural_parts.cjs
 
+# M1: moisture climate kernel (plan section 4). Fixtures come from tools/climate/lt_ref.py (plain Python).
+# climate-test runs the C tests, then rebuilds them at -O0 and -O2 (gcc, plus clang when installed) and requires
+# the same hash lines (check (d)). climate-bench enforces the 15 ms gate for the 256^2 linear theory.
+$(BUILD)/climate_test: tests/test_climate.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: climate-test climate-bench
+climate-test: $(BUILD)/climate_test
+	nice -n 10 ./$(BUILD)/climate_test
+	@mkdir -p $(BUILD)/climate; ref=; \
+	for cc in gcc clang; do command -v $$cc >/dev/null 2>&1 || { echo "climate hash: $$cc not installed, skipped"; continue; }; \
+	  for o in -O0 -O2; do \
+	    $$cc $$o -std=c99 -fno-fast-math -ffp-contract=off -Icore/include -D_POSIX_C_SOURCE=200809L tests/test_climate.c core/src/climate.c -o $(BUILD)/climate/t_$$cc$$o -lm || exit 1; \
+	    h=`nice -n 10 ./$(BUILD)/climate/t_$$cc$$o | grep 'hash lt='`; \
+	    echo "climate hash $$cc $$o: $$h"; \
+	    if [ -z "$$ref" ]; then ref="$$h"; elif [ "$$h" != "$$ref" ]; then echo "climate hash differs between builds"; exit 1; fi; \
+	  done; done
+climate-bench: $(BUILD)/climate_test
+	./$(BUILD)/climate_test --bench
 # W11: native smoke remains small; 1024 guarantees and parity are opt-in.
 TERRAIN_SRC := core/src/terrain.c core/src/rng.c
 $(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
