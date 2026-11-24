@@ -1,6 +1,6 @@
 {
 	"camera": {},
-	"created": "2026-11-24T01:58:29",
+	"created": "2026-11-24T18:53:43",
 	"engine": {
 		"build": "unknown",
 		"layout": "c1425e625a51a7ea",
@@ -138,11 +138,11 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "80000efe3c0b4ca9",
+	"hash": "871c6824b8708dbe",
 	"island": {
 		"seed": 1,
-		"terrain_hash": "7137e3ea79830ad7",
-		"terrain_version": 4
+		"terrain_hash": "0d4c80255233622a",
+		"terrain_version": 5
 	},
 	"kind": "scenario",
 	"legacy": {},

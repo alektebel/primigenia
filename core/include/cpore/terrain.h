@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Bump when the bytes for a seed change. Cached worlds key on this (W13). */
-#define CP_TERRAIN_VERSION 4
+#define CP_TERRAIN_VERSION 5   /* 5: island descs (island.h): cp_terrain_hash mixes the desc hash; splines, masks, trails (F1) */
 
 #define CP_TERRAIN_N_MIN   8
 #define CP_TERRAIN_N_MAX   2048
@@ -135,6 +135,7 @@ typedef struct CpTerrain {
     int cave_count;
     CpTerrainCave caves[CP_TERRAIN_CAVES_MAX];
     float volcano_x_m, volcano_y_m, volcano_radius_m, crater_radius_m;
+    uint64_t island_hash;   /* cp_island_hash of the desc the terrain was generated from; 0 for layouts. Mixed into cp_terrain_hash */
 } CpTerrain;
 
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.

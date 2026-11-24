@@ -21,7 +21,7 @@ enum { LF_MASSIF = 1, LF_RANGE, LF_RING, LF_PLATEAU, LF_TERRACE, LF_BADLANDS, LF
  *           k 1 = reaches the sea (the coast there is a beach, not a cliff)
  *  ISLET    (x0,y0) centre, w radius, h peak altitude, w2 bay radius cut in the main coast
  *  CONE     (x0,y0) centre, w reach, h height at the centre (a tilted island surface) */
-typedef CpIslandEval LFeat;   /* shared with the island descs (island.h): the same evaluator reads both */
+typedef CpIslandEval LFeat;   /* shared with the island descs (island.h): the same evaluator reads both; the tables leave ni and a0 at 0 */
 
 /* Meta for the maps. Regions are polylines with a width (one point = a disc). gate: 0 open from the start,
  * 1 needs climbing, 2 needs swimming or gliding. */
@@ -298,7 +298,7 @@ static float stair(float h, float step)
 /* The island shape before erosion, metres above the sea. One evaluator for the layout tables and for island descs:
  * nest_r and scale are world metres and the design-to-world factor (LSCALE for the layouts), feats the feature list. */
 static float shape_height(const CpTerrainParams *p, float nest_r, float scale, float reefx, float reefy, float cliffx, float cliffy,
-                          int nf, const LFeat *feats, float x, float y)
+                          int nf, const LFeat *feats, int use_ni, float x, float y)
 {
     const float F = p->frequency, vr = nest_r, vf = p->valley_floor_m;
     const uint32_t S = p->seed;
@@ -319,7 +319,7 @@ static float shape_height(const CpTerrainParams *p, float nest_r, float scale, f
     float moat = 0.f, peaks = 0.f, plat = 0.f, ground, h, cone = 0.f, mouth = 0.f, bay = 0.f, islet = -100.f;
     float a_coast = noise2(ux * 1.40f + 7.7f, uy * 1.40f + 13.3f, S ^ 0x5BE0CD19u);
     float a_coast2 = noise2(ux * 3.30f + 1.2f, uy * 3.30f + 19.9f, S ^ 0x6A09E667u);
-    float coast_r, shore, edge;
+    float coast_r, shore, edge, cx, cy;
     int i;
 
     /* crests: massifs, ranges and the nest rim take the max */
@@ -331,15 +331,18 @@ static float shape_height(const CpTerrainParams *p, float nest_r, float scale, f
             sincos_deg(f->k, &s, &c);
             a = (ex * c + ey * s) / f->w2; b = (-ex * s + ey * c) / f->w;
             q = sqrtf(a * a + b * b);
-            if (q < 1.6f && q > 1.0e-4f) q *= 1.20f - 0.34f * spur(a * 2.1f / q + 13.f * (float)i, b * 2.1f / q + 7.f, S ^ 0x62A9D9EDu);
+            if (q < 1.6f && q > 1.0e-4f) q *= 1.20f - 0.34f * spur(a * 2.1f / q + 13.f * (float)(use_ni ? f->ni : i), b * 2.1f / q + 7.f, S ^ 0x62A9D9EDu);
             pk = f->h;
         } else if (f->kind == LF_RANGE) {
-            float t, d = seg_dist(Xd, Yd, f->x0, f->y0, f->x1, f->y1, &t), mod;
-            float along = t * sqrtf((f->x1 - f->x0) * (f->x1 - f->x0) + (f->y1 - f->y0) * (f->y1 - f->y0));
-            mod = clampf(0.80f + f->k * 0.50f * noise2(along / 380.f + 3.1f * (float)i, 0.5f + (float)i, S ^ 0x2D1FB7C3u), 0.35f, 1.15f);
+            /* the noise offset: the entry position for the layout tables, the desc's control-span count (island.h) otherwise */
+            float fi = (float)(use_ni ? f->ni : i), t, d = seg_dist(Xd, Yd, f->x0, f->y0, f->x1, f->y1, &t);
             q = d / f->w;
-            if (q < 1.6f && q > 1.0e-4f) q *= 1.18f - 0.32f * spur(Xd * (1.f / 260.f) + 11.f * (float)i, Yd * (1.f / 260.f) + 5.f, S ^ 0x62A9D9EDu);
-            pk = (f->h + (f->h2 - f->h) * t) * mod;
+            if (q < 1.6f && q > 1.0e-4f) q *= 1.18f - 0.32f * spur(Xd * (1.f / 260.f) + 11.f * fi, Yd * (1.f / 260.f) + 5.f, S ^ 0x62A9D9EDu);
+            if (q < 1.f) {   /* the crest height only matters inside the range's reach */
+                float along = f->a0 + t * sqrtf((f->x1 - f->x0) * (f->x1 - f->x0) + (f->y1 - f->y0) * (f->y1 - f->y0));
+                float mod = clampf(0.80f + f->k * 0.50f * noise2(along / 380.f + 3.1f * fi, 0.5f + fi, S ^ 0x2D1FB7C3u), 0.35f, 1.15f);
+                pk = (f->h + (f->h2 - f->h) * t) * mod;
+            }
         } else if (f->kind == LF_RING) {
             float lobe = clampf(0.70f + 0.95f * noise2(ux * 2.4f + 5.f, uy * 2.4f + 9.f, S ^ 0x3C6EF372u), 0.22f, 1.15f);
             q = absf(r + 70.f * noise2(ux * 3.1f + 1.f, uy * 3.1f + 4.f, S ^ 0x7F4A7C15u) - f->w) / f->w2;
@@ -376,7 +379,7 @@ static float shape_height(const CpTerrainParams *p, float nest_r, float scale, f
         const LFeat *f = &feats[i];
         if (f->kind == LF_PLATEAU) {
             float d = sqrtf((xd - f->x0) * (xd - f->x0) + (yd - f->y0) * (yd - f->y0));
-            float w = f->w * (1.f + 0.14f * noise2(x * (1.f / 330.f) + 2.f * (float)i, y * (1.f / 330.f) + 8.f, S ^ 0x7F4A7C15u));
+            float w = f->w * (1.f + 0.14f * noise2(x * (1.f / 330.f) + 2.f * (float)(use_ni ? f->ni : i), y * (1.f / 330.f) + 8.f, S ^ 0x7F4A7C15u));
             float m = 1.f - smoothstep(w, w + f->w2, d);
             float top = f->h + 6.f * hills + 4.f * rd2;
             h = h * (1.f - m) + top * m;
@@ -389,7 +392,7 @@ static float shape_height(const CpTerrainParams *p, float nest_r, float scale, f
             float d = sqrtf((xd - f->x0) * (xd - f->x0) + (yd - f->y0) * (yd - f->y0));
             float zm = (1.f - smoothstep(f->w, f->w + f->w2, d)) * f->k;
             if (zm > 0.f && h > 4.f) {
-                float hq = stair(h + f->h * 0.30f * noise2(x * (1.f / 420.f) + 3.f * (float)i, y * (1.f / 420.f) + 1.f, S ^ 0x4F1BBCDCu), f->h);
+                float hq = stair(h + f->h * 0.30f * noise2(x * (1.f / 420.f) + 3.f * (float)(use_ni ? f->ni : i), y * (1.f / 420.f) + 1.f, S ^ 0x4F1BBCDCu), f->h);
                 h = h * (1.f - zm) + hq * zm;
             }
         }
@@ -407,12 +410,14 @@ static float shape_height(const CpTerrainParams *p, float nest_r, float scale, f
             }
         }
     }
-    /* channels: passes, river valleys and canyons cut into whatever stands there */
+    /* channels: passes, river valleys and canyons cut into whatever stands there. The wobble of the centre line is the same
+     * for every channel segment, so it is sampled once (the values are those the per-entry loop computed). */
+    cx = Xd + 55.f * noise2(X * 0.0065f, Y * 0.0065f, S ^ 0x1B873593u);
+    cy = Yd + 55.f * noise2(X * 0.0065f + 6.f, Y * 0.0065f + 2.f, S ^ 0xCC9E2D51u);
     for (i = 0; i < nf; i++) {
         const LFeat *f = &feats[i];
         if (f->kind == LF_CHANNEL) {
-            float t, cx = Xd + 55.f * noise2(X * 0.0065f, Y * 0.0065f, S ^ 0x1B873593u), cy = Yd + 55.f * noise2(X * 0.0065f + 6.f, Y * 0.0065f + 2.f, S ^ 0xCC9E2D51u);
-            float d = seg_dist(cx, cy, f->x0, f->y0, f->x1, f->y1, &t);
+            float t, d = seg_dist(cx, cy, f->x0, f->y0, f->x1, f->y1, &t);
             float floor_h = f->h + (f->h2 - f->h) * t + 1.5f * hills;
             if (h > floor_h) {
                 float s = smoothstep(f->w, f->w + f->w2, d);
@@ -473,7 +478,7 @@ static float shape_height(const CpTerrainParams *p, float nest_r, float scale, f
 
 static float layout_height(const CpTerrainParams *p, const Layout *L, float x, float y)
 {
-    return shape_height(p, L->nest_r, LSCALE, L->reefx, L->reefy, L->cliffx, L->cliffy, L->nf, L->f, x, y);
+    return shape_height(p, L->nest_r, LSCALE, L->reefx, L->reefy, L->cliffx, L->cliffy, L->nf, L->f, 0, x, y);
 }
 
 /* JSON for the design maps: one object per layout, ascii, no allocation. Returns bytes written (excluding NUL). */

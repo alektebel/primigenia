@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A83 island layout candidates: shaded relief + slope/walkability maps with regions, routes, gates and the nest.
 
-  python3 tools/island/maps.py --cli build/terrain_cli --out web/gaitlab/island [--n 1024] [--seed 1] [--layouts 1,2,3,4]
+  python3 tools/island/maps.py --cli build/terrain_cli --out web/gaitlab/island [--n 1024] [--seed 1] [--layouts 1,2,3,4 | --desc island.isl]
 
 Runs `terrain_cli maps` (the real C generator with --layout N, full erosion), reads the PPM/PGM it writes, draws the labels
 with Pillow and writes jpg maps plus stats.json (reachability per region for a plain body and with climbing parts).
@@ -320,16 +320,18 @@ def main():
     ap.add_argument("--n", type=int, default=1536)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--layouts", default="1,2,3,4")
+    ap.add_argument("--desc", default=None, help="an ISL1 island blob (tools/island/pack.mjs): map that island instead of --layouts")
     ap.add_argument("--px", type=int, default=1100)
     ap.add_argument("--quality", type=int, default=80)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     stats = {}
     with tempfile.TemporaryDirectory() as tmp:
-        for L in [int(x) for x in a.layouts.split(",")]:
+        for L in ([0] if a.desc else [int(x) for x in a.layouts.split(",")]):
             pre = os.path.join(tmp, "l%d" % L)
-            gen = json.loads(run(a.cli, ["maps", "--layout", str(L), "--seed", str(a.seed), "--n", str(a.n), "--out", pre]))
-            meta = json.loads(run(a.cli, ["layout-json", "--layout", str(L), "--n", "64", "--droplets", "0", "--stream", "0", "--thermal", "0"]))
+            sel = ["--desc", a.desc] if a.desc else ["--layout", str(L)]
+            gen = json.loads(run(a.cli, ["maps"] + sel + ["--seed", str(a.seed), "--n", str(a.n), "--out", pre]))
+            meta = json.loads(run(a.cli, ["layout-json"] + sel + ["--n", "64", "--droplets", "0", "--stream", "0", "--thermal", "0"]))
             relief = Image.open(pre + "-relief.ppm").convert("RGB").resize((a.px, a.px), Image.LANCZOS)
             cls = Image.open(pre + "-cls.pgm").resize((a.px, a.px), Image.NEAREST)
             shade = Image.open(pre + "-shade.pgm").resize((a.px, a.px), Image.BILINEAR)
@@ -373,7 +375,7 @@ def main():
                            "routes_walkable": routes_ok,
                            "route_paths": {meta["routes"][i]["name"]: [[round((x / 256.0) * SIZE_M - SIZE_M / 2), round((y / 256.0) * SIZE_M - SIZE_M / 2)] for x, y in v[::3]] for i, v in paths.items() if v}, "params": meta["params"], "marks": meta["marks"]}
             print(name, json.dumps(stats[name]))
-    with open(os.path.join(a.out, "stats.json"), "w") as f:
+    with open(os.path.join(a.out, "stats-desc.json" if a.desc else "stats.json"), "w") as f:
         json.dump(stats, f, indent=1)
 
 
