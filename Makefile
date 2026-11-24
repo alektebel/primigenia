@@ -765,7 +765,7 @@ godot-creator-score: godot
 # kill, befriend tries, dead time, DNA, novelty, species and the plan's pass/fail. LOOP_STRICT=1 makes failing targets fail the make.
 # Writes docs/evidence/loop/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/loop/compare.py <baseline> <label>
 # A real play session scores the same way: python3 tools/loop/score.py --session ~/.local/share/godot/app_userdata/<project>/loop/<stamp>.jsonl
-.PHONY: godot-loop-score godot-loop-test
+.PHONY: godot-loop-score godot-loop-test godot-loop-duel
 LOOP_LABEL ?= $(shell git rev-parse --short HEAD)
 LOOP_SEEDS ?= 1 7 42
 LOOP_DIR = $(CURDIR)/docs/evidence/loop/score/$(LOOP_LABEL)
@@ -780,6 +780,13 @@ godot-loop-score: godot
 	python3 tools/loop/score.py $(LOOP_DIR); \
 	if [ $$fail != 0 ]; then echo "loop-score: a bot run failed its own e2e checks (the scorecard above still counts what it recorded; logs: $(LOOP_DIR)/.log_seed*.txt)"; test "$$LOOP_STRICT" != 1 || exit 1; fi
 	@rm -f $(LOOP_DIR)/.log_seed*.txt
+# One deliberate Garfio duel per seed, at full hp, one Godot at a time (a won duel kills the only Garfio, so one sample per seed).
+DUEL_SEEDS ?= 1 2 3 4 5 6 7 8
+DUEL_DIR = $(CURDIR)/docs/evidence/loop/score/duel-$(LOOP_LABEL)
+godot-loop-duel: godot
+	@rm -rf $(DUEL_DIR); mkdir -p $(DUEL_DIR)
+	@for s in $(DUEL_SEEDS); do CPORE_TEST=1 nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- seed=$$s duel 2>&1 | grep "^duel seed=" | tee -a $(DUEL_DIR)/duels.txt; done
+	@python3 -c "import re,sys; r=[l.split()[2].split('=')[1] for l in open('$(DUEL_DIR)/duels.txt')]; w=r.count('win'); print('Garfio duels: %d won of %d (%.0f%%), target 35-80%%' % (w,len(r),100.0*w/max(1,len(r))))" | tee $(DUEL_DIR)/summary.txt
 godot-loop-test: godot
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://devtools/tests/run_devtools_tests.gd
 	python3 tools/loop/test_score.py
