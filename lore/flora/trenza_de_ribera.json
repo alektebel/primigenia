@@ -242,5 +242,9 @@
     "Vigorous fruiting shrubs can reveal a hidden groundwater-fed channel.",
     "Bent branches preserve past flow direction.",
     "Fruit-rich thickets can conceal a waiting merodeador."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

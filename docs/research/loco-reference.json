@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "note": "Targets for the L0 locomotion scorecard (tools/loco/summary.py). Gorilla numbers are eyeballed from the side-view frames of the owner's reference clip (kept outside the repo); replace them with a keypoint measurement. Metric paths use dots: foot_slip_cm.p95.",
+  "bodies": {
+    "mite": {"legs": 2}, "trotter": {"legs": 4}, "hero": {"legs": 4}, "start0": {"legs": 4}, "startA": {"legs": 4}, "startB": {"legs": 4}, "startC": {"legs": 4}, "startD": {"legs": 4}, "giant": {"legs": 4},
+    "longneck": {"legs": 4}, "centipede": {"legs": 8}, "hexapod": {"legs": 6}
+  },
+  "references": {
+    "gorilla_knuckle": {
+      "label": "Spore-made gorilla, knuckle-walking, side view",
+      "scenarios": ["walk"],
+      "metrics": {
+        "head_pitch_deg.mean": {"value": 0, "tolerance": 10, "source": "estimate from frames 2026-11-21, replace with keypoint measurement"},
+        "shoulder_hip_ratio": {"value": 1.35, "tolerance": 0.15, "source": "estimate from frames 2026-11-21, replace with keypoint measurement"},
+        "back_slope_deg": {"value": 22, "tolerance": 8, "source": "estimate from frames 2026-11-21, replace with keypoint measurement; positive = shoulders higher, back slopes down to the hips"},
+        "torso_roll_deg": {"value": 7, "tolerance": 3, "source": "estimate from frames 2026-11-21 (7 deg), replace with keypoint measurement; tolerance tightened from the brief's 4 to 3 so a 3 deg rigid torso fails"},
+        "roll_plant_lag": {"value": 0, "tolerance": 0.15, "source": "estimate from frames 2026-11-21: roll peaks near the front hand plant (0 = at touchdown, fraction of the stride cycle)"},
+        "torso_bob_frac": {"value": 0.04, "tolerance": 0.03, "source": "estimate from frames 2026-11-21: bob about 4% of shoulder height"},
+        "foot_slip_cm.p95": {"value": 0, "tolerance": 3, "source": "estimate from frames 2026-11-21: planted hands do not slide"}
+      }
+    }
+  },
+  "mapping": {"hero": "gorilla_knuckle", "giant": "gorilla_knuckle"},
+  "universal": [
+    {"id": "limp", "metric": "limp_index", "op": "<=", "value": 1.15, "scenarios": ["walk"], "bodies": "all", "source": "M1 limp brief: starting value, paired left/right footfall root drop and planted-side roll max/min; validate by owner before/after clip. Gallop leads and terrain compensation can be asymmetric."},
+    {"id": "knee_flip", "metric": "knee_flip_frac", "op": "==", "value": 0, "scenarios": "all", "bodies": "all", "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)"},
+    {"id": "foot_penetration", "metric": "foot_penetration_cm.p95", "op": "<", "value": 1, "scenarios": "all", "bodies": "all", "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)"},
+    {"id": "foot_slip", "metric": "foot_slip_cm.p95", "op": "<", "value": 3, "scenarios": "all", "bodies": "all", "source": "brief loco-score: foot slip p95 under 3 cm"},
+    {"id": "head_pitch", "metric": "head_pitch_deg.mean", "op": "within", "value": 0, "tolerance": 12, "scenarios": ["walk", "gallop", "turn", "steps"], "bodies": "all", "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)"},
+    {"id": "pivot", "metric": "pivot_frac", "op": "<", "value": 0.05, "scenarios": "all", "bodies": "all", "source": "brief loco-score: pivot_frac under 0.05 while moving"},
+    {"id": "pivot_turns", "metric": "pivot_frac_of_turns", "op": "<", "value": 0.15, "scenarios": ["turn", "steps"], "bodies": "all", "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)"},
+    {"id": "stall_steps", "metric": "stall_frac", "op": "==", "value": 0, "scenarios": ["steps"], "bodies": "all", "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)"},
+    {"id": "air_gallop", "metric": "airborne_frac", "op": ">", "value": 0.05, "scenarios": ["gallop"], "bodies": "all", "max_legs": 4, "source": "brief loco-score: a gallop has a flight phase; applied to bodies with 4 legs or fewer (many-legged bodies keep a foot down by design)"},
+    {"id": "air_walk", "metric": "airborne_frac", "op": "<=", "value": 0.005, "scenarios": ["walk"], "bodies": "all", "source": "brief loco-score: no flight phase in a walk"},
+    {"id": "leg_extension", "metric": "leg_extension", "op": ">=", "value": 0.9, "scenarios": ["walk", "gallop", "turn", "steps"], "bodies": "all", "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs"},
+    {"id": "foot_spacing", "metric": "foot_spacing_ratio", "op": ">=", "value": 0.3, "scenarios": ["walk", "gallop", "turn", "steps"], "bodies": "all", "min_legs": 6, "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs"},
+    {"id": "head_periscope", "metric": "head_yaw_vs_body_deg.p95", "op": "<", "value": 30, "scenarios": ["walk", "gallop", "turn", "steps"], "bodies": "all", "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)"},
+    {"id": "climb_follow", "metric": "pitch_follow", "op": ">=", "value": 0.6, "scenarios": ["climb"], "bodies": "all", "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope"},
+    {"id": "climb_posture", "metric": "climb_posture_shift_deg", "op": ">=", "value": 5, "scenarios": ["climb"], "bodies": "all", "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)"}
+  ],
+  "known_problems": {
+    "uneven left/right footfall drops or roll": ["limp"],
+    "head pitched to the sky": ["head_pitch"],
+    "crouched legs": ["leg_extension"],
+    "gallop is a fast walk": ["air_gallop"],
+    "pivot turns, periscope neck": ["pivot", "pivot_turns", "head_periscope"],
+    "centipede legs bunched": ["foot_spacing"],
+    "climbing barely changes posture": ["climb_posture", "climb_follow"],
+    "steps course stalls": ["stall_steps"],
+    "legs bend the wrong way": ["knee_flip"],
+    "legs through the ground": ["foot_penetration"],
+    "rigid torso (no roll, no bob)": ["gorilla:torso_roll_deg", "gorilla:roll_plant_lag", "gorilla:torso_bob_frac"]
+  }
+}

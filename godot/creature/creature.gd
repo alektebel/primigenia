@@ -277,9 +277,9 @@ func default_part(type: String) -> Dictionary:
 	if m.get("category") == "mouths": t = 1
 	elif type.begins_with("tail_"): t = .12
 	elif type == "eye_triad": t = .92
-	elif type == "sac_spitter": t = 1
+	elif type == "sac_spitter" or type == "fire_gland": t = 1
 	elif type.begins_with("arm_"): t = _shoulder_t()
-	elif type in ["wing_glider", "wing_insect"]: t = _shoulder_t(.14)
+	elif type in ["wing_glider", "wing_insect", "wing_vane", "wing_flap"]: t = _shoulder_t(.14)
 	elif leg: t = .5
 	var ang := 0.0
 	if m.get("category") == "mouths" or type == "eye_triad": ang = 0
@@ -578,6 +578,7 @@ func _layout_legs() -> void:
 		if pole.length() < .03:
 			pole = Vector3(0, 0, 1)
 		l.pole = pole.normalized()
+		l.hinge = fd.cross(l.pole).normalized() if pole.length() >= .03 and fd.length() > 1e-4 else Vector3()
 		l.home = Vector3(hp.x + l.rest_foot.x, 0, hp.z + l.rest_foot.z)
 		l.hang = max(0.0, sole + ground_offset)
 		var L: float = l.total_length()

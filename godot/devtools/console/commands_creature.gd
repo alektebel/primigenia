@@ -83,10 +83,20 @@ static func register_all(r) -> void:
 	r.register("hash", "", "state hash of the C world", func(a): return _with_stage(r, func(st): return ok(st.world.hash())))
 	r.register("tick", "", "world tick", func(a): return _with_stage(r, func(st): return ok(str(st.world.state().tick))))
 	r.register("obs", "", "the observation text the agents get", func(a): return _with_stage(r, func(st): return ok(st.world.observe())))
-	r.register("zoo", "[morphs|all] [course] | exit", "open the locomotion zoo: creatures of different morphologies run a course side by side (morphs: mite trotter hero giant longneck centipede hexapod; courses: figure8 zigzag steps uturn ramps all)",
+	r.register("zoo", "[morphs|all] [course] [run|factor] | exit", "open the locomotion zoo: creatures of different morphologies run a course side by side (morphs: mite trotter hero giant longneck centipede hexapod; courses: figure8 zigzag steps uturn ramps all)",
 		func(a): return _zoo(r, a), {"complete": func(i, p, t): return _zoo_names(i)})
+	r.register("cell", "finish [carronero|cazador|herbivoro] [espinas|placas|ninguna] [small|medium|large]", "dev: finish the cell with a legacy and open its end card (Continuar como criatura starts the new creature game with it)",
+		func(a): return _cell(a), {"complete": func(i, p, t): return [["finish"], ["carronero", "cazador", "herbivoro"], ["espinas", "placas", "ninguna"], ["small", "medium", "large"]][clampi(i, 0, 3)]})
+	r.register("runvis", "[factor|off]", "dev: show the player moving factor (default 2.5) times faster than the C world moves it, to see the run gaits before the sim can run (presentation only; off drops the offset)",
+		func(a): return _runvis(r, a), {"complete": func(i, p, t): return ["off", "2.5"] if i == 0 else []})
 	r.register("overlay", "path [on|off]", "debug overlays (off by default): path = the planned GO route drawn on the ground",
 		func(a): return _overlay(r, a), {"complete": func(i, p, t): return ["path"] if i == 0 else (["on", "off"] if i == 1 else [])})
+	r.register("quest", "status | skip | reset", "the first task chain: its state, complete the current task without a reward, or start over",
+		func(a): return _quest(r, a), {"changes_sim": true, "complete": func(i, p, t): return ["status", "skip", "reset"] if i == 0 else []})
+	r.register("dig", "", "dig where you stand (an order to C: soft soil, standing still for two seconds, costs stamina)",
+		func(a): return _with_stage(r, func(st):
+			st.queue_order({"verb": 20})
+			return ok("dig ordered")), {"changes_sim": true})
 	r.register("clear", "", "clear the console", func(a): return {"ok": true, "out": "", "error": "", "clear": true}, {"dev": false})
 
 static func _with_stage(r, fn: Callable) -> Dictionary:
@@ -332,8 +342,42 @@ static func _zoo(r, a: PackedStringArray) -> Dictionary:
 		if not (a[1] in Course.NAMES):
 			return fail("unknown course '%s' (%s)" % [a[1], ", ".join(Course.NAMES)])
 		course = a[1]
-	Game.goto_zoo(morphs, course)
-	return ok("opening the zoo: %s, course %s (Esc or `zoo exit` to leave)" % [", ".join(morphs), course])
+	var run := 1.0
+	if a.size() > 2:
+		run = 2.0 if a[2] == "run" else a[2].to_float()
+		if run < 1.0 or run > 6.0:
+			return fail("run speed: 'run' or a factor between 1 and 6")
+	Game.goto_zoo(morphs, course, run)
+	return ok("opening the zoo: %s, course %s%s (Esc or `zoo exit` to leave)" % [", ".join(morphs), course, ", run x%.1f" % run if run > 1.0 else ""])
+
+static func _cell(a: PackedStringArray) -> Dictionary:
+	if a.is_empty() or a[0] != "finish" or a.size() > 4:
+		return fail("usage: cell finish [carronero|cazador|herbivoro] [espinas|placas|ninguna] [small|medium|large]")
+	var diet := a[1] if a.size() > 1 else "cazador"
+	var defense := a[2] if a.size() > 2 else "espinas"
+	var size_class := a[3] if a.size() > 3 else "medium"
+	if not diet in ["carronero", "cazador", "herbivoro"]:
+		return fail("diet: carronero, cazador or herbivoro")
+	if not defense in ["espinas", "placas", "ninguna"]:
+		return fail("defence: espinas, placas or ninguna")
+	if not size_class in ["small", "medium", "large"]:
+		return fail("size: small, medium or large")
+	var CellLegacy := load("res://cell/cell_legacy.gd")
+	var legacy := {"version": CellLegacy.VERSION, "source": "dev", "diet": diet, "defense": defense, "size_class": size_class,
+		"stats": {"atp_min": 0, "mem": 100, "tier": 5, "colony_cells": 7}, "tally": {"waste_share": 0.0, "spines": 3 if defense == "espinas" else 0, "plates": 3 if defense == "placas" else 0}}
+	Game.cell_jump_end = legacy
+	Game.goto_cell()
+	return ok("cell finished (%s, %s, %s): the end card is up, press Continuar como criatura" % [diet, defense, size_class])
+
+static func _runvis(r, a: PackedStringArray) -> Dictionary:
+	return _with_stage(r, func(st):
+		var k := 2.5
+		if a.size() > 0:
+			k = 1.0 if a[0] == "off" else a[0].to_float()
+			if a[0] != "off" and (k < 1.0 or k > 6.0):
+				return fail("usage: runvis [factor 1..6|off]")
+		st.set_vis_speed(k)
+		return ok("visual speed x%.1f" % st.vis_speed if st.vis_speed > 1.0 else "visual speed off"))
 
 static func _move_names() -> Array:
 	var out := []
@@ -346,3 +390,21 @@ static func _loadout(r, a: PackedStringArray) -> Dictionary:
 	if a.size() != 2:
 		return fail("usage: loadout <slot 1-4> <move|none>, for example: loadout 1 tail_strike")
 	return _order(r, PackedStringArray(["loadout", a[0], a[1]]))
+
+static func _quest(r, a: PackedStringArray) -> Dictionary:
+	return _with_stage(r, func(st):
+		var island = st.get_parent()
+		var fq = island.get("first_quest") if island != null else null
+		if fq == null:
+			return fail("the task chain is not running (start the island first)")
+		var sub: String = a[0] if a.size() > 0 else "status"
+		match sub:
+			"status":
+				return ok(fq.quest.status(st.cur))
+			"skip":
+				var id: String = fq.skip()
+				return ok("skipped '%s'. %s" % [id, fq.quest.status(st.cur)]) if id != "" else ok("the chain is done")
+			"reset":
+				fq.reset_quest()
+				return ok(fq.quest.status(st.cur))
+		return fail("usage: quest status | skip | reset"))

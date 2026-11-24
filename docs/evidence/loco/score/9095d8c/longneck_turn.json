@@ -1,0 +1,89 @@
+{
+  "body": "longneck",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 19.87,
+    "body_pitch_deg": 0.56,
+    "cadence_hz": 2.516,
+    "duty_factor": {
+      "mean": 0.5136,
+      "per_foot": [
+        0.5163,
+        0.5106,
+        0.5236,
+        0.5041
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 10.459,
+      "mean": 0.004,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.45,
+      "p95": 1.94,
+      "stances": 420
+    },
+    "foot_spacing_ratio": 0.6475,
+    "footfall": {
+      "contact": [
+        "111111000001111110000001",
+        "000000111110000001111110",
+        "000001111111000001111110",
+        "111110000001111110000001"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 4,
+      "stride_frames": 12
+    },
+    "gait_frac": {
+      "amble": 0.0429,
+      "trot": 0.9206,
+      "walk": 0.0365
+    },
+    "gait_symmetry": 0.984,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": 31.59,
+      "p95": 47.38
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 10.59,
+      "p95": 106.56
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8715,
+    "min_turn_radius_m": 0.33,
+    "moving_frac": 0.9762,
+    "pitch_follow": null,
+    "pivot_frac": 0.031,
+    "pivot_frac_of_turns": 0.4333,
+    "roll_plant_lag": 0.137,
+    "shoulder_hip_ratio": 1.5945,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0628,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.965,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 4.35,
+    "torso_bob_frac": 0.0297,
+    "torso_roll_deg": 1.53
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

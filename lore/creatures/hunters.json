@@ -235,7 +235,7 @@
           "en": "Oath Challenge"
         },
         "role": "Social",
-        "effect": "Force target to dodge, reduce damage by 4",
+        "effect": "The creature assumes a rigid duel stance, strongly compelling nearby foes to step aside and miss their strikes, while any blows that still connect are met with a braced guard that noticeably lessens their impact.",
         "numbers": {}
       },
       "weakness": "Cannot use if oath broken",

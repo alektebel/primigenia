@@ -10,6 +10,7 @@ const Springs := preload("res://actions/action_springs.gd")
 const H := preload("res://actions/test/harness.gd")
 const Scripted := preload("res://actions/test/scripted_feed.gd")
 const FxScript := preload("res://actions/action_fx.gd")
+const Impact := preload("res://actions/impact_fx.gd")
 const Adapter := preload("res://locomotion/loco_rig_adapter.gd")
 
 class ErrorLog extends Logger:
@@ -57,6 +58,9 @@ func _run() -> void:
 	await _t_round2()
 	await _t_idle()
 	await _t_cosmetic()
+	await _t_eat()
+	await _t_impact()
+	await _t_context()
 	_t_readonly()
 	check(log.errors.is_empty(), "no engine errors (%d)" % log.errors.size())
 	for e in log.errors.slice(0, 5):
@@ -1056,6 +1060,346 @@ func _t_cosmetic() -> void:
 # ---------------------------------------------------------------------------------------------
 # section 4: the layer only reads the world
 # ---------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------
+# the meal: the eat action follows the C eat ticks
+# ---------------------------------------------------------------------------------------------
+func _t_eat() -> void:
+	print("-- eat")
+	var act: Dictionary = Data.compile(Data.resolve(raw.eat, []))
+	check(act.w == 3.0 and act.a == 20.0 and act.r == 3.0, "eat: 3 + 20 + 3 ticks (first bite 0..10, then the 10..20 loop)")
+	for name in BODIES:
+		var h = _build(name)
+		h.layer.idle_on = false
+		h.sf.end_fight()
+		h.run(0.5)
+		var ea: Dictionary = h.layer.actions.eat
+		var caps_txt := ",".join(h.map.caps.filter(func(c): return c in ["beak", "proboscis", "fauces"]))
+		h.food_pos = Vector3(0, 0.15, h.map.length * 0.45)
+		var bites: Array = []
+		h.layer.action_event.connect(func(n: String, d: Dictionary) -> void:
+			if n == "eat_bite":
+				bites.append(d))
+		h.eat_t0 = h.sf.tick
+		var tau_bad := 0.0
+		var pitch_max := 0.0
+		var pitch_rest: float = h.layer._out.get("head.pitch", 0.0)
+		var jaw_min_after := 9.0
+		var min_d := 1e9
+		var rest_d: float = h.mouth_world().distance_to(h.food_pos)
+		var was_eating := false
+		var ticks_seen := 0
+		for i in int(4.6 * 60.0):
+			h.frame(1.0 / 60.0)
+			var cur: Dictionary = h.layer._slaved_eat()
+			if not cur.is_empty():
+				was_eating = true
+				var t: int = h.sf.tick - h.eat_t0
+				tau_bad = maxf(tau_bad, absf(cur.tau - h.layer.eat_tau(ea, t, h.acc / 0.1)))
+				pitch_max = maxf(pitch_max, float(h.layer._out.get("head.pitch", 0.0)))
+				min_d = minf(min_d, h.mouth_world().distance_to(h.food_pos))
+				if h.sf.tick - h.eat_t0 == 10 or h.sf.tick - h.eat_t0 == 20:
+					ticks_seen += 1
+		check(was_eating and h.layer.eating(), "%s eat (%s): the meal instance runs while C eats" % [name, caps_txt])
+		check(tau_bad < 1e-6, "%s eat: tau follows the C act tick (max error %.6f)" % [name, tau_bad])
+		check(pitch_max > pitch_rest + 0.25, "%s eat: the head goes down to the food (pitch %.2f -> %.2f)" % [name, pitch_rest, pitch_max])
+		check(min_d < rest_d, "%s eat: the mouth gets closer to the food (%.2f -> %.2f m)" % [name, rest_d, min_d])
+		# the wrap: tau at act tick 20 equals tau at tick 10 (the loop is seamless)
+		check(absf(h.layer.eat_tau(ea, 20, 0.0) - h.layer.eat_tau(ea, 10, 0.0)) < 1e-9 and h.layer.eat_tau(ea, 35, 0.5) == h.layer.eat_tau(ea, 15, 0.5), "%s eat: loop of 10 ticks after the first bite" % name)
+		# the C bite lands on the tear: the layer announces it for the crumbs
+		h.layer.eat_bite(2)
+		check(bites.size() == 1 and int(bites[0].left) == 2, "%s eat: eat_bite is announced once with the bites left" % name)
+		# a clean end: C ends the action, the swallow plays out and the instance is gone
+		h.eat_t0 = -1
+		h.run(1.2)
+		check(not h.layer.eating() and h.layer._find_id("eat").is_empty() and h.layer.weight_of("eat") < 0.01, "%s eat: ends cleanly after C ends it (weight %.3f)" % [name, h.layer.weight_of("eat")])
+		check(float(h.layer._out.get("head.pitch", 0.0)) < 0.2 and float(h.layer._out.get("jaw.open", 0.0)) < 0.2, "%s eat: head and jaw back at rest" % name)
+		# interruptible by a fight
+		h.eat_t0 = h.sf.tick
+		h.run(1.5)
+		var eating_now: bool = h.layer.eating()
+		h.sf.in_fight = true
+		h.sf.begin(0, 0)
+		h.run(0.25)
+		check(eating_now and not h.layer.eating() and h.layer.weight_of("eat") < 0.05, "%s eat: a C move (fight) cancels the meal (weight %.3f)" % [name, h.layer.weight_of("eat")])
+		h.free_all()
+		await process_frame
+	# the legacy cosmetic trigger still plays one finite meal
+	var h2 = _build("Merodeador")
+	h2.layer.idle_on = false
+	h2.sf.end_fight()
+	h2.run(0.4)
+	h2.layer.trigger("eat")
+	h2.run(0.3)
+	var started: bool = not h2.layer._find_id("eat").is_empty()
+	h2.run(3.5)
+	check(started and h2.layer._find_id("eat").is_empty(), "eat: trigger() still plays one finite meal")
+	h2.free_all()
+	await process_frame
+
+# ---------------------------------------------------------------------------------------------
+# A64: the shared melee impact (hit-pause, flinch and knock, dust, shake strength, flash) and the bite -> peck chain
+# ---------------------------------------------------------------------------------------------
+## Starts a bite on `h` (a harness whose entity 0 is the attacker) and delivers the HIT in the tick that carries it.
+func _bite_to_hit(h, victim = null) -> void:
+	h.sf.begin(0, 0)
+	var armed := true
+	var guard := 0
+	while armed and guard < 600:
+		guard += 1
+		var f: Dictionary = h.sf.fighters[0]
+		if f.phase == 1 and f.ptick == f.plen - 1:
+			h.sf.event(1, 0, 1, 0, 9.0)
+			if victim != null:
+				victim.sf.event(1, 1, 0, 0, 9.0)
+			armed = false
+		else:
+			h.frame(1.0 / 60.0)
+			if victim != null:
+				victim.frame(1.0 / 60.0)
+
+func _t_impact() -> void:
+	print("-- impact (A64)")
+	check(Impact.pause_seconds(0.5, 0.5) >= 0.06 - 1e-9 and Impact.pause_seconds(0.5, 0.5) < Impact.pause_seconds(2.0, 2.0) and Impact.pause_seconds(3.0, 3.0) <= 0.09 + 1e-9,
+		"impact: the hit-pause is 60 ms for a small body, 90 ms for a big one (%.3f, %.3f)" % [Impact.pause_seconds(0.5, 0.5), Impact.pause_seconds(2.0, 2.0)])
+	check(Impact.shake_strength(0.5, 5.0) < Impact.shake_strength(2.0, 5.0) and Impact.shake_strength(1.0, 5.0) < Impact.shake_strength(1.0, 25.0),
+		"impact: the shake grows with the body size and with the damage")
+	check(Impact.knock_scale(2.0, 0.5) > Impact.knock_scale(0.5, 2.0), "impact: a heavy attacker knocks a light victim further than the reverse")
+	for mv in [0, 1, 4, 6, 7, 8, 11]:
+		check(Impact.is_melee(mv), "impact: move %d is melee" % mv)
+	check(not Impact.is_melee(3) and not Impact.is_melee(14), "impact: spit and flame are not melee")
+	# attacker and victim: starter B and a second body, each with its own layer, both fed the same HIT
+	var a = _build("starters/b_runner")
+	var v = _build("Babosa")
+	a.layer.idle_on = false
+	v.layer.idle_on = false
+	a.target_h = 0.9
+	v.target_h = 0.9
+	a.run(0.6)
+	v.run(0.6)
+	var fx: Array = []
+	a.layer.action_event.connect(func(n: String, d: Dictionary) -> void:
+		if n == "hit_fx":
+			fx.append(d))
+	_bite_to_hit(a, v)
+	var gd := 0
+	while not a.layer.paused() and gd < 30:
+		a.frame(1.0 / 60.0)
+		v.frame(1.0 / 60.0)
+		gd += 1
+	check(a.layer.paused() and v.layer.paused(), "impact: both layers are in hit-pause on the C tick that carries the HIT")
+	check(fx.size() == 1 and (fx[0].dir as Vector3).is_normalized() and (fx[0].pos as Vector3).is_finite() and float(fx[0].amount) == 9.0,
+		"impact: exactly one hit_fx with a contact point and a unit direction (%d)" % fx.size())
+	check(v.layer.flash >= 0.5 and a.layer.flash == 0.0, "impact: the victim flashes (%.2f), the attacker does not" % v.layer.flash)
+	# the pose stands still through the pause
+	var o0: Dictionary = a.layer._out.duplicate()
+	var tau0 := -1.0
+	for n in a.layer.inst:
+		if n.id == "bite" and not n.fading:
+			tau0 = n.tau
+	var frames := 0
+	var drift := 0.0
+	var tau_hold := true
+	while a.layer.paused() and frames < 20:
+		a.frame(1.0 / 60.0)
+		v.frame(1.0 / 60.0)
+		frames += 1
+		for k in ["root.lunge", "head.reach", "jaw.open", "root.lift", "tail.pitch"]:
+			drift = maxf(drift, absf(float(a.layer._out[k]) - float(o0[k])))
+		for n in a.layer.inst:
+			if n.id == "bite" and not n.fading and a.layer.paused() and absf(n.tau - tau0) > 1e-6:
+				tau_hold = false
+	var want := Impact.pause_seconds(a.map.height, 0.9)
+	check(absf(float(frames) / 60.0 - want) <= 2.0 / 60.0 + 1e-6, "impact: the pause lasts %.0f ms (wanted %.0f, 60 fps)" % [frames * 1000.0 / 60.0, want * 1000.0])
+	check(drift < 0.02 and tau_hold, "impact: the attacker's pose and action time stand still during the pause (drift %.4f)" % drift)
+	# the victim's recoil does not run during the pause but runs after it
+	var lunge_pause := absf(float(v.layer._out["root.lunge"]))
+	var rng := _range(v, "root.lunge", 24)
+	check(rng.y - rng.x > 0.05 or rng.y > lunge_pause + 0.05, "impact: the victim recoils after the pause (root.lunge %.2f..%.2f)" % [rng.x, rng.y])
+	# the flash decays
+	v.run(0.4)
+	check(v.layer.flash == 0.0, "impact: the flash is gone 0.4 s later (%.2f)" % v.layer.flash)
+	# the knock scale changes how far the victim moves
+	var reach := {}
+	for ks in [0.6, 1.6]:
+		var q = _build("Babosa")
+		q.layer.idle_on = false
+		q.run(0.6)
+		q.layer.react("hit", Vector3(0, 0, -1), 9.0, 0, ks)
+		reach[ks] = _range(q, "root.lunge", 15).y
+		q.free_all()
+	check(reach[1.6] > reach[0.6] + 0.02, "impact: a heavier attacker recoils the victim further (%.2f vs %.2f)" % [reach[1.6], reach[0.6]])
+	# flash overlay on the meshes and its removal
+	Impact.apply_flash(a.c, 0.8)
+	var overlaid := 0
+	for m in a.c.find_children("*", "MeshInstance3D", true, false):
+		if (m as MeshInstance3D).material_overlay != null:
+			overlaid += 1
+	Impact.apply_flash(a.c, 0.0)
+	var left := 0
+	for m in a.c.find_children("*", "MeshInstance3D", true, false):
+		if (m as MeshInstance3D).material_overlay != null:
+			left += 1
+	check(overlaid > 0 and left == 0, "impact: the flash overlay covers %d meshes and is removed (%d left)" % [overlaid, left])
+	# dust and sparks are spawned, never blood (no red in either gradient)
+	var holder := Node3D.new()
+	root.add_child(holder)
+	var fxn := Impact.contact(holder, {"pos": Vector3.ZERO, "dir": Vector3(0, 0, 1), "size": 0.9, "amount": 9.0})
+	var red_free := true
+	for pn in fxn:
+		var g: Gradient = (pn as CPUParticles3D).color_ramp
+		for c in g.colors:
+			if c.r > c.g * 1.3 + 0.05:
+				red_free = false
+	check(fxn.size() == 2 and holder.get_child_count() == 2 and red_free, "impact: a dust puff and sparks, none of them red")
+	holder.queue_free()
+	# the chain: a peck within CHAIN_TICKS of our own bite plays as peck_chain; later it is the plain peck
+	for late in [false, true]:
+		var c = _build("starters/b_runner")
+		c.layer.idle_on = false
+		c.run(0.4)
+		_bite_to_hit(c)
+		c.run(0.1)
+		if late:
+			c.run(1.2)
+		c.sf.begin(0, 7)
+		var seen_chain := false
+		var seen_peck := false
+		var peck_impacts := 0
+		c.impacts.clear()
+		for i in 60:
+			c.frame(1.0 / 60.0)
+			for n in c.layer.inst:
+				if n.id == "peck_chain" and not n.fading:
+					seen_chain = true
+				if n.id == "peck" and not n.fading:
+					seen_peck = true
+		check(seen_chain == (not late) and seen_peck == late, "chain: a peck %s the bite hit plays as %s (chain %s, plain %s)" % ["long after" if late else "right after", "the plain peck" if late else "peck_chain", seen_chain, seen_peck])
+		check(c.impacts.size() >= 1, "chain: the %s peck fires its impact (%d)" % ["late" if late else "chained", c.impacts.size()])
+		c.free_all()
+	a.free_all()
+	v.free_all()
+	await process_frame
+
+
+## A72/A74/A75: the context variants. Every cell plays its own file, keeps the bone speed gate, the legs of the moving ones are not planted,
+## the C ticks of the pounce follow the context, a spit shot comes out as a `projectile` event with C's flight time, and the hit as `acid_hit`.
+func _t_context() -> void:
+	print("-- context attacks (A74)")
+	var cells := [
+		[0, 1, false, "bite"], [0, 2, false, "bite_walk"], [0, 3, false, "bite_gallop"], [0, 4, false, "bite_far"],
+		[8, 1, false, "pounce"], [8, 2, false, "pounce_walk"], [8, 3, false, "pounce_gallop"], [8, 4, false, "pounce_far"],
+		[3, 1, false, "spit"], [3, 2, false, "spit_walk"], [3, 3, false, "spit_gallop"], [3, 4, false, "spit_far"],
+		[3, 1, true, "spit_glob"], [3, 2, true, "spit_glob_walk"], [3, 4, true, "spit_far_charged"],
+		[10, 1, false, "roar_move"], [10, 2, false, "roar_move_walk"], [10, 3, false, "roar_move_gallop"], [10, 4, false, "roar_move_far"]]
+	var h = _build("starters/b_runner")
+	h.layer.idle_on = false
+	h.run(0.6)
+	for c in cells:
+		check(h.layer.actions.has(c[3]), "context: the file %s is loaded" % c[3])
+		check(Clock.variant_id(c[0], c[1], c[2], h.layer.actions) == c[3], "context: move %d ctx %d hold %s plays %s" % [c[0], c[1], c[2], c[3]])
+	check(Clock.ticks_for(8, 2) == [6, 4, 4] and Clock.ticks_for(8, 3) == [3, 4, 4] and Clock.ticks_for(8, 4) == [3, 4, 4] and Clock.ticks_for(8, 1) == [8, 4, 4],
+		"context: the pounce gather is 8 / 6 / 3 / 3 ticks standing / walking / gallop / far")
+	var moving_free := true
+	for id in ["bite_walk", "bite_gallop", "bite_far", "pounce_walk", "pounce_gallop", "pounce_far", "spit_walk", "spit_gallop", "spit_glob_walk", "roar_move_walk", "roar_move_gallop"]:
+		moving_free = moving_free and h.layer.actions[id].legs == "free"
+	check(moving_free, "context: the moving variants leave the legs to the gait")
+	check(h.layer.actions.bite.legs == "plant" and h.layer.actions.roar_move.legs == "plant" and h.layer.actions.spit_far.legs == "plant", "context: the standing and planted ones plant")
+	var fast := 0.0
+	var played_ok := true
+	for c in cells:
+		var hh = _build("starters/b_runner")
+		hh.layer.idle_on = false
+		hh.run(0.5)
+		var prev := hh.bone_rotations()
+		hh.sf.begin(0, c[0], c[1], c[2])
+		var seen := false
+		var n := int(((Clock.ticks_for(c[0], c[1])[0] + 8) * 0.1 + 0.9) * 60.0)
+		for i in n:
+			hh.frame(1.0 / 60.0)
+			for ins in hh.layer.inst:
+				if ins.id == c[3]:
+					seen = true
+			var now := hh.bone_rotations()
+			for b in now.size():
+				if prev.size() == now.size():
+					var ang: float = (prev[b] as Quaternion).angle_to(now[b] as Quaternion) * 60.0
+					fast = maxf(fast, ang)
+			prev = now
+		played_ok = played_ok and seen
+		hh.free_all()
+	check(played_ok, "context: every one of the 19 cells plays its own file")
+	check(fast < 25.0, "context: the bone speed gate holds in all cells (%.1f rad/s)" % fast)
+	# set B: the second options (A75)
+	Clock.attack_set = "b"
+	check(Clock.variant_id(0, 2, false, h.layer.actions, true) == "bite_walk_b" and Clock.variant_id(0, 4, false, h.layer.actions, true) == "bite_far_b"
+		and Clock.variant_id(8, 1, false, h.layer.actions, true) == "pounce_b" and Clock.variant_id(8, 2, false, h.layer.actions, true) == "pounce_walk_b",
+		"context: set B picks the slow-step, the run-up snap, the quick spring and the leap off the stride")
+	check(Clock.variant_id(0, 3, false, h.layer.actions, true) == "bite_gallop" and Clock.variant_id(3, 1, false, h.layer.actions, true) == "spit",
+		"context: the cells set B does not change keep the A74 file")
+	var bh = _build("starters/b_runner")
+	bh.layer.idle_on = false
+	bh.run(0.5)
+	bh.sf.begin(0, 10, 4, true)
+	var b_seen := false
+	for i in 100:
+		bh.frame(1.0 / 60.0)
+		for ins in bh.layer.inst:
+			if ins.id == "roar_move_far_b":
+				b_seen = true
+	check(b_seen, "context: B far roar plays bellow in stride")
+	bh.free_all()
+	var swell_a := 0.0
+	var swell_b := 0.0
+	for track in raw.roar_move_gallop.tracks:
+		if track.ch == "body.inflate":
+			for key in track.keys:
+				swell_a = maxf(swell_a, float(key[2]))
+	for track in raw.roar_move_far_b.tracks:
+		if track.ch == "body.inflate":
+			for key in track.keys:
+				swell_b = maxf(swell_b, float(key[2]))
+	check(swell_b > swell_a and swell_b < swell_a * 1.2, "context: B far roar has a slightly bigger chest swell than gallop")
+	Clock.attack_set = "a"
+	check(Clock.variant_id(10, 4, false, h.layer.actions, true) == "roar_move_far_b", "context: B far roar selects bellow in stride")
+	check(Clock.variant_id(10, 4, false, h.layer.actions) == "roar_move_far", "context: A far roar keeps the plant and rear")
+	check(h.layer.actions.roar_move_far_b.legs == "free" and h.layer.actions.roar_move_far.legs == "plant", "context: B far roar leaves the gait free while A plants")
+	# projectile and acid hit events
+	var shots := []
+	var acid := []
+	h.layer.action_event.connect(func(n: String, d: Dictionary) -> void:
+		if n == "projectile":
+			shots.append(d)
+		elif n == "acid_hit":
+			acid.append(d))
+	h.sf.begin(0, 3, 4, true)
+	for i in 8:
+		h.frame(1.0 / 60.0)
+	h.sf.projectiles = [{"owner": 0, "kind": 3, "ticks": 14, "x": 6.0, "z": 0.0}]
+	h.sf.event(10, 0, 1, 3, 13.0)
+	for i in 8:
+		h.frame(1.0 / 60.0)
+	check(shots.size() == 1 and int(shots[0].ticks) == 13 and int(shots[0].kind) == 3 and (shots[0].to as Vector3).x > 5.5,
+		"context: the C projectile event becomes one shot with C's flight time (13 ticks) and the aim point")
+	h.sf.projectiles = []
+	h.sf.event(1, 0, 1, 3, 23.0)
+	for i in 8:
+		h.frame(1.0 / 60.0)
+	check(acid.size() == 1 and int(acid[0].kind) == 3, "context: the arrival of a charged lob is an acid_hit with the glob kind (puddle)")
+	# fear: a frightened creature cowers
+	var v = _build("Babosa")
+	v.layer.idle_on = false
+	v.run(0.4)
+	v.sf.fighters[0].fear = 5
+	for i in 12:
+		v.frame(1.0 / 60.0)
+	var cowered := false
+	for ins in v.layer.inst:
+		if ins.id == "fear_cower":
+			cowered = true
+	check(cowered, "context: a roar's fear makes the victim cower")
+	v.free_all()
+	h.free_all()
+
 func _t_readonly() -> void:
 	print("-- read only")
 	var bad := []

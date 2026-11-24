@@ -48,18 +48,27 @@
         "en": "Lightning wrapped in salt and iron-blood."
       },
       "plausibility": {
-        "verdict": "unreviewed",
-        "judge": "none",
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "skeptic": 3
-        },
+        "summary": "Choose one pigment: copper hemocyanin (blue when oxygenated) or iron hemerythrin/hemoglobin; describe low-resistance internal paths rather than 'iron-hemocyanin'; replace the plant citation and remove the 5 m, 20 damage and 30% cold stats.",
+        "fixes": [
+          "Choose one pigment: copper hemocyanin (blue when oxygenated) or iron hemerythrin/hemoglobin; describe low-resistance internal paths rather than 'iron-hemocyanin'; replace the plant citation and remove the 5 m, 20 damage and 30% cold stats."
+        ],
         "analogues": [
+          {
+            "organism": "Copper hemocyanin in molluscs and arthropods, iron hemerythrin in sipunculans, hemoglobin in vertebrates; electric fish couple discharge through surrounding water and body tissue (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -100,18 +109,27 @@
         "en": "It strikes without moving."
       },
       "plausibility": {
-        "verdict": "unreviewed",
-        "judge": "none",
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "skeptic": 5
-        },
+        "summary": "Keep stacked electrocytes but show the strike as prey twitching, water disturbance and electrolysis bubbles rather than arcs; mark 'highly speculative'; write the effect as 'stuns nearby prey in brackish water' with no numbers.",
+        "fixes": [
+          "Keep stacked electrocytes but show the strike as prey twitching, water disturbance and electrolysis bubbles rather than arcs; mark 'highly speculative'; write the effect as 'stuns nearby prey in brackish water' with no numbers."
+        ],
         "analogues": [
+          {
+            "organism": "Electric eel (Electrophorus) and torpedo rays: stacked muscle-derived electrocytes; high voltage works best in low-conductance fresh water, low-voltage high-current discharges in seawater (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -151,10 +169,21 @@
         "en": "It sees the heartbeat of the mud."
       },
       "plausibility": {
-        "verdict": "unreviewed",
-        "judge": "none",
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
+        "summary": "Add F16 to the roots, note that conductivity shapes detection range and that brine changes the signal, keep the dust-clogging weakness, and strip the reveal-radius and 2-turn prediction numbers.",
+        "fixes": [
+          "Add F16 to the roots, note that conductivity shapes detection range and that brine changes the signal, keep the dust-clogging weakness, and strip the reveal-radius and 2-turn prediction numbers."
+        ],
+        "analogues": [
+          {
+            "organism": "Sharks and rays with ampullae of Lorenzini; weakly electric fish detecting and jamming one another's fields (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
         "scores": {
+          "astrobio": 6,
           "skeptic": 5
         }
       },
@@ -196,18 +225,27 @@
         "en": "Shedding crystals is the only time it bleeds."
       },
       "plausibility": {
-        "verdict": "unreviewed",
-        "judge": "none",
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
         "date": "2026-11-24",
-        "scores": {
-          "skeptic": 6
-        },
+        "summary": "Rewrite as metal tolerance with a moulting cost, cite the plant work only as an analogue, root it in F24/F28, and remove 'immunity' and 'environmental corrosion'.",
+        "fixes": [
+          "Rewrite as metal tolerance with a moulting cost, cite the plant work only as an analogue, root it in F24/F28, and remove 'immunity' and 'environmental corrosion'."
+        ],
         "analogues": [
+          {
+            "organism": "Metal-hyperaccumulator plants storing Ni/Zn in vacuoles, and animal metallothionein/granule sequestration of excess metals (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own"
           }
-        ]
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
       },
       "provenance": {
         "council_run": "autoloop-2026-11-24",
@@ -240,6 +278,16 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

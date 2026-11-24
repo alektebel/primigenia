@@ -207,5 +207,9 @@
   "secrets": [
     "Inner leaves can retain crystals after a light shower.",
     "Repeated browsing reveals a coastal mineral route used by coloso."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

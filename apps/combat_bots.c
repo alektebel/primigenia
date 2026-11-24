@@ -10,16 +10,16 @@ const char *const PROFILE_NAME[N_PROFILES] = {
  * tank buys +20 HP for -0.6 m/s. No per-build calibration to tournament scores.
  *                          mouth charge spit tail guard   hp     stamina speed */
 const CpCombatProfile PROFILES[N_PROFILES] = {
-    /* brawler    */ { 4, 3, 0, 1, 1,   100.0f, 100.0f, 3.8f, 0 },
-    /* spitter    */ { 2, 0, 4, 0, 1,   100.0f, 100.0f, 4.2f, 0 },
-    /* tank       */ { 2, 1, 0, 3, 4,  120.0f, 100.0f, 3.4f, 0 },
-    /* skirmisher */ { 3, 0, 2, 2, 0,   100.0f, 100.0f, 4.6f, 0 },
-    /* allrounder */ { 3, 2, 2, 2, 2,  100.0f, 100.0f, 4.0f, 0 },
+    /* brawler    */ { 4, 3, 0, 1, 1,   100.0f, 100.0f, 3.8f, 0, 0 },
+    /* spitter    */ { 2, 0, 4, 0, 1,   100.0f, 100.0f, 4.2f, 0, 0 },
+    /* tank       */ { 2, 1, 0, 3, 4,  120.0f, 100.0f, 3.4f, 0, 0 },
+    /* skirmisher */ { 3, 0, 2, 2, 0,   100.0f, 100.0f, 4.6f, 0, 0 },
+    /* allrounder */ { 3, 2, 2, 2, 2,  100.0f, 100.0f, 4.0f, 0, 0 },
 };
 
 const char *bot_name(int kind)
 {
-    static const char *n[BOT_KIND_COUNT] = { "idle", "random", "greedy", "counter", "spam" };
+    static const char *n[BOT_KIND_COUNT] = { "idle", "random", "greedy", "counter", "spam", "counter_naive" };
     return (kind >= 0 && kind < BOT_KIND_COUNT) ? n[kind] : "?";
 }
 
@@ -28,6 +28,7 @@ void bot_init(CpBot *b, int kind, uint32_t seed)
     memset(b, 0, sizeof(*b));
     b->kind = kind;
     b->reaction = 2;
+    b->filler = CB_MOVE_NONE;
     cp_rng_seed(&b->rng, seed * 2654435761u + (uint32_t)kind * 40503u + 17u);
 }
 
@@ -63,16 +64,23 @@ int bot_bleed_gain(int new_timer, int remaining_ticks)
     return gain > 0 ? gain : 0;
 }
 
+static int bot_available(const CpCombatCreature *c,int m){
+ return cp_combat_move_available(c,m) && ((CP_COMBAT_MOVES[m].flags&CB_F_SELF)||cp_combat_move_equipped(c,m)) && !c->cd[m] && c->calcium>=CP_COMBAT_MOVES[m].meter_cost;
+}
 /* Best expected damage per committed tick, including unstacked bleed. */
-static int best_attack(const CpCombatWorld *w, int self, int foe)
+static int best_attack(const CpCombatWorld *w, int self, int foe, int naive)
 {
     const CpCombatCreature *me = &w->c[self];
     int best = -1; float best_s = 0.0f;
     for (int m = 0; m < CB_MOVE_COUNT; m++) {
-        if (!offensive(m) || !cp_combat_move_available(me, m)) continue;
+        if (!offensive(m) || !bot_available(me, m)) continue;
         if (me->stamina < cp_combat_move_stamina(&me->prof, m)) continue;
         CpCombatPreview p;
-        cp_combat_preview(w, self, m, foe, &p);
+        if(naive && ((m>=CB_CLAW_SWIPE&&w->c[foe].move!=CB_DODGE)||w->c[foe].move>=CB_CLAW_SWIPE)){
+            /* The old picker cannot infer a new counter row through preview. */
+            CpCombatWorld seen=*w;seen.c[foe].move=CB_MOVE_NONE;
+            cp_combat_preview(&seen,self,m,foe,&p);
+        }else cp_combat_preview(w, self, m, foe, &p);
         const CpCombatMove *mv = &CP_COMBAT_MOVES[m];
         float damage = p.damage;
         /* Bleed cannot stack; credit only ticks not already pending. */
@@ -86,9 +94,9 @@ static int best_attack(const CpCombatWorld *w, int self, int foe)
     return best;
 }
 
-static const CpCombatCounter *counter_rule(int attack, int defend)
+static const CpCombatCounter *counter_rule(int attack, int defend, int naive)
 {
-    for (int k = 0; k < CP_COMBAT_N_COUNTERS; k++) {
+    for (int k = 0; k < (naive?7:CP_COMBAT_N_COUNTERS); k++) {
         const CpCombatCounter *r = &CP_COMBAT_COUNTERS[k];
         if ((r->attack == attack || r->attack < 0) && r->defend == defend) return r;
     }
@@ -121,11 +129,11 @@ static int spaced_attack(CpBot *b, const CpCombatWorld *w, int self, int foe, in
         if (p.gap < mv->reach * 0.85f) {
             if (away_wall || room <= rad) {
                 if (me->stamina >= cp_combat_move_stamina(&me->prof, CB_DODGE)) {
-                    *out = (CpCombatAction){CB_V_DODGE, 0, 0, (int8_t)dodge_dir(w, self), 0, 0};
+                    *out = (CpCombatAction){CB_V_DODGE, 0, 0, (int8_t)dodge_dir(w, self), 0, 0, 0};
                     return 1;
                 }
             } else {
-                *out = (CpCombatAction){CB_V_FLEE, 0, (int8_t)foe, 0, 0, 0 };
+                *out = (CpCombatAction){CB_V_FLEE, 0, (int8_t)foe, 0, 0, 0, 0 };
                 return 1;
             }
         }
@@ -154,7 +162,7 @@ static int punish(const CpCombatWorld *w, int self, int foe, CpCombatAction *out
 {
     const CpCombatCreature *me = &w->c[self], *f = &w->c[foe];
     const CpCombatMove *mv = &CP_COMBAT_MOVES[CB_BITE];
-    if (me->stun_t || !cp_combat_move_available(me, CB_BITE) ||
+    if (me->stun_t || !bot_available(me, CB_BITE) ||
         me->stamina < cp_combat_move_stamina(&me->prof, CB_BITE)) return 0;
     CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
     /* Do not estimate walk/turn time: launch only from actual attack-start
@@ -172,12 +180,12 @@ static int punish(const CpCombatWorld *w, int self, int foe, CpCombatAction *out
 
 static int greedy(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatAction *out)
 {
-    int m = best_attack(w, self, foe);
+    int m = best_attack(w, self, foe,b->kind==BOT_COUNTER_NAIVE);
     if (m < 0) {                                  /* nothing affordable or useful: rest, closing in */
         out->verb = CB_V_APPROACH; out->target = (int8_t)foe; out->move = 0; out->dir = 0;
         const CpCombatCreature *me = &w->c[self];
         for (int k = 0; k < CB_MOVE_COUNT; k++)
-            if (offensive(k) && cp_combat_move_available(me, k) &&
+            if (offensive(k) && bot_available(me, k) &&
                 me->stamina < cp_combat_move_stamina(&me->prof, k)) { out->verb = CB_V_IDLE; break; }
         return 1;
     }
@@ -190,6 +198,7 @@ static int incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, i
 {
     const CpCombatCreature *me = &w->c[self], *f = &w->c[foe];
     if (me->phase != CB_PH_IDLE || me->stun_t != 0) return 0;     /* cannot react from here */
+    if(b->kind==BOT_COUNTER_NAIVE&&f->move>=CB_CLAW_SWIPE)return 0;
     if (!offensive(f->move) || f->phase != CB_PH_WINDUP || (int)f->ptick < b->reaction) return 0;
     CpCombatPreview thr;
     cp_combat_preview(w, foe, f->move, self, &thr);
@@ -204,6 +213,7 @@ static int incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, i
 static int dodge_incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, int *rem)
 {
     const CpCombatCreature *f = &w->c[foe];
+    if(b->kind==BOT_COUNTER_NAIVE&&f->move>=CB_CLAW_SWIPE)return 0;
     if (w->c[self].stun_t || !offensive(f->move)) return 0;
     const CpCombatMove *m = &CP_COMBAT_MOVES[f->move];
     if (!(m->flags & CB_F_DASH)) return incoming(b, w, self, foe, rem);
@@ -233,13 +243,13 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
         if (incoming(b, w, self, foe, &rem)) {
             int best = -1; float best_v = 0.0f;
             for (int r = 0; r < CB_MOVE_COUNT; r++) {
-                if (!cp_combat_move_available(me, r)) continue;
+                if (!bot_available(me, r)) continue;
                 const CpCombatMove *mr = &CP_COMBAT_MOVES[r];
                 float cost = cp_combat_move_stamina(&me->prof, r);
                 float v = 0.0f;
-                if (mr->flags & CB_F_SELF) {                 /* guard / dodge: timed to cover the first active tick */
+                if (mr->flags & (CB_F_SELF|CB_F_GUARD)) {                 /* guard / dodge: timed to cover the first active tick */
                     if (rem < (int)mr->windup || rem > (int)mr->windup + (int)mr->active - 1) continue;
-                    const CpCombatCounter *rule = counter_rule(fm, r);
+                    const CpCombatCounter *rule = counter_rule(fm, r,b->kind==BOT_COUNTER_NAIVE);
                     int eff = rule ? rule->effect : 0;
                     float extra = 0.0f;
                     if (eff == CB_EFF_AVOID) { v = 2.5f; extra = rule->stamina; }
@@ -248,7 +258,7 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
                     else continue;                           /* no benefit, or worse (charge breaks guard) */
                     if (me->stamina < cost + extra) continue;
                 } else {                                     /* an attack that interrupts the wind-up */
-                    const CpCombatCounter *rule = counter_rule(r, fm);
+                    const CpCombatCounter *rule = counter_rule(r, fm,b->kind==BOT_COUNTER_NAIVE);
                     int eff = rule ? rule->effect : 0;
                     if (eff != CB_EFF_INTERRUPT && eff != CB_EFF_BREAK) continue;
                     CpCombatPreview p;
@@ -278,7 +288,7 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
      * Charge must make contact while guard is still active. */
     if (me->phase == CB_PH_IDLE && !me->stun_t && f->move == CB_GUARD && f->phase == CB_PH_ACTIVE &&
         CP_COMBAT_MOVES[CB_GUARD].windup + f->ptick >= b->reaction &&
-        cp_combat_move_available(me, CB_CHARGE)) {
+        bot_available(me, CB_CHARGE)) {
         CpCombatPreview p; cp_combat_preview(w, self, CB_CHARGE, foe, &p);
         int lag = p.in_arc ? 0 : 1;
         if (p.in_reach && p.effect == CB_EFF_BREAK &&
@@ -304,13 +314,13 @@ static int random_bot(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCom
     if (roll < 3) {                                       /* a random legal attack */
         int legal[CB_MOVE_COUNT], n = 0;
         for (int m = 0; m < CB_MOVE_COUNT; m++)
-            if (offensive(m) && cp_combat_move_available(me, m)) legal[n++] = m;
+            if (offensive(m) && bot_available(me, m)) legal[n++] = m;
         if (n == 0) { out->verb = CB_V_IDLE; return 1; }
         return act_attack(out, foe, legal[cp_rng_int(&b->rng, n)]);
     }
     switch (roll) {
     case 3: out->verb = CB_V_APPROACH; break;
-    case 4: out->verb = CB_V_GUARD; if (!cp_combat_move_available(me, CB_GUARD)) out->verb = CB_V_IDLE; break;
+    case 4: out->verb = CB_V_GUARD; if (!bot_available(me, CB_GUARD)) out->verb = CB_V_IDLE; break;
     case 5: out->verb = CB_V_DODGE; out->dir = (int8_t)cp_rng_int(&b->rng, 8); break;
     case 6: out->verb = CB_V_FLEE; break;
     default: out->verb = CB_V_IDLE; break;
@@ -331,10 +341,21 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
     case BOT_IDLE:    return 0;
     case BOT_RANDOM:  return random_bot(b, w, self, foe, out);
     case BOT_GREEDY:  return greedy(b, w, self, foe, out);
+    case BOT_COUNTER_NAIVE:
     case BOT_COUNTER: return counter(b, w, self, foe, out);
     case BOT_SPAM:
         memset(out, 0, sizeof(*out));
-        if (CP_COMBAT_MOVES[b->spam_move].flags & CB_F_SELF) {
+        /* A fixed-move policy rests while recharging or out of ammunition.
+         * Retreating forever after the final shot would price movement, not the move. */
+        if(!bot_available(me,b->spam_move)){
+            if(b->filler!=CB_MOVE_NONE){
+                if(bot_available(me,b->filler)&&me->stamina>=cp_combat_move_stamina(&me->prof,b->filler))
+                    return spaced_attack(b,w,self,foe,b->filler,out);
+                out->verb=CB_V_APPROACH;out->target=(int8_t)foe;return 1;
+            }
+            out->verb=CB_V_IDLE;return 1;
+        }
+        if (CP_COMBAT_MOVES[b->spam_move].flags & (CB_F_SELF|CB_F_GUARD)) {
             /* Defensive commitment: the defence plus the punish it earns.
              * It never gambles: it strikes only when the foe is provably
              * unable to answer before the bite lands, through the same
@@ -343,6 +364,7 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
             if (CP_COMBAT_MOVES[b->spam_move].flags & CB_F_GUARD) {
                 CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
                 if (p.gap <= CP_COMBAT_MOVES[CB_BITE].reach * 0.92f && p.in_arc) {
+                    if(b->spam_move!=CB_GUARD)return act_attack(out,foe,b->spam_move);
                     out->verb = CB_V_GUARD; return 1;
                 }
                 out->verb = CB_V_APPROACH; out->target = (int8_t)foe; return 1;
@@ -353,7 +375,7 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
             const CpCombatMove *dm = &CP_COMBAT_MOVES[b->spam_move];
             if (dodge_incoming(b, w, self, foe, &rem) &&
                 rem >= (int)dm->windup && rem <= (int)dm->windup + (int)dm->active - 1) {
-                const CpCombatCounter *rule = counter_rule(w->c[foe].move, b->spam_move);
+                const CpCombatCounter *rule = counter_rule(w->c[foe].move, b->spam_move,0);
                 if (rule && rule->effect == CB_EFF_AVOID &&
                     me->stamina >= cp_combat_move_stamina(&me->prof, b->spam_move) + rule->stamina) {
                     out->verb = CB_V_DODGE; out->dir = 0; return 1;
@@ -429,7 +451,7 @@ void duel_run(const CpCombatSetup *s, CpBot *b0, CpBot *b1, int max_ticks,
     if (!res) return;
     memset(res, 0, sizeof(*res));
     res->ticks = w.tick;
-    for (int i = 0; i < 2; i++) { res->hp[i] = w.c[i].hp; res->dealt[i] = w.c[i].dmg_dealt; res->spent[i] = w.c[i].stamina_spent; }
+    for (int i = 0; i < 2; i++) { res->volleys[i]=w.c[i].volleys;res->calcium_spent[i]=w.c[i].volleys*CP_COMBAT_MOVES[CB_SPINE_VOLLEY].meter_cost;res->hp[i] = w.c[i].hp; res->dealt[i] = w.c[i].dmg_dealt; res->spent[i] = w.c[i].stamina_spent; }
     if (w.c[0].alive && !w.c[1].alive) res->winner = 0;
     else if (!w.c[0].alive && w.c[1].alive) res->winner = 1;
     else if (!w.c[0].alive && !w.c[1].alive) res->winner = -1;

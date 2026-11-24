@@ -209,7 +209,7 @@
           "en": "Chemotrophic Boost"
         },
         "role": "Engage",
-        "effect": "Converts environmental toxins into +15 health",
+        "effect": "The creature absorbs nearby environmental toxins and converts them into a strong flow of healing that repairs its body.",
         "numbers": {}
       },
       "weakness": "Starves if vent chemistry shifts",

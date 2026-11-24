@@ -99,7 +99,7 @@
           "en": "Winter Coat"
         },
         "role": "Passive",
-        "effect": "no cold penalty down to -45 °C wind chill and full stamina regeneration while bedded in snow; a distinct blue-ice Overheat meter fills twice as fast under summer sun, forcing shade or water before it tops out",
+        "effect": "This pronghorn withstands extreme cold and rapidly restores its energy while resting in the snow. In hot weather, it overheats strongly and must seek shade or water to cool down before collapsing.",
         "numbers": {}
       },
       "weakness": "between the spring moult and the new coat the fur is patchy, bare skin burns and the Overheat meter runs hot: corner it in open sun at midday, or pen it behind a fence it will not jump, and the winter-proof coat becomes a summer trap",

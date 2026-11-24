@@ -210,7 +210,7 @@
           "en": "Copper Lash"
         },
         "role": "Engage",
-        "effect": "Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12.",
+        "effect": "The creature hurls a splash of blue fluid that coats nearby mechanical targets, causing them to lock up or slowly decay into rust.",
         "numbers": {}
       },
       "weakness": "Copper blood is less efficient in low-O2 pockets.",

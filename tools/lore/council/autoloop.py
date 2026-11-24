@@ -266,7 +266,7 @@ def repair_rejected(w=None, log_=log):
     if not bad: return 0
     n = 0
     # refcheck is global, so a reference cited by an EARLIER world can be rejected now: repair every world and every creature
-    for wp in sorted(glob.glob(os.path.join(ROOT, "lore", "worlds", "*.json"))):
+    for wp in sorted(p for p in glob.glob(os.path.join(ROOT, "lore", "worlds", "*.json")) if not p.endswith(".derivation.json")):
         wd = load(wp); ch = 0
         for f in wd["facts"]:
             if f.get("refs") and set(f["refs"]) & bad:
@@ -284,7 +284,7 @@ def repair_rejected(w=None, log_=log):
                     a["refs"] = [r for r in a["refs"] if r not in bad]; ch0 = True
                     if not a["refs"]: del a["refs"]
         if ch0: n += 1; c["changelog"].append({"date": DATE, "who": "autoloop", "what": "removed rejected references from analogues"}); dump(c, p)
-    for wp in glob.glob(os.path.join(ROOT, "lore", "worlds", "*.json")):
+    for wp in (p for p in glob.glob(os.path.join(ROOT, "lore", "worlds", "*.json")) if not p.endswith(".derivation.json")):
         sanitize({"id": os.path.basename(wp)[:-5]}, log_)
     return n
 

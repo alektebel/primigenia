@@ -4,7 +4,10 @@
   "groups": ["Move", "Camera", "Fight", "Menus", "Time", "Dev tools", "Studio"],
   "actions": {
     "move_forward": {"label": "Move", "also": ["move_left", "move_back", "move_right"], "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
-    "sprint": {"label": "Sprint", "group": "Move", "contexts": ["walk", "fight"]},
+    "dig": {"label": "Dig (anywhere dry, standing still: 2 s soft soil, 3.5 s hard, 5 s rock)", "group": "Move", "contexts": ["walk"]},
+    "quest_card": {"label": "Fold or open the task card", "group": "Menus", "contexts": ["walk", "fight"]},
+    "run": {"label": "Run", "group": "Move", "contexts": ["walk"]},
+    "sprint": {"label": "Burst", "group": "Move", "contexts": ["walk", "fight"]},
     "walk_to": {"label": "Walk there (a white circle marks it); a click on a creature only selects it", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
     "move_left": {"label": "Left", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_back": {"label": "Back", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
@@ -24,6 +27,11 @@
     "guard": {"label": "Guard", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "dodge_left": {"label": "Dodge left", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "dodge_right": {"label": "Dodge right", "group": "Fight", "contexts": ["walk", "fight"]},
+    "verb_attack": {"label": "Arm Attack, then click a creature: red arrows lock it and you run to it", "group": "Fight", "contexts": ["walk", "fight"]},
+    "verb_befriend": {"label": "Arm Befriend, then click a creature: green arrows, then keys 1-4 on the beat", "group": "Fight", "contexts": ["walk", "fight"]},
+    "verb_eat": {"label": "Arm Eat, then click remains", "group": "Fight", "contexts": ["walk"]},
+    "verb_observe": {"label": "Arm Observe, then click a creature", "group": "Fight", "contexts": ["walk"]},
+    "verb_intimidate": {"label": "Arm Intimidate, then click a creature", "group": "Fight", "contexts": ["walk"]},
     "radial_reopen": {"label": "Reopen the mode ring", "group": "Menus", "contexts": ["walk", "fight"]},
     "pause_menu": {"label": "Pause menu / close", "group": "Menus", "contexts": ["walk", "fight", "radial", "paused", "journal"], "corner": ["radial"]},
     "journal": {"label": "Field journal (open / close)", "group": "Menus", "contexts": ["walk", "fight", "paused", "journal"]},
@@ -36,6 +44,12 @@
     "dev_ab_swap": {"label": "Swap tuning A/B", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
     "dev_quicksave": {"label": "Quick save scenario", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
     "dev_quickload": {"label": "Scenario picker", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    "dev_options": {"label": "Option mode (1-9 group, Up/Down option, Left/Right value, Backspace reset, Ctrl+1-4 save, Alt+1-4 recall)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    "dev_note": {"label": "Note: text, quick tags, optional pin to an entity (the frame is grabbed first, the sim pauses)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio"]},
+    "dev_note_quick": {"label": "Instant note: screenshot and metadata, no text, no pause", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio"]},
+    "dev_notes_browser": {"label": "Notes browser: thumbnails, metadata, load the moment", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio"]},
+    "dev_meta": {"label": "Metadata overlay (live fps, player, creatures near you; hover an entity for its line)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio"]},
+    "dev_flag": {"label": "Flag mode: click a creature, plant, prop or spot to leave a note (Tab tag, Shift+Tab severity, Enter saves)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
     "dev_feedback": {"label": "Feedback (note + replay)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio"]},
     "time_pause": {"label": "Pause time", "group": "Time", "dev": true, "contexts": ["walk", "fight"]},
     "time_step": {"label": "Step one tick (paused)", "group": "Time", "dev": true, "contexts": ["walk", "fight"]},
@@ -55,7 +69,11 @@
     {"label": "Observe (north of the ring)", "keys": "Click north", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
     {"label": "Befriend (west half of the ring)", "keys": "Click west", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
     {"label": "Intimidate (south of the ring)", "keys": "Click south", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
-    {"label": "Attack / Eat (east half of the ring)", "keys": "Click east", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]}
+    {"label": "Attack / Eat (east half of the ring)", "keys": "Click east", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
+    {"label": "Owner question card: answer (a card is on screen)", "keys": "1-4 (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    {"label": "Owner question: free text (Enter saves)", "keys": "T (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    {"label": "Owner question: show the thing it asks about (again puts it back)", "keys": "Tab (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    {"label": "Owner question: add a note / answer later / dismiss for this session", "keys": "N / L / Esc (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]}
   ],
   "fixed": [
     {"label": "Undo", "keys": "Ctrl+Z", "group": "Studio", "contexts": ["studio"]},
@@ -65,5 +83,5 @@
     {"label": "Delete part", "keys": "Del / Backspace", "group": "Studio", "contexts": ["studio"]},
     {"label": "Nudge part", "keys": "Arrows", "group": "Studio", "contexts": ["studio"]}
   ],
-  "reserved": {"F7": "free camera (DT1)", "F9": "scrubber (DT1)", "F10": "overlays (DT1)"}
+  "reserved": {"F7": "free camera (DT1)", "F9": "scrubber (DT1)"}
 }

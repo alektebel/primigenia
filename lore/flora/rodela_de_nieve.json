@@ -204,5 +204,9 @@
   "secrets": [
     "Tall rosettes identify leeward gully shelter, not a safe exposed crossing.",
     "Removing the dry skirt causes lasting insulation damage."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

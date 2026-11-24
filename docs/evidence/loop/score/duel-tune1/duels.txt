@@ -1,0 +1,8 @@
+duel seed=1 result=win hp_start=100 hp_end=36 garfio_hp=0 ticks=64
+duel seed=2 result=win hp_start=100 hp_end=35 garfio_hp=0 ticks=64
+duel seed=3 result=win hp_start=100 hp_end=35 garfio_hp=0 ticks=64
+duel seed=4 result=win hp_start=100 hp_end=39 garfio_hp=0 ticks=64
+duel seed=5 result=win hp_start=100 hp_end=48 garfio_hp=0 ticks=64
+duel seed=6 result=win hp_start=100 hp_end=34 garfio_hp=0 ticks=64
+duel seed=7 result=win hp_start=100 hp_end=37 garfio_hp=0 ticks=64
+duel seed=8 result=win hp_start=100 hp_end=34 garfio_hp=0 ticks=64

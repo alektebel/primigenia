@@ -56,12 +56,14 @@ var tail := {"length": 0.0, "mass": 0.0, "base": Vector3.ZERO}
 var spine_u: PackedFloat32Array = []  # arc-length coordinate 0..1 of each spine node
 var spine_regions: Array = []
 var proposal := {}
+var style_body := ""          # the genome's name, so a body can carry an authored move style (Gait.STYLES)
 
 static func foot_info(kind: String) -> Dictionary:
 	return FOOT.get(kind, FOOT["paw"])
 
 static func analyse(desc: Dictionary):
 	var m = new()
+	m.style_body = str(desc.get("style_body", ""))
 	if desc.has("radial"):
 		m._run_radial(desc)
 	else:
@@ -224,7 +226,7 @@ func _analyse_legs(raw: Array) -> void:
 		legs.append({
 			"index": i, "hip": hip, "upper": float(l.upper), "lower": float(l.lower),
 			"length": total, "rest_len": (rest - hip).length(), "rest_h": hip.y - ankle,
-			"side": side, "station": 0, "foot": kind, "foot_radius": fs * 0.5, "toe": 0.8 * fs * 0.5,
+			"side": side, "station": 0, "foot": kind, "foot_radius": fs * 0.5, "toe": float(l.get("toe", 0.0)) if float(l.get("toe", 0.0)) > 0.0 else 0.8 * fs * 0.5,
 			"ankle": ankle, "home": rest, "share": 0.0, "lift": float(fi.lift),
 			"grip": float(fi.grip), "radius": float(l.get("radius", 0.05)),
 		})

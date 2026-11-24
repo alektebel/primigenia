@@ -2,11 +2,14 @@
 """End-to-end test of the agent socket: python -> Godot (headless) -> C world. See PROTOCOL.md."""
 import argparse
 import os
+import shutil
+import tempfile
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from client import GodotAgent  # noqa: E402
 
+os.environ["CPORE_TEST"] = "1"  # the stores resolve to an isolated dir (godot/devtools/test_isolation.gd)
 failures = 0
 
 
@@ -22,7 +25,8 @@ def main():
     ap.add_argument("--godot", default="godot")
     ap.add_argument("--port", type=int, default=47110)
     a = ap.parse_args()
-    with GodotAgent(a.godot, scenario="creature/garfio_close", port=a.port) as g:
+    notes_tmp = tempfile.mkdtemp(prefix="agent-notes-")
+    with GodotAgent(a.godot, scenario="creature/garfio_close", port=a.port, extra=["--notes-dir=" + notes_tmp]) as g:
         check(g.ready["protocol"] == 1, "AGENT_READY protocol 1 (build %s)" % g.ready["build"])
         o = g.send("observe")
         check(o["ok"] and o["obs"]["schema"] == "world-2" and o["tick"] == 0 and not o["obs"]["fighting"], "observe at the scenario's tick 0, not fighting")
@@ -52,6 +56,18 @@ def main():
         check(sc["ok"], "scenario_save %s" % sc.get("error", ""))
         ld = g.send("scenario_load", name="user://scenarios/agent-test")
         check(ld["ok"], "scenario_load %s" % ld.get("error", ""))
+        o1 = g.send("opt", set={"light": "dusk", "skin": "pre-v1"})
+        check(o1["ok"] and o1["options"] == {"light": "dusk", "skin": "pre-v1"} and "light dusk" in o1["line"], "opt set variants: %s" % o1)
+        check(not g.send("opt", set={"light": "noon"})["ok"], "opt refuses an unknown value")
+        check(g.send("opt", reset=True)["options"] == {}, "opt reset")
+        check(g.send("console", text="opt light=day")["ok"], "the console command works over the socket too")
+        g.send("opt", reset=True)
+        na = g.send("note_add", text="agent note", tags=["bug"], severity=3)
+        check(na["ok"] and na["note_id"], "note_add %s" % na.get("error", ""))
+        ln = g.send("notes")
+        check(any(n["id"] == na["note_id"] and n["status"] == "open" for n in ln["notes"]), "notes lists it")
+        check(g.send("note_done", note=na["note_id"], fix="abc")["ok"], "note_done")
+        check(not any(n["id"] == na["note_id"] for n in g.send("notes")["notes"]), "done notes leave the open list")
         shot = g.send("screenshot")
         check(not shot["ok"] and "no renderer" in shot["error"], "headless screenshot says why not")
         errs = [e for e in g.events if e["event"] == "error"]
@@ -60,6 +76,7 @@ def main():
         p = os.path.expanduser("~/.local/share/primigenia/scenarios/agent-test" + ext)
         if os.path.exists(p):
             os.remove(p)
+    shutil.rmtree(notes_tmp, ignore_errors=True)
     print("agent test: %d failure(s)" % failures)
     sys.exit(1 if failures else 0)
 

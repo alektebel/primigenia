@@ -80,6 +80,28 @@ func run(t) -> void:
 	var without := Legend.rows(&"walk", false)
 	t.check(with_dev.any(func(r): return r.dev) and not without.any(func(r): return r.dev), "Dev.enabled=false hides the dev rows")
 	t.check(without.any(func(r): return r.action == "sprint"), "player rows stay with dev tools off")
+	t.check(without.any(func(r): return r.action == "run") and Legend.action_text("run").contains("Shift"), "the legend lists Run on Shift (%s)" % Legend.action_text("run"))
+	t.check(not Legend.action_text("sprint").contains("Shift") and Legend.action_text("sprint") != "?", "the legacy burst moved off Shift (%s)" % Legend.action_text("sprint"))
+	# Spanish: Run and Burst (and the rest of the sheet) read in the player's language; English stays the key, rows() is untouched.
+	var Strings := load("res://ui/strings.gd")
+	var game_node = t.root.get_node("Game")
+	var lang_before: String = str(game_node.settings.get("language", ""))
+	game_node.settings["language"] = "es"
+	t.eq(Strings.legend("Run"), "Correr", "legend: Run in Spanish")
+	t.eq(Strings.legend("Burst"), "Arrancada", "legend: Burst in Spanish")
+	var untranslated := []
+	for ctx in Legend.spec().get("contexts", []):
+		for r in Legend.rows(ctx, true):
+			for text in [r.label, r.group]:
+				if Strings.legend(text) == text:
+					untranslated.append(text)
+			if r.get("gesture", false):
+				if Strings.legend(r.keys) == r.keys:
+					untranslated.append(r.keys)
+	t.eq(untranslated, [], "every legend label, group and gesture has a Spanish text")
+	game_node.settings["language"] = "en"
+	t.eq(Strings.legend("Run"), "Run", "legend: English stays English")
+	game_node.settings["language"] = lang_before
 	# A rebound action shows the new key.
 	var old := InputMap.action_get_events("sprint")
 	InputMap.action_erase_events("sprint")

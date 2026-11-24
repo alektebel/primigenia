@@ -1,7 +1,8 @@
 extends Node3D
-# Visual-only radial fauna (S5a of the radial-bodies plan): the tide-pool star brujula, the shallow-water bell cuarteta and
-# the cave disc corona. They are NOT C entities (no stats, no combat, no snapshot); they only live on the island so the
-# world has radial animals. Placement is deterministic from the world seed and the terrain data, like flora_placement.gd.
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
+# Habitat planner for all three radial species; only cuarteta is spawned here as ambient fauna.
+# Brujula and Corona use these spots in StageSetup and live as C entities. Placement is deterministic.
 # Each animal wanders a tiny seeded random walk around its home, driven by loco_radial.gd through the rig adapter.
 #
 #   brujula   an intertidal shelf: ground .15..1.8 m, within 30 m of the sea, gentle; 4 animals 3..6 m apart round a pool point
@@ -14,6 +15,7 @@ const Radial := preload("res://locomotion/loco_radial.gd")
 const Adapter := preload("res://locomotion/loco_rig_adapter.gd")
 
 const SPECIES := {"brujula": 0.6, "cuarteta": 0.8, "corona": 0.55}
+const AMBIENT := ["cuarteta"] # Brujula and Corona are simulated C actors (species 6 and 7).
 const COUNT := {"brujula": 4, "cuarteta": 5, "corona": 2}
 const CULL := 80.0
 const BELL_TOP := 0.3     # plan: -0.4; the sea shader hides anything below the surface, so the bell dome floats up through it
@@ -265,25 +267,35 @@ static func _coast_distance(d, p: Vector2) -> float:
 
 # ------------------------------------------------------------------ nodes
 
-func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable()) -> void:
+## `plan_in`: the placement when already computed off the main thread (`plan`, see island.gd); a frame passes between creatures
+## while a loading screen is up.
+func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable(), plan_in = null, slice: Callable = Callable(), cache = null) -> void:
 	_ground = ground
 	_cam = camera_fn
-	placement = plan(d, world_seed, nest)
+	placement = plan(d, world_seed, nest) if plan_in == null else plan_in
 	for line in placement.log:
 		print(line)
-	for id in ["brujula", "cuarteta", "corona"]:
+	for id in AMBIENT:
 		var spots: Array = placement[id].spots
 		for i in spots.size():
-			_spawn(id, i, spots[i], world_seed)
+			_spawn(id, i, spots[i], world_seed, cache)
+			if Game.veil != null and is_instance_valid(Game.veil):
+				if slice.is_valid():
+					await slice.call()
+				else:
+					await get_tree().process_frame
 
 
 static func _genome(id: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://game/data/%s.json" % id))
 
 
-func _spawn(id: String, i: int, home: Vector2, world_seed: int) -> void:
-	var c := Creature.new()
-	var res: Dictionary = c.load_genome(_genome(id))
+func _spawn(id: String, i: int, home: Vector2, world_seed: int, cache = null) -> void:
+	var c: Creature = cache.instantiate(_genome(id)) if cache != null else Creature.new()
+	if c == null:
+		push_warning("radial fauna %s rejected by creature cache" % id)
+		return
+	var res: Dictionary = {"ok": true} if cache != null else c.load_genome(_genome(id))
 	if not res["ok"]:
 		push_warning("radial fauna %s rejected: %s" % [id, res["error"]])
 		c.free()
@@ -316,6 +328,14 @@ func _spawn(id: String, i: int, home: Vector2, world_seed: int) -> void:
 
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"ambient radial fauna")
+
+func _profile__process(delta: float) -> void:
 	var cam := Vector3.INF
 	if _cam.is_valid():
 		cam = _cam.call()

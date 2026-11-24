@@ -28,9 +28,12 @@ def run_episode(seed: int, script):
     hashes = []
     for tick in range(script["ticks"]):
         if tick in script["commands"]:
-            w.step(script["commands"][tick])
-        else:
-            w.step()
+            command = script["commands"][tick]
+            rc = w.command(command)
+            # world_cli records rejections and still steps. During Garfio's grace,
+            # this narrative can end a fight before tick 150, leaving no threat.
+            assert rc == 0 or (command == "flee" and rc == -5), (tick, command, rc)
+        w.step()
         hashes.append(w.hash())
     final = w.hash()
     obs = w.observe()
@@ -125,6 +128,17 @@ def main():
         check(py_hashes == golden[:50],
               "replay_log matches golden hashes for first 50 ticks")
         check(py_final == golden[49], "replay tick-49 hash matches golden")
+
+    w = StageWorld(seed=1)
+    check(w.observe()["player"] == {"running": False, "stamina": 1000, "falling": False,
+                                   "y": w.observe()["player"]["y"], "vertical_velocity": 0},
+          "run/fall defaults exposed")
+    w.set_run(True)
+    check(w.observe()["player"]["running"], "set_run reaches C")
+    w.step("heading 0")
+    check(w.observe()["player"]["stamina"] < 1000, "running movement drains stamina")
+    w.set_run(False)
+    check(not w.observe()["player"]["running"], "run release reaches C")
 
     print("\nall world smoke checks passed" if not fails else f"\n{len(fails)} failed")
     return 1 if fails else 0

@@ -20,6 +20,7 @@ signal family_tree_requested
 signal nest_requested
 signal loadout_requested
 signal keys_requested
+signal questions_requested
 signal hints_reset_requested
 signal setting_changed(key: String, value)
 
@@ -39,6 +40,7 @@ const ITEMS := [
 	["nest_edit", "nest_edit", ""],
 	["settings", "settings", ""],
 	["keys", "keys", "F1"],
+	["questions", "questions", ""],
 	["save", "save", ""],
 	["load", "load", ""],
 	["main_menu", "main_menu", ""],
@@ -50,6 +52,7 @@ var column := 0                       # 0 the list, 1 the settings
 var focus := 0                        # index in the list
 var row_focus := 0                    # index in the settings
 var loadout_available := false
+var nest_edit_available := false      # the C world accepts a creature edit here (at the nest, or anywhere with Edit anywhere)
 var rows: Array = []                  # the settings rows: {key, label, kind, options?, min, max}
 var _alpha := 0.0
 var _hover_t := 0.0
@@ -70,6 +73,7 @@ func _build_rows() -> void:
 		{"key": "strong_outlines", "label": "outlines", "kind": "choice", "options": ["off", "on"]},
 		{"key": "reduced_motion", "label": "less_motion", "kind": "choice", "options": ["off", "on"]},
 		{"key": "minimap", "label": "minimap", "kind": "choice", "options": ["off", "on"]},
+		{"key": "edit_anywhere", "label": "edit_anywhere", "kind": "choice", "options": ["off", "on"]},
 		{"key": "renderer", "label": "renderer", "kind": "choice", "options": ["r_auto", "r_high", "r_compat"]},
 		{"key": "master", "label": "master", "kind": "slider", "min": 0.0, "max": 1.0},
 		{"key": "music", "label": "music", "kind": "slider", "min": 0.0, "max": 1.0},
@@ -91,11 +95,20 @@ func item_enabled(id: String) -> bool:
 	match id:
 		"load":
 			return slot_exists()
-		"loadout", "nest_edit":
+		"loadout":
 			return loadout_available
+		"nest_edit":
+			return nest_edit_available
+		"questions":
+			return question_count() > 0
 		"family_tree", "journal", "keys":
 			return true
 	return true
+
+## Pending owner questions (dev tools only; 0 in builds without them).
+func question_count() -> int:
+	var dev = get_node_or_null("/root/Dev")
+	return dev.questions.pending_count() if dev != null and dev.enabled and dev.questions != null else 0
 
 func item_ids() -> Array:
 	return ITEMS.map(func(r): return r[0])
@@ -117,7 +130,7 @@ func value_of(key: String) -> Variant:
 		return Strings.language()
 	if key == "renderer":
 		return str(_game_settings().get("renderer", "auto"))
-	return _game_settings().get(key, false if key != "ui_scale" else 1.0)
+	return _game_settings().get(key, (key == "edit_anywhere") if key != "ui_scale" else 1.0)
 
 func choice_index(row: Dictionary) -> int:
 	var v: Variant = value_of(row.key)
@@ -180,6 +193,8 @@ func activate(id: String) -> void:
 			row_focus = 0
 		"keys":
 			keys_requested.emit()
+		"questions":
+			questions_requested.emit()
 		"save":
 			save_requested.emit()
 		"load":
@@ -359,6 +374,8 @@ func _draw() -> void:
 			Style.line(self, Vector2(Style.u(LIST_X - 22.0), y - Style.u(7.0)), Vector2(Style.u(LIST_X - 8.0), y - Style.u(7.0)), Color(Palette.COPPER, _alpha), Style.u(2.0))
 		Style.text(self, fm if focused else f, Vector2(Style.u(LIST_X), y), Strings.t(ITEMS[i][1]), s, col)
 		var kh: String = ITEMS[i][2]
+		if id == "questions":
+			kh = "(%d)" % question_count()
 		if kh != "":
 			Style.text(self, f, Vector2(Style.u(KEY_X), y), kh, Style.u(13.5), Color(Palette.FOG, a))
 		if not on and id == "loadout":

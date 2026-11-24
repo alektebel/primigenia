@@ -1,10 +1,11 @@
 extends RefCounted
-# CPORE_WORLD_LOG 2 / 3: the text replay format of apps/world_cli.c (--replay).
+# CPORE_WORLD_LOG 2 / 3 / 4 / 5: the text replay format of apps/world_cli.c (--replay).
 # parse(text) -> {ok, version, setup, inputs: Array[Dictionary], debug: Array[{tick, op}], snapshot: String,
 #                 field: Dictionary ({seed, n, size_m, hash} or empty), error}
 # write(setup, inputs, opts = {}) -> String  (setup in the CporeWorld.reset schema, fully resolved).
 # v3 (PLAN-devtools step 4) is written only when opts has debug ops, a snapshot file name or a field;
-# otherwise the output is the v2 text, byte for byte as before.
+# otherwise the output is the v2 text, byte for byte as before. v4 (A31) is v3 plus a tenth column on every input line, `run`
+# (0/1, the run toggle wanted at that tick); it is written only when some input has run set, v2/v3 logs still parse and replay.
 #   opts.debug: Array[{tick, op: {op,id,a,x,z,v}}]   opts.snapshot: file name relative to the log
 #   opts.field: {seed, n, size_m, hash}
 
@@ -43,8 +44,22 @@ static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> St
 	for w in setup.wild:
 		any_legs = any_legs or int(w.get("legs", 0)) != 0
 	var any_secrets := int(setup.get("secrets", 0)) != 0 or int(setup.get("start_clock", 0)) != 0
-	var v3 := not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs or any_secrets
-	lines.append("%s %d" % [MAGIC, 3 if v3 else VERSION])
+	var any_run := false
+	var any_jump := false
+	for i in inputs:
+		any_run = any_run or int(i.get("run", 0)) != 0
+		any_jump = any_jump or int(i.get("jump", 0)) != 0
+	any_run = any_run or any_jump
+	var any_grip := int(setup.player.get("grip_traits", 0)) != 0 or int(setup.player.get("grip_legs", 0)) != 0
+	for w in setup.wild:
+		any_grip = any_grip or int(w.profile.get("grip_traits", 0)) != 0 or int(w.profile.get("grip_legs", 0)) != 0
+	var v3 := any_grip or any_run or not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs or any_secrets
+	lines.append("%s %d" % [MAGIC, 5 if any_jump else (4 if any_run else (3 if v3 else VERSION))])
+	if any_grip:
+		var g := "grip %d" % setup.wild.size()
+		for p in [setup.player] + setup.wild.map(func(w): return w.profile):
+			g += " %d %d" % [int(p.get("grip_traits", 0)), int(p.get("grip_legs", 0))]
+		lines.append(g)
 	if snapshot != "":
 		lines.append("snapshot " + snapshot)
 	if any_legs:
@@ -72,8 +87,11 @@ static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> St
 		lines.append("%s %s %s %d" % [num(o.x), num(o.z), num(o.r), o.type])
 	lines.append(str(inputs.size()))
 	for i in inputs:
-		lines.append("%d %d %d %d %d %d %d %s %s" % [i.get("verb", 0), i.get("target", 0), i.get("move", 0),
-			i.get("dir", 0), int(i.get("sprint", 0)), i.get("hx", 0), i.get("hz", 0), num(i.get("x", 0.0)), num(i.get("z", 0.0))])
+		var row := "%d %d %d %d %d %d %d %s %s" % [i.get("verb", 0), i.get("target", 0), i.get("move", 0),
+			i.get("dir", 0), int(i.get("sprint", 0)), i.get("hx", 0), i.get("hz", 0), num(i.get("x", 0.0)), num(i.get("z", 0.0))]
+		if any_run:
+			row += " %d" % ((1 if int(i.get("run", 0)) != 0 else 0) | (2 if int(i.get("jump", 0)) != 0 else 0))
+		lines.append(row)
 	if v3:
 		lines.append(str(debug.size()))
 		for e in debug:
@@ -88,7 +106,7 @@ static func parse(text: String) -> Dictionary:
 		tok.append(part)
 	var cur := [0]  # lambdas capture ints by value; a one-element array is shared
 	var fail := func(msg: String): return {"ok": false, "error": msg}
-	if tok.size() < 3 or tok[0] != MAGIC or (tok[1].to_int() != 2 and tok[1].to_int() != 3):
+	if tok.size() < 3 or tok[0] != MAGIC or (tok[1].to_int() < 2 or tok[1].to_int() > 5):
 		return fail.call("bad header")
 	var version: int = tok[1].to_int()
 	cur[0] = 2
@@ -96,7 +114,8 @@ static func parse(text: String) -> Dictionary:
 	var field := {}
 	var legs: Array = []
 	var secrets: Array = []
-	while version == 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs" or tok[cur[0]] == "secrets"):
+	var grips: Array = []
+	while version >= 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs" or tok[cur[0]] == "secrets" or tok[cur[0]] == "grip"):
 		if tok[cur[0]] == "snapshot":
 			snapshot = tok[cur[0] + 1]
 			cur[0] += 2
@@ -107,6 +126,13 @@ static func parse(text: String) -> Dictionary:
 			for k in 7:
 				secrets.append(tok[cur[0] + 4 + k].to_float())
 			cur[0] += 11
+		elif tok[cur[0]] == "grip":
+			var cnt: int = tok[cur[0] + 1].to_int()
+			if cnt < 0 or cnt > 24 or cur[0] + 3 + 2 * cnt >= tok.size():
+				return fail.call("bad grip line")
+			for k in cnt + 1:
+				grips.append([tok[cur[0] + 2 + 2*k].to_int(), tok[cur[0] + 3 + 2*k].to_int()])
+			cur[0] += 4 + 2 * cnt
 		elif tok[cur[0]] == "legs":
 			var cnt: int = tok[cur[0] + 1].to_int()
 			if cur[0] + 2 + cnt >= tok.size():
@@ -158,6 +184,13 @@ static func parse(text: String) -> Dictionary:
 		w.profile = read_profile.call()
 		wild.append(w)
 	setup.wild = wild
+	if not grips.is_empty():
+		if grips.size() != n_wild + 1:
+			return fail.call("grip count mismatch")
+		for k in grips.size():
+			var p: Dictionary = setup.player if k == 0 else wild[k-1].profile
+			p.grip_traits = grips[k][0]
+			p.grip_legs = grips[k][1]
 	if legs.size() == n_wild + 1:
 		setup.player_legs = legs[0]
 		for i in n_wild:
@@ -177,7 +210,8 @@ static func parse(text: String) -> Dictionary:
 		obstacles.append(o)
 	setup.obstacles = obstacles
 	var ticks: int = take.call().to_int()
-	if cur[0] > tok.size() or ticks < 0 or tok.size() - cur[0] < ticks * 9 or (version == 2 and tok.size() - cur[0] != ticks * 9):
+	var cols := 10 if version >= 4 else 9
+	if cur[0] > tok.size() or ticks < 0 or tok.size() - cur[0] < ticks * cols or (version == 2 and tok.size() - cur[0] != ticks * cols):
 		return fail.call("bad length")
 	var inputs := []
 	for i in ticks:
@@ -191,9 +225,16 @@ static func parse(text: String) -> Dictionary:
 		a.hz = take.call().to_int()
 		a.x = take.call().to_float()
 		a.z = take.call().to_float()
+		if version >= 4:
+			var r: int = take.call().to_int()
+			if r < 0 or r > (3 if version == 5 else 1):
+				return fail.call("bad run column")
+			a.run = r & 1
+			if r & 2:
+				a.jump = 1           # v5: bit 1 of the column is the jump of that tick
 		inputs.append(a)
 	var debug := []
-	if version == 3:
+	if version >= 3:
 		var nd: int = take.call().to_int()
 		if nd < 0 or tok.size() - cur[0] != nd * 7:
 			return fail.call("bad debug section")

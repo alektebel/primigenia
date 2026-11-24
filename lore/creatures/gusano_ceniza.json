@@ -1,0 +1,320 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "gusano_ceniza",
+  "name": {
+    "en": "Gusano Ceniza"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "highlands",
+    "diet": "Detritivore: winter-killed rosette litter, frozen carcass bits, and basalt grit",
+    "active": "Day",
+    "predators": [
+      "acechalunas"
+    ],
+    "trophic": "decomposer",
+    "role": "detritivore",
+    "prey": [
+      "zanco"
+    ]
+  },
+  "body": "Length 3 cm, Mass 2 g",
+  "chains": [
+    {
+      "id": "gusano_ceniza.c1",
+      "trait": "Limbless, worm-like body under 5 cm long",
+      "links": [
+        "Slithers through loose basalt scree without snagging legs.",
+        "Highlands are steep slopes of unstable basalt and lava fragments.",
+        "Island is a stratovolcano; rock is andesite and basalt lava tubes."
+      ],
+      "roots": [
+        "F7"
+      ],
+      "skill": {
+        "id": "gusano_ceniza.deslizar",
+        "name": {
+          "en": "Deslizar"
+        },
+        "role": "Basic",
+        "effect": "Move through scree and packed snow without speed penalty or entanglement.",
+        "numbers": {}
+      },
+      "weakness": "Exposed on open rock; vulnerable to beak strikes.",
+      "observe": [
+        "Creature slithers over basalt shards with no legs.",
+        "Body presses close to rock to avoid wind lift.",
+        "Moves smoothly through loose gravel without sinking."
+      ],
+      "journal": {
+        "en": "A black thread sewing the scree together."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "A 3 cm, 2 g limbless crawler matches scree and litter interstices on steep volcanic slopes; low profile reduces wind drag (D17/F19) and avoids entanglement on basalt shards. At this mass, oxygen at 0.34 bar (D10/F5) is not limiting for a slow detritivore.",
+        "fixes": [
+          "A 3 cm, 2 g limbless crawler matches scree and litter interstices on steep volcanic slopes; low profile reduces wind drag (D17/F19) and avoids entanglement on basalt shards. At this mass, oxygen at 0.34 bar (D10/F5) is not limiting for a slow detritivore."
+        ],
+        "analogues": [
+          {
+            "organism": "Alpine collembola and enchytraeid worms in cold litter; oligochaete-style burrowers in rocky soils (mechanism: interstitial crawling, no limbs needed at milligram–gram scale).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sigurdsson_2000_volcanoes"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "gusano_ceniza.c2",
+      "trait": "Eats winter-killed rosette litter and frozen carcass bits",
+      "links": [
+        "Rosettes die and freeze when snow falls; carcasses drift to cold slopes and freeze solid.",
+        "Snow accumulates above 1,750 m in winter and kills high-altitude vegetation.",
+        "Mean sea-level 14 °C, lapse 6.2 K/km; snow above ~1,750 m in winter."
+      ],
+      "roots": [
+        "F15"
+      ],
+      "skill": {
+        "id": "gusano_ceniza.raspar",
+        "name": {
+          "en": "Raspar"
+        },
+        "role": "Engage",
+        "effect": "Scrape flesh from frozen bone and rock to extract bone shards and DNA.",
+        "numbers": {}
+      },
+      "weakness": "Starvation risk if no frozen carcass found; slow metabolism.",
+      "observe": [
+        "Creature feasting on a frozen bone fragment under snow.",
+        "Mouth scraping frozen meat off a basalt rock.",
+        "Leaving dark trails on white snow."
+      ],
+      "journal": {
+        "en": "The mountain's winter pantry: dead leaves and frozen bones."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Source carcass bits from winter-killed highland herbivores on slopes and rare upslope scavenging, not giant shore carcasses as the main highland pantry; tie feeding peaks to midday thaw on basalt. Relation to zanco = scavenger of winter kills, not live predation.",
+        "fixes": [
+          "Source carcass bits from winter-killed highland herbivores on slopes and rare upslope scavenging, not giant shore carcasses as the main highland pantry; tie feeding peaks to midday thaw on basalt. Relation to zanco = scavenger of winter kills, not live predation."
+        ],
+        "analogues": [
+          {
+            "organism": "Snow fleas and enchytraeids on winter-killed plant litter; alpine carrion beetles and blowfly larvae on thawing ungulate remains (mechanism: scavenging at thaw margins).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "gusano_ceniza.c3",
+      "trait": "Black, melanin-like pigmentation active during daylight",
+      "links": [
+        "High altitude UV would damage tissue without a shield.",
+        "Stellar UV is 1.15x; atmospheric attenuation drops at altitude, reaching 1.4x at 2,000 m.",
+        "Surface UV 0.9x at sea level but 1.4x at 2,000 m."
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "gusano_ceniza.blindar",
+        "name": {
+          "en": "Blindar"
+        },
+        "role": "Passive",
+        "effect": "Take no UV damage while active in highlands.",
+        "numbers": {}
+      },
+      "weakness": "Black pigment visible to sighted predators; cannot hide in bright snow.",
+      "observe": [
+        "Creature basking in sun without damage, skin black as basalt.",
+        "Pigment matches the color of high-altitude melanin crusts.",
+        "Active only when sun is up and UV is highest."
+      ],
+      "journal": {
+        "en": "Black skin drinks the sun and keeps the burns away."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "1.4× surface UV at ~2,000 m (F14/D23) strongly selects UV-absorbing pigments in small, poorly shelled epigeal animals; diurnal activity on exposed scree is consistent if pigmentation is the shield. Conspicuousness on snow is a real cost (weakness is honest). Dark cuticle also aids passive warming at altitude, which helps process frozen detritus.",
+        "fixes": [
+          "1.4× surface UV at ~2,000 m (F14/D23) strongly selects UV-absorbing pigments in small, poorly shelled epigeal animals; diurnal activity on exposed scree is consistent if pigmentation is the shield. Conspicuousness on snow is a real cost (weakness is honest). Dark cuticle also aids passive warming at altitude, which helps process frozen detritus."
+        ],
+        "analogues": [
+          {
+            "organism": "Melanin-rich alpine arthropods and lichen/granule melanins on UV-exposed surfaces (mechanism: UV screening via melanin and related polymers).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "gusano_ceniza.c4",
+      "trait": "Mouth-tentacles for contact-tasting in wind",
+      "links": [
+        "Wind scatters scent molecules too fast for long-range detection.",
+        "Wind force per m/s is 1.6x Earth's, dispersing chemical trails instantly.",
+        "Wind force at a given speed 1.58 times Earth's."
+      ],
+      "roots": [
+        "F19"
+      ],
+      "skill": {
+        "id": "gusano_ceniza.probar",
+        "name": {
+          "en": "Probar"
+        },
+        "role": "Poke",
+        "effect": "The creature sweeps its mouth-tentacles through the breeze to taste the air. This allows you to see where food lies nearby.",
+        "numbers": {}
+      },
+      "weakness": "Tentacles are fragile; lost if grabbed by a predator.",
+      "observe": [
+        "Creature probing wind with mouth-tentacles before moving.",
+        "Tentacles twitching to catch scent particles directly.",
+        "Ignoring distant scents, only reacting to wind-blown contact."
+      ],
+      "journal": {
+        "en": "Wind lies; only the mouth knows the truth."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Reframe as short retractable labial/cephalic palps that probe cracks, under stones, and thawing carcass–rock contacts in the still boundary layer; reserve ‘wind’ for gales on exposed ridges. Drop or shorten effective ‘5 m in wind’ to ~contact range unless you justify elastic palps (then mark highly speculative).",
+        "fixes": [
+          "Reframe as short retractable labial/cephalic palps that probe cracks, under stones, and thawing carcass–rock contacts in the still boundary layer; reserve ‘wind’ for gales on exposed ridges. Drop or shorten effective ‘5 m in wind’ to ~contact range unless you justify elastic palps (then mark highly speculative)."
+        ],
+        "analogues": [
+          {
+            "organism": "Polychaete grooved palps and gastropod oral tentacles (mechanism: contact chemoreception on substrates and boundary layers); insect maxillary palps at close range.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "acechalunas",
+      "kind": "predation",
+      "note": "Snatches them from under rocks."
+    },
+    {
+      "with": "rodela_de_nieve",
+      "kind": "prey",
+      "note": "Eats dead leaves and stems."
+    },
+    {
+      "with": "zanco",
+      "kind": "prey",
+      "note": "Scrapes flesh from frozen carcasses."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "limbless crawler"
+  },
+  "temperament": "Cautious, secretive, thrashing when disturbed",
+  "secrets": [
+    "Rock Armour"
+  ],
+  "moments": [
+    "A small black creature crawls over the skull of a giant that drifted ashore, nibbling the last dry sinew while the wind howls across the high slopes."
+  ],
+  "journal": [
+    {
+      "en": "Gusano_Ceniza: Black as basalt, small as a seed, it turns the mountain's winter death into life."
+    },
+    {
+      "en": "Notes: The creature's mouth-tentacles twitch even in the storm; it tastes the wind for the sour sweet of frozen meat."
+    }
+  ]
+}

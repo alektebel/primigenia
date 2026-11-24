@@ -1,5 +1,8 @@
 // Stage world glue: Variant <-> C structs only. The simulation is cp_stage_*.
 #include "cpore_world.h"
+extern "C" {
+#include "cpore/steer.h"
+}
 #include "convert.h"
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/variant/vector3.hpp>
@@ -11,14 +14,17 @@ using namespace godot;
 
 namespace {
 
-const char *const PROFILE_INTS[] = {"mouth", "charge", "spit", "tail", "guard"};
+const char *const PROFILE_INTS[] = {"mouth", "charge", "spit", "tail", "guard", "fire"};
 
 Dictionary profile_to_dict(const CpCombatProfile &p) {
     Dictionary d;
     d["mouth"] = int(p.mouth); d["charge"] = int(p.charge); d["spit"] = int(p.spit);
-    d["tail"] = int(p.tail); d["guard"] = int(p.guard);
+    d["tail"] = int(p.tail); d["guard"] = int(p.guard); d["fire"] = int(p.fire);
     d["hp"] = double(p.hp); d["stamina"] = double(p.stamina); d["speed"] = double(p.speed);
     d["radius_cm"] = int(p.radius_cm);
+    d["grip_traits"] = int(p.grip_traits); d["grip_legs"] = int(p.grip_legs);
+    d["grip_deg"] = double(cp_stage_grip_deg(&p,4));
+    Array extra;for(int k=0;k<8;k++)extra.append(int(p.extra[k]));d["extra"]=extra;d["carnivore"]=int(p.carnivore);
     return d;
 }
 
@@ -26,13 +32,19 @@ Dictionary profile_to_dict(const CpCombatProfile &p) {
 bool profile_from_dict(const Variant &v, CpCombatProfile &p) {
     if (v.get_type() != Variant::DICTIONARY) return false;
     const Dictionary d = v;
-    uint8_t *levels[] = {&p.mouth, &p.charge, &p.spit, &p.tail, &p.guard};
-    for (int i = 0; i < 5; ++i) {
+    uint8_t *levels[] = {&p.mouth, &p.charge, &p.spit, &p.tail, &p.guard, &p.fire};
+    for (int i = 0; i < 6; ++i) {
         if (!d.has(PROFILE_INTS[i])) continue;
         int64_t n;
         if (!cpore::to_int(d[PROFILE_INTS[i]], 0, 255, n)) return false;  // range (<= 5) is checked by cp_stage_reset
         *levels[i] = uint8_t(n);
     }
+    if(d.has("extra")){
+        if(d["extra"].get_type()!=Variant::ARRAY)return false;
+        Array extra=d["extra"];if(extra.size()!=8)return false;
+        for(int k=0;k<8;k++){int64_t n;if(!cpore::to_int(extra[k],0,5,n))return false;p.extra[k]=uint8_t(n);}
+    }
+    if(d.has("carnivore")){int64_t n;if(!cpore::to_int(d["carnivore"],0,1,n))return false;p.carnivore=uint8_t(n);}
     if (d.has("hp") && !cpore::to_float(d["hp"], p.hp)) return false;
     if (d.has("stamina") && !cpore::to_float(d["stamina"], p.stamina)) return false;
     if (d.has("speed") && !cpore::to_float(d["speed"], p.speed)) return false;
@@ -41,6 +53,8 @@ bool profile_from_dict(const Variant &v, CpCombatProfile &p) {
         if (!cpore::to_int(d["radius_cm"], 0, 65535, n)) return false;
         p.radius_cm = uint16_t(n);
     }
+    if(d.has("grip_traits")){int64_t n;if(!cpore::to_int(d["grip_traits"],0,63,n))return false;p.grip_traits=uint16_t(n);}
+    if(d.has("grip_legs")){int64_t n;if(!cpore::to_int(d["grip_legs"],0,255,n))return false;p.grip_legs=uint8_t(n);}
     return true;
 }
 
@@ -137,7 +151,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
             if (w.has("legs")) { if (!cpore::to_int(w["legs"], 0, 8, n)) return false; c.legs = int(n); }
             if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
-            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_COUNT) c.profile = CP_STAGE_SPECIES[c.species].profile;
+            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_DEFINED) c.profile = CP_STAGE_SPECIES[c.species].profile;
             if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
             s.wild[i] = c;
         }
@@ -215,6 +229,7 @@ bool input_from_dict(const Dictionary &d, CpStageInput &in) {
 Dictionary entity(const CpStageCreature &c, int id) {
     Dictionary d;
     d["id"] = id;
+    d["falling"] = c.slip_air != 0; d["y"] = c.slip_y * .001;
     d["x"] = double(c.x); d["z"] = double(c.z); d["fx"] = double(c.fx); d["fz"] = double(c.fz);
     d["hp"] = double(c.hp); d["stamina"] = double(c.stamina);
     d["speed"] = double(c.speed); d["acceleration"] = double(c.acceleration); d["turn_rate"] = double(c.turn_rate);
@@ -225,6 +240,7 @@ Dictionary entity(const CpStageCreature &c, int id) {
     d["returning"] = bool(c.returning); d["roam_ticks"] = int(c.roam_ticks);
     d["hp_max"] = double(c.profile.hp); d["stamina_max"] = double(c.profile.stamina);
     d["radius_cm"] = int(c.profile.radius_cm);
+    d["grip_deg"] = double(cp_stage_grip_deg(&c.profile,c.legs));
     return d;
 }
 
@@ -261,7 +277,7 @@ Dictionary social_to_dict(const CpStageWorld &w) {
     d["items"] = items;
     d["resolved"] = cp_stage_social_species_resolved(&w); d["resolved_total"] = cp_stage_social_species_present(&w);
     Array sp;
-    for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+    for (int k = 0; k < CP_STAGE_SPECIES_DEFINED; ++k) {
         Dictionary e;
         e["bonded"] = s.latched[k]; e["kills"] = s.kills[k]; e["resolution"] = s.resolution[k];
         e["observed"] = s.obs_items[k]; e["seen"] = (s.species_seen & (1u << k)) != 0;
@@ -289,6 +305,7 @@ CporeWorld::CporeWorld() {
 }
 
 void CporeWorld::_bind_methods() {
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("grip_profile", "genome"), &CporeWorld::grip_profile);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("version"), &CporeWorld::version);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_setup", "seed"), &CporeWorld::default_setup);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_profile"), &CporeWorld::default_profile);
@@ -300,13 +317,19 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
     ClassDB::bind_method(D_METHOD("step", "input"), &CporeWorld::step);
     ClassDB::bind_method(D_METHOD("command", "text"), &CporeWorld::command);
+    ClassDB::bind_method(D_METHOD("apply_legacy", "diet", "part"), &CporeWorld::apply_legacy);
     ClassDB::bind_method(D_METHOD("command_input", "text"), &CporeWorld::command_input);
     ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
     ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
     ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
+    ClassDB::bind_method(D_METHOD("set_run", "on"), &CporeWorld::set_run);
+    ClassDB::bind_method(D_METHOD("jump"), &CporeWorld::jump);
+    ClassDB::bind_method(D_METHOD("jump_height"), &CporeWorld::jump_height);
+    ClassDB::bind_method(D_METHOD("quest_award", "step", "dna"), &CporeWorld::quest_award);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
+    ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
     ClassDB::bind_method(D_METHOD("lineage"), &CporeWorld::lineage);
     ClassDB::bind_method(D_METHOD("lineage_form", "body", "profile", "parts", "name", "evolve"), &CporeWorld::lineage_form);
     ClassDB::bind_method(D_METHOD("lineage_perk", "kind", "serial", "amount"), &CporeWorld::lineage_perk);
@@ -354,13 +377,13 @@ Dictionary CporeWorld::default_profile() {
 Array CporeWorld::species() {
     Array a;
     static const char *const ACT[] = {"diurnal", "nocturnal", "crepuscular"};
-    for (int i = 0; i < CP_STAGE_SPECIES_COUNT; ++i) {
+    for (int i = 0; i < CP_STAGE_SPECIES_DEFINED; ++i) {
         const CpStageSpecies &s = CP_STAGE_SPECIES[i];
         Dictionary d;
         d["id"] = i; d["name"] = String(s.name);
         d["activity"] = int(s.activity); d["activity_name"] = String(ACT[s.activity]);
         d["nocturnal"] = s.activity == CP_ACT_NOCTURNAL;
-        d["diet"] = i == 0 || i == 1 || i == 5 ? "herbivore" : i == 4 ? "omnivore" : "carnivore";
+        d["diet"] = i == 0 || i == 1 || i == 5 ? "herbivore" : i == 4 || i == 6 ? "omnivore" : "carnivore";
         d["chain"] = String(CP_STAGE_CHAINS[i].id);
         d["speed"] = double(s.speed); d["sight"] = double(s.sight); d["roam"] = double(s.roam);
         d["hostile"] = double(s.hostile); d["temperament"] = int(s.temperament);
@@ -372,7 +395,7 @@ Array CporeWorld::species() {
 
 Array CporeWorld::chains() {
     Array a;
-    for (int i = 0; i < CP_SOC_SPECIES; ++i) {
+    for (int i = 0; i < CP_STAGE_SPECIES_DEFINED; ++i) {
         const CpStageChain &c = CP_STAGE_CHAINS[i];
         Dictionary d;
         d["species"] = i; d["id"] = String(c.id); d["trait"] = String(c.trait); d["move"] = c.move;
@@ -395,6 +418,7 @@ Array CporeWorld::moves() {
         d["cooldown"] = int(m.cooldown); d["stamina"] = double(m.stamina); d["reach"] = double(m.reach);
         d["windup"] = int(m.windup); d["active"] = int(m.active); d["recovery"] = int(m.recovery);
         d["slottable"] = !(m.flags & CB_F_SELF);
+        d["arc"] = double(m.arc); d["damage"] = double(m.damage); d["status"] = int(m.status); d["status_ticks"] = int(m.status_ticks);
         a.append(d);
     }
     return a;
@@ -426,6 +450,15 @@ String CporeWorld::step(const Dictionary &input) {
     return cpore::hash_text(cp_stage_step(world.get(), &in));
 }
 
+int CporeWorld::apply_legacy(int diet, const String &part) {
+    int id = -1;
+    if (!part.is_empty()) {
+        id = cp_stage_part_id(part.utf8().get_data());
+        if (id < 0) return -1;
+    }
+    return cp_stage_legacy_apply(world.get(), diet, id);
+}
+
 int CporeWorld::command(const String &text) { return cp_stage_command(world.get(), text.utf8().get_data()); }
 
 Dictionary CporeWorld::command_input(const String &text) const {
@@ -449,6 +482,11 @@ int CporeWorld::order(const Dictionary &input) {
 
 String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
 
+void CporeWorld::set_run(bool on) { cp_stage_set_run(world.get(), on); }
+int CporeWorld::jump() { return cp_stage_jump(world.get()); }
+double CporeWorld::jump_height() const { return cp_stage_jump_height(world.get()); }
+int CporeWorld::quest_award(int step, int dna) { return cp_stage_quest_award(world.get(), step, dna); }
+
 Dictionary CporeWorld::state() const {
     const CpStageWorld &w = *world;
     Dictionary d;
@@ -458,6 +496,15 @@ Dictionary CporeWorld::state() const {
     d["respawn_ticks"] = int(w.respawn_ticks); d["cooldown_ticks"] = int(w.cooldown_ticks);
     d["error"] = int(w.last_error);
     d["arena"] = Vector2(w.arena_x, w.arena_z);
+    Dictionary player;
+    player["running"] = w.running != 0; player["stamina"] = int(w.run_stamina);
+    player["falling"] = w.falling != 0;
+    player["jumping"] = w.jumping != 0; player["jump_cd"] = int(w.jump_cd);
+    player["sliding"] = w.player.sliding != 0;
+    player["grip_deg"] = double(cp_stage_grip_deg(&w.player.profile,w.player.legs));
+    player["y"] = w.falling ? w.fall_y_mm * .001 : cp_stage_ground(&w, w.player.x, w.player.z);
+    player["vertical_velocity"] = w.fall_v_mm_s * .001;
+    d["player"] = player;
     d["order"] = order_to_dict(w.order);
     d["flags"] = int(w.debug_flags);
     {
@@ -467,6 +514,7 @@ Dictionary CporeWorld::state() const {
         Array slots;
         for (int i = 0; i < CB_LOADOUT_SLOTS; ++i) slots.append(int(w.loadout.slot[i]));
         lo["slots"] = slots;
+        Array cooldowns;for(int k=0;k<CB_MOVE_COUNT;k++)cooldowns.append(int(w.recipes.cd[k]));lo["cooldowns"]=cooldowns;
         lo["signature_slot"] = int(w.loadout.sig_slot);
         lo["known"] = int(cp_stage_known_moves(&w));
         const double dx = double(w.player.x) - double(w.setup.nest_x), dz = double(w.player.z) - double(w.setup.nest_z);
@@ -493,7 +541,9 @@ Dictionary CporeWorld::state() const {
     }
     d["entities"] = entities;
     d["social"] = social_to_dict(w);
+    {char buf[4096];if(cp_stage_recipes_json(&w,buf,sizeof buf)>=0)d["recipes"]=JSON::parse_string(String::utf8(buf));}
     {char buf[16384];if(cp_stage_parts_json(&w,buf,sizeof buf)>=0)d["parts"]=JSON::parse_string(String::utf8(buf));}
+    {char buf[8192];if(cp_stage_dig_json(&w,buf,sizeof buf)>=0)d["dig"]=JSON::parse_string(String::utf8(buf));}   // first-quest: beds, holes, the dig in progress
     {
         // C2 secrets: state().shards {total, found, mask, items[{id,index,name,found,x,z,(line,line_es once found)}], toward_crater},
         // state().cave {enabled, entered, chamber_entered, inside, x, z, fx, fz, floor, half, length, radius, chamber_x, chamber_z},
@@ -506,7 +556,7 @@ Dictionary CporeWorld::state() const {
         }
         static const char *const RES[] = {"open", "ally", "hunted"};
         Array roster;
-        for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+        for (int k = 0; k < CP_STAGE_SPECIES_DEFINED; ++k) {
             Dictionary e;
             const CpStageSpecies &sp = CP_STAGE_SPECIES[k];
             e["id"] = k; e["name"] = String(sp.name); e["activity"] = int(sp.activity);
@@ -537,7 +587,7 @@ Dictionary CporeWorld::state() const {
             }
             if (e.type < CP_STAGE_EV_SKILL) continue;
             Dictionary ev;
-            ev["type"] = int(e.type); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
+            ev["type"] = int(e.type); ev["by"] = int(e.by); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
             ev["value"] = double(e.value); ev["x"] = double(e.x); ev["z"] = double(e.z);
             evs.append(ev);
         }
@@ -557,7 +607,10 @@ Dictionary CporeWorld::state() const {
             f["fx"] = double(c.fx); f["fz"] = double(c.fy);
             f["hp"] = double(c.hp); f["stamina"] = double(c.stamina);
             f["move"] = int(c.move); f["phase"] = int(c.phase);
+            f["fear"] = int(c.fear_t); f["burn"] = int(c.burn_t); f["bleed"] = int(c.bleed_t); f["slow"] = int(c.slow_t); f["stun"] = int(c.stun_t);
             f["phase_tick"] = int(c.ptick); f["phase_length"] = int(c.plen);
+            f["ctx"] = int(c.mctx); f["hold"] = int(c.mhold); f["over"] = int(c.over_t); f["spd"] = double(c.spd); f["mspd"] = double(c.mspd);
+            f["kbx"] = double(c.kbx); f["kbz"] = double(c.kby);
             Array cd;
             for (int k = 0; k < CB_MOVE_COUNT; ++k) cd.append(int(c.cd[k]));
             f["cooldowns"] = cd;
@@ -565,6 +618,16 @@ Dictionary CporeWorld::state() const {
         }
     }
     combat["fighters"] = fighters;
+    Array projectiles;                      // A69: spit shots in flight (aim point in world metres, ticks left)
+    if (w.active >= 0) for (int i = 0; i < CB_MAX_PROJ; ++i) {
+        const CpCombatProj &p = w.combat.proj[i];
+        if (!p.alive) continue;
+        Dictionary q;
+        q["owner"] = int(p.owner); q["kind"] = int(p.kind); q["ticks"] = int(p.t_left);
+        q["x"] = double(w.arena_x + p.x - 20); q["z"] = double(w.arena_z + p.y - 20);
+        projectiles.append(q);
+    }
+    combat["projectiles"] = projectiles;
     Array events;
     for (int i = 0; i < w.combat.n_ev; ++i) {
         const CpCombatEvent &e = w.combat.ev[i];
@@ -732,6 +795,8 @@ int CporeWorld::lineage_form(const String &body,const Dictionary &profile,const 
     if(text.length()>=CP_LINEAGE_BODY_CAP||label.length()>=80||parts.size()!=CP_LINEAGE_PARTS)return -1;
     memcpy(form.body,text.get_data(),text.length());memcpy(form.name,label.get_data(),label.length());
     if(!profile_from_dict(profile,form.profile))return -1;
+    CpLineageForm projected={};
+    if(!cp_stage_genome_form(text.get_data(),&projected)){memcpy(form.profile.extra,projected.profile.extra,8);form.profile.carnivore=projected.profile.carnivore;form.profile.grip_traits=projected.profile.grip_traits;form.profile.grip_legs=projected.profile.grip_legs;}
     for(int i=0;i<CP_LINEAGE_PARTS;i++){int64_t n;if(!cpore::to_int(parts[i],0,65535,n))return -1;form.parts[i]=uint16_t(n);}
     return cp_stage_lineage_form(world.get(),&form,evolve?1:0);
 }
@@ -741,3 +806,12 @@ int CporeWorld::lineage_perk(int kind,int serial,int amount){if(serial<=0)return
 int CporeWorld::nest_edit(const String &body){CharString text=body.utf8();return cp_stage_edit(world.get(),text.get_data());}
 int CporeWorld::nest_apply(const String &body){CharString text=body.utf8();return cp_stage_apply(world.get(),text.get_data());}
 void CporeWorld::set_tiers(bool on){cp_stage_set_tiers(world.get(),on?1:0);}
+void CporeWorld::set_edit_anywhere(bool on){cp_stage_set_edit_anywhere(world.get(),on?1:0);}
+
+Dictionary CporeWorld::grip_profile(const String &genome){
+    CpCombatProfile p={};CpLineageForm form={};CharString text=genome.utf8();
+    if(!cp_stage_genome_form(text.get_data(),&form))p=form.profile;
+    else if(cp_stage_grip_project(text.get_data(),&p))return Dictionary();
+    Dictionary d;d["grip_traits"]=int(p.grip_traits);d["grip_legs"]=int(p.grip_legs);
+    d["grip_deg"]=double(cp_stage_grip_deg(&p,4));return d;
+}

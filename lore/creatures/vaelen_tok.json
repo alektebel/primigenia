@@ -203,7 +203,7 @@
           "en": "Siphon Draft"
         },
         "role": "Basic",
-        "effect": "passively harvests nutrients from wind, grants +5 stamina regen while airborne",
+        "effect": "The creature rides the wind, filtering nourishment from the air and steadily renewing its strength as it flies.",
         "numbers": {}
       },
       "weakness": "Clogged by heavy rain or high dust; requires constant updraft maintenance or ground roosting",

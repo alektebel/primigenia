@@ -1,0 +1,80 @@
+{
+ "checks": [
+  {
+   "actual": 0.0,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 255,
+   "failure": "Too much bloom or blur",
+   "id": "blur",
+   "metric": "sharp_p99",
+   "op": ">=",
+   "source": "starting value: p99 of |Laplacian| >= 120 by day (dawn, midday, dusk); LOOK.md 7 sharpness",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 120,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.1334,
+   "failure": "Creature does not read at distance",
+   "id": "creature_readability",
+   "metric": "dist_contrast",
+   "op": ">=",
+   "shots": [
+    "creature_dist"
+   ],
+   "source": "starting value: |mean L of the creature - mean L of the ring around it|/255 >= 0.10 at strategic zoom; LOOK.md 5 'creature-vs-ground value contrast'",
+   "value": 0.1,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 1.417,
+   "failure": "Light does not follow the day cycle",
+   "id": "day_cycle_warmth",
+   "metric": "warmth_shift",
+   "op": ">",
+   "source": "starting value: dawn and dusk are at least 5% warmer (mean R/B) than midday; LOOK.md 3 'warm dawn and dusk'",
+   "tods": [
+    "dawn",
+    "dusk"
+   ],
+   "value": 1.05,
+   "verdict": "PASS"
+  }
+ ],
+ "info": {
+  "kind": "dist",
+  "shot": "creature_dist",
+  "tier": "medium",
+  "tod": "dawn"
+ },
+ "metrics": {
+  "clip_frac": 0.0,
+  "contrast": 0.4902,
+  "crush_frac": 0.00027,
+  "dist_contrast": 0.1334,
+  "hf_noise": 19.6461,
+  "lum_mean": 94.65,
+  "mask_frac": 0.00794,
+  "mean_b": 44.92,
+  "mean_r": 130.96,
+  "sat_mean": 0.6801,
+  "sat_over": 0.18656,
+  "sat_p95": 1.0,
+  "sharp_p99": 255,
+  "spec_frac": 0.00027,
+  "warmth_shift": 1.417
+ },
+ "name": "medium_dawn_creature_dist"
+}

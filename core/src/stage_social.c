@@ -48,10 +48,12 @@ static const struct { int8_t skill[CP_SOC_COUNT],gift[CP_ITEM_COUNT]; } PREF[CP_
     {{4,4,6,12},{-2,0,14,8}},       /* Espinodo, carnivore */
     {{-4,2,4,10},{-4,0,16,10}},     /* Garfio, carnivore, heckler */
     {{12,2,6,8},{-4,0,14,10}},      /* Acechalunas, nocturnal omnivore: answers a low call, takes meat and bone */
-    {{4,2,12,8},{12,8,-25,-10}}     /* Babosa, slow herbivore: charmed by soft approach, eats litter and fruit */
+    {{4,2,12,8},{12,8,-25,-10}},
+    {{4,4,8,12},{2,0,14,8}}, /* Brujula: detritus and carrion, territorial pool */
+    {{8,2,12,4},{-4,0,14,8}} /* Corona: passive benthic filter feeder */     /* Babosa, slow herbivore: charmed by soft approach, eats litter and fruit */
 };
-static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1};
-static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1,0,0};
+static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1,0,0};   /* 8..11 reserved: zero rows */
+static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1,0,0,0,0};
 /* One A22 chain per species: three things to watch, then the move it teaches. Moves are combat move ids that exist in
  * CP_COMBAT_MOVES (a lore chain that names a move the table does not have is simply not listed here). */
 const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
@@ -63,10 +65,10 @@ const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
         "watch it stand with its heavy tail low in the tall grass",
         "see a herd mate bolt, and the tail whip behind it as it runs",
         "watch the tail snap sideways at something that got too close"}},
-    {"espinodo.c1","lowers its spiny head and rams",CB_CHARGE,{
-        "watch it scrape its crown spines on a rock to clean them",
-        "see it rear back and dig in its hind legs against a rival",
-        "watch it drive forward head down, crown first"}},
+    {"espinodo.c1","fires bone-fed dorsal spines",CB_QUILL_VOLLEY,{
+        "watch a volley of dorsal spines fly, leaving pale quill wounds",
+        "see it gnaw carcass bones to replenish its calcium",
+        "watch its jaw and back spines work together: bone becomes a dart"}},
     {"garfio.c1","pins its prey with a fast bite",CB_BITE,{
         "watch it lie flat and still, jaws just clear of the ground",
         "see its head snap forward faster than the body follows",
@@ -78,7 +80,15 @@ const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
     {"babosa.c1","coils into a bitter sphere and spits mucus at what presses it",CB_SPIT,{
         "watch it glide over the damp tuff leaving a bright wet trail",
         "see it curl into a tight sphere when the noon light reaches it",
-        "watch it uncoil and flick a string of mucus at a nipping beetle"}}
+        "watch it uncoil and flick a string of mucus at a nipping beetle"}},
+    {"brujula.c1","braces its radial arms against a blow",CB_GUARD,{
+        "watch its five arms probe in every direction without a fixed front",
+        "see its tube feet fasten the disc to the wet rock",
+        "watch it release its grip: a strike can reach the soft underside between raised arms"}},
+    {"corona.c1","sweeps its frilled arms around the disc",CB_TAIL_STRIKE,{
+        "watch its six frilled arms collect drifting particles",
+        "see its sensory cirri fold when the pool is disturbed",
+        "watch the arms sweep outward as it slips away"}}
 };
 
 static float len2(float x,float z){return sqrtf(x*x+z*z);}
@@ -113,7 +123,7 @@ uint64_t cp_stage_social_hash(const CpStageWorld *w){
         hu(&h,(uint32_t)s->resolution[i]);hu(&h,(uint32_t)s->first_met[i]);
     }
     for(int i=0;i<CP_DNA_SOURCES;i++){
-        if(i==CP_DNA_SHARD&&!s->dna_by_source[i])continue;
+        if((i==CP_DNA_SHARD||i==CP_DNA_TASK)&&!s->dna_by_source[i])continue;
         hu(&h,(uint32_t)s->dna_by_source[i]);
     }
     hu(&h,(uint32_t)s->n_explored);
@@ -176,6 +186,8 @@ int cp_stage_social_shielded(const CpStageWorld *w,int i){
 int cp_stage_social_hostile(const CpStageWorld *w,int i){
     const CpStageCreature *e=&w->wild[i];
     if(is_dead(e)||cp_stage_social_pacified(w,i)||cp_stage_creature_hidden(w,i))return 0;
+    if(e->species==3&&w->tick<(w->grace_until?w->grace_until:CP_STAGE_GRACE_TICKS)&&
+       w->social.c[i].aggro_ticks<=0)return 0; /* patrol during grace; an attack still provokes it */
     const CpStageSpecies *sp=&CP_STAGE_SPECIES[e->species];
     const float d=dist2(&w->player,e);
     const float territory=sp->temperament==CP_STAGE_TERRITORIAL?len2(w->player.x-e->home_x,w->player.z-e->home_z):d;
@@ -581,6 +593,7 @@ void cp_stage_social_step(CpStageWorld *w){
                 }
                 s->food=s->food+bite>CP_SOC_FOOD_MAX?CP_SOC_FOOD_MAX:s->food+bite;
                 c->eaten++;
+                cp_stage_meter_add(w,0,CP_STAGE_METERS[0].refill);
                 if(!c->carcass_seen){c->carcass_seen=1;award(w,3,CP_DNA_CARCASS,i+1);}
                 const int left=CP_SOC_CARCASS_BITES-c->eaten;
                 if(left<=0)s->items[CP_ITEM_BONE]++;
@@ -668,6 +681,14 @@ void cp_stage_social_step(CpStageWorld *w){
         }
         if(++s->obs_ticks>=(s->obs_need?s->obs_need:CP_SOC_OBSERVE_TICKS)){
             const int item=s->obs_items[sp]++;
+            if(sp==2){
+                if(!dead&&w->recipes.wild_calcium[i]>=20){
+                    w->recipes.wild_calcium[i]-=20;w->recipes.used=1;
+                    push(w,CP_STAGE_EV_VOLLEY,i+1,CB_SPINE_VOLLEY,20,w->wild[i].x+w->wild[i].fx*7,w->wild[i].z+w->wild[i].fz*7);
+                    cp_stage_recipe_clue(w,0);
+                }
+                if(dead&&w->recipes.quill_carcass[i])cp_stage_recipe_clue(w,2);
+            }
             s->obs_ticks=0;s->obs_need=0;
             deed(w,CP_DEED_OBSERVATIONS,o->target);
             push(w,CP_STAGE_EV_OBSERVE,o->target,item,(float)sp,(float)s->obs_items[sp],0);
@@ -717,6 +738,8 @@ int cp_stage_social_legal(const CpStageWorld *w,int verb){
     const CpStageSocial *s=&w->social;
     if(w->active>=0||w->respawn_ticks>0)return 0;
     if(verb==CP_STAGE_EAT){
+        for(int i=0;i<w->recipes.n_stones;i++)if(w->recipes.stones[i].inspected<4&&w->recipes.mineral<100)return 1;
+        for(int i=0;i<w->parts.n_nodes;i++)if(w->parts.nodes[i].inspected&&w->recipes.old_units[i]&&w->recipes.calcium<100&&s->diet!=CP_DIET_HERBIVORE)return 1;
         for(int i=0;i<w->setup.n;i++)if(cp_stage_social_carcass_meat(w,i)>0)return s->diet!=CP_DIET_HERBIVORE&&s->food<CP_SOC_FOOD_MAX;
         return 0;
     }
@@ -758,7 +781,7 @@ int cp_stage_social_creature_json(const CpStageWorld *w,int i,char *out,size_t c
     const int sp=species_of(w,i);
     Buf b={out,cap,0,0};
     bp(&b,",\"temper\":\"%s\",\"diet\":\"%s\",\"relationship\":\"%s\",\"trust\":%d,\"trust_band\":\"%s\",\"bonded\":%s,\"mood\":\"%s\",\"mood_n\":%d,\"beat_in\":%d,\"hostile\":%s,\"calm\":%s,\"leaving\":%s,\"refuses_social\":%s",
-       TEMPER[CP_STAGE_SPECIES[sp].temperament],HERBIVORE[sp]?"herbivore":"carnivore",REL[cp_stage_social_relationship(w,i)],c->trust,trust_band(c),c->bonded?"true":"false",
+       TEMPER[CP_STAGE_SPECIES[sp].temperament],HERBIVORE[sp]?"herbivore":(sp==4||sp==6)?"omnivore":"carnivore",REL[cp_stage_social_relationship(w,i)],c->trust,trust_band(c),c->bonded?"true":"false",
        mood_label(c->mood),c->mood,cp_stage_social_beat_in(w,i),cp_stage_social_hostile(w,i)?"true":"false",c->calm_ticks>0?"true":"false",c->leave_ticks>0?"true":"false",refuses(w,i)?"true":"false");
     bp(&b,",\"known_likes\":[");
     int n=0;
@@ -823,7 +846,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     return b.failed?-1:(int)b.used;
 }
 static const char *source_name(int k){
-    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass","shard"};
+    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass","shard","task"};
     return k>=0&&k<CP_DNA_SOURCES?n[k]:"unknown";
 }
 int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
@@ -847,6 +870,8 @@ int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
             bp(&b,"{\"tick\":%u,\"type\":\"social_cancelled\",\"target\":%d,\"reason\":\"%s\"}",e->tick,e->target,why);
             break;
         }
+        case CP_STAGE_EV_RECIPE:bp(&b,"{\"tick\":%u,\"type\":\"recipe_state\",\"recipe\":\"bone_spines\",\"state\":%d,\"source\":%d}",e->tick,e->move,e->target);break;
+        case CP_STAGE_EV_VOLLEY:bp(&b,"{\"tick\":%u,\"type\":\"spine_volley\",\"target\":%d,\"x\":%.3f,\"z\":%.3f}",e->tick,e->target,e->x,e->z);break;
         case CP_STAGE_EV_EAT:bp(&b,"{\"tick\":%u,\"type\":\"eat\",\"target\":%d,\"bites_left\":%d,\"food_gain\":%.0f,\"food\":%.0f,\"bones\":%.0f}",e->tick,e->target,e->move,e->value,e->x,e->z);break;
         case CP_STAGE_EV_PART_FOUND:{
             static const char *sources[]={"kill","ally","carcass","fossil","old_carcass"};

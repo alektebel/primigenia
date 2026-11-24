@@ -28,6 +28,7 @@ protected:
 public:
     CporeWorld();
     static int version();
+    static godot::Dictionary grip_profile(const godot::String &genome);
     static godot::Dictionary default_setup(int64_t seed);
     static godot::Dictionary default_profile();
     static godot::Array species();
@@ -37,6 +38,8 @@ public:
     godot::Dictionary get_setup() const;
     godot::String step(const godot::Dictionary &input);
     int command(const godot::String &text);
+    // The cell's legacy: starting diet (CP_DIET_*, -1 keeps it) and one owned starter part by catalogue id ("" none). 0 = ok.
+    int apply_legacy(int diet, const godot::String &part);
     // Parses a command text into the input it would order, without touching the world: {rc, input}.
     godot::Dictionary command_input(const godot::String &text) const;
     int order(const godot::Dictionary &input);
@@ -45,7 +48,12 @@ public:
     godot::String observe();
     int nest_edit(const godot::String &body);
     int nest_apply(const godot::String &body);
+    void set_run(bool on);
+    int jump();                       // Space: 0 jumped, <0 refused (log v5: run column bit 1)
+    double jump_height() const;       // the player's apex in metres
+    int quest_award(int step, int dna);
     void set_tiers(bool on);
+    void set_edit_anywhere(bool on);
     godot::String lineage() const;
     int lineage_begin();
     int lineage_perk(int kind,int serial,int amount);

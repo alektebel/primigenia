@@ -14,9 +14,11 @@ const TESTS := [
 	"res://game/tests/test_grass.gd",
 	"res://game/tests/test_flora.gd",
 	"res://game/tests/test_radial_fauna.gd",
+	"res://game/tests/test_fliers.gd",
 	"res://game/tests/test_profile.gd",
 	"res://game/tests/test_session.gd",
 	"res://game/tests/test_input.gd",
+	"res://game/tests/test_runfall.gd",
 	"res://game/tests/test_interp.gd",
 	"res://game/tests/test_camera.gd",
 	"res://game/tests/test_actors.gd",
@@ -25,6 +27,11 @@ const TESTS := [
 	"res://game/tests/test_visual.gd",
 	"res://game/tests/test_photo.gd",
 	"res://game/tests/test_secrets.gd",
+	"res://game/tests/test_hatchling.gd",
+	"res://game/tests/test_flight.gd",
+	"res://game/tests/test_plant_gaze.gd",
+	"res://game/tests/test_first_quest.gd",
+	"res://game/tests/test_verb_target.gd",
 ]
 
 var checks := 0

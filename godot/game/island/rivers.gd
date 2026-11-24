@@ -4,12 +4,14 @@ extends Node3D
 # (bed + 0.35 / 0.6 / 1.2 m), so what you see is what the sim treats as water. UV.x = metres along the flow / 4, UV.y = -1..1
 # across; COLOR.r = class / 3, COLOR.g = bed drop per metre (rapids, waterfalls), COLOR.b = drainage (0..1, log).
 
+const WorldLight := preload("res://game/island/world_light.gd")
 const RIVER_SHADER := preload("res://game/shaders/river.gdshader")
 const DX := [1, 1, 0, -1, -1, -1, 0, 1]
 const DY := [0, 1, 1, 1, 0, -1, -1, -1]
 const LIFT := 0.12
 
 var mesh_instance: MeshInstance3D
+var tier := 2                    # terrain tier (WorldLight)
 var chain_count := 0
 var vertex_count := 0
 
@@ -59,7 +61,8 @@ static func chains(data) -> Array:
 static func width_for(area_m2: float) -> float:
 	return maxf(2.6, 1.0 + 0.012 * sqrt(area_m2))
 
-func build(data) -> void:
+## `chains_in`: the channels when already computed (worker thread, see island.gd).
+func build(data, chains_in = null) -> void:
 	if data.river.size() != data.n * data.n:
 		return
 	var verts := PackedVector3Array()
@@ -68,7 +71,7 @@ func build(data) -> void:
 	var idx := PackedInt32Array()
 	var cell2: float = data.cell * data.cell
 	var nn: float = data.n * data.n
-	for chain in chains(data):
+	for chain in (chains(data) if chains_in == null else chains_in):
 		var m: int = chain.size()
 		var px := PackedFloat32Array()
 		var pz := PackedFloat32Array()
@@ -131,7 +134,7 @@ func build(data) -> void:
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	var mat := ShaderMaterial.new()
-	mat.shader = RIVER_SHADER
+	mat.shader = WorldLight.shader_for(RIVER_SHADER, tier)
 	mat.set_shader_parameter("height_tex", data.height_tex)
 	mat.set_shader_parameter("MAP_N", data.n)
 	mat.set_shader_parameter("MAP_CELL", data.cell)

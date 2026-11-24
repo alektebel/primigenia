@@ -12,7 +12,9 @@
     "habitat": "Fumarole slopes, lava tube entrances, hot spring terraces near the stratovolcano",
     "diet": "Carcasses, sulfur crusts, basalt grit, mineral seeps",
     "active": "Day (warm hours), thermals only",
-    "predators": []
+    "predators": [],
+    "trophic": "scavenger",
+    "role": "scavenger"
   },
   "body": "Babosa (slug-like crawler) with a vast, insulating dorsal gas-bladder and ventral heat-pads; lacks limbs for walking, moves by clinging and drifting",
   "chains": [

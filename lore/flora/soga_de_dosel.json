@@ -255,5 +255,9 @@
   "secrets": [
     "A thick hanging loop can still lack sufficient attachments.",
     "Seedlings gather beneath alula perches and beside rondo resting places."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

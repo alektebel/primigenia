@@ -152,7 +152,7 @@
           "en": "Buoyancy Surge"
         },
         "role": "Control",
-        "effect": "Repositions instantly and grants +5 mobility.",
+        "effect": "The creature swiftly shifts its position and moves with greater agility for a short while.",
         "numbers": {}
       },
       "weakness": "Pressure cracks sac if pushed too deep.",

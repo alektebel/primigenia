@@ -223,5 +223,9 @@
   ],
   "secrets": [
     "A moist abandoned cache can establish a new patch after rain."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

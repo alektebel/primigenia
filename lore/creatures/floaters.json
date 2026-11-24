@@ -228,7 +228,7 @@
           "en": "Pressure Equalize"
         },
         "role": "Passive",
-        "effect": "Resist 3 pressure damage, ignore 1 debuff",
+        "effect": "Its adaptable membrane strongly withstands crushing pressure, allowing it to shrug off harsh environmental strains and easily shake off any lingering ailments.",
         "numbers": {}
       },
       "weakness": "Fails against instant vacuum",

@@ -1,0 +1,297 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "alasucena",
+  "name": {
+    "en": "Alasucena"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "meadow, spring",
+    "diet": "Producer: velilla, caramillo, perlilla nectar; salt licks",
+    "active": "dawn, dusk",
+    "predators": [
+      "chispilla"
+    ],
+    "trophic": "primary_consumer",
+    "role": "nectarivore"
+  },
+  "body": "12 cm length, 0.18 kg mass",
+  "chains": [
+    {
+      "id": "alasucena.c1",
+      "trait": "Feathered biped with folded membranous wings",
+      "links": [
+        "Dense 1.6 bar air creates high drag, cutting wing-loading requirements by 60%",
+        "High drag makes low-speed hovering energetically cheap and stable",
+        "Meadow grasses and spring reeds offer vertical perches; bipedal stance frees forelimbs",
+        "High O2 (0.34 bar) supplies aerobic capacity for sustained wing-muscle twitching"
+      ],
+      "roots": [
+        "F4",
+        "F5"
+      ],
+      "skill": {
+        "id": "alasucena.slow_hover",
+        "name": {
+          "en": "Slow hover"
+        },
+        "role": "Control",
+        "effect": "The creature hovers motionless for a short while. Grazing herds nearby make it strongly receptive to befriending.",
+        "numbers": {}
+      },
+      "weakness": "Clumsy on ground; slow acceleration makes takeoff predictable",
+      "observe": [
+        "Silent descent through fog",
+        "Perched vertically on reed stems",
+        "Rapid wing-twitching while stationary"
+      ],
+      "journal": {
+        "en": "They don't chase the sun; they outlast it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Either cut mass to ~0.02–0.05 kg at 12 cm (hummingbird/sunbird scale) or keep 0.18 kg but specify ~25–35 cm wingspan and reframe the move as brief hover plus perch-feeding (sunbird-style). Replace 'hovering energetically cheap' with 'more lift per flap in dense air, but hover remains a short, O2-fueled burst (F5/D10).' Prefer feathered wings with small patagial extensions, or commit to a chiropteran-grade lineage and drop 'avian biped' wording.",
+        "fixes": [
+          "Either cut mass to ~0.02–0.05 kg at 12 cm (hummingbird/sunbird scale) or keep 0.18 kg but specify ~25–35 cm wingspan and reframe the move as brief hover plus perch-feeding (sunbird-style). Replace 'hovering energetically cheap' with 'more lift per flap in dense air, but hover remains a short, O2-fueled burst (F5/D10).' Prefer feathered wings with small patagial extensions, or commit to a chiropteran-grade lineage and drop 'avian biped' wording."
+        ],
+        "analogues": [
+          {
+            "organism": "Ruby-throated hummingbird (Archilochus colubris) for sustained hover; golden-collared manakin (Manacus vitellinus) for short bursts and wing snaps; nectar bats (Glossophaginae) if the membrane wing emphasis is kept.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alasucena.c2",
+      "trait": "Elongated flexible proboscis with brush-tipped end",
+      "links": [
+        "Nectar pools at flower bases; proboscis reaches deep without damaging corolla",
+        "Brush tip collects pollen grains adhering to nectar and floral hairs",
+        "Dawn dew and cool temperatures preserve nectar sugar concentration",
+        "Pollination mutualism with tubular flowers guarantees reliable carbohydrate supply"
+      ],
+      "roots": [
+        "F3",
+        "F25"
+      ],
+      "skill": {
+        "id": "alasucena.nectar_feed",
+        "name": {
+          "en": "Nectar feed"
+        },
+        "role": "Basic",
+        "effect": "The creature extends its brush-tipped proboscis to sip nectar, renewing its energy for a short while. It leaves a dusting of pollen on nearby flora, which naturally encourages pollination.",
+        "numbers": {}
+      },
+      "weakness": "Proboscis is fragile; cannot process hard food or defend",
+      "observe": [
+        "Proboscis uncurls like a watch spring",
+        "Brush tip glints with pollen",
+        "Hovers at flower mouth for seconds"
+      ],
+      "journal": {
+        "en": "A straw that drinks the dawn."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Rename to 'elongated, coiled tongue with brush tip' unless lore explicitly makes Alasucena a moth-grade or novel mouthpart lineage. Tie each floral partner to a tubular corolla in plant canon. Keep stamina restore modest (nectar is dilute sugar water).",
+        "fixes": [
+          "Rename to 'elongated, coiled tongue with brush tip' unless lore explicitly makes Alasucena a moth-grade or novel mouthpart lineage. Tie each floral partner to a tubular corolla in plant canon. Keep stamina restore modest (nectar is dilute sugar water)."
+        ],
+        "analogues": [
+          {
+            "organism": "Sunbirds and honeyeaters (brush-tipped tongues, pollination); hawkmoths (proboscis, for insect-grade mouthparts); long-tongued nectar bats (Glossophaga).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alasucena.c3",
+      "trait": "Large forward-facing eyes with UV-sensitive tapetum lucidum",
+      "links": [
+        "Dawn fog scatters visible light but preserves UV contrast and thermal cues",
+        "UV vision tracks floral nectar guides and predator shadows on white fur",
+        "Tapetum lucidum reflects low-light photons, boosting vision in twilight",
+        "Dawn/dusk activity avoids midday heat and reduces competition with diurnal raptors"
+      ],
+      "roots": [
+        "F3",
+        "F8",
+        "F14"
+      ],
+      "skill": {
+        "id": "alasucena.twilight_focus",
+        "name": {
+          "en": "Twilight focus"
+        },
+        "role": "Passive",
+        "effect": "During fog or dusk, the creature becomes strongly open to befriending. Its keen eyesight easily reveals hidden prey in dim light.",
+        "numbers": {}
+      },
+      "weakness": "Pupils constrict painfully in bright noon sun; blind to high-contrast flashes",
+      "observe": [
+        "Eyes reflect green in low light",
+        "Head tilts to catch UV floral guides",
+        "Flocks break formation at dawn"
+      ],
+      "journal": {
+        "en": "They see what the fog hides."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Anchor tapetum to a caprimulgid- or swift-grade lineage, or drop tapetum on the diurnal morph and reserve it for the nocturnal black morph secret. Use 'large, slightly convergent eyes' unless you want merodeador ambush to be a primary selective pressure. Midday glare weakness is plausible for a fog/dawn specialist.",
+        "fixes": [
+          "Anchor tapetum to a caprimulgid- or swift-grade lineage, or drop tapetum on the diurnal morph and reserve it for the nocturnal black morph secret. Use 'large, slightly convergent eyes' unless you want merodeador ambush to be a primary selective pressure. Midday glare weakness is plausible for a fog/dawn specialist."
+        ],
+        "analogues": [
+          {
+            "organism": "Oilbird (Steatornis caripensis) tapetum and crepuscular habit; hummingbirds UV vision without tapetum; owls (Strigiformes) for tapetum + forward eyes.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alasucena.c4",
+      "trait": "Small flocking instinct with synchronized wing-flicking displays",
+      "links": [
+        "Nectar patches are ephemeral; flocking shares location via low-frequency wing rustles",
+        "Dense air transmits low-frequency rustles over 50m in calm dawn air",
+        "Synchronized displays signal fitness to mates and deter predators through confusion",
+        "High O2 supports rapid wing-muscle twitching needed for flicking"
+      ],
+      "roots": [
+        "F4",
+        "F5"
+      ],
+      "skill": {
+        "id": "alasucena.wing_flick",
+        "name": {
+          "en": "Wing flick"
+        },
+        "role": "Social",
+        "effect": "The creature performs a synchronized wing flick that signals its position to nearby companions. This display strongly encourages affection and draws potential mates from the surrounding area.",
+        "numbers": {}
+      },
+      "weakness": "Flock stays within 10m; player can isolate with sudden loud noise",
+      "observe": [
+        "Wings snap open in unison",
+        "Flock moves as a single cloud",
+        "Rustling sound carries through grass"
+      ],
+      "journal": {
+        "en": "One calls, twenty answer."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "State that signaling uses low-frequency wing-flicks and rustles (not high calls that die in grass per F4). If 50 m range is kept, require calm fog inversion mornings only; wind removes the advantage (F16).",
+        "fixes": [
+          "State that signaling uses low-frequency wing-flicks and rustles (not high calls that die in grass per F4). If 50 m range is kept, require calm fog inversion mornings only; wind removes the advantage (F16)."
+        ],
+        "analogues": [
+          {
+            "organism": "Golden-collared manakin synchronized wing snaps; zebra finch and lorikeet small flocks at resource patches.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "velilla",
+      "kind": "prey",
+      "note": "Drinks nectar and inadvertently pollinates tubular corollas; critical mutualism"
+    },
+    {
+      "with": "merodeador",
+      "kind": "predation",
+      "note": "Ambushes lone individuals near meadow edges; prefers ground-clumsy adults"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Avian-like biped with membranous forewings"
+  },
+  "temperament": "timid, flocking",
+  "secrets": [
+    "Nocturnal morph: turns entirely black, gains +20% befriend in absolute dark; loses UV vision."
+  ],
+  "moments": [
+    "At first light, a hundred of them rise from the reeds like green smoke, and the meadow flowers bow as they pass."
+  ],
+  "journal": [
+    {
+      "en": "They drink the dawn."
+    },
+    {
+      "en": "A mutualism written in sugar and wings."
+    }
+  ]
+}

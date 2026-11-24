@@ -22,9 +22,9 @@ func _slope_deg(data, x: float, z: float) -> float:
 	var n: Vector3 = data.normal(x, z)
 	return rad_to_deg(acos(clampf(n.y, -1.0, 1.0)))
 
-func _session(entry: Dictionary, data, with_wild: bool) -> Dictionary:
+func _session(entry: Dictionary, data, with_wild: bool, genome_path := "res://game/data/merodeador.json") -> Dictionary:
 	var manifest := Profile.load_json("res://game/data/parts.json")
-	var genome := Profile.load_json("res://game/data/merodeador.json")
+	var genome := Profile.load_json(genome_path)
 	var player: Dictionary = Profile.from_studio(genome, manifest).profile
 	var garfio: Dictionary = StageSetup.garfio_profile(manifest)
 	var sw = StageWorld.new()
@@ -197,6 +197,47 @@ func _spawn_ring(sw, species: int, count: int) -> int:
 			made += 1
 	return made
 
+# The flight test scenario: the light winged test creature (game/data/flyer.json) standing on a plateau a few metres behind a cliff
+# edge, facing out over a drop of 30 m or more, no wild creatures. Space takes off (dev builds), see docs/godot/WINGS-FLIGHT.md.
+func _flight_cliff(entry, data) -> bool:
+	var best := {}
+	for lit in [true, false]:
+		var cliff: Dictionary = RockViews.find_cliff(data, lit)
+		if cliff.is_empty():
+			continue
+		var face := Vector2(cliff.nx, cliff.nz).normalized()
+		var lateral := Vector2(-face.y, face.x)
+		for side in [0.0, 12.0, -12.0, 25.0, -25.0]:
+			var base: Vector2 = Vector2(cliff.x, cliff.z) + lateral * side
+			# walk uphill (against the face normal) until the ground is flat again: that is the plateau
+			for back in range(2, 60, 2):
+				var p: Vector2 = base - face * float(back)
+				var n: Vector3 = data.normal(p.x, p.y)
+				if n.y > 0.93 and data.ground(p.x, p.y) > data.ground(cliff.x, cliff.z) + 4.0:
+					var stand: Vector2 = p - face * 4.0
+					var drop: float = data.ground(stand.x, stand.y) - data.ground(stand.x + face.x * 40.0, stand.y + face.y * 40.0)
+					if drop > best.get("drop", 0.0) and StageSetup.dry(data, stand.x, stand.y) and data.normal(stand.x, stand.y).y > 0.93:
+						best = {"stand": stand, "face": face, "drop": drop}
+					break
+	if best.is_empty():
+		printerr("flight_cliff: no plateau behind a cliff edge found")
+		return false
+	var f := _session(entry, data, false, "res://game/data/flyer.json")
+	var stand: Vector2 = best.stand
+	if _tp(f.sw, stand.x, stand.y) != 0:
+		printerr("flight_cliff: the stand spot was refused")
+		return false
+	f.sw.world.nav_warm()
+	var edge: Vector2 = stand + (best.face as Vector2) * 5.0
+	f.sw.queue_order({"verb": 2, "x": edge.x, "z": edge.y, "sprint": 0})       # walk towards the edge so the creature faces the drop
+	for i in 90:
+		f.sw.step_once()
+	f.sw.input_provider = func() -> Dictionary: return {"verb": 1}
+	for i in 12:
+		f.sw.step_once()
+	_save(f, "flight_cliff", "The light winged test creature (Planeador) on a plateau %.0f m above the valley, facing the drop. Space takes off, then Space flap, Ctrl dive, W/S pitch, A/D turn; F3 tuning has flight/lift_mul." % best.drop)
+	return true
+
 func _run() -> void:
 	var entry := TerrainCache.load_entry({"seed": 1})
 	if entry.is_empty():
@@ -206,6 +247,9 @@ func _run() -> void:
 		TerrainData.prepare(entry)
 	var data = TerrainData.new()
 	data.setup(entry, false)
+	if "--only-flight" in OS.get_cmdline_user_args():
+		quit(0 if _flight_cliff(entry, data) else 1)
+		return
 	# 1. the start of a game
 	var a := _session(entry, data, true)
 	_save(a, "nest_start", "The start of a game: at the nest, Garfio at its home 60 m away.")

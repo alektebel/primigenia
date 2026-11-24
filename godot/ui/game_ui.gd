@@ -1,4 +1,6 @@
 extends CanvasLayer
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Facade for the stage: the mode ring, the field note, the signs, the menu. Documented in docs/godot/UI.md and
 ## docs/godot/UI-DIEGETIC.md. Add as a child of the stage; connect signals.
 
@@ -14,12 +16,18 @@ const Motes := preload("res://ui/motes.gd")
 const Words := preload("res://ui/words.gd")
 const Veil := preload("res://ui/veil.gd")
 const RingFx := preload("res://ui/ring_fx.gd")
+const CreatureBars := preload("res://ui/creature_bars.gd")
 const Note := preload("res://ui/field_note.gd")
 const Menu := preload("res://ui/menu.gd")
 const Stub := preload("res://ui/stub_view.gd")
 const JournalView := preload("res://ui/journal_view.gd")
 const Onboarding := preload("res://ui/onboarding.gd")
 const LoadoutSheet := preload("res://ui/loadout_sheet.gd")
+const QuestCard := preload("res://ui/quest_card.gd")
+const DigChip := preload("res://ui/dig_chip.gd")
+const VerbBar := preload("res://ui/verb_bar.gd")
+const TargetMarker := preload("res://ui/target_marker.gd")
+const NestPrompt := preload("res://ui/nest_prompt.gd")
 
 signal mode_changed(mode: StringName)
 signal ability_pressed(index: int, ability: Dictionary)
@@ -38,6 +46,8 @@ signal family_tree_requested
 signal nest_requested
 signal loadout_requested             # key L / the panel's own close: the stage decides whether the nest allows it
 signal loadout_assign(slot: int, move: int)   # slot 0..3, move id or -1
+signal verb_armed(mode: StringName)  # the verb bar or its key: pick this verb, then a creature
+signal verb_cancelled                 # Esc: drop the armed verb and the locked target
 
 ## No mode until the player chooses one on the ring (a fight starts in Attack).
 var mode: StringName = Modes.NONE
@@ -55,16 +65,30 @@ var motes
 var words
 var veil
 var ring_fx
+var bars                            # CreatureBars: health lines over hostile, fighting and selected creatures
 var menu
 var stub
 var journal
 var onboarding
 var loadout_panel
+var dig_chip                        # DigChip: the dig entry at the player's feet
+var verb_bar                        # VerbBar: Attack, Befriend, Eat, Observe, Intimidate (verb first, then the creature)
+var marker                          # TargetMarker: red or green arrows on the locked creature
+var nest_prompt                     # NestPrompt: "E: Edit creature" while inside the nest radius
+signal dig_pressed
+var quest_card                      # QuestCard: the task note, top-left (first-quest)
 var loadout_abilities: Array = []   # the 4 hotbar entries of Attack mode once the stage knows the loadout
 var audio
 var camera: Camera3D
 var ground_marks                    # GroundMarks (the rings on the ground), set by the stage
-var anchor_fn := Callable()         # (id) -> {pos: Vector3 (feet), height: float}; the stage gives the rendered position
+# (id) -> {pos: Vector3 (feet), height: float}; the stage gives the rendered position
+var anchor_fn := Callable():
+	set(v):
+		anchor_fn = v
+		if bars != null:
+			bars.anchor_fn = v
+		if marker != null:
+			marker.anchor_fn = v
 var fight := false
 var player_name := ""
 var dying := false
@@ -88,6 +112,11 @@ func _ready() -> void:
 	root.add_child(signs)
 	minimap = Minimap.new()
 	root.add_child(minimap)
+	quest_card = QuestCard.new()
+	root.add_child(quest_card)
+	dig_chip = DigChip.new()
+	root.add_child(dig_chip)
+	dig_chip.pressed.connect(func() -> void: dig_pressed.emit())
 	note = Note.new()
 	root.add_child(note)
 	ring = Ring.new()
@@ -99,6 +128,22 @@ func _ready() -> void:
 	root.add_child(defence)
 	ring_fx = RingFx.new()
 	root.add_child(ring_fx)
+	bars = CreatureBars.new()
+	root.add_child(bars)
+	bars.anchor_fn = anchor_fn
+	bars.camera = camera
+	marker = TargetMarker.new()
+	root.add_child(marker)
+	marker.camera = camera
+	marker.anchor_fn = anchor_fn
+	nest_prompt = NestPrompt.new()
+	root.add_child(nest_prompt)
+	nest_prompt.pressed.connect(func() -> void: nest_requested.emit())
+	verb_bar = VerbBar.new()
+	root.add_child(verb_bar)
+	verb_bar.verb_chosen.connect(func(m: StringName) -> void:
+		ui_click.emit()
+		verb_armed.emit(m))
 	words = Words.new()
 	root.add_child(words)
 	motes = Motes.new()
@@ -139,6 +184,7 @@ func _ready() -> void:
 		set_paused(false)
 		loadout_requested.emit())
 	menu.keys_requested.connect(show_keys)
+	menu.questions_requested.connect(show_questions)
 	menu.setting_changed.connect(_on_setting)
 	menu.hints_reset_requested.connect(func() -> void: onboarding.reset())
 	stub.closed.connect(func() -> void: veil.set_flat(0.62 if paused else 0.0))
@@ -153,6 +199,10 @@ func set_camera(cam: Camera3D) -> void:
 	camera = cam
 	words.camera = cam
 	ring_fx.camera = cam
+	if bars != null:
+		bars.camera = cam
+	if marker != null:
+		marker.camera = cam
 
 func set_ground_marks(gm) -> void:
 	ground_marks = gm
@@ -169,10 +219,15 @@ func set_player(pname: String, hp: float, hp_max: float, stamina: float, stamina
 	signs.set_player(hp, hp_max, stamina, stamina_max)
 	veil.low_health = lerpf(0.6, 1.0, clampf((0.30 - hp / maxf(hp_max, 1.0)) / 0.20, 0.0, 1.0)) if hp > 0.0 and hp / maxf(hp_max, 1.0) < 0.30 else 0.0
 
+func set_run(stamina_1000: int, running: bool) -> void:
+	signs.set_run(stamina_1000, running)
+
 ## info: see docs/godot/UI.md (id, name, species, temperament, diet, relationship, resolved, likes, hp, hp_max, world_pos,
 ## body_pos, height, radius_m, fight). Shows the field note and the ground ring and opens the mode ring (no mode is chosen
 ## yet) unless open_menu is false; `info.fight` with open_menu false goes straight to Attack (a fight started).
 func select(info: Dictionary, open_menu: bool = true, menu_pos: Variant = null) -> void:
+	if int(info.get("id", -1)) != int(selected.get("id", -2)):
+		Game.loop_event.emit("select", {"id": int(info.get("id", -1)), "open_menu": open_menu})
 	selected = info
 	selections += 1
 	onboarding.notify("select")
@@ -386,6 +441,19 @@ func close_view() -> void:
 	veil.set_flat(0.62 if paused else 0.0)
 
 ## The key sheet (F1 held shows it too): pinned open from the menu until Esc.
+## The pause menu's "Questions": the pending list on the dev card layer; the menu steps aside until it closes.
+func show_questions() -> void:
+	var dev = get_node_or_null("/root/Dev")
+	if dev == null or dev.questions == null:
+		return
+	menu.modulate.a = 0.0
+	if not dev.questions.list_closed.is_connected(_on_questions_closed):
+		dev.questions.list_closed.connect(_on_questions_closed)
+	dev.questions.open_list()
+
+func _on_questions_closed() -> void:
+	menu.modulate.a = 1.0
+
 func show_keys() -> void:
 	var dev = get_node_or_null("/root/Dev")
 	if dev != null and dev.legend != null:
@@ -431,11 +499,27 @@ func _track_ring(fallback: Vector2 = Vector2.ZERO) -> void:
 		ring.centre = root.size * 0.5
 
 func _process(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(dt)
+		return
+	FrameProfile.begin()
+	_profile__process(dt)
+	FrameProfile.end(&"HUD animation")
+
+func _profile__process(dt: float) -> void:
 	_onboard(dt)
 	veil.death = move_toward(veil.death, 1.0 if dying else 0.0, dt / 1.2)
 	var book: float = journal.modulate.a if journal.visible else 0.0     # the signs and the map step back behind the open book
 	signs.fade_all = maxf(veil.death, book)
 	minimap.modulate.a = 1.0 - book
+	marker.label_dx = (petals.petal_radius() / maxf(Style.u(1.0), 0.001) + 26.0) if petals.visible else 22.0
+	note.modulate.a = 0.0 if marker.locked_id >= 0 else 1.0      # the marker carries the name and relation of a locked target
+	var calm: bool = not (paused or journal.visible or stub.open or dying or loadout_panel.visible_open)
+	verb_bar.visible = calm
+	nest_prompt.want = calm and loadout_available and not fight and not dying
+	nest_prompt.modulate.a = 1.0 if calm else 0.0
+	marker.visible = calm
+	quest_card.hide_now = paused or journal.visible or stub.open or dying or loadout_panel.visible_open
 	if not selected.is_empty():
 		_track_ring()
 		petals.centre = ring.centre
@@ -489,19 +573,29 @@ func _unhandled_input(e: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 	if e is InputEventMouseButton or e is InputEventMouseMotion:
-		if signs.handle_input(e) or ring.handle_input(e) or petals.handle_input(e) or defence.handle_input(e):
+		if nest_prompt.handle_input(e) or verb_bar.handle_input(e) or dig_chip.handle_input(e) or signs.handle_input(e) or ring.handle_input(e) or petals.handle_input(e) or defence.handle_input(e):
 			get_viewport().set_input_as_handled()
 		return
 	if not (e is InputEventKey) or not e.pressed or e.echo:
 		return
 	if e.is_action_pressed("pause_menu"):
-		if ring.visible:
+		if verb_bar.armed != Modes.NONE or marker.locked_id >= 0:
+			verb_cancelled.emit()      # Esc drops the armed verb and the locked target first
+		elif ring.visible:
 			ring.close()               # Esc closes the ring first (the selection stays)
 		elif not selected.is_empty():
 			clear_selection()          # then deselects; a third Esc opens the menu
 		else:
 			set_paused(true)
 		get_viewport().set_input_as_handled()
+		return
+	for slot in VerbBar.SLOTS:
+		if e.is_action_pressed(slot.action):
+			verb_armed.emit(slot.mode)         # a key press arms at once: no animation on keyboard actions
+			get_viewport().set_input_as_handled()
+			return
+	if e.is_action_pressed("quest_card"):
+		quest_card.toggle()        # a key press folds it at once: no animation on keyboard-triggered actions
 		return
 	if e.is_action_pressed("journal"):
 		open_view("journal")
@@ -526,6 +620,8 @@ func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("guard"):
 		onboarding.notify("guard")
 		guard_pressed.emit()
+	elif e.is_action_pressed("dodge_right") and loadout_available and not fight:
+		nest_requested.emit()          # E at the nest: edit the creature (nothing to dodge here)
 	elif e.is_action_pressed("dodge_left"):
 		onboarding.notify("guard")
 		dodge_pressed.emit(-1)
@@ -549,6 +645,9 @@ func _onboard(dt: float) -> void:
 	var h: Dictionary = onboarding.update(dt, sit) if not paused and not stub.open and not journal.open and not dying else {}
 	words.set_hint(h.get("text", ""), h.get("keys", ""))
 	ring.names_all = selections <= 3 or onboarding.current == 3
+
+func set_nest_edit_available(on: bool) -> void:
+	menu.nest_edit_available = on
 
 func set_loadout_available(on: bool) -> void:
 	loadout_available = on

@@ -6,6 +6,7 @@ extends RefCounted
 ## {ok: bool, genome: Dictionary, warnings: Array, error: String}; `error` is
 ## the same path string genome.js throws (e.g. "parts.type").
 
+const WingData := preload("res://creature/creature_wing.gd")
 const SCHEMA := "cpore.creature/5"
 const LEG_TYPES := ["pata", "zanca", "pezuna"]
 ## Leg parts are forbidden on a radial body (the arms are the locomotors).
@@ -178,7 +179,7 @@ func _validate(g, types: Dictionary):
 		_fail("parts")
 		return null
 	for p in parts:
-		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil", "level", "tier"], "parts"):
+		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil", "wing", "level", "tier"], "parts"):
 			return null
 		if not _integer(p.get("level"), 1, 5, "parts.level") or not _integer(p.get("tier"), 0, 2, "parts.tier"):
 			return null
@@ -195,6 +196,11 @@ func _validate(g, types: Dictionary):
 			return null
 		if p.has("single") and not (_integer(p["single"], -1, 1, "parts.single")):
 			return null
+		if p.has("wing"):
+			var werr: String = WingData.validate(str(p.get("type")), p["wing"])
+			if werr != "":
+				_fail("parts." + werr)
+				return null
 		if p.has("pupil") and not (p["pupil"] in ["auto", "round", "slit", "bar"]):
 			_fail("parts.pupil")
 			return null

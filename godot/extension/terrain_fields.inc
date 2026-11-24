@@ -46,4 +46,5 @@
     F32(volcano) \
     F32(caves) \
     F32(cliff_deg) \
-    F32(rivers)
+    F32(rivers) \
+    F32(layout)

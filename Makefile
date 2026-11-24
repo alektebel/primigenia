@@ -21,6 +21,8 @@ lib: $(BUILD)/libcpore.so
 $(BUILD)/%.o: %.c $(HDRS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+$(BUILD)/core/src/terrain.o: core/src/terrain_layouts.inc
+$(BUILD)/core/src/climate.o: core/src/climate_biomes.inc
 
 $(BUILD)/libcpore.a: $(CORE_OBJ)
 	ar rcs $@ $^
@@ -51,17 +53,20 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+test: island-test climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
+	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
 	nice -n 10 ./$(BUILD)/nav_test
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
-	@sed "s/ 5ef8636377460348/ 5ef8636377460345/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
+	sh tests/check_log_v4.sh $(BUILD)/world_cli tests/golden/world-42.log $(BUILD)
+	@sed "s/ 0fcec8786a021241/ 0fcec8786a021240/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
+	./$(BUILD)/moves_recipes_test
 	./$(BUILD)/parts_nest_test
 	./$(BUILD)/plan_test
 	./$(BUILD)/combat_tourney_test
@@ -78,6 +83,7 @@ smoke: lib $(BUILD)/world_cli
 	python3 bindings/python/lineage_smoke.py
 	python3 bindings/python/social_smoke.py
 	python3 bindings/python/parts_nest_smoke.py
+	python3 bindings/python/moves_recipes_smoke.py
 
 # The core may only depend on libc/libm: fail if any core object pulls in more.
 check-core: $(BUILD)/libcpore.so
@@ -142,9 +148,15 @@ stage:
 stage-test: wasm $(BUILD)/combat_parity stage
 	python3 tests/test_stage_build.py
 	nice -n 10 node tests/test_stage_sim.mjs
+	nice -n 10 node tests/test_stage_camera.mjs
+	nice -n 10 node tests/test_stage_boot.mjs
 	nice -n 10 node tests/stage_winnability.mjs
 	nice -n 10 node tests/stage_play.cjs
 	nice -n 10 node tests/stage_polish.cjs
+	nice -n 10 node tests/stage_camera.cjs
+.PHONY: stage-firefox-test
+stage-firefox-test: wasm stage
+	nice -n 10 python3 tests/stage_firefox.py
 studio-test:
 	nice -n 10 python3 tests/check_studio_glbs.py
 	nice -n 10 node tests/test_growth.cjs
@@ -154,32 +166,86 @@ studio-test:
 	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_touch.cjs
 	G48_TEST_OUTPUT=$(BUILD)/studio-tests/g48-tests.json nice -n 10 node tests/studio_procedural_parts.cjs
 
+# M1: moisture climate kernel (plan section 4). Fixtures come from tools/climate/lt_ref.py (plain Python).
+# climate-test runs the C tests, then rebuilds them at -O0 and -O2 (gcc, plus clang when installed) and requires
+# the same hash lines (check (d)). climate-bench enforces the 15 ms gate for the 256^2 linear theory.
+$(BUILD)/climate_test: tests/test_climate.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: climate-test climate-bench
+climate-test: $(BUILD)/climate_test
+	nice -n 10 ./$(BUILD)/climate_test
+	@mkdir -p $(BUILD)/climate; ref=; \
+	for cc in gcc clang; do command -v $$cc >/dev/null 2>&1 || { echo "climate hash: $$cc not installed, skipped"; continue; }; \
+	  for o in -O0 -O2; do \
+	    $$cc $$o -std=c99 -fno-fast-math -ffp-contract=off -Icore/include -D_POSIX_C_SOURCE=200809L tests/test_climate.c core/src/climate.c -o $(BUILD)/climate/t_$$cc$$o -lm || exit 1; \
+	    h=`nice -n 10 ./$(BUILD)/climate/t_$$cc$$o | grep 'hash lt='`; \
+	    echo "climate hash $$cc $$o: $$h"; \
+	    if [ -z "$$ref" ]; then ref="$$h"; elif [ "$$h" != "$$ref" ]; then echo "climate hash differs between builds"; exit 1; fi; \
+	  done; done
+climate-bench: $(BUILD)/climate_test
+	./$(BUILD)/climate_test --bench
 # W11: native smoke remains small; 1024 guarantees and parity are opt-in.
-TERRAIN_SRC := core/src/terrain.c core/src/rng.c
+TERRAIN_SRC := core/src/terrain.c core/src/island_desc.c core/src/rng.c
 $(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: terrain-test
 # Never regenerate committed goldens during tests.
-terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
+terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli island-test-heavy
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
-wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
-$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
+# F0 (docs/plans/island-realism.md): the desc from layout 1 must generate the same terrain hash as --layout 1.
+# The blob is built by the real tool chain (from_layout.mjs, pack.mjs) so the test covers the whole path. n = 1536 under --heavy.
+ISLAND_F0 := $(BUILD)/island/star_f0.isl
+$(ISLAND_F0): tools/island/from_layout.mjs tools/island/pack.mjs core/src/terrain_layouts.inc
 	@mkdir -p $(dir $@)
-	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=50331648 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
+	node tools/island/from_layout.mjs > $(BUILD)/island/star_f0.island.json
+	node tools/island/pack.mjs $(BUILD)/island/star_f0.island.json $@
+$(BUILD)/island_test: tests/test_island.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: island-test island-test-heavy
+island-test: $(BUILD)/island_test $(ISLAND_F0)
+	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0)
+island-test-heavy: $(BUILD)/island_test $(ISLAND_F0)
+	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0) --heavy
+
+# F1 gate: the desc made from layout 1 (splines off) maps within 2% of the layout-1 stats the picker shipped (n 1536, about 8 s).
+.PHONY: island-stats
+island-stats: $(BUILD)/terrain_cli $(ISLAND_F0)
+	@mkdir -p $(BUILD)/island/maps-desc
+	nice -n 10 python3 tools/island/maps.py --cli $(BUILD)/terrain_cli --desc $(ISLAND_F0) --out $(BUILD)/island/maps-desc --n 1536 --seed 1 > $(BUILD)/island/maps-desc/log.txt
+	python3 tools/island/compare_stats.py $(BUILD)/island/maps-desc/stats-desc.json web/gaitlab/island/stats.json
+
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc,_ct_shape_desc]'
+wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc apps/terrain_wasm_api.c $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=83886080 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
 .PHONY: terrain-parity
-terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm $(ISLAND_F0)
 	nice -n 10 node tests/test_wasm_terrain.mjs
+	nice -n 10 node tests/test_wasm_island.mjs
 terrain-test: terrain-parity
 wasm-test: terrain-parity
+
+# F2: the browser island editor (docs/plans/island-realism.md 3.4). web/gaitlab/island/ holds what the page loads: the WASM built above, the shared
+# packer (a copy of tools/island/pack.mjs) and the committed island. The check proves the page's engine hashes like the native CLI, that the
+# validation panel equals maps.py within 1%, then drives the page in headless Chromium on SwiftShader (phone and desktop, zero console errors).
+EDITOR_WEB := web/gaitlab/island
+.PHONY: island-editor-assets island-editor-check
+island-editor-assets: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm tools/island/pack.mjs
+	@mkdir -p $(EDITOR_WEB)/wasm
+	cp $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm $(EDITOR_WEB)/wasm/
+	cp tools/island/pack.mjs $(EDITOR_WEB)/pack.js
+island-editor-check: island-editor-assets $(BUILD)/terrain_cli $(ISLAND_F0)
+	nice -n 10 node tools/island/editor_check.cjs --write-expected
+	nice -n 10 node tools/island/editor_page_check.cjs
 
 .PHONY: terrain-metrics
 terrain-metrics: $(BUILD)/terrain_cli
 	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42,99,1234,31337 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
-terrain-test: terrain-metrics
+terrain-test: terrain-metrics island-stats
 
 # G56: world simulation (the cell-stage world.c retains its historical name).
 $(BUILD)/libcpore.a $(BUILD)/libcpore.so: $(BUILD)/apps/combat_bots.o
@@ -190,7 +256,7 @@ WORLD_EXPORTS := '[_cw_version,_cw_config,_cw_profile,_cw_spawn,_cw_obstacle,_cw
 wasm: $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm
 $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm &: $(WORLD_SRC) apps/world_wasm_api.c apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
 	@mkdir -p $(dir $@)
-	$(EMCC_RUN) $(WASM_FLAGS) $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs
+	$(EMCC_RUN) $(WASM_FLAGS) -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sALLOW_MEMORY_GROWTH=1 $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs
 $(BUILD)/world_cli: apps/world_cli.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 world-test: $(BUILD)/world_test $(BUILD)/world_cli wasm
@@ -290,12 +356,21 @@ godot: $(BUILD)/libcpore.a
 	@mkdir -p godot/.godot
 	@test -s godot/.godot/extension_list.cfg || echo 'res://cpore.gdextension' > godot/.godot/extension_list.cfg
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import
+.PHONY: godot-cave-mesh-test
+godot-cave-mesh-test: godot
+	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_cave_mesh.gd
+
 godot-test: godot $(BUILD)/terrain_cli $(BUILD)/world_cli
 	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/run_m0_tests.gd
 godot-render-test: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/render_tests.gd
+# Sky H1: CPU atmosphere LUTs (extension) against tools/atmo/ref.py. Software GL, for the ImageTexture round trip.
+.PHONY: godot-atmo-test
+godot-atmo-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 300 xvfb-run -a -s "-screen 0 640x360x24" \
+	  $(GODOT) --rendering-driver opengl3 --resolution 640x360 --path godot --script res://game/tests/atmo_test.gd
 godot-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
@@ -305,20 +380,25 @@ godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
 # The stage picker (main menu), headless; the second run checks that --play skips the menu.
-.PHONY: godot-menu-test godot-menu-evidence
+.PHONY: godot-menu-test godot-menu-evidence godot-bridge-test
 godot-menu-test:
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd -- --play
+# The cell -> creature bridge, headless end to end (docs/godot/CELL-BRIDGE.md).
+godot-bridge-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/test_bridge.gd
 godot-menu-evidence:
 	@mkdir -p docs/evidence/godot/stage-menu
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1920x1080x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/menu_evidence.gd -- $(CURDIR)/docs/evidence/godot/stage-menu
 # The cell stage (godot/cell): play it, and its headless sim tests.
-.PHONY: godot-cell godot-cell-test godot-cell-evidence
+.PHONY: godot-cell godot-cell-test godot-cell-evidence godot-cell2-evidence
 godot-cell:
 	$(GODOT) --path godot -- --cell
 godot-cell-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://cell/tests/threats_test.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/colony_test.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_ui_test.gd
 godot-cell-evidence:
 	@mkdir -p docs/evidence/godot/cell
@@ -343,14 +423,32 @@ godot-studio-test:
 	@mkdir -p $(BUILD)/studio-godot
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot/studio --script res://tests/test_studio.gd
 	node godot/studio/tests/node_check.js
+# Creator direct manipulation (wheel scale, joints, spine arrows, actuator ring), real view, real input path.
+.PHONY: godot-studio-ix-test godot-studio-ix-evidence
+godot-studio-ix-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://studio/tests/test_interaction.gd
+godot-studio-ix-evidence:
+	@mkdir -p docs/evidence/godot/creator-ix
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/ix_evidence.gd -- $(CURDIR)/docs/evidence/godot/creator-ix
+godot-owner-evidence:
+	@mkdir -p docs/evidence/godot/owner-tweaks
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/owner_evidence.gd -- $(CURDIR)/docs/evidence/godot/owner-tweaks
+.PHONY: godot-owner-evidence
 # Godot creature module (M1a, godot/creature). Headless tests; the import step
 # refreshes Godot's class_name cache. Evidence renders use software GL only.
 .PHONY: godot-creature-test godot-creature-evidence
+.PHONY: godot-creature-fit
+# Part-fit check (docs/briefs/creature-fit.md): floating parts, teeth in the mouth, eyes in sockets, limb-root blend; 4 pilots + 10 seeded genomes.
+godot-creature-fit:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_fit.gd
 godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_radial.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_fit.gd
 # Radial body plans (docs/godot/CREATURE-RADIAL.md): per-species views, gait strips, lineup, island habitats, bilateral guard.
 .PHONY: godot-radial-evidence
 godot-radial-evidence:
@@ -374,7 +472,45 @@ godot-creature-realism-shots:
 godot-loco-test:
 	cd godot && timeout 300 nice -n 10 timeout 600 $(GODOT) --headless --path . --script locomotion/test/run_tests.gd
 
+# L0 locomotion scorecard (docs/briefs/loco-score.md): 7 zoo bodies x 5 scenarios, visual rig sampled every frame, headless (no GPU).
+# Writes docs/evidence/loco/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/loco/compare.py <labelA> <labelB>
+.PHONY: godot-loco-score
+LOCO_LABEL ?= $(shell git rev-parse --short HEAD)
+godot-loco-score: godot
+	@rm -rf docs/evidence/loco/score/$(LOCO_LABEL)
+	@mkdir -p docs/evidence/loco/score/$(LOCO_LABEL)
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 30 --path godot --script res://devtools/zoo/loco_score.gd -- $(CURDIR)/docs/evidence/loco/score/$(LOCO_LABEL)
+	python3 tools/loco/summary.py docs/evidence/loco/score/$(LOCO_LABEL) > /dev/null
+	python3 tools/loco/footfall_svg.py docs/evidence/loco/score/$(LOCO_LABEL)
+
 # The whole game, headless: main -> menu -> Play -> encounter, rig contract, studio -> save -> Play (godot/game/tests/play_test.gd).
+# Verb-first targeting through the real island (docs/briefs/verb-target.md); EVIDENCE=dir also writes the screenshots (software GL).
+.PHONY: godot-verb-target-test godot-verb-target-evidence
+godot-verb-target-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/verb_target_test.gd
+godot-verb-target-evidence: godot
+	@mkdir -p docs/evidence/godot/verb-target
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/verb_target_test.gd -- $(CURDIR)/docs/evidence/godot/verb-target
+.PHONY: godot-nest-family-test godot-nest-family-evidence
+godot-nest-family-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/nest_family_test.gd
+godot-nest-family-evidence: godot
+	@mkdir -p docs/evidence/godot/verb-target
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/nest_family_test.gd -- $(CURDIR)/docs/evidence/godot/verb-target
+# A73: the way out of the nest editor (Done / Cancel / Enter / Esc, the confirm panel) and the hatch sequence timeline, headless.
+.PHONY: godot-editor-exit-test godot-editor-exit-evidence
+godot-editor-exit-test: godot
+	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/editor_exit_test.gd
+godot-editor-exit-evidence: godot
+	@mkdir -p docs/evidence/godot/editor-exit
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/editor_exit_sizes_evidence.gd -- $(CURDIR)/docs/evidence/godot/editor-exit
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/editor_exit_evidence.gd -- $(CURDIR)/docs/evidence/godot/editor-exit
 .PHONY: godot-play-test godot-wire-evidence
 QUALITY ?=
 godot-play-test: godot
@@ -383,6 +519,13 @@ godot-wire-evidence: godot
 	@mkdir -p docs/evidence/godot/wire
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire
+
+# Camera occlusion and snaps (creature-loop T4): a bot walks forest, rock and slope routes on the real island; gates < 2% of frames
+# occluded (body centre or head hidden from the camera), 0 snaps. CAM_ARGS e.g. "seed=2 z=0.15", or "legacy" for the before numbers.
+.PHONY: godot-camera-test
+CAM_ARGS ?=
+godot-camera-test: godot
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/camera_test.gd -- $(CAM_ARGS)
 
 # CAMERA-ZOOM s4 evidence: the z = 0..1 strip and frame times on the real island (software GL).
 .PHONY: godot-camera-evidence
@@ -444,6 +587,17 @@ godot-rock-stretch-test: godot
 	done
 
 # PLAN-feel: how the creature feels to steer (C motion rule + the real Godot pipeline), writes docs/evidence/godot/feel/measurements.json.
+# Wings and flight test mode (dev builds): `make godot-fly` plays the light winged test creature on a cliff plateau.
+.PHONY: godot-fly godot-flight-test godot-flight-evidence
+godot-fly:
+	$(GODOT) --path godot -- --scenario creature/flight_cliff
+godot-flight-test: godot
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 30 --path godot --script res://game/tests/flight_evidence.gd
+godot-flight-evidence: godot
+	@mkdir -p docs/evidence/godot/wings-flight
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://game/tests/flight_evidence.gd -- $(CURDIR)/docs/evidence/godot/wings-flight
+
 .PHONY: godot-feel-test godot-feel-evidence
 godot-feel-test: godot
 	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/feel_test.gd -- $(CURDIR)/docs/evidence/godot/feel
@@ -585,6 +739,15 @@ routes-test: $(BUILD)/routes_test
 godot-route-events-test: godot
 	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_route_events.gd
 
+$(BUILD)/moves_recipes_test: tests/test_moves_recipes.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -DCP_COMBAT_TEST $< core/src/combat.c $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+test: $(BUILD)/moves_recipes_test
+
+.PHONY: godot-moves-recipes-test
+godot-moves-recipes-test:
+	$(GODOT) --headless --path godot --check-only --script res://game/tests/moves_recipes_test.gd
+	$(GODOT) --headless --path godot --script res://game/tests/moves_recipes_test.gd
+
 # C2 secrets: meteor shards, hidden cave chamber, day/night, Acechalunas and Babosa (tests/test_secrets.c)
 $(BUILD)/secrets_test: tests/test_secrets.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
@@ -608,3 +771,173 @@ godot-journal-nest-evidence: godot
 	for cfg in "1280 720 es" "1024 600 es" "1024 600 en"; do set -- $$cfg; \
 	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 $$1x$$2x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $$1x$$2 --path godot \
 	    --script res://game/tests/journal_nest_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal/nest $$3 _$$1x$$2_$$3 || exit 1; done
+
+# World-look evidence (docs/godot/WORLD-LOOK-WL1.md): shared cameras for every world-look slice, software GL.
+# make godot-world-look OUT=dir [QUALITY=low|medium|high] [SHOTS=prefixes]
+.PHONY: godot-world-look
+WL_OUT ?= $(CURDIR)/docs/evidence/godot/world-look/after
+WL_QUALITY ?= medium
+WL_SHOTS ?= valley_chase,valley_east,vista_wide,riverbank,forest_floor,madre_spring,tier_valley,rk_,sh_
+godot-world-look: godot
+	@mkdir -p $(WL_OUT)
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/world_look_evidence.gd -- $(WL_OUT) $(WL_QUALITY) base $(WL_SHOTS)
+
+# Visual scorecard (docs/briefs/look-score.md): fixed cameras x dawn/midday/dusk/night x low+medium tier, plus creature close-ups, software GL.
+# The two tiers and the creature stage run in parallel (the island build dominates); --fixed-fps keeps shader TIME deterministic.
+# Writes docs/evidence/look/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/look/compare.py <labelA> <labelB>
+.PHONY: godot-look-score
+LOOK_LABEL ?= $(shell git rev-parse --short HEAD)
+LOOK_DIR = $(CURDIR)/docs/evidence/look/score/$(LOOK_LABEL)
+godot-look-score: godot
+	@rm -rf $(LOOK_DIR)
+	@mkdir -p $(LOOK_DIR)
+	@set -e; pids=""; \
+	for q in low medium; do \
+	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	    --script res://game/tests/look_score_world.gd -- $(LOOK_DIR) $$q > $(LOOK_DIR)/.log_$$q.txt 2>&1 & pids="$$pids $$!"; sleep 5; done; \
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://creature/tools/look_score_creatures.gd -- $(LOOK_DIR) > $(LOOK_DIR)/.log_creatures.txt 2>&1 & pids="$$pids $$!"; \
+	fail=0; for p in $$pids; do wait $$p || fail=1; done; \
+	test $$fail = 0 || { echo "look-score capture failed (logs in $(LOOK_DIR)/.log_*.txt)"; exit 1; }
+	python3 tools/look/score.py $(LOOK_DIR)
+	@rm -f $(LOOK_DIR)/.log_*.txt
+
+# Creator editor scorecard (docs/briefs/creator-score.md): scripted replay in the real editor under software GL, mask + UI-only passes,
+# studio/ui/first-quest gates, then tools/creator/score.py against the owner's reference video numbers (reference.json).
+# CREATOR_GATES=quick skips the first-quest e2e. Writes docs/evidence/godot/creator-score/<LABEL>/. Compare: python3 tools/creator/compare.py <baseline> <label>
+.PHONY: godot-creator-score
+CREATOR_LABEL ?= $(shell git rev-parse --short HEAD)
+CREATOR_GATES ?= all
+CREATOR_DIR = $(CURDIR)/docs/evidence/godot/creator-score/$(CREATOR_LABEL)
+godot-creator-score: godot
+	@rm -rf $(CREATOR_DIR)
+	@mkdir -p $(CREATOR_DIR)
+	nice -n 10 timeout 120 $(GODOT) --headless --path godot --check-only --script res://studio/tests/creator_replay.gd
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/creator_replay.gd -- $(CREATOR_DIR) > $(CREATOR_DIR)/.log_replay.txt 2>&1 || { tail -20 $(CREATOR_DIR)/.log_replay.txt; exit 1; }
+	GODOT=$(GODOT) tools/creator/gates.sh $(CREATOR_DIR) $(if $(filter quick,$(CREATOR_GATES)),quick,)
+	python3 tools/creator/score.py $(CREATOR_DIR)
+	@rm -f $(CREATOR_DIR)/.log_replay.txt
+
+# Creature-loop scorecard (docs/plans/creature-loop.md T1): the first-quest bot plays the whole chain on 3 seeds, headless, and every
+# beat is recorded by devtools/loop (Game.loop_event -> JSONL). tools/loop/score.py turns the files into time-to-beat, deaths, fights per
+# kill, befriend tries, dead time, DNA, novelty, species and the plan's pass/fail. LOOP_STRICT=1 makes failing targets fail the make.
+# Writes docs/evidence/loop/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/loop/compare.py <baseline> <label>
+# A real play session scores the same way: python3 tools/loop/score.py --session ~/.local/share/godot/app_userdata/<project>/loop/<stamp>.jsonl
+.PHONY: godot-loop-score godot-loop-test godot-loop-duel
+LOOP_LABEL ?= $(shell git rev-parse --short HEAD)
+LOOP_SEEDS ?= 1 7 42
+LOOP_DIR = $(CURDIR)/docs/evidence/loop/score/$(LOOP_LABEL)
+godot-loop-score: godot
+	@rm -rf $(LOOP_DIR)
+	@mkdir -p $(LOOP_DIR)
+	@set -e; pids=""; for s in $(LOOP_SEEDS); do \
+	  CPORE_TEST=1 CPORE_LOOP_FILE=$(LOOP_DIR)/seed$$s.jsonl nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot \
+	    --script res://game/tests/first_quest_e2e.gd -- seed=$$s > $(LOOP_DIR)/.log_seed$$s.txt 2>&1 & pids="$$pids $$!"; sleep 3; done; \
+	fail=0; for p in $$pids; do wait $$p || fail=1; done; \
+	for s in $(LOOP_SEEDS); do grep -q "^e2e final" $(LOOP_DIR)/.log_seed$$s.txt || { echo "seed $$s: the bot did not finish (log: $(LOOP_DIR)/.log_seed$$s.txt)"; fail=1; }; done; \
+	python3 tools/loop/score.py $(LOOP_DIR); \
+	if [ $$fail != 0 ]; then echo "loop-score: a bot run failed its own e2e checks (the scorecard above still counts what it recorded; logs: $(LOOP_DIR)/.log_seed*.txt)"; test "$$LOOP_STRICT" != 1 || exit 1; fi
+	@rm -f $(LOOP_DIR)/.log_seed*.txt
+# One deliberate Garfio duel per seed, at full hp, one Godot at a time (a won duel kills the only Garfio, so one sample per seed).
+DUEL_SEEDS ?= 1 2 3 4 5 6 7 8
+DUEL_DIR = $(CURDIR)/docs/evidence/loop/score/duel-$(LOOP_LABEL)
+godot-loop-duel: godot
+	@rm -rf $(DUEL_DIR); mkdir -p $(DUEL_DIR)
+	@for s in $(DUEL_SEEDS); do CPORE_TEST=1 nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- seed=$$s duel 2>&1 | grep "^duel seed=" | tee -a $(DUEL_DIR)/duels.txt; done
+	@python3 -c "import re,sys; r=[l.split()[2].split('=')[1] for l in open('$(DUEL_DIR)/duels.txt')]; w=r.count('win'); print('Garfio duels: %d won of %d (%.0f%%), target 35-80%%' % (w,len(r),100.0*w/max(1,len(r))))" | tee $(DUEL_DIR)/summary.txt
+godot-loop-test: godot
+	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://devtools/tests/run_devtools_tests.gd
+	python3 tools/loop/test_score.py
+
+godot-cell2-evidence:
+	@mkdir -p docs/evidence/godot/cell2
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
+
+$(BUILD)/run_fall_test: tests/test_run_fall.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+.PHONY: godot-eat-evidence
+godot-eat-evidence:
+	@mkdir -p docs/evidence/godot/eat-loading
+	cd godot && LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path . \
+	  --script actions/test/eat_capture.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading $(ARGS)
+
+# The island entry loading screen, headless (docs/godot/EAT-LOADING.md).
+.PHONY: godot-entry-test
+godot-entry-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/test_entry_loading.gd
+.PHONY: godot-entry-evidence
+godot-entry-evidence: godot
+	@mkdir -p docs/evidence/godot/eat-loading
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://game/tests/entry_evidence.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading
+# First quest: digging, fossil beds, the fire gland and the flamethrower (tests/test_first_quest.c)
+$(BUILD)/first_quest_test: tests/test_first_quest.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: first-quest-test
+first-quest-test: $(BUILD)/first_quest_test
+	nice -n 10 ./$(BUILD)/first_quest_test flat
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test $$seed || failed=1; done; test $$failed -eq 0
+
+# First quest: the whole chain played by a bot through the real verbs (kill, befriend, dig, wings, fire gland, flamethrower)
+.PHONY: godot-first-quest-e2e godot-first-quest-evidence
+# Runs the chain twice from the same seed and compares the final tick and world hash: the bot and the world are deterministic.
+godot-first-quest-e2e: godot
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS) | tee $(BUILD)/e2e_run1.txt
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS) > $(BUILD)/e2e_run2.txt
+	@grep "^e2e final" $(BUILD)/e2e_run1.txt > $(BUILD)/e2e_final1.txt; grep "^e2e final" $(BUILD)/e2e_run2.txt > $(BUILD)/e2e_final2.txt; \
+	  test -s $(BUILD)/e2e_final1.txt && diff $(BUILD)/e2e_final1.txt $(BUILD)/e2e_final2.txt && echo "replay: the second run ends at the same tick and world hash"
+godot-first-quest-evidence: godot
+	@mkdir -p docs/evidence/godot/first-quest
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 2400 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 60 --resolution 1280x720 --path godot \
+	  --script res://game/tests/first_quest_e2e.gd -- evidence=$(CURDIR)/docs/evidence/godot/first-quest $(E2E_ARGS)
+	python3 tools/contact_sheet.py docs/evidence/godot/first-quest docs/evidence/godot/first-quest/contact_sheet.png 3 640
+$(BUILD)/radial_species_test: tests/test_radial_species.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: radial-species-test
+radial-species-test: $(BUILD)/radial_species_test
+	./$(BUILD)/radial_species_test
+test: radial-species-test
+
+# T15 visual CPU frame buckets. Software/headless only; startup/warmup excluded.
+# FRAME_MODE=baseline replays the old full-rate/yaw+unused-integral paths for comparison.
+.PHONY: godot-frame-bench godot-frame-test
+FRAME_MODE ?= optimized
+FRAME_FRAMES ?= 600
+FRAME_USER_DIR ?= /tmp/cpore-frame-bench
+FRAME_GODOT_ENV = XDG_CONFIG_HOME=$(FRAME_USER_DIR)/config XDG_DATA_HOME=$(FRAME_USER_DIR)/data LIBGL_ALWAYS_SOFTWARE=1
+godot-frame-bench: godot
+	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --check-only --script res://game/tests/frame_bench.gd
+	@set -e; for scenario in nest_start crowd nest_all; do \
+	  $(FRAME_GODOT_ENV) nice -n 10 timeout 180 $(GODOT) --headless --rendering-driver opengl3 --fixed-fps 60 --path godot \
+	  --script res://game/tests/frame_bench.gd -- scenario=$$scenario frames=$(FRAME_FRAMES) $(FRAME_MODE); done
+godot-frame-test:
+	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --check-only --script res://game/tests/test_frame_lod.gd
+	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --script res://game/tests/test_frame_lod.gd
+
+# Island review camera path (docs/plans/island-realism.md section 2, step P0): OG0..OG9 at dawn/midday/dusk/night, software GL, one Godot at a time.
+#   make godot-island-path [LABEL=<name>] [PATH_TIER=low|medium|low,medium] [LAYOUT=1|0] [ISLAND=<terrain params json>] [SHOTS=OG2,OG5] [TODS=dawn,night] [PATH_OUT=<dir>]
+# LAYOUT=1 is the Star massif lab island (terrain_cli layout-json), LAYOUT=0 the game's default island; ISLAND overrides both.
+# Writes $(PATH_OUT) (default docs/evidence/island/path/<LABEL>; LABEL defaults to <date>-<hash>): <tier>_<tod>_OGn.jpg, times_<tier>.json,
+# path_<tier>.json and sheet_<tier>.jpg. Run it twice with the same LABEL and the frames are pixel-identical.
+.PHONY: godot-island-path
+PATH_LABEL ?= $(shell date +%F)-$(shell git rev-parse --short HEAD)
+PATH_OUT ?= $(CURDIR)/docs/evidence/island/path/$(or $(LABEL),$(PATH_LABEL))
+PATH_TIER ?= medium
+LAYOUT ?= 1
+SHOTS ?= all
+TODS ?= all
+godot-island-path: godot $(BUILD)/terrain_cli
+	@rm -rf $(PATH_OUT)
+	@mkdir -p $(PATH_OUT)
+	@isl="$(ISLAND)"; \
+	if [ -z "$$isl" ] && [ "$(LAYOUT)" != "0" ]; then isl=$(PATH_OUT)/.island.json; $(BUILD)/terrain_cli layout-json --layout $(LAYOUT) > $$isl || exit 1; fi; \
+	for q in $(subst $(comma), ,$(PATH_TIER)); do \
+	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1700 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	    --script res://game/tests/island_path_shots.gd -- $(PATH_OUT) $$q "$${isl:-0}" $(SHOTS) $(TODS) || exit 1; \
+	  python3 tools/island/path_sheet.py $(PATH_OUT) $$q; \
+	done
+	@rm -f $(PATH_OUT)/.island.json
+comma := ,

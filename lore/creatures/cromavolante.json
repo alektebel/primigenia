@@ -222,7 +222,7 @@
           "en": "Comet Drop"
         },
         "role": "Engage",
-        "effect": "Rapid descent along field line, strike damage x2.5",
+        "effect": "The creature plummets swiftly along the field line and strikes the ground strongly, delivering a crushing blow.",
         "numbers": {}
       },
       "weakness": "Predictable path; player can ambush at corridor bends.",

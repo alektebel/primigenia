@@ -228,7 +228,7 @@
           "en": "Auroral Read"
         },
         "role": "Passive",
-        "effect": "Perceive magnetic field lines as a visual overlay; reveals hidden corridors, magnetic traps, and weak points in magnetic shielding (+2 to interact with magnetic mechanics).",
+        "effect": "The creature traces magnetic currents as shimmering lines across nearby terrain, exposing hidden passages, concealed traps, and fragile spots in magnetic barriers. This natural awareness lets it navigate and interact with magnetic forces with ease.",
         "numbers": {}
       },
       "weakness": "Disorientation: Sudden changes in field intensity (>20% jump) cause stun for 1 turn as radical-pair yields scramble.",

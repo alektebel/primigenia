@@ -1,0 +1,254 @@
+{
+ "source": "cpore-refs/videos/creator-flow-2026-11-22.mp4 (never committed); 576x1280 portrait, 24.17 fps (145/6), 1856 frames, 77 s",
+ "view": {
+  "x": 0,
+  "y": 299,
+  "w": 576,
+  "h": 573
+ },
+ "view_note": "The game view is y 299..872 (573 px), measured by the row-brightness edge at y=299 and y=875; the brief's 240-680 was approximate. Bounding boxes are in view pixels (576x573). The right TikTok icon column (x>500) and the caption word are NOT editor UI and are ignored.",
+ "ours_to_ref": {
+  "start": "start",
+  "spine_hover": "spine_hover",
+  "part_picked": "part_picked",
+  "part_dropped": "part_dropped",
+  "spine_drag": "spine_drag",
+  "part_rotate": "part_rotate",
+  "final": "final"
+ },
+ "moments": {
+  "start": {
+   "frame": 147,
+   "t": 6.08,
+   "bbox_px": [
+    128,
+    72,
+    550,
+    420
+   ],
+   "height_frac": 0.607,
+   "cx": 0.589,
+   "cy": 0.429,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 0,
+   "part_ring": false,
+   "camera_elev_deg": 12,
+   "facing_deg": 130,
+   "clutter": false,
+   "note": "editor first frame, dashed spine outline, 53/255"
+  },
+  "spine_hover": {
+   "frame": 183,
+   "t": 7.57,
+   "bbox_px": [
+    125,
+    66,
+    552,
+    414
+   ],
+   "height_frac": 0.607,
+   "cx": 0.588,
+   "cy": 0.419,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 4,
+   "part_ring": false,
+   "camera_elev_deg": 12,
+   "facing_deg": 130,
+   "clutter": false,
+   "note": "4 blue/yellow spheres appear on the spine in one frame"
+  },
+  "part_picked": {
+   "frame": 289,
+   "t": 11.96,
+   "bbox_px": [
+    124,
+    65,
+    553,
+    421
+   ],
+   "height_frac": 0.621,
+   "cx": 0.588,
+   "cy": 0.424,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 0,
+   "part_ring": true,
+   "camera_elev_deg": 12,
+   "facing_deg": 130,
+   "clutter": false,
+   "note": "part dragged to the body: small pale rings on the target, pink floor marker"
+  },
+  "part_dropped": {
+   "frame": 296,
+   "t": 12.25,
+   "bbox_px": [
+    124,
+    65,
+    553,
+    421
+   ],
+   "height_frac": 0.621,
+   "cx": 0.588,
+   "cy": 0.424,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 0,
+   "part_ring": true,
+   "camera_elev_deg": 12,
+   "facing_deg": 130,
+   "clutter": false,
+   "note": "part attached 2 frames earlier, 'Sell For' tooltip, counter 55/255"
+  },
+  "spine_drag": {
+   "frame": 254,
+   "t": 10.51,
+   "bbox_px": [
+    124,
+    64,
+    553,
+    412
+   ],
+   "height_frac": 0.607,
+   "cx": 0.588,
+   "cy": 0.415,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 3,
+   "part_ring": false,
+   "camera_elev_deg": 12,
+   "facing_deg": 130,
+   "clutter": false,
+   "note": "one yellow (active) and two blue spheres, creature posture changed"
+  },
+  "part_rotate": {
+   "frame": 351,
+   "t": 14.52,
+   "bbox_px": [
+    127,
+    70,
+    553,
+    423
+   ],
+   "height_frac": 0.616,
+   "cx": 0.59,
+   "cy": 0.43,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 0,
+   "part_ring": true,
+   "camera_elev_deg": 15,
+   "facing_deg": 130,
+   "clutter": false,
+   "note": "big blue/white rotate gizmo ring around the part"
+  },
+  "final": {
+   "frame": 1620,
+   "t": 67.03,
+   "bbox_px": [
+    159,
+    68,
+    506,
+    353
+   ],
+   "height_frac": 0.497,
+   "cx": 0.577,
+   "cy": 0.367,
+   "ui_coverage": 0.13,
+   "vertebra_spheres": 2,
+   "part_ring": false,
+   "camera_elev_deg": 13,
+   "facing_deg": 140,
+   "clutter": false,
+   "note": "last editor frame, 118/255, creature smaller after many adds"
+  }
+ },
+ "extra_moments": {
+  "finish_painted": {
+   "frame": 1815,
+   "bbox_px": [
+    147,
+    41,
+    388,
+    518
+   ],
+   "height_frac": 0.83,
+   "note": "after the paint step: no pedestal, no UI, creature fills 83% (not scored: our editor has no equivalent yet)"
+  }
+ },
+ "timing": {
+  "drop_to_puff_s": {
+   "value": 0.0,
+   "tol": 0.1,
+   "frames": "attach f294, white ring + sparks visible f294-f296",
+   "how": "frame stepping f286-f300 at 1 frame; attach = the frame the part is on the body (f294), puff = first frame of the white ring flash on the attach point (f294)"
+  },
+  "cost_popup_delay_s": {
+   "value": 0.29,
+   "tol": 0.2,
+   "frames": "+75 appears f301",
+   "how": "first frame with the green '+75' text near the part (f301-f302) minus attach f294"
+  },
+  "cost_popup_life_s": {
+   "value": 0.455,
+   "lo": 0.3,
+   "hi": 0.8,
+   "frames": "f301 to f312 (11 frames)",
+   "how": "popup text rises ~180 px from the paw to the head and is gone by f312; brief C4 asks 600 ms"
+  },
+  "head_react_delay_s": {
+   "value": 0.33,
+   "tol": 0.25,
+   "frames": "jaw opens / head turns f302-f306",
+   "how": "first frame the head pose differs from the idle pose (f301-f302) minus attach f294; roar peak f304"
+  },
+  "handle_fade_in_s": {
+   "value": 0.04,
+   "max": 0.15,
+   "frames": "f179 none, f180 full spheres",
+   "how": "spheres go from absent to opaque in one frame (no fade); fade-out takes f187-f190 (0.14 s). brief C3 asks ~120 ms"
+  },
+  "counter_tick_vs_attach_s": {
+   "value": -0.17,
+   "how": "53/255 -> 55/255 at f290, 4 frames before the part lands (it ticks when the part is picked up over the body); info only"
+  }
+ },
+ "counter": {
+  "start": "53/255",
+  "after_part": "55/255",
+  "final": "118/255"
+ },
+ "ui": {
+  "coverage": 0.13,
+  "note": "editor UI pixels / view pixels: left rail 50 px full height (8.7%), top-left icon cluster ~210x35, counter 55x12, bottom bar 300x18 -> ~13% including the bezel rail, ~4% without it. Hand-measured on f147 with a 50 px grid."
+ },
+ "tolerances": {
+  "height_frac": {
+   "tol": 0.1,
+   "floor": 0.5,
+   "note": "brief acceptance: creature fills >= 50% of the frame height"
+  },
+  "cx": {
+   "tol": 0.12
+  },
+  "cy": {
+   "tol": 0.1
+  },
+  "ui_coverage": {
+   "max": 0.15,
+   "note": "brief acceptance: <= 15% with the drawer closed"
+  },
+  "facing_deg": {
+   "tol": 20.0,
+   "how": "angle between the camera forward vector and the creature forward vector (head direction). 90 = pure side view, 180 = head straight at the camera. By eye from the reference frames: the head is turned toward the viewer about 40-50 degrees off the side view, so 130 on frames 1-6 and 140 on the final frame; accepted band 120-150 (ours default 135)."
+  },
+  "camera_elev_deg": {
+   "tol": 8.0,
+   "how": "pedestal top ellipse height/width = sin(elevation): 90/440 -> 12 deg on f147; hand-measured, +-4 deg"
+  },
+  "clutter": {
+   "want": false,
+   "how": "nothing (grass, rocks) between camera and creature; hand-checked on all 7 frames"
+  }
+ },
+ "measurement_notes": [
+  "Bounding boxes are hand-annotated on 50 px grid overlays of the frames (the creature is green on a green forest: colour keying is not robust).",
+  "Timing is frame stepping at the native 24.17 fps (1 frame = 41 ms), on crops of the part area.",
+  "Heights are fractions of the view height (573 px); ours are fractions of the 720 px viewport."
+ ]
+}

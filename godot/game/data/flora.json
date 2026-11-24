@@ -1,5 +1,32 @@
 [
   {
+    "id": "cancro_madera",
+    "form": "fungus_like",
+    "height": [
+      0.03,
+      0.4
+    ],
+    "altitude": [
+      80,
+      950
+    ],
+    "habitat": "litter",
+    "chance": 0.3,
+    "colour": "b5a888",
+    "spread": 0.5,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0,
+    "name": {
+      "en": "Cancro madera",
+      "es": "Cancro de Madera"
+    },
+    "lore": {
+      "en": "Pale shelves on dead wood. Soft paste for the omnivore that finds them first.",
+      "es": "Repisas pálidas sobre madera muerta. Pasta blanda para el omnívoro que llegue primero."
+    }
+  },
+  {
     "id": "caramillo",
     "form": "tree",
     "height": [
@@ -23,7 +50,38 @@
       "en": "Whistlewood",
       "es": "Caramillo"
     },
-    "droop": 0.18
+    "droop": 0.18,
+    "lore": {
+      "en": "Wind crosses the crown. One old hollow lends it a voice.",
+      "es": "El viento cruza la copa. Un hueco viejo le presta voz."
+    }
+  },
+  {
+    "id": "ceniza_ciega",
+    "form": "fungus_like",
+    "height": [
+      0.05,
+      0.3
+    ],
+    "altitude": [
+      0,
+      800
+    ],
+    "habitat": "cave",
+    "chance": 0.5,
+    "colour": "4d4944",
+    "spread": 0.45,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0,
+    "name": {
+      "en": "Ceniza Ciega",
+      "es": "Ceniza Ciega"
+    },
+    "lore": {
+      "en": "Sooty rot in the dark, ringed around what has died. It breaks bone and drinks sulfur.",
+      "es": "Podredumbre hollinosa en la oscuridad, en anillos en torno a lo muerto. Deshuesa y bebe azufre."
+    }
   },
   {
     "id": "ceniza_roja",
@@ -50,7 +108,41 @@
       "en": "Ember Crust",
       "es": "Ceniza roja"
     },
-    "relief_mm": 1.1
+    "relief_mm": 1.1,
+    "lore": {
+      "en": "A red skin on the stone, green underneath. Dust stays where it has taken hold.",
+      "es": "Una piel roja sobre la piedra, verde por debajo. El polvo se queda donde ha prendido."
+    }
+  },
+  {
+    "id": "cicatriz_alta",
+    "form": "moss_lichen",
+    "height": [
+      0.002,
+      0.04
+    ],
+    "altitude": [
+      1750,
+      2050
+    ],
+    "habitat": "bare_lava",
+    "chance": 0.5,
+    "colour": "3d3d3f",
+    "spread": 0.6,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0,
+    "relief_mm": 1.0,
+    "patch_count": 4,
+    "patch_radius": 5,
+    "name": {
+      "en": "Cicatriz alta",
+      "es": "Cicatriz_alta"
+    },
+    "lore": {
+      "en": "A black rock-skin on the high basalt. Scrape it and green shows beneath.",
+      "es": "Piel negra de roca sobre el basalto alto. Raspa y debajo asoma lo verde."
+    }
   },
   {
     "id": "cinta_de_marea",
@@ -73,6 +165,10 @@
     "name": {
       "en": "Tide Ribbon",
       "es": "Cinta de marea"
+    },
+    "lore": {
+      "en": "The sea lays its ribbons down, then lifts them again. Eat while the stones are showing.",
+      "es": "El mar deja sus cintas y vuelve a levantarlas. Come mientras se vean las piedras."
     }
   },
   {
@@ -97,7 +193,38 @@
       "en": "Sulfur Crust",
       "es": "Costra de azufre"
     },
-    "relief_mm": 0.65
+    "relief_mm": 0.65,
+    "lore": {
+      "en": "A living skin at the poisoned spring's edge. Farther in, only crust remains.",
+      "es": "Una piel viva al borde del manantial envenenado. Más adentro solo queda costra."
+    }
+  },
+  {
+    "id": "drifting_ash",
+    "form": "algae",
+    "height": [
+      0.001,
+      0.05
+    ],
+    "altitude": [
+      -5,
+      2
+    ],
+    "habitat": "tidal",
+    "chance": 0.3,
+    "colour": "6f6a46",
+    "spread": 0.6,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 6,
+    "name": {
+      "en": "Drifting Ash",
+      "es": "Ceniza_flotante"
+    },
+    "lore": {
+      "en": "Rusty clouds in the turbid shallows. The sediment hides where they hang.",
+      "es": "Nubes rojizas en el bajío turbio. El sedimento esconde dónde cuelgan."
+    }
   },
   {
     "id": "grama_de_ceniza",
@@ -122,6 +249,10 @@
     "name": {
       "en": "Ash Tussock",
       "es": "Grama de ceniza"
+    },
+    "lore": {
+      "en": "Grass has found the stone's seams. Its roots follow them; its dead leaves begin the soil.",
+      "es": "La hierba ha encontrado las juntas de la piedra. Sus raíces las siguen; sus hojas muertas empiezan el suelo."
     }
   },
   {
@@ -148,6 +279,10 @@
     "name": {
       "en": "Meteor Violet",
       "es": "Hierroflor"
+    },
+    "lore": {
+      "en": "Violet leaves, scattered metal. Follow where it grows, not how brightly it shines.",
+      "es": "Hojas violetas, metal disperso. Sigue dónde crece, no cuánto brilla."
     }
   },
   {
@@ -173,6 +308,10 @@
     "name": {
       "en": "Lava Tongue",
       "es": "Lengua de lava"
+    },
+    "lore": {
+      "en": "Sticky tongues drink the seep and catch insects. Red veins warn against a mouthful.",
+      "es": "Lenguas pegajosas beben del rezume y atrapan insectos. Las venas rojas advierten antes del bocado."
     }
   },
   {
@@ -198,7 +337,39 @@
       "en": "Springmother",
       "es": "Madre de agua"
     },
-    "droop": 0.26
+    "droop": 0.26,
+    "lore": {
+      "en": "The stone holds the water. The water holds this tree. Everything hungry finds its shade.",
+      "es": "La piedra retiene el agua. El agua sostiene este árbol. Todo lo que tiene hambre encuentra su sombra."
+    }
+  },
+  {
+    "id": "manto_negro",
+    "form": "moss_lichen",
+    "height": [
+      0.001,
+      0.02
+    ],
+    "altitude": [
+      50,
+      1800
+    ],
+    "habitat": "mineral_seep",
+    "chance": 0.5,
+    "colour": "352a2d",
+    "spread": 0.6,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0,
+    "relief_mm": 0.6,
+    "name": {
+      "en": "Manto negro",
+      "es": "Manto Negro"
+    },
+    "lore": {
+      "en": "Black-red crust on steaming stone. It eats fire and breathes gas.",
+      "es": "Corteza negro-rojiza sobre piedra humeante. Come fuego y respira gas."
+    }
   },
   {
     "id": "musgo_faro",
@@ -223,7 +394,11 @@
       "en": "Beacon Moss",
       "es": "Musgo faro"
     },
-    "relief_mm": 2.8
+    "relief_mm": 2.8,
+    "lore": {
+      "en": "Green by the doorway, blue in the dark. The light lives between the leaves.",
+      "es": "Verde junto a la entrada, azul en la oscuridad. La luz vive entre las hojas."
+    }
   },
   {
     "id": "nieblon",
@@ -249,7 +424,11 @@
       "en": "Fogcomber",
       "es": "Nieblón"
     },
-    "droop": 0.33
+    "droop": 0.33,
+    "lore": {
+      "en": "The leaves comb water from passing fog. Sweet fruit below; bitter red veins above.",
+      "es": "Las hojas peinan el agua de la niebla. Abajo, fruta dulce; arriba, nervios rojos y amargos."
+    }
   },
   {
     "id": "paja_dulce",
@@ -274,6 +453,10 @@
     "name": {
       "en": "Sweet Straw",
       "es": "Paja dulce"
+    },
+    "lore": {
+      "en": "The sweet part grows low. Summer takes the green, but leaves the heart.",
+      "es": "Lo dulce crece abajo. El verano se lleva el verde, pero deja el corazón."
     }
   },
   {
@@ -297,6 +480,10 @@
     "name": {
       "en": "Humus Bread",
       "es": "Pan de humus"
+    },
+    "lore": {
+      "en": "Pale bread grows on what the cave receives. It smells of fruit, but makes no light.",
+      "es": "Pan pálido crece sobre lo que recibe la cueva. Huele a fruta, pero no da luz."
     }
   },
   {
@@ -324,7 +511,11 @@
       "en": "Wellberry",
       "es": "Perlilla"
     },
-    "droop": 0.37
+    "droop": 0.37,
+    "lore": {
+      "en": "White berries scent the dawn. The herd carries some away; a few return as bushes.",
+      "es": "Las bayas blancas perfuman el alba. La manada se lleva algunas; unas pocas vuelven hechas arbustos."
+    }
   },
   {
     "id": "pluma_de_sombra",
@@ -349,6 +540,37 @@
     "name": {
       "en": "Shade Feather",
       "es": "Pluma de sombra"
+    },
+    "lore": {
+      "en": "Soft feathers cover the wet ground. They stop where the cave loses its light.",
+      "es": "Plumas blandas cubren el suelo húmedo. Se detienen donde la cueva pierde la luz."
+    }
+  },
+  {
+    "id": "pozo_de_agua",
+    "form": "algae",
+    "height": [
+      0.005,
+      0.02
+    ],
+    "altitude": [
+      -5,
+      2
+    ],
+    "habitat": "tidal",
+    "chance": 0.3,
+    "colour": "7a7f4a",
+    "spread": 0.5,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 4,
+    "name": {
+      "en": "Pozo de agua",
+      "es": "Pozo_de_agua"
+    },
+    "lore": {
+      "en": "A soft olive gel that breathes vent gas. Bubbles rise from it.",
+      "es": "Un gel oliváceo y blando que respira gas de fumarola. De él suben burbujas."
     }
   },
   {
@@ -375,7 +597,11 @@
       "en": "Snowshield",
       "es": "Rodela de nieve"
     },
-    "dead": "76603f"
+    "dead": "76603f",
+    "lore": {
+      "en": "It keeps its old leaves as a coat and folds the living ones over its heart.",
+      "es": "Guarda las hojas muertas como abrigo y pliega las vivas sobre el corazón."
+    }
   },
   {
     "id": "salvisca",
@@ -399,7 +625,39 @@
       "en": "Saltweeper",
       "es": "Salvisca"
     },
-    "droop": 0.23
+    "droop": 0.23,
+    "lore": {
+      "en": "The bush leaves salt on its lips. Beneath it, even the pale ones can rest.",
+      "es": "El arbusto deja sal en sus labios. Debajo, hasta los pálidos pueden descansar."
+    }
+  },
+  {
+    "id": "sangre_de_hierro",
+    "form": "moss_lichen",
+    "height": [
+      0.001,
+      0.002
+    ],
+    "altitude": [
+      0,
+      800
+    ],
+    "habitat": "cave",
+    "chance": 0.5,
+    "colour": "7d4b3b",
+    "spread": 0.5,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0,
+    "relief_mm": 0.4,
+    "name": {
+      "en": "Sangre de hierro",
+      "es": "Iron Blood"
+    },
+    "lore": {
+      "en": "A rust-red film on the tube walls. The grazers feast; the greedy die.",
+      "es": "Una película rojiza sobre las paredes del tubo. Pastan los mansos; mueren los codiciosos."
+    }
   },
   {
     "id": "soga_de_dosel",
@@ -423,6 +681,39 @@
     "name": {
       "en": "Canopy Rope",
       "es": "Soga de dosel"
+    },
+    "lore": {
+      "en": "The thick ropes climb the trees. Soft fruit smells sweet; red-veined leaves stay bitter.",
+      "es": "Las sogas gruesas trepan por los árboles. El fruto blando huele dulce; las hojas de venas rojas siguen amargas."
+    }
+  },
+  {
+    "id": "suspiro",
+    "form": "shrub",
+    "height": [
+      0.1,
+      1.5
+    ],
+    "altitude": [
+      20,
+      1100
+    ],
+    "habitat": "host",
+    "chance": 0.2,
+    "colour": "6e8a5c",
+    "spread": 0.5,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 5,
+    "veins": "8c4a66",
+    "droop": 0.2,
+    "name": {
+      "en": "Suspiro",
+      "es": "Suspiro"
+    },
+    "lore": {
+      "en": "It steals water from the tree that carries it. Red veins mean poison.",
+      "es": "Roba agua al árbol que lo lleva. Las venas rojas son veneno."
     }
   },
   {
@@ -449,7 +740,11 @@
       "en": "Riverbraid",
       "es": "Trenza de ribera"
     },
-    "droop": 0.46
+    "droop": 0.46,
+    "lore": {
+      "en": "The river bends it and buries it. Fruit stays where its roots keep the water.",
+      "es": "El río la dobla y la entierra. El fruto queda donde las raíces conservan el agua."
+    }
   },
   {
     "id": "velilla",
@@ -476,6 +771,10 @@
     "name": {
       "en": "Dawnlamp",
       "es": "Velilla"
+    },
+    "lore": {
+      "en": "The ground drinks first. Then its little candles open.",
+      "es": "Primero bebe la tierra. Después abre sus pequeñas velas."
     }
   },
   {
@@ -503,6 +802,10 @@
     "name": {
       "en": "Redvein",
       "es": "Vetirroja"
+    },
+    "lore": {
+      "en": "Red veins, grass left tall. The slug eats what the herd refuses.",
+      "es": "Venas rojas, hierba sin pacer. La babosa come lo que rechaza la manada."
     }
   }
 ]

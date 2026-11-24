@@ -36,7 +36,7 @@
           "en": "Polaris Sight"
         },
         "role": "Engage",
-        "effect": "Player can reveal hidden targets by detecting polarization contrast; 0.85 contrast reveal radius.",
+        "effect": "The creature's sensory array constantly scans for polarization contrasts, causing nearby hidden targets to become visible as they move through the surrounding area.",
         "numbers": {}
       },
       "weakness": "Blind to UV and color cues; relies entirely on polarization geometry.",

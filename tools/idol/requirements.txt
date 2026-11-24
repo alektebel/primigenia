@@ -1,0 +1,8 @@
+# SDK installed separately from the pinned official source; see README.
+scipy==1.18.1
+scikit-image==0.26.0
+trimesh==5.2.1
+fast-simplification==0.2.0
+plyfile==1.1.5
+pytest==9.2.0
+pytest-cov==7.1.0

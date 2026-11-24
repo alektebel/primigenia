@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia gait lab</title>
+<!--
+  Gait lab (docs/briefs/gait-lab.md, DESIGN A35: prototype in three.js, ship in Godot). Lab only, not kept in sync with Godot.
+  16 procedural creatures walk in a straight line at once. Rows = body plan (biped, quadruped, hexapod, 8-leg), columns = size x leg
+  length (small 0.30 m / large 1.50 m, short legs = 0.6 x long). Same rules for all: gait from the Froude number, stride and duty
+  from Fr, stance feet pinned in the world (zero slip by construction), 2-bone analytic IK, bob from stance state.
+  URL: ?test=1 runs the self-check on load (result in #check and window.__gaitlabCheck), ?preset=walk|trot|gallop|game|gamefix
+  three.js r128 from cdnjs (same as web/lookdev). No other dependency, no build step.
+
+  Sources (each number below is cited or marked "starting value"):
+   Alexander & Jayes 1983 / Alexander 1976,1984: dynamic similarity, Fr = v^2/(g h), relative stride lambda/h = 2.3 Fr^0.3 (walk, trot, run).
+   Alexander 1989 "Optimization and gaits in the locomotion of vertebrates": walk -> run/trot near Fr 0.5, trot -> gallop near Fr 2.5;
+      gallop lambda/h = 1.9 Fr^0.4 (as in godot/locomotion/loco_gait.gd).
+   Hildebrand 1965/1977: footfall sequences (lateral-sequence walk, diagonal trot, transverse gallop).
+   Cavagna et al 1977 / Geyer 2006: walk = inverted pendulum (hip highest at mid-stance), run = spring-mass (hip lowest at mid-stance).
+   Wilson 1966, Ritzmann 2004: insect tripod gait above slow speeds, metachronal wave (phase lag shrinks with speed) in many-legged animals.
+   Duty curves, bob amplitudes, lift heights, lean: STARTING VALUES, to be checked by tracker test M1.
+-->
+<style>
+:root{--bg:#14161a;--panel:#1d2026;--ink:#e8e6df;--dim:#9aa0a6;--line:rgba(255,255,255,.14);--amber:#e8a41c;--ok:#6fcf8a;--bad:#ef6a5b}
+@media (prefers-color-scheme:light){:root{--bg:#eceae4;--panel:#faf8f2;--ink:#1d1f22;--dim:#5b6066;--line:rgba(0,0,0,.16)}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.35 system-ui,sans-serif}
+#bar{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+.grp{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.grp>span{color:var(--dim);font-size:11px}
+button{font:inherit;color:inherit;background:rgba(127,127,127,.14);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer;transition:transform 160ms ease-out,background-color 160ms ease-out}
+button:active{transform:scale(.97)}
+button[aria-pressed=true]{background:var(--amber);border-color:var(--amber);color:#1a1200;font-weight:600}
+input[type=range]{width:180px}
+#clock,#check,#spd{font-variant-numeric:tabular-nums;color:var(--dim);font-size:12px}
+#check.pass{color:var(--ok)}#check.fail{color:var(--bad)}
+#stage{position:relative;width:100%}
+#gl,#ov{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+#ov{pointer-events:none}
+@media (max-width:700px){input[type=range]{width:130px}button{padding:4px 7px}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<div id="bar">
+  <div class="grp" id="presets"><span>Preset</span></div>
+  <div class="grp"><span>Speed</span><input type="range" id="speed" min="0" max="1" step="0.001" value="0.3" aria-label="Speed"><span id="spd"></span></div>
+  <div class="grp" id="modes"><span>Mode</span></div>
+  <div class="grp" id="gaitmode"><span>Gait</span></div>
+  <div class="grp" id="ctl"></div>
+  <div class="grp" id="pb"><span>Playback</span></div>
+  <span id="clock"></span><span id="check"></span>
+  <div class="grp"><span>Other labs</span><a href="signature.html" style="color:var(--amber)">Signature attacks (picker)</a> <a href="engulf.html" style="color:var(--amber);margin-left:10px">Engulf: fauces swallow (A84)</a> <a href="ice.html" style="color:var(--amber);margin-left:10px">Ice: cryo gland spike, breath, bridge (A85)</a> <a href="oil.html" style="color:var(--amber);margin-left:10px">Oil and fire: stomach oil, ignition, flamethrower (A89, A90)</a></div>
+</div>
+<div id="stage"><canvas id="gl"></canvas><canvas id="ov"></canvas></div>
+<script>
+"use strict";
+(() => {
+const G = 9.81;
+const TAU = Math.PI * 2;
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = (x) => x - Math.floor(x);
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const wrapd = (d) => d - Math.round(d);               // shortest signed difference on a unit circle
+
+// ---------------------------------------------------------------- body plans (rows) and size/leg columns
+const PLAN_NAMES = ['biped', 'quadruped', 'hexapod', '8-leg'];
+const COLS = [
+  { name: 'small short-leg', S: 0.30, legK: 0.6 },
+  { name: 'small long-leg', S: 0.30, legK: 1.0 },
+  { name: 'large short-leg', S: 1.50, legK: 0.6 },
+  { name: 'large long-leg', S: 1.50, legK: 1.0 },
+];
+// S = body size scale (m); h = hip height = S * legK. small ~0.3 m, large ~1.5 m, short = 0.6 x long (brief).
+
+function legSpecs(plan, S, h) {
+  const L = [];
+  const add = (o) => L.push(Object.assign({ fz: 0 }, o));
+  if (plan === 'biped') {
+    // digitigrade biped: visible joint (ankle/hock) points back
+    for (const s of [-1, 1]) add({ name: s < 0 ? 'L' : 'R', side: s, hx: 0, hz: s * 0.10 * S, pole: [-1, 0, 0], ltK: 1.15, i: 0 });
+  } else if (plan === 'quadruped') {
+    // order LH, RH, LF, RF. Hind hock and fore elbow both point back.
+    for (const [nm, x, i] of [['H', -0.62, 0], ['F', 0.62, 1]]) for (const s of [-1, 1])
+      add({ name: (s < 0 ? 'L' : 'R') + nm, side: s, hx: x * S, hz: s * 0.14 * S, pole: [-1, 0, 0], ltK: 1.15, i });
+  } else if (plan === 'hexapod') {
+    const sp = Math.max(0.55 * S, 1.15 * h);  // coxa spacing; long enough that neighbouring feet cannot cross
+    for (const s of [-1, 1]) for (let i = 0; i < 3; i++)
+      add({ name: (s < 0 ? 'L' : 'R') + (3 - i), side: s, hx: (i - 1) * sp, hz: s * 0.12 * S, fz: s * 0.65 * h, pole: [0, 0.8, s * 0.6], ltK: 1.42, i, sp });
+  } else {
+    const sp = Math.max(0.45 * S, 1.0 * h);
+    for (const s of [-1, 1]) for (let i = 0; i < 4; i++)
+      add({ name: (s < 0 ? 'L' : 'R') + (4 - i), side: s, hx: (i - 1.5) * sp, hz: s * 0.12 * S, fz: s * 0.6 * h, pole: [0, 0.8, s * 0.6], ltK: 1.42, i, sp });
+  }
+  return L;
+}
+
+// ---------------------------------------------------------------- gait rules (the part that ports to loco_gait.gd)
+const H_FR = 0.04; // hysteresis around the change Fr
+function selectGait(plan, prev, fr, legacy) {
+  if (plan === 'biped') {
+    if (legacy) return 'walk';
+    if (prev === 'run') return fr < 0.5 - H_FR ? 'walk' : 'run';
+    return fr > 0.5 + H_FR ? 'run' : 'walk';
+  }
+  if (plan === 'quadruped') {
+    if (legacy) return 'walk';
+    let g = prev;
+    if (g === 'gallop') { if (fr < 2.5 - H_FR) g = 'trot'; }
+    else if (g === 'trot') { if (fr > 2.5 + H_FR) g = 'gallop'; else if (fr < 0.5 - H_FR) g = 'walk'; }
+    else { g = 'walk'; if (fr > 0.5 + H_FR) g = 'trot'; if (fr > 2.5 + H_FR) g = 'gallop'; }
+    return g;
+  }
+  if (plan === 'hexapod') {
+    if (prev === 'tripod') return fr < 0.15 - 0.02 ? 'wave' : 'tripod';
+    return fr > 0.15 + 0.02 ? 'tripod' : 'wave';
+  }
+  return 'meta';
+}
+const HAS_FLIGHT_CLASS = { walk: false, wave: false, tripod: false, meta: false, trot: true, run: true, gallop: true };
+
+// Returns target gait parameters for a creature (cr) at Froude number fr.
+function gaitParams(cr, gait, fr) {
+  const plan = cr.plan, h = cr.h, n = cr.legs.length;
+  const P = { gait, off: new Array(n).fill(0), beta: 0.6, stride: 1, a0: 1, a1: 0, lean: 0, flex: 0, lift: 0.15 * h, runness: 0, roll: 0.03 };
+  let Fs = fr; // Fr used for the stride law
+  switch (gait) {
+    case 'walk': {
+      Fs = Math.min(fr, 0.5);
+      P.beta = clamp(0.78 - 0.46 * Fs, 0.55, 0.78);       // starting value; walks have duty >= 0.5 (Alexander 1989)
+      P.stride = 2.3 * Math.pow(Math.max(Fs, 1e-3), 0.3) * h; // Alexander & Jayes 1983
+      P.a0 = 0.965; P.a1 = 0.045;                           // inverted pendulum: high at mid-stance (Cavagna 1977); starting amplitude
+      P.lift = 0.12 * h; P.roll = 0.035;
+      if (plan === 'biped') P.off = [0, 0.5];
+      else P.off = [0.5, 0, 0.75, 0.25];                    // LH RH LF RF: Hildebrand lateral sequence RH 0, RF .25, LH .5, LF .75
+      break;
+    }
+    case 'trot': {
+      P.beta = clamp(0.48 * Math.pow(Fs / 0.5, -0.25), 0.28, 0.48); // starting value: <0.5 => suspension phase
+      P.stride = 2.3 * Math.pow(Fs, 0.3) * h;
+      P.a0 = 1.03; P.a1 = -0.09;                            // spring-mass: lowest at mid-stance, peak in flight
+      P.lift = 0.2 * h; P.runness = 1; P.roll = 0.02; P.flex = 0.02;
+      P.off = [0, 0.5, 0.5, 0];                             // diagonal pairs LH+RF, RH+LF
+      break;
+    }
+    case 'run': {
+      P.beta = clamp(0.48 * Math.pow(Fs / 0.5, -0.3), 0.22, 0.48);   // starting value (human sprint ~0.25)
+      P.stride = 2.3 * Math.pow(Fs, 0.3) * h;
+      P.a0 = 1.03; P.a1 = -0.09; P.lift = 0.22 * h; P.runness = 1; P.roll = 0.02;
+      P.lean = 0.12 * smooth(0.4, 3.0, fr);                  // forward lean, starting value (loco_gait.run_lean)
+      P.off = [0, 0.5];
+      break;
+    }
+    case 'gallop': {
+      P.beta = clamp(0.32 * Math.pow(Fs / 2.5, -0.3), 0.2, 0.32);    // starting value, continuous with trot at Fr 2.5 (0.32)
+      P.stride = 1.9 * Math.pow(Fs, 0.4) * h;                // Alexander & Jayes 1983 gallop law
+      P.a0 = 1.03; P.a1 = -0.10; P.lift = 0.25 * h; P.runness = 1; P.roll = 0.01;
+      P.flex = clamp(0.045 * Math.pow(Fs / 2.5, 0.3), 0, 0.11); // spine flexion / pitch swing, as loco_gait.spine_flex
+      P.off = [0, 0.1, 0.5, 0.6];                            // transverse gallop LH RH LF RF (Hildebrand 1977)
+      break;
+    }
+    case 'wave': {
+      P.beta = 0.78; P.stride = 2.3 * Math.pow(Fs, 0.3) * h; P.a0 = 1; P.a1 = 0; P.lift = 0.22 * h; P.roll = 0.01;
+      for (const [k, l] of cr.legs.entries()) P.off[k] = frac(l.i / 6 + (l.side > 0 ? 0.5 : 0));
+      break;
+    }
+    case 'tripod': {
+      P.beta = clamp(0.62 - 0.05 * Fs, 0.52, 0.62);          // starting value; kept >= 0.5 so some tripod is always down
+      P.stride = 2.3 * Math.pow(Fs, 0.3) * h; P.a0 = 1; P.a1 = 0; P.lift = 0.25 * h; P.roll = 0.01;
+      for (const [k, l] of cr.legs.entries()) P.off[k] = frac((l.i % 2 ? 0.5 : 0) + (l.side > 0 ? 0.5 : 0));
+      break;
+    }
+    case 'meta': {
+      P.beta = clamp(0.7 - 0.08 * Math.log10(Math.max(Fs, 0.05) / 0.05), 0.55, 0.75);
+      P.stride = 2.3 * Math.pow(Fs, 0.3) * h; P.a0 = 1; P.a1 = 0; P.lift = 0.25 * h; P.roll = 0.01;
+      const lag = 0.22 * Math.pow(Math.max(Fs, 0.05) / 0.05, -0.23);  // phase lag per segment 0.22 -> 0.08, starting values
+      P.lag = lag;
+      for (const [k, l] of cr.legs.entries()) P.off[k] = frac(l.i * lag + (l.side > 0 ? 0.5 : 0));
+      break;
+    }
+  }
+  // insects: stance travel may not exceed the coxa spacing (feet of neighbouring legs must never cross)
+  if (cr.legs[0].sp) {
+    const maxL = 0.9 * cr.legs[0].sp;
+    if (P.stride * P.beta > maxL) { P.stride = maxL / P.beta; P.capped = true; }
+  }
+  return P;
+}
+
+function mixParams(A, B, t) {
+  const R = Object.assign({}, B);
+  R.off = B.off.map((o, i) => frac(A.off[i] + wrapd(o - A.off[i]) * t));
+  for (const k of ['beta', 'a0', 'a1', 'lean', 'flex', 'lift', 'runness', 'roll']) R[k] = lerp(A[k], B[k], t);
+  return R;
+}
+
+// ---------------------------------------------------------------- 2-bone IK
+const _v = new THREE.Vector3();
+function ik(P, T, a, b, pole, out) {
+  const d = _v.copy(T).sub(P);
+  let dist = d.length();
+  const reach = a + b - 1e-4, minr = Math.abs(a - b) + 1e-4;
+  out.clamped = false;
+  if (dist > reach) { dist = reach; out.clamped = true; } else if (dist < minr) { dist = minr; out.clamped = true; }
+  const u = d.normalize();
+  const along = (a * a - b * b + dist * dist) / (2 * dist);
+  const hgt = Math.sqrt(Math.max(0, a * a - along * along));
+  const pd = pole.clone().addScaledVector(u, -pole.dot(u));
+  if (pd.lengthSq() < 1e-8) pd.set(0, 0, 1).addScaledVector(u, -u.z);
+  pd.normalize();
+  out.knee.copy(P).addScaledVector(u, along).addScaledVector(pd, hgt);
+  out.foot.copy(P).addScaledVector(u, dist);
+}
+
+// ---------------------------------------------------------------- creature
+const MAT = {
+  body: new THREE.MeshLambertMaterial({ color: 0xc58a4a }),
+  head: new THREE.MeshLambertMaterial({ color: 0xe0b070 }),
+  near: new THREE.MeshLambertMaterial({ color: 0xe9e2d0 }),
+  far: new THREE.MeshLambertMaterial({ color: 0x6e6a60 }),
+  knee: new THREE.MeshLambertMaterial({ color: 0xe8a41c }),
+  foot: new THREE.MeshLambertMaterial({ color: 0x3fa7d6 }),
+  ground: new THREE.MeshLambertMaterial({ color: 0x2b3038 }),
+  tickA: new THREE.MeshBasicMaterial({ color: 0x59616d }),
+  tickB: new THREE.MeshBasicMaterial({ color: 0x3a414a }),
+  mark: new THREE.MeshBasicMaterial({ color: 0xf2c14e }),
+};
+const GEO = {
+  cyl: new THREE.CylinderGeometry(1, 1, 1, 8),
+  box: new THREE.BoxGeometry(1, 1, 1),
+  sph: new THREE.SphereGeometry(1, 10, 8),
+};
+const Y = new THREE.Vector3(0, 1, 0);
+
+class Creature {
+  constructor(plan, col, row, ci) {
+    this.plan = plan; this.row = row; this.ci = ci; this.col = COLS[ci];
+    this.S = this.col.S; this.h = this.S * this.col.legK;
+    this.legs = legSpecs(plan, this.S, this.h);
+    this.vert = plan === 'biped' || plan === 'quadruped';
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x1a1d22);
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+    const dl = new THREE.DirectionalLight(0xffffff, 0.75); dl.position.set(-2, 4, 6); this.scene.add(dl);
+    this.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100 * this.S);
+    this.cam.position.set(0, 0, 20 * this.S);
+    this.buildWorld();
+    this.buildBody();
+    this.reset();
+  }
+  buildWorld() {
+    const S = this.S, sp = 0.5 * this.bodyLen(), W = 7 * S;
+    this.tickSp = sp;
+    const g = new THREE.Group(); this.ground = g; this.scene.add(g);
+    const slab = new THREE.Mesh(GEO.box, MAT.ground); slab.scale.set(2 * W, 3 * S, 4 * S); slab.position.set(0, -1.5 * S, 0); g.add(slab);
+    this.ticks = new THREE.Group(); this.scene.add(this.ticks);
+    const nt = Math.ceil(W / sp) + 2;
+    for (let i = -nt; i <= nt; i++) {
+      const t = new THREE.Mesh(GEO.box, i % 2 ? MAT.tickB : MAT.tickA);
+      t.scale.set(0.045 * S, 0.5 * S, 0.02 * S); t.position.set(i * sp, -0.25 * S, 2.01 * S); this.ticks.add(t);
+    }
+    this.nt = nt;
+    this.marks = []; this.markI = 0;
+    for (let i = 0; i < 40; i++) {
+      const m = new THREE.Mesh(GEO.box, MAT.mark); m.scale.set(0.035 * S, 0.1 * S, 0.02 * S); m.position.set(0, -1e3, 2.05 * S); this.scene.add(m); this.marks.push(m);
+    }
+  }
+  bodyLen() { return { biped: 1.0, quadruped: 1.7, hexapod: 2.0, '8-leg': 2.6 }[this.plan] * this.S; }
+  buildBody() {
+    const S = this.S, plan = this.plan;
+    const body = this.body = new THREE.Group(); this.scene.add(body);
+    const box = (sx, sy, sz, x, y, z, mat, parent) => { const m = new THREE.Mesh(GEO.box, mat); m.scale.set(sx, sy, sz); m.position.set(x, y, z); (parent || body).add(m); return m; };
+    this.head = new THREE.Group(); body.add(this.head);
+    this.tail = new THREE.Group(); body.add(this.tail);
+    if (plan === 'biped') {
+      box(1.0 * S, 0.3 * S, 0.26 * S, 0, 0.07 * S, 0, MAT.body);
+      this.head.position.set(0.5 * S, 0.12 * S, 0); box(0.3 * S, 0.14 * S, 0.14 * S, 0.15 * S, 0.1 * S, 0, MAT.head, this.head);
+      this.tail.position.set(-0.5 * S, 0.1 * S, 0); box(1.0 * S, 0.1 * S, 0.1 * S, -0.5 * S, 0, 0, MAT.body, this.tail);
+    } else if (plan === 'quadruped') {
+      box(1.7 * S, 0.32 * S, 0.3 * S, 0, 0.08 * S, 0, MAT.body);
+      this.head.position.set(0.85 * S, 0.12 * S, 0); box(0.45 * S, 0.17 * S, 0.17 * S, 0.22 * S, 0.06 * S, 0, MAT.head, this.head);
+      this.tail.position.set(-0.85 * S, 0.12 * S, 0); box(0.5 * S, 0.06 * S, 0.06 * S, -0.25 * S, 0, 0, MAT.body, this.tail);
+    } else if (plan === 'hexapod') {
+      const sp = this.legs[0].sp;
+      box(sp * 0.8, 0.22 * S, 0.24 * S, sp, 0.04 * S, 0, MAT.body);  // thorax segments over coxae
+      box(sp * 0.9, 0.22 * S, 0.24 * S, 0, 0.04 * S, 0, MAT.body);
+      box(sp * 0.9, 0.22 * S, 0.24 * S, -sp, 0.04 * S, 0, MAT.body);
+      this.head.position.set(1.4 * sp + 0.15 * S, 0.04 * S, 0); box(0.3 * S, 0.2 * S, 0.2 * S, 0, 0, 0, MAT.head, this.head);
+      this.tail.position.set(-1.45 * sp, 0.04 * S, 0); box(0.35 * S, 0.14 * S, 0.14 * S, -0.1 * S, 0, 0, MAT.body, this.tail);
+    } else {
+      const sp = this.legs[0].sp;
+      for (let i = 0; i < 4; i++) box(sp * 0.85, 0.2 * S, 0.22 * S, (i - 1.5) * sp, 0.04 * S, 0, i % 2 ? MAT.body : MAT.head);
+      this.head.position.set(1.925 * sp + 0.15 * S, 0.04 * S, 0); box(0.3 * S, 0.2 * S, 0.2 * S, 0, 0, 0, MAT.head, this.head);
+      this.tail.position.set(-1.925 * sp, 0.04 * S, 0); box(0.3 * S, 0.1 * S, 0.1 * S, -0.1 * S, 0, 0, MAT.body, this.tail);
+    }
+    this.hipSphere = [];
+    for (const l of this.legs) {
+      l.lt = l.ltK * this.h; l.a = l.lt * 0.5; l.b = l.lt * 0.5;
+      if (this.vert && this.plan === 'biped') { l.a = l.lt * 0.54; l.b = l.lt * 0.46; }
+      const mat = l.side > 0 ? MAT.near : MAT.far;
+      const r = 0.03 * this.S * (this.vert ? 1.2 : 0.75);
+      l.m1 = new THREE.Mesh(GEO.cyl, mat); l.m2 = new THREE.Mesh(GEO.cyl, mat); l.r1 = r; l.r2 = r * 0.78;
+      l.mk = new THREE.Mesh(GEO.sph, MAT.knee); l.mk.scale.setScalar(r * 1.15);
+      l.mf = new THREE.Mesh(GEO.sph, MAT.foot); l.mf.scale.setScalar(r * 1.25);
+      this.scene.add(l.m1, l.m2, l.mk, l.mf);
+      l.polev = new THREE.Vector3(l.pole[0], l.pole[1], l.pole[2]).normalize();
+      l.ikout = { knee: new THREE.Vector3(), foot: new THREE.Vector3(), clamped: false };
+      l.hip = new THREE.Vector3(); l.foot = new THREE.Vector3(); l.target = new THREE.Vector3();
+    }
+  }
+  reset() {
+    this.x = 0; this.p = 0.123; this.v = 0; this.gait = null; this.cur = null; this.prev = null; this.bl = 1; this.blendFrom = null;
+    this.strideSince = 0; this.stanceCount = 0; this.time = 0; this.pitch = 0; this.roll = 0; this.hipY = this.h;
+    this.fr = 0; this.f = 1; this.first = true;
+    this.clearMetrics();
+    for (const l of this.legs) { l.stance = true; l.plant = new THREE.Vector3(); l.lift = new THREE.Vector3(); l.iv = []; l.plants = []; l.w = 0; }
+  }
+  clearMetrics() {
+    this.m = { n: 0, noStance: 0, kneeBad: 0, cross: 0, below: 0, laneErr: 0, clampN: 0, safetyN: 0, drag: 0, hipMin: 1e9, hipMax: -1e9, pitchMax: 0 };
+    for (const l of this.legs) { l.slip = 0; l.stN = 0; l.plants = []; l.plantT = []; }
+    this.mT0 = this.time;
+  }
+  // stance foot position for leg phase q (used only at start)
+  initLegs(P) {
+    const L = P.stride * P.beta;
+    for (const [k, l] of this.legs.entries()) {
+      const q = frac(this.p - P.off[k]);
+      const home = this.x + l.hx;
+      if (q < P.beta) { l.stance = true; l.plant.set(home + L * (0.5 - q / P.beta), 0, l.hz + l.fz); l.foot.copy(l.plant); }
+      else {
+        l.stance = false; const s = (q - P.beta) / (1 - P.beta);
+        const land = home + L / 2 + this.v * (1 - q) / this.f;
+        l.lift.set(land - P.stride, 0, l.hz + l.fz); l.foot.set(lerp(land - P.stride, land, s), 0, l.hz + l.fz);
+      }
+    }
+  }
+  update(v, dt, T) {
+    this.time = T; this.v = v;
+    const fr = v * v / (G * this.h); this.fr = fr;
+    const legacy = SIM.legacy;
+    const g = selectGait(this.plan, this.gait, fr, legacy);
+    const target = gaitParams(this, g, fr);
+    if (this.first) {
+      this.gait = g; this.cur = target; this.bl = 1; this.f = Math.max(v, 1e-3) / target.stride; this.first = false; this.initLegs(target);
+    } else if (g !== this.gait) {
+      this.blendFrom = this.cur; this.bl = 0; this.gait = g;
+    }
+    let P = target;
+    if (this.bl < 1 && this.blendFrom) { const e = this.bl * this.bl * (3 - 2 * this.bl); P = mixParams(this.blendFrom, target, e); P.gait = g; P.stride = target.stride; }
+    this.cur = P;
+    this.f = Math.max(v, 1e-4) / P.stride;
+    const dph = this.f * dt;
+    this.p = frac(this.p + dph);
+    if (this.bl < 1) this.bl = Math.min(1, this.bl + dph); // one stride
+    this.strideSince += dph;
+    this.x += v * dt;
+    this.stepLegs(P, dt, T);
+  }
+  stepLegs(P, dt, T) {
+    const h = this.h, L = P.stride * P.beta, legs = this.legs;
+    let Wmax = 0, wR = 0, wL = 0, nSt = 0;
+    for (const [k, l] of legs.entries()) {
+      const q = frac(this.p - P.off[k] + 1);
+      const st = q < P.beta;
+      const zf = l.hz + l.fz;
+      if (st && !l.stance) { l.stance = true; l.plant.set(l.foot.x, 0, zf); l.plants.push(l.plant.x); l.plantT.push(T); l.iv.push([T, null]); }
+      else if (!st && l.stance) { l.stance = false; l.lift.copy(l.foot); const iv = l.iv[l.iv.length - 1]; if (iv) iv[1] = T; }
+      if (st) {
+        l.foot.copy(l.plant); l.w = Math.sin(Math.PI * q / P.beta); nSt++;
+        Wmax = Math.max(Wmax, l.w); if (l.side > 0) wR = Math.max(wR, l.w); else wL = Math.max(wL, l.w);
+      } else {
+        l.w = 0;
+        const s = (q - P.beta) / (1 - P.beta);
+        const land = this.x + l.hx + L / 2 + this.v * (1 - q) / this.f;
+        const e = 0.5 - 0.5 * Math.cos(Math.PI * s);
+        l.foot.set(lerp(l.lift.x, land, e), P.lift * Math.sin(Math.PI * s), zf);
+      }
+    }
+    this.stanceCount = nSt;
+    // body pose
+    let y0 = h * (P.a0 + P.a1 * Wmax);
+    const roll = P.roll * (wR - wL);
+    const pitch = -P.lean + P.flex * Math.sin(TAU * this.p);
+    this.pitch = pitch; this.roll = roll;
+    const body = this.body;
+    body.rotation.set(roll, 0, pitch);
+    // reach safety: lower the hips until every leg can reach its foot (stance feet never get dragged)
+    let y = y0, lowered = false, dragged = 0;
+    for (let it = 0; it < 6; it++) {
+      body.position.set(this.x, y, 0); body.updateMatrixWorld(true);
+      let need = 0;
+      for (const l of legs) {
+        l.hip.set(l.hx, 0, l.hz).applyMatrix4(body.matrixWorld);
+        const lim = 0.985 * l.lt, d = l.hip.distanceTo(l.foot);
+        if (d <= lim) continue;
+        const hx = l.hip.x - l.foot.x, hz = l.hip.z - l.foot.z, h2 = hx * hx + hz * hz;
+        if (h2 < lim * lim * 0.9) need = Math.max(need, l.hip.y - (l.foot.y + Math.sqrt(lim * lim - h2)));
+        else if (it === 5 || y < 0.4 * h) { // out of reach even with the hips low: drag the foot (reported as a drag event)
+          const k = lim * 0.95 / Math.sqrt(h2); l.foot.x = l.hip.x - hx * k; l.foot.z = l.hip.z - hz * k; if (l.stance) l.plant.copy(l.foot); dragged++;
+        } else need = Math.max(need, 0.1 * h);
+      }
+      if (need <= 1e-9) break;
+      y -= need; lowered = true;
+    }
+    this.hipY = y;
+    // head level, tail counter-sway
+    this.head.rotation.set(-roll * 0.9, 0, -pitch * 0.9);
+    this.tail.rotation.set(0, 0.14 * Math.sin(TAU * this.p) * (this.plan === 'biped' ? 1 : 0.5), (this.plan === 'biped' ? 0.1 : 0.0) + (this.plan === 'biped' ? 0.5 * -pitch : 0));
+    // IK
+    const qB = body.quaternion;
+    for (const l of legs) {
+      l.hip.set(l.hx, 0, l.hz).applyMatrix4(body.matrixWorld);
+      const pole = l.polev.clone().applyQuaternion(qB);
+      ik(l.hip, l.foot, l.a, l.b, pole, l.ikout);
+      l.kneeW = l.ikout.knee; l.footA = l.ikout.foot;
+      this.setCyl(l.m1, l.hip, l.kneeW, l.r1); this.setCyl(l.m2, l.kneeW, l.footA, l.r2);
+      l.mk.position.copy(l.kneeW); l.mf.position.copy(l.footA);
+      l.poleW = pole;
+    }
+    // metrics (cheap; always on)
+    const m = this.m; m.n++;
+    if (nSt === 0) m.noStance++;
+    if (lowered) m.safetyN++;
+    m.drag += dragged;
+    m.hipMin = Math.min(m.hipMin, y / h); m.hipMax = Math.max(m.hipMax, y / h);
+    m.pitchMax = Math.max(m.pitchMax, Math.abs(pitch));
+    m.laneErr = Math.max(m.laneErr, Math.abs(body.position.z));
+    for (const l of legs) {
+      if (l.ikout.clamped) m.clampN++;
+      if (l.stance) { l.stN++; l.slip = Math.max(l.slip, l.footA.distanceTo(l.plant)); }
+      if (l.footA.y < -1e-6) m.below++;
+      // knee direction: knee must lie on the pole side of the hip-foot chord
+      const mid = _v.copy(l.hip).add(l.footA).multiplyScalar(0.5);
+      const off = l.kneeW.clone().sub(mid);
+      let bad = false;
+      if (this.vert) { const back = new THREE.Vector3(-1, 0, 0).applyQuaternion(qB); bad = off.dot(back) < -1e-6; }
+      else { bad = off.y < 0 || off.z * l.side < -1e-6; }
+      if (bad) m.kneeBad++;
+      if (l.kneeW.y < 0) m.below++;
+    }
+    // same-side feet that are both on the ground must keep their order (swing feet may overreach, as in a real gallop)
+    for (const side of [-1, 1]) {
+      const sl = legs.filter((l) => l.side === side && l.hx !== undefined).sort((a, b) => a.hx - b.hx);
+      for (let i = 1; i < sl.length; i++) if (sl[i].stance && sl[i - 1].stance && sl[i].footA.x - sl[i - 1].footA.x < 0.02 * h) m.cross++;
+    }
+  }
+  setCyl(m, a, b, r) {
+    const d = _v.copy(b).sub(a), len = Math.max(d.length(), 1e-6);
+    m.position.copy(a).addScaledVector(d, 0.5);
+    m.quaternion.setFromUnitVectors(Y, d.multiplyScalar(1 / len));
+    m.scale.set(r, len, r);
+  }
+  // visuals that need the camera
+  place(aspect, T) {
+    const S = this.S, W = 5.0 * S, Hh = W / aspect;
+    const cx = this.x + 0.1 * S;
+    this.cam.left = -W / 2; this.cam.right = W / 2; this.cam.top = Hh * 0.8; this.cam.bottom = -Hh * 0.2; this.cam.updateProjectionMatrix();
+    this.cam.position.x = cx; this.cam.position.y = 0;
+    const sp = this.tickSp;
+    this.ticks.position.x = Math.round(cx / (2 * sp)) * (2 * sp);
+    this.ground.position.x = cx;
+    // footprint marks at plant positions
+    for (const l of this.legs) {
+      if (l.plantMarked !== l.plants.length && l.plants.length) {
+        const mk = this.marks[this.markI++ % this.marks.length]; mk.position.x = l.plants[l.plants.length - 1]; mk.position.y = -0.05 * S; l.plantMarked = l.plants.length;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------- sim
+const SIM = {
+  creatures: [], t: 0, mode: 'fr', frT: 0.3, absT: 5.1, frCur: 0.3, absCur: 5.1, paused: false, pb: 1, legacy: false, strips: true, preset: 'walk', acc: 0,
+  step(dt) {
+    const a = 1 - Math.exp(-dt / 0.3);
+    this.frCur += (this.frT - this.frCur) * a; this.absCur += (this.absT - this.absCur) * a;
+    this.t += dt;
+    for (const c of this.creatures) {
+      const v = this.mode === 'fr' ? Math.sqrt(Math.max(this.frCur, 0) * G * c.h) : this.absCur;
+      c.update(v, dt, this.t);
+    }
+  },
+  snap() { this.frCur = this.frT; this.absCur = this.absT; },
+};
+for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) SIM.creatures.push(new Creature(PLAN_NAMES[r], c, r, c));
+
+// ---------------------------------------------------------------- render
+const glc = document.getElementById('gl'), ovc = document.getElementById('ov'), stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ canvas: glc, antialias: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+const ctx = ovc.getContext('2d');
+let CW = 1, CH = 1;
+function layout() {
+  const bar = document.getElementById('bar').getBoundingClientRect();
+  const narrow = window.innerWidth < 700;
+  const w = window.innerWidth;
+  const ch = Math.max(narrow ? 120 : 150, Math.floor((window.innerHeight - bar.height) / 4));
+  stage.style.height = (ch * 4) + 'px';
+  CW = w; CH = ch * 4;
+  renderer.setSize(w, ch * 4, false);
+  ovc.width = w; ovc.height = ch * 4;
+}
+function cellRect(i) {
+  const col = i % 4, row = Math.floor(i / 4), cw = CW / 4, ch = CH / 4;
+  return { x: Math.round(col * cw) + 1, y: Math.round(row * ch) + 1, w: Math.round(cw) - 2, h: Math.round(ch) - 2 };
+}
+const GAIT_LABEL = { walk: 'walk', trot: 'trot', run: 'run', gallop: 'gallop', wave: 'wave', tripod: 'tripod', meta: 'metachronal' };
+function render() {
+  renderer.setScissorTest(true);
+  ctx.clearRect(0, 0, CW, CH);
+  const narrow = window.innerWidth < 700, fs = narrow ? 8 : 11;
+  ctx.font = fs + 'px ui-monospace, monospace'; ctx.textBaseline = 'top';
+  SIM.creatures.forEach((c, i) => {
+    const R = cellRect(i);
+    if (!c.cur) return;
+    c.place(R.w / R.h, SIM.t);
+    renderer.setViewport(R.x, CH - R.y - R.h, R.w, R.h); renderer.setScissor(R.x, CH - R.y - R.h, R.w, R.h);
+    renderer.render(c.scene, c.cam);
+    // labels
+    const P = c.cur; if (!P) return; const air = c.stanceCount === 0;
+    ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(R.x, R.y, narrow ? 120 : 218, fs * 3.7 + 4);
+    ctx.fillStyle = '#e8e6df';
+    ctx.fillText(`${c.plan} | ${c.col.name} | h ${c.h.toFixed(2)} m`, R.x + 3, R.y + 2);
+    ctx.fillText(`v ${c.v.toFixed(2)} m/s  Fr ${c.fr.toFixed(2)}`, R.x + 3, R.y + 2 + fs * 1.2);
+    ctx.fillStyle = air ? '#f2c14e' : '#e8e6df';
+    ctx.fillText(`${SIM.legacy && c.vert ? 'TODAY ' : ''}${GAIT_LABEL[c.gait]} duty ${P.beta.toFixed(2)} ${(P.stride).toFixed(2)} m ${c.f.toFixed(1)} Hz${air ? ' AIR' : ''}`, R.x + 3, R.y + 2 + fs * 2.4);
+    if (SIM.strips) drawStrip(c, R);
+  });
+  const e = document.getElementById('clock');
+  e.textContent = `t ${SIM.t.toFixed(2)} s  x${SIM.pb}${SIM.paused ? ' paused' : ''}`;
+  window.__rendered = (window.__rendered || 0) + 1;
+}
+function drawStrip(c, R) {
+  const n = c.legs.length, rh = n > 6 ? 3 : 5, w = Math.min(130, R.w * 0.42), x0 = R.x + R.w - w - 4, y0 = R.y + 4;
+  ctx.fillStyle = 'rgba(235,235,225,.9)'; ctx.fillRect(x0, y0, w, n * rh + 2);
+  const win = 2 / Math.max(c.f, 1e-3), T = SIM.t;
+  ctx.fillStyle = '#000';
+  c.legs.forEach((l, k) => {
+    const ivs = l.iv;
+    while (ivs.length > 1 && ivs[0][1] !== null && ivs[0][1] < T - win * 1.2) ivs.shift();
+    for (const [a, b] of ivs) {
+      const t0 = Math.max(a, T - win), t1 = b === null ? T : b;
+      if (t1 < T - win) continue;
+      const xa = x0 + (t0 - (T - win)) / win * w, xb = x0 + (t1 - (T - win)) / win * w;
+      ctx.fillRect(xa, y0 + 1 + k * rh, Math.max(1, xb - xa), rh - 1);
+    }
+  });
+  // legs starting in stance when history begins
+  c.legs.forEach((l, k) => { if (l.iv.length === 0 && l.stance) ctx.fillRect(x0, y0 + 1 + k * rh, w, rh - 1); });
+}
+
+// ---------------------------------------------------------------- controls
+const $ = (id) => document.getElementById(id);
+function mkBtn(parent, label, fn, pressed) {
+  const b = document.createElement('button'); b.textContent = label; b.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  b.addEventListener('click', fn); parent.appendChild(b); return b;
+}
+function setPressed(group, btn) { group.forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false')); }
+const PRESETS = { walk: ['Walk (Fr 0.3)', 'fr', 0.3, false], trot: ['Trot / Run (Fr 1.2)', 'fr', 1.2, false], gallop: ['Gallop (Fr 3.2)', 'fr', 3.2, false],
+  game: ['Game 5.1 m/s (today)', 'abs', 5.1, true], gamefix: ['Game 5.1 m/s (Froude gait)', 'abs', 5.1, false] };
+const presetBtns = {};
+function setMode(m) {
+  SIM.mode = m; setPressed(modeBtns, m === 'fr' ? mFr : mAbs);
+  const s = $('speed');
+  if (m === 'fr') s.value = (Math.log(SIM.frT / 0.05) / Math.log(4 / 0.05)).toFixed(3); else s.value = (SIM.absT / 12).toFixed(3);
+  updSpd();
+}
+function updSpd() { $('spd').textContent = SIM.mode === 'fr' ? `Fr ${SIM.frT.toFixed(2)} (same Fr for all)` : `${SIM.absT.toFixed(1)} m/s (same speed for all)`; }
+function applyPreset(k, instant) {
+  const p = PRESETS[k]; SIM.preset = k; SIM.legacy = p[3];
+  if (p[1] === 'fr') SIM.frT = p[2]; else SIM.absT = p[2];
+  setLegacy(p[3]); setMode(p[1]); if (instant) SIM.snap();
+  setPressed(Object.values(presetBtns), presetBtns[k]);
+}
+function setLegacy(b) { SIM.legacy = b; setPressed(gaitBtns, b ? gLeg : gAuto); }
+$('presets').insertAdjacentHTML('beforeend', '');
+for (const k of Object.keys(PRESETS)) presetBtns[k] = mkBtn($('presets'), PRESETS[k][0], () => applyPreset(k));
+const modeBtns = []; const mFr = mkBtn($('modes'), 'Froude', () => setMode('fr'), true), mAbs = mkBtn($('modes'), 'Absolute m/s', () => setMode('abs'));
+modeBtns.push(mFr, mAbs);
+const gaitBtns = []; const gAuto = mkBtn($('gaitmode'), 'Auto (Froude)', () => setLegacy(false), true), gLeg = mkBtn($('gaitmode'), "Today (forced walk)", () => setLegacy(true));
+gaitBtns.push(gAuto, gLeg);
+$('speed').addEventListener('input', (e) => {
+  const u = parseFloat(e.target.value);
+  if (SIM.mode === 'fr') SIM.frT = 0.05 * Math.pow(4 / 0.05, u); else SIM.absT = Math.max(0.05, u * 12);
+  setPressed(Object.values(presetBtns), null); updSpd();
+});
+const bPause = mkBtn($('ctl'), 'Pause', () => { SIM.paused = !SIM.paused; bPause.setAttribute('aria-pressed', SIM.paused); bPause.textContent = SIM.paused ? 'Play' : 'Pause'; });
+mkBtn($('ctl'), 'Step frame', () => { SIM.paused = true; bPause.setAttribute('aria-pressed', 'true'); bPause.textContent = 'Play'; advance(1 / 60); });
+const bStrips = mkBtn($('ctl'), 'Footfall strips', () => { SIM.strips = !SIM.strips; bStrips.setAttribute('aria-pressed', SIM.strips); }, true);
+const pbBtns = [];
+for (const s of [0.25, 0.5, 1]) pbBtns.push(mkBtn($('pb'), s + 'x', function () { SIM.pb = s; setPressed(pbBtns, this); }, s === 1));
+
+const DT = 1 / 120;
+function advance(sec) { let n = Math.max(1, Math.round(sec / DT)); while (n--) SIM.step(DT); }
+
+// ---------------------------------------------------------------- measurement and self-check
+function settleAll(maxSec) {
+  for (const c of SIM.creatures) c.strideSince = 0;
+  let n = 0;
+  const maxN = maxSec / DT;
+  for (; n < maxN; n++) {
+    SIM.step(DT);
+    if (SIM.creatures.every((c) => c.bl >= 1 && c.strideSince >= 3)) break;
+  }
+  return n * DT;
+}
+function measure(strides) {
+  for (const c of SIM.creatures) { c.clearMetrics(); c.strideSince = 0; }
+  let n = 0; const maxN = 90 / DT;
+  for (; n < maxN; n++) { SIM.step(DT); if (SIM.creatures.every((c) => c.strideSince >= strides)) break; }
+  return SIM.creatures.map((c) => {
+    const m = c.m, legs = c.legs, T = SIM.t - c.mT0;
+    const slip = Math.max(...legs.map((l) => l.slip));
+    const duty = legs.reduce((s, l) => s + l.stN / m.n, 0) / legs.length;
+    let strideM = 0, cnt = 0, cad = 0;
+    for (const l of legs) {
+      for (let i = 1; i < l.plants.length; i++) { strideM += l.plants[i] - l.plants[i - 1]; cnt++; }
+      if (l.plants.length > 1) cad += (l.plants.length - 1) / (l.plantT[l.plantT.length - 1] - l.plantT[0]);
+    }
+    // analytic coverage to know whether this gait should have a flight phase
+    const P = c.cur; let flightExp = 0;
+    { const N = 720; let miss = 0; for (let i = 0; i < N; i++) { const ph = i / N; let any = false; for (const o of P.off) if (frac(ph - o + 1) < P.beta) { any = true; break; } if (!any) miss++; } flightExp = miss / N; }
+    return {
+      plan: c.plan, col: c.col.name, h: c.h, v: c.v, fr: c.fr, gait: c.gait, beta: P.beta, betaMeasured: duty,
+      stride: P.stride, strideMeasured: cnt ? strideM / cnt : NaN, cadence: c.f, cadenceMeasured: cad / legs.length,
+      slipMm: slip * 1000, flight: m.noStance / m.n, flightExpected: flightExp, kneeBad: m.kneeBad, cross: m.cross, below: m.below, lane: m.laneErr,
+      clampN: m.clampN, drag: m.drag, safetyFrac: m.safetyN / m.n, hipMin: m.hipMin, hipMax: m.hipMax, capped: !!P.capped, lag: P.lag, nLegs: legs.length,
+    };
+  });
+}
+function check(rows, name, expectNoFlightClass) {
+  const bad = [];
+  for (const r of rows) {
+    const id = `${name} ${r.plan}/${r.col}`;
+    if (r.slipMm >= 1) bad.push(`${id}: stance slip ${r.slipMm.toFixed(2)} mm >= 1`);
+    if (Math.abs(r.betaMeasured - r.beta) > 0.02) bad.push(`${id}: measured duty ${r.betaMeasured.toFixed(3)} vs ${r.beta.toFixed(3)}`);
+    if (r.gait === 'walk' && r.beta < 0.5) bad.push(`${id}: walk duty ${r.beta.toFixed(2)} < 0.5`);
+    if ((r.gait === 'trot' || r.gait === 'run' || r.gait === 'gallop') && r.beta >= 0.5) bad.push(`${id}: ${r.gait} duty ${r.beta.toFixed(2)} >= 0.5`);
+    if ((r.gait === 'tripod' || r.gait === 'wave' || r.gait === 'meta') && r.beta < 0.5) bad.push(`${id}: ${r.gait} duty < 0.5`);
+    const hasFlight = HAS_FLIGHT_CLASS[r.gait];
+    if (!hasFlight && r.flight > 0) bad.push(`${id}: flight phase ${r.flight.toFixed(3)} in a gait without one (${r.gait})`);
+    if (hasFlight && !(r.flight > 0.02)) bad.push(`${id}: ${r.gait} has no flight phase (${r.flight.toFixed(3)})`);
+    if (Math.abs(r.flight - r.flightExpected) > 0.02) bad.push(`${id}: flight ${r.flight.toFixed(3)} vs analytic ${r.flightExpected.toFixed(3)}`);
+    if (r.kneeBad) bad.push(`${id}: knee bent the wrong way in ${r.kneeBad} leg-frames`);
+    if (r.cross) bad.push(`${id}: same-side feet crossed ${r.cross} times`);
+    if (r.below) bad.push(`${id}: ${r.below} points below ground`);
+    if (r.lane > 1e-3) bad.push(`${id}: left its lane by ${r.lane}`);
+    if (r.drag) bad.push(`${id}: foot dragged ${r.drag} times (out of reach)`);
+    if (r.clampN) bad.push(`${id}: IK reach clamped ${r.clampN} times`);
+    if (Math.abs(r.strideMeasured - r.stride) / r.stride > 0.03) bad.push(`${id}: measured stride ${r.strideMeasured.toFixed(3)} vs ${r.stride.toFixed(3)}`);
+  }
+  return bad;
+}
+function runCheck(presets) {
+  const keep = { mode: SIM.mode, frT: SIM.frT, absT: SIM.absT, legacy: SIM.legacy, paused: SIM.paused, t: SIM.t };
+  const table = {}, fails = [];
+  for (const k of presets) {
+    const p = PRESETS[k]; SIM.legacy = p[3]; SIM.mode = p[1]; if (p[1] === 'fr') SIM.frT = p[2]; else SIM.absT = p[2]; SIM.snap();
+    settleAll(120);
+    const rows = measure(4); table[k] = rows;
+    if (!p[3]) fails.push(...check(rows, k)); else { /* today's forced walk is reported, not asserted */ }
+  }
+  Object.assign(SIM, { mode: keep.mode, frT: keep.frT, absT: keep.absT, legacy: keep.legacy }); SIM.snap();
+  return { pass: fails.length === 0, fails, table };
+}
+
+window.GL = {
+  SIM, render, advance, runCheck, measure, settleAll,
+  preset(k, instant = true) { applyPreset(k, instant); },
+  pause(b) { SIM.paused = b; },
+  settle(sec) { SIM.snap(); return settleAll(sec); },
+};
+
+// ---------------------------------------------------------------- main loop
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (!SIM.paused && !window.__manual) { SIM.acc += dt * SIM.pb; let n = 0; while (SIM.acc >= DT && n++ < 12) { SIM.step(DT); SIM.acc -= DT; } if (n >= 12) SIM.acc = 0; }
+  render();
+  requestAnimationFrame(frame);
+}
+window.addEventListener('resize', () => { layout(); render(); });
+layout();
+const q = new URLSearchParams(location.search);
+applyPreset(PRESETS[q.get('preset')] ? q.get('preset') : 'walk', true);
+if (q.get('test')) {
+  window.__manual = true;
+  const res = runCheck(['walk', 'trot', 'gallop', 'gamefix', 'game']);
+  window.__gaitlabCheck = res;
+  const el = $('check'); el.textContent = res.pass ? 'self-check PASS' : `self-check FAIL (${res.fails.length})`; el.className = res.pass ? 'pass' : 'fail';
+  console.log('gaitlab self-check', res.pass ? 'PASS' : 'FAIL', JSON.stringify(res.fails));
+  window.__manual = false; applyPreset('walk', true); settleAll(60);
+}
+window.__ready = true;
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

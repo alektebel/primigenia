@@ -1,0 +1,317 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "lengua_de_marea",
+  "name": {
+    "en": "Lengua de marea"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "shore",
+    "diet": "cinta_de_marea, salvisca, pan_de_humus, salt, drifting carcass bits",
+    "active": "nocturnal",
+    "predators": [
+      "brujula"
+    ],
+    "trophic": "primary_consumer",
+    "role": "algae_scraper"
+  },
+  "body": "18 cm length, 350 g mass",
+  "chains": [
+    {
+      "id": "lengua_de_marea.c1",
+      "trait": "Ventral mucus-ribbon grips wet basalt",
+      "links": [
+        "Strong wind and wave force (F19) tear unanchored bodies",
+        "Selection favors streamlined, limbless hydrostatic skeletons",
+        "Ventral gland secretes tenacious adhesive mucus",
+        "Secure grip enables prolonged algae scraping"
+      ],
+      "roots": [
+        "F19",
+        "F4",
+        "F20"
+      ],
+      "skill": {
+        "id": "lengua_de_marea.adhere",
+        "name": {
+          "en": "Adhere"
+        },
+        "role": "Defence",
+        "effect": "The creature clings tightly to wet stone, resisting strong currents while moving with deliberate slowness.",
+        "numbers": {}
+      },
+      "weakness": "Dries out and loses grip if exposed >4 hours without tide or fog",
+      "observe": [
+        "Glistens with thick mucus on flanks",
+        "Hugs rock face in tight spiral coils",
+        "Releases sudden jet of water to break grip"
+      ],
+      "journal": {
+        "en": "They drink the air and hold the stone."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "At 350 g and limbless, storm surf and F19 wind load favour low profile and strong substrate adhesion on steep andesite shore (F9). Tenacious pedal or ventral mucus is standard for intertidal grazers; 1.6 bar air does not weaken underwater adhesion much but does make emersion drying real when waves fail. Spiral resting posture and mucus glint match observable intertidal behaviour.",
+        "fixes": [
+          "At 350 g and limbless, storm surf and F19 wind load favour low profile and strong substrate adhesion on steep andesite shore (F9). Tenacious pedal or ventral mucus is standard for intertidal grazers; 1.6 bar air does not weaken underwater adhesion much but does make emersion drying real when waves fail. Spiral resting posture and mucus glint match observable intertidal behaviour."
+        ],
+        "analogues": [
+          {
+            "organism": "Limpet (Patella) and chiton (Acanthopleura) foot mucus adhesion and suction on rock; nemertean epizoic mucus ribbons on hard substrate.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "denny_1993_water"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "lengua_de_marea.c2",
+      "trait": "Electroreceptive pores detect buried crusts",
+      "links": [
+        "Turbid coastal waters (F20) limit visual foraging",
+        "Selection favours non-visual substrate sensing",
+        "Ampullae-like pores along lateral line detect bioelectric fields",
+        "Algae and crusts show weak bioelectric signatures on rock"
+      ],
+      "roots": [
+        "F20",
+        "F15"
+      ],
+      "skill": {
+        "id": "lengua_de_marea.glow_track",
+        "name": {
+          "en": "Glow-Track"
+        },
+        "role": "Poke",
+        "effect": "Faint traces guide it to hidden food nearby, which it gathers with eager precision.",
+        "numbers": {}
+      },
+      "weakness": "Disrupted by sudden electrical storms or high-mineral runoff",
+      "observe": [
+        "Pulsating pores along flanks",
+        "Flicks tongue against rock without looking",
+        "Tracks bioelectric hum of grazing herds"
+      ],
+      "journal": {
+        "en": "They taste the stone's hidden hum."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Reframe Glow-Track as short-range (~5–15 cm) substrate scan for live cinta_de_marea and microbial crusts, stacked with lateral-line water motion and contact chemoreception; drop herd tracking from observe text; storms and metal-rich seep water (F23) raise local conductance and mask weak fields, matching the stated weakness.",
+        "fixes": [
+          "Reframe Glow-Track as short-range (~5–15 cm) substrate scan for live cinta_de_marea and microbial crusts, stacked with lateral-line water motion and contact chemoreception; drop herd tracking from observe text; storms and metal-rich seep water (F23) raise local conductance and mask weak fields, matching the stated weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Little skate (Leucoraja erinacea) and marine catfish (Plotosus) ampullary prey detection; biofilm microvolt gradients on electrodes (from memory, not intertidal hero sense).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "lengua_de_marea.c3",
+      "trait": "Nocturnal activity avoids midday desiccation",
+      "links": [
+        "Dense air still dries thin skin under sun (F3, F14)",
+        "38-minute twilight and 26-h day (F3) stretch dark hours",
+        "Shifted activity to lunar cycle and fog windows",
+        "Conserves water and avoids diurnal predators"
+      ],
+      "roots": [
+        "F3",
+        "F14",
+        "F16",
+        "F8"
+      ],
+      "skill": {
+        "id": "lengua_de_marea.night_shift",
+        "name": {
+          "en": "Night Shift"
+        },
+        "role": "Passive",
+        "effect": "It scurries swiftly through the shadows, slipping past predators with quiet grace.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden fog clearance or moonless blackouts",
+      "observe": [
+        "Shrinks into rock crevices at dawn",
+        "Moves only under cloud cover or moonlight",
+        "Leaves silvery mucus trails that vanish in dew"
+      ],
+      "journal": {
+        "en": "They wait for the dark to feed."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Low-tide emersion on dark basalt still drives water loss even in humid 1.6 bar air; shifting feeding to night, moonlit periods (F6), and foggy dawns (F8, F16) is classic intertidal scheduling. Long twilight (F3) extends safe exit windows. West-coast shore (F18) is wetter than the start valley, so desiccation is moderate not extreme; nocturnality still pays on spring midday low tides.",
+        "fixes": [
+          "Low-tide emersion on dark basalt still drives water loss even in humid 1.6 bar air; shifting feeding to night, moonlit periods (F6), and foggy dawns (F8, F16) is classic intertidal scheduling. Long twilight (F3) extends safe exit windows. West-coast shore (F18) is wetter than the start valley, so desiccation is moderate not extreme; nocturnality still pays on spring midday low tides."
+        ],
+        "analogues": [
+          {
+            "organism": "Nocturnal limpets and intertidal gastropods; littorinid activity tied to tide and shade (Underwood intertidal synthesis).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "lengua_de_marea.c4",
+      "trait": "Silica-reinforced radula scrapes hard crusts",
+      "links": [
+        "Turbid shallows host tough, mineral-rich producers (D24)",
+        "Water density increases drag on weak mandibles (F11)",
+        "Ingestion of basalt grit and silica sands",
+        "Lining stomach with grit powers a self-sharpening radula"
+      ],
+      "roots": [
+        "F11"
+      ],
+      "skill": {
+        "id": "lengua_de_marea.stone_tongue",
+        "name": {
+          "en": "Stone Tongue"
+        },
+        "role": "Engage",
+        "effect": "It scrapes away tough outer layers to draw out rich nourishment, and its shedding skin hardens into a protective shell.",
+        "numbers": {}
+      },
+      "weakness": "Requires periodic grit consumption; starvation if only soft algae available",
+      "observe": [
+        "Grinds basalt flakes between jaws",
+        "Shed radulae found near feeding grounds",
+        "Stomach contents turn grey under scrutiny"
+      ],
+      "journal": {
+        "en": "They carry their own whetstone."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Stone Tongue: radula cusps incorporate silica or basalt wear products at secretion (chiton analogue); grit swallowing is periodic F22 maintenance for gut abrasion and minerals, with +armor on molt referring to reinforced cusps or dorsal scales, not gastrolith-sharpened tongue.",
+        "fixes": [
+          "Stone Tongue: radula cusps incorporate silica or basalt wear products at secretion (chiton analogue); grit swallowing is periodic F22 maintenance for gut abrasion and minerals, with +armor on molt referring to reinforced cusps or dorsal scales, not gastrolith-sharpened tongue."
+        ],
+        "analogues": [
+          {
+            "organism": "Chiton (Cryptochiton) magnetite-silica teeth; limpet and trochid radula wear on rocky substrate; optional trace grit in crop like some herbivorous fish.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "brujula",
+      "kind": "predation",
+      "note": "Brújula patrols the same rocky shore at dawn and hunts resting juveniles"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "limbless eel-snail hybrid evolved from shallow reef crawlers"
+  },
+  "temperament": "Cautious, tide-dependent",
+  "secrets": [
+    "Grit digestion: they swallow crushed basalt to power their radula."
+  ],
+  "moments": [
+    "At spring low tide, hundreds line the newly exposed rock like dark ribbons, breathing in the damp air until the sea returns."
+  ],
+  "journal": [
+    {
+      "en": "Tide pulls back, and they unspool."
+    },
+    {
+      "en": "No legs, yet they hold fast to stone."
+    }
+  ]
+}

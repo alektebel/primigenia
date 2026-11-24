@@ -12,12 +12,14 @@ extends RefCounted
 ## Leg parts are built by make_leg() instead (they are IK chains).
 
 const DEFAULT_ASSET_DIR := "res://creature/assets/"
+const WingData := preload("res://creature/creature_wing.gd")
 const X0 := Vector3(1, 0, 0)
 const Y := Vector3(0, 1, 0)
 const ZA := Vector3(0, 0, 1)
 
 ## rig.js LIB metadata. cat/name/cost are replaced by parts.json entries.
 const META := {
+	"espinas_dorsales": {"p": ["size"]},
 	"fauces": {"bite": 3, "sing": 1, "p": ["size"]},
 	"romo": {"bite": 1, "sing": 3, "p": ["size"]},
 	"pico": {"bite": 2, "sing": 2, "p": ["size"]},
@@ -44,8 +46,11 @@ const META := {
 	"eye_triad": {"responsive": true},
 	"wing_glider": {"mount": "upright", "body_minimum": .8, "responsive": true},
 	"wing_insect": {"mount": "upright", "body_minimum": .8, "responsive": true},
+	"wing_vane": {"mount": "upright", "body_minimum": .8, "responsive": true},
+	"wing_flap": {"mount": "upright", "body_minimum": .8, "responsive": true},
 	"frill_fan": {"responsive": true},
 	"sac_spitter": {"mount": "body", "responsive": true},
+	"fire_gland": {"mount": "body", "responsive": true},
 	"arm_grasper": {"mount": "upright", "body_minimum": .65, "responsive": true},
 	"arm_smasher": {"mount": "upright", "body_minimum": .65, "responsive": true},
 	"tail_paddle": {"mount": "body", "body_minimum": 1, "responsive": true},
@@ -312,7 +317,7 @@ func make(p: Dictionary, off: Vector3, r := .6, context := {}) -> Node3D:
 		return _make_glb(type, p, off)
 	if m.get("responsive", false):
 		return _make_creator(type, p, off, r, context)
-	var g := _make_classic(type, p, off)
+	var g := _make_classic(type, p, off, r)
 	if m.get("category") == "mouths":
 		# Older procedural mouths sit .3*size behind the mount.
 		var inner := _group(null, "inner")
@@ -344,11 +349,19 @@ func _mouth(kind: String, p: Dictionary, off: Vector3) -> Node3D:
 	var hr: float = .55 * p["size"]
 	var jaw := _group(g, "jaw")
 	g.set_meta("jaw", jaw)
-	var teeth := func(par: Node3D, zs: Array, xw: float, y: float, up: bool):
+	# Teeth stand on the rim of the jaw ellipsoid they belong to (base slightly inside it), not on a straight line:
+	# the mouth narrows towards the snout tip, so a fixed x would leave the front teeth outside the head.
+	var teeth := func(par: Node3D, zs: Array, c: Vector3, r: Vector3, up: bool):
 		for sx in [-1.0, 1.0]:
 			for i in zs.size():
+				var w := clampf((zs[i] - c.z) / r.z, -.85, .85)
+				var ring := sqrt(1.0 - w * w)
+				var a := .8 if up else .75
+				var x: float = sx * r.x * ring * cos(a) * .9
+				var y: float = c.y + (1.0 if up else -1.0) * r.y * ring * sin(a) * .9
+				var z: float = c.z + w * r.z
 				var t := _mesh(CreatureGeo.cone(hr * .055, hr * (.2 + .06 * (i % 2)), 8).translate(0, hr * .1, 0), "tooth", par)
-				t.position = Vector3(sx * xw * (1 - i * .07), y, zs[i])
+				t.position = Vector3(x, y, z)
 				set_euler(t, 0.0 if up else PI, 0, sx * (-.12 if up else .12))
 	if kind == "fauces":
 		_mesh(CreatureGeo.ell(hr * .62, hr * .44, hr * 1.3, 0, hr * .1, hr * .55).skinify(off, .3), "skin", g)
@@ -357,11 +370,11 @@ func _mouth(kind: String, p: Dictionary, off: Vector3) -> Node3D:
 		var zs := []
 		for z in [.35, .65, .95, 1.25, 1.5, 1.7]:
 			zs.append(z * hr)
-		teeth.call(g, zs, hr * .47, -hr * .12, false)
+		teeth.call(g, zs, Vector3(0, hr * .1, hr * .55), Vector3(hr * .62, hr * .44, hr * 1.3), false)
 		var zj := []
 		for z in zs:
 			zj.append(z + hr * .1)
-		teeth.call(jaw, zj, hr * .4, hr * .1, true)
+		teeth.call(jaw, zj, Vector3(0, 0, hr * .75), Vector3(hr * .52, hr * .2, hr * 1.15), true)
 		for sx in [-1, 1]:
 			_mesh(CreatureGeo.ell(hr * .05, hr * .035, hr * .07, sx * hr * .17, hr * .3, hr * 1.68), "dark", g)
 	elif kind == "romo":
@@ -386,7 +399,7 @@ func _eye(p: Dictionary, off: Vector3, stalk: bool) -> Node3D:
 		_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, L * .35 * u * u, L * u), .09 * p["size"], 10, 10, X0).skinify(off, .3), "skin", g)
 		e.position = Vector3(0, L * .35, L)
 	else:
-		e.position.z = er * .3
+		e.position.z = -er * .3   # sunk in a socket: about a third of the ball is outside the skin, the lids close over the rest
 	g.set_meta("lid", _eyeball(e, er, off, str(p.get("pupil", "auto"))))
 	return g
 
@@ -396,13 +409,13 @@ func _eye(p: Dictionary, off: Vector3, stalk: bool) -> Node3D:
 func _eyeball(e: Node3D, er: float, off: Vector3, pupil := "auto") -> MeshInstance3D:
 	var kind := pupil if pupil != "auto" else str(mats.bio.get("pupil", "round"))
 	_mesh(CreatureGeo.sphere(er, 24, 16), "eye_white", e)
-	_mesh(CreatureGeo.ell(er * .66, er * .66, er * .3, 0, 0, er * .72), mats.iris_for(kind), e)
-	var cor := _mesh(CreatureGeo.ell(er * .74, er * .74, er * .5, 0, 0, er * .62), mats.cornea, e)
+	_mesh(CreatureGeo.ell(er * .74, er * .74, er * .3, 0, 0, er * .78), mats.iris_for(kind), e)
+	var cor := _mesh(CreatureGeo.ell(er * .82, er * .82, er * .5, 0, 0, er * .68), mats.cornea, e)
 	cor.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var lid := _mesh(CreatureGeo.sphere(er * 1.13, 18, 10, 0, 6.2832, 0, 1.25).skinify(off, .6), "skin", e)
+	var lid := _mesh(CreatureGeo.sphere(er * 1.13, 18, 10, 0, 6.2832, 0, 1.42).skinify(off, .6), "skin", e)
 	lid.name = "lid"
 	set_euler(lid, -.3, 0, 0)
-	var low := _mesh(CreatureGeo.sphere(er * 1.1, 18, 8, 0, 6.2832, 2.4, PI - 2.4).skinify(off, .3), "skin", e)
+	var low := _mesh(CreatureGeo.sphere(er * 1.1, 18, 8, 0, 6.2832, 2.12, PI - 2.12).skinify(off, .3), "skin", e)
 	low.name = "lid_low"
 	set_euler(low, .12, 0, 0)
 	return lid
@@ -412,7 +425,7 @@ static func _cone_z(r: float, h: float, z: float) -> CreatureGeo:
 	return CreatureGeo.cone(r, h, 10).rotate_x(PI / 2).translate(0, 0, z)
 
 
-func _make_classic(type: String, p: Dictionary, o: Vector3) -> Node3D:
+func _make_classic(type: String, p: Dictionary, o: Vector3, mount_r := .6) -> Node3D:
 	var s: float = p.get("size", 1.0)
 	match type:
 		"fauces", "romo", "pico":
@@ -482,7 +495,13 @@ func _make_classic(type: String, p: Dictionary, o: Vector3) -> Node3D:
 			var g := Node3D.new()
 			var L: float = p["len"]
 			var c: float = p["curve"]
-			_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, -c * L * .7 * u * u, L * u * (1 - .2 * c * u) - .06), .2 * s, 14, 12, X0), "bone", g)
+			_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, -c * L * .7 * u * u, L * u * (1 - .2 * c * u) - .06), minf(.2 * s, .24 * mount_r), 14, 12, X0), "bone", g)   # base thickness follows the head it grows from
+			return g
+		"espinas_dorsales":
+			var g := Node3D.new()
+			for k in 3:
+				var spike := _mesh(_cone_z(.12 * s, .6 * s, .25 * s), "bone", g)
+				spike.position.x = (k - 1) * .22 * s
 			return g
 		"pua":
 			var g := Node3D.new()
@@ -572,8 +591,14 @@ func _make_creator(type: String, p: Dictionary, off: Vector3, r: float, context:
 	if m.has("body_minimum"):
 		radius = max(r, float(context["body"]) * m["body_minimum"])
 	var s: float = p.get("size", 1.0) * radius / .6
+	if WingData.is_wing(type):
+		var wp: Dictionary = WingData.params(type, p)
+		if float(wp.span) > 0.0:
+			s = float(p.get("size", 1.0)) * float(wp.span) / float(WingData.family(type).base_tip)   # the genome states the span in metres
 	var g := _creator_shape(type, p, r, s, context)
 	_scale_tree(g, s, off, true)
+	if WingData.is_wing(type) and g.has_meta("wing_base"):
+		g.set_meta("wing_info", WingData.info(type, p, float(g.get_meta("wing_base").area), s, 1.0))
 	g.set_meta("mount_radius", r)
 	g.set_meta("part_scale", s)
 	return g
@@ -588,6 +613,113 @@ func _scale_tree(n: Node, s: float, off: Vector3, is_root: bool) -> void:
 		geo.skinify(off, .42 if n.get_meta("material_region", "") == "membrane" else null)
 	for c in n.get_children():
 		_scale_tree(c, s, off, false)
+
+
+# ---- wings (creature_wing.gd for the families and the optional `wing` block) -----------------------------------------
+
+## The unit-size outlines of a wing family, the chord factor `zk` applied to z. {polys: [[Vector3]], ...}
+func _wing_layout(type: String, w: Dictionary, zk: float) -> Dictionary:
+	var Z := func(v: Vector3) -> Vector3: return Vector3(v.x, v.y, v.z * zk)
+	var out := {"polys": [], "fingers": [], "vanes": [], "ribs": []}
+	match type:
+		"wing_glider":
+			var fingers := [Vector3(.5, .5, .35), Vector3(1.35, .85, .15), Vector3(2.25, .9, -.5), Vector3(1.85, .6, -1.3), Vector3(.9, .25, -1.65)]
+			var tail := [Vector3(.35, .06, -1.2), Vector3(0, -.12, -.8)]
+			if w.anchor == "hind":
+				tail = [Vector3(.4, .02, -1.65), Vector3(0, -.12, -1.25)]
+			elif w.anchor == "none":
+				tail = [Vector3(.3, .06, -.95), Vector3(0, -.1, -.5)]
+			var outline := [Vector3(0, 0, .08), fingers[0], fingers[1], fingers[2], Vector3(1.75, .65, -.75), fingers[3], Vector3(1.25, .34, -1.15), fingers[4]] + tail
+			out.polys.append(outline.map(Z))
+			var n := clampi(int(w.spars), 1, 5)
+			for i in n:
+				out.fingers.append(Z.call(fingers[int(roundf(float(i) * 4.0 / float(maxi(n - 1, 1)))) if n > 1 else 2]))
+		"wing_insect":
+			var fore := [Vector3(0, 0, 0), Vector3(.7, .6, .6), Vector3(1.65, .92, .7), Vector3(2.25, 1, .35), Vector3(1.55, .65, .15), Vector3(.45, .2, -.05)]
+			var hind := [Vector3(0, -.04, -.12), Vector3(.5, .1, -.45), Vector3(1.3, .4, -.75), Vector3(1.7, .48, -1.2), Vector3(1.1, .2, -1.35), Vector3(.3, -.05, -.65)]
+			out.polys.append(fore.map(Z))
+			out.polys.append(hind.map(Z))
+			for q in [fore[2], fore[3], fore[4], hind[2], hind[3]]:
+				out.fingers.append(Z.call(q))
+		"wing_vane":
+			# An arm panel to a wrist, then a fan of stiff vanes (each a leaf on its own hinge so the fan can close).
+			out.polys.append([Vector3(0, 0, .2), Vector3(.5, .22, .28), Vector3(.95, .3, .2), Vector3(.95, .22, -.75), Vector3(.5, .1, -.8), Vector3(0, -.05, -.55)].map(Z))
+			var n := clampi(int(w.spars), 1, 5)
+			for i in n:
+				var u := 0.5 if n == 1 else float(i) / float(n - 1)
+				var psi := deg_to_rad(lerpf(10.0, -55.0, u))
+				var vlen := 1.05 - 0.2 * absf(u - 0.35)
+				var wd := 0.26 * zk
+				out.vanes.append({"pivot": Z.call(Vector3(.95, .28, .1)), "angle": -psi, "len": vlen, "width": wd,
+					"poly": [Vector3(0, 0, -wd * .5), Vector3(vlen * .5, .03, -wd * .55), Vector3(vlen, 0, 0), Vector3(vlen * .5, .03, wd * .55), Vector3(0, 0, wd * .5)]})
+		"wing_flap":
+			# Skin stretched on a fan of ribs from the shoulder, scalloped between the rib tips.
+			var n := clampi(int(w.spars), 1, 5)
+			var tips := []
+			for i in n:
+				var u := 0.5 if n == 1 else float(i) / float(n - 1)
+				var psi := deg_to_rad(lerpf(25.0, -105.0, u))
+				tips.append(Z.call(Vector3(1.6 * cos(psi), .12, 1.6 * sin(psi) + .1)))
+			var outline := [Z.call(Vector3(0, 0, .1))]
+			for i in n:
+				outline.append(tips[i])
+				if i < n - 1:
+					var mid: Vector3 = ((tips[i] as Vector3) + (tips[i + 1] as Vector3)) * .5
+					outline.append(Vector3(mid.x * .82, .06, (mid.z - .1 * zk) * .82 + .1 * zk))
+			out.polys.append(outline)
+			out.ribs = tips
+	return out
+
+
+func _wing_area(layout: Dictionary) -> float:
+	var a := 0.0
+	for poly in layout.polys:
+		a += WingData.polygon_area(poly)
+	for v in layout.vanes:
+		a += WingData.polygon_area(v.poly)
+	return a
+
+
+func _wing_shape(type: String, p: Dictionary, g: Node3D) -> void:
+	var w: Dictionary = WingData.params(type, p)
+	var wing := _group(g, "wing")
+	g.set_meta("wing", wing)
+	_tissue(CreatureGeo.ell(.16, .18, .22), "skin", g)
+	var zk := 1.0
+	if float(w.breadth) > 0.0:
+		var fam: Dictionary = WingData.family(type)
+		var a0 := _wing_area(_wing_layout(type, w, 1.0))
+		zk = float(w.breadth) / maxf(a0 / (float(fam.base_tip) * float(fam.base_tip)), 1e-4)
+	var layout := _wing_layout(type, w, zk)
+	g.set_meta("wing_base", {"area": _wing_area(layout), "zk": zk})
+	match type:
+		"wing_glider":
+			_sail(layout.polys[0], wing, "glider")
+			for f in layout.fingers:
+				_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(f.x * .48, f.y * .65 + .08, f.z * .48), f], [.045, .032, .009]), "keratin", wing)
+		"wing_insect":
+			_sail(layout.polys[0], wing, "insect")
+			_sail(layout.polys[1], wing, "insect")
+			for q in layout.fingers:
+				_tissue(CreatureGeo.sweep([Vector3.ZERO, q * .5, q], [.023, .016, .005]), "keratin", wing)
+				_tissue(CreatureGeo.sweep([q * .45, Vector3(q.x * .72, q.y * .7, q.z * .72 + .1), Vector3(q.x * .85, q.y * .85, q.z * .85 + .14)], [.009, .007, .003]), "keratin", wing)
+		"wing_vane":
+			_sail(layout.polys[0], wing, "membrane")
+			_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(.45, .2, .1 * zk), Vector3(.95, .28, .1 * zk)], [.05, .04, .03]), "keratin", wing)
+			var nodes := []
+			for v in layout.vanes:
+				var vg := _group(wing, "vane")
+				vg.position = v.pivot
+				vg.rotation.y = v.angle
+				vg.set_meta("rest_angle", v.angle)
+				_sail(v.poly, vg, "membrane")
+				_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(v.len * .5, .02, 0), Vector3(v.len, 0, 0)], [.02, .015, .005]), "keratin", vg)
+				nodes.append(vg)
+			wing.set_meta("vanes", nodes)
+		"wing_flap":
+			_sail(layout.polys[0], wing, "membrane")
+			for t in layout.ribs:
+				_tissue(CreatureGeo.sweep([Vector3(0, 0, .1 * zk), Vector3(t.x * .5, .08, (t.z - .1 * zk) * .5 + .1 * zk), t], [.04, .03, .008]), "keratin", wing)
 
 
 func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Dictionary) -> Node3D:
@@ -643,25 +775,8 @@ func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Di
 				var e := _group(g, "eye")
 				e.position = Vector3(x, 0, .23 if x == 0.0 else .16)
 				_eyeball(e, .17, Vector3.ZERO, str(p.get("pupil", "auto")))
-		"wing_glider", "wing_insect":
-			var wing := _group(g, "wing")
-			g.set_meta("wing", wing)
-			_tissue(CreatureGeo.ell(.16, .18, .22), "skin", g)
-			if type == "wing_glider":
-				# Five spread fingers, with scalloped trailing webs returning to the flank.
-				var fingers := [Vector3(.5, .5, .35), Vector3(1.35, .85, .15), Vector3(2.25, .9, -.5), Vector3(1.85, .6, -1.3), Vector3(.9, .25, -1.65)]
-				_sail([Vector3(0, 0, .08), fingers[0], fingers[1], fingers[2], Vector3(1.75, .65, -.75), fingers[3], Vector3(1.25, .34, -1.15), fingers[4], Vector3(.35, .06, -1.2), Vector3(0, -.12, -.8)], wing, "glider")
-				for f in fingers:
-					_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(f.x * .48, f.y * .65 + .08, f.z * .48), f], [.045, .032, .009]), "keratin", wing)
-			else:
-				# Fore- and hindwings fan apart, leaving a visible notch between the sails.
-				var fore := [Vector3(0, 0, 0), Vector3(.7, .6, .6), Vector3(1.65, .92, .7), Vector3(2.25, 1, .35), Vector3(1.55, .65, .15), Vector3(.45, .2, -.05)]
-				var hind := [Vector3(0, -.04, -.12), Vector3(.5, .1, -.45), Vector3(1.3, .4, -.75), Vector3(1.7, .48, -1.2), Vector3(1.1, .2, -1.35), Vector3(.3, -.05, -.65)]
-				_sail(fore, wing, "insect")
-				_sail(hind, wing, "insect")
-				for q in [fore[2], fore[3], fore[4], hind[2], hind[3]]:
-					_tissue(CreatureGeo.sweep([Vector3.ZERO, q * .5, q], [.023, .016, .005]), "keratin", wing)
-					_tissue(CreatureGeo.sweep([q * .45, Vector3(q.x * .72, q.y * .7, q.z * .72 + .1), Vector3(q.x * .85, q.y * .85, q.z * .85 + .14)], [.009, .007, .003]), "keratin", wing)
+		"wing_glider", "wing_insect", "wing_vane", "wing_flap":
+			_wing_shape(type, p, g)
 		"frill_fan":
 			var fan := _group(g, "fan")
 			g.set_meta("sway", fan)
@@ -673,6 +788,15 @@ func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Di
 			_sail([Vector3.ZERO] + edge, fan)
 			for i in [0, 6, 12, 18, 24]:
 				_tissue(CreatureGeo.sweep([Vector3.ZERO, edge[i] * .5, edge[i]], [.035, .027, .008]), "keratin", fan)
+		"fire_gland":
+			# first-quest: the throat organ of the flamethrower. A warm sac under the jaw with a lit seam, a short horny nozzle
+			# that points forward, and an ember at its mouth (the fire cone starts there).
+			_tissue(CreatureGeo.ell(.26, .2, .24, 0, -.16, -.08), "skin", g)
+			_tissue(CreatureGeo.ell(.17, .13, .18, 0, -.13, -.06), "glow", g)
+			for side in [-1.0, 1.0]:
+				_tissue(CreatureGeo.sweep([Vector3(side * .12, -.1, -.2), Vector3(side * .2, -.2, -.02), Vector3(side * .16, -.16, .2)], [.035, .03, .02]), "keratin", g)
+			_tissue(CreatureGeo.sweep([Vector3(0, -.12, .08), Vector3(0, -.1, .32), Vector3(0, -.07, .56)], [.12, .08, .045]), "keratin", g)
+			_tissue(CreatureGeo.ell(.05, .05, .02, 0, -.07, .56), "glow", g)
 		"sac_spitter":
 			_tissue(CreatureGeo.ell(.24, .18, .16, 0, -.12, -.06), "skin", g)
 			var sacs := []
@@ -774,8 +898,7 @@ func make_leg(type: String, p: Dictionary, o: Vector3, a: float, b: float) -> Di
 	lo.name = "lower"
 	var ft := Node3D.new()
 	ft.name = "foot"
-	_mesh(CreatureGeo.cylinder(w * 1.5, w * 1.02, a, 14, 4).translate(0, -a / 2, 0).skinify(o, .15), "skin", up)
-	_mesh(CreatureGeo.ell(w * 1.75, a * .42, w * 2, 0, -a * .24, 0).skinify(o, .3), "skin", up)
+	_mesh(_upper_limb(w, a).skinify(o, .15), "skin", up)
 	_mesh(CreatureGeo.cylinder(w, w * .6, b, 14, 4).translate(0, -b / 2, 0).skinify(o, .05), "skin", lo)
 	_mesh(CreatureGeo.ell(w * 1.08, w * 1.08, w * 1.08).skinify(o, .1), "skin", lo)
 	if kind in ["runner", "sucker", "spring", "cloven", "gecko"]:
@@ -797,6 +920,33 @@ func make_leg(type: String, p: Dictionary, o: Vector3, a: float, b: float) -> Di
 			c.position = Vector3(cx * w, w * .3, w * (2.25 - abs(cx) * .4))
 			set_euler(c, 1.85, 0, -cx * .35)
 	return {"up": up, "lo": lo, "ft": ft}
+
+
+## Upper limb as one lathe along -Y: a flared root buried in the body (a fillet where limb meets torso, no ball), a
+## taper to the knee and a mild muscle swell. Replaces the old cylinder + thigh ellipsoid that read as a separate blob.
+static func _upper_limb(w: float, a: float) -> CreatureGeo:
+	var n := 14
+	var pts := []
+	var rad := []
+	# A54: the root is closed with a dome that sits behind the hip, inside the torso. The old open tube ended exactly at the
+	# hip on the skin, so on a thin chest its rim stuck out as a flat sail ("shoulders detached", owner note e165fe).
+	var r0: float = w * 1.3 * 1.4
+	var e0: float = w * 0.9                      # straight run behind the hip before the dome starts
+	var cap_n := 6
+	for j in cap_n:
+		var ph := 1.36 * float(cap_n - j) / float(cap_n)     # tip first; the pole itself (90 deg) is drawn at 78 deg
+		pts.append(Vector3(0, e0 + r0 * sin(ph), 0))
+		rad.append(r0 * cos(ph))
+	for i in n:
+		var u := float(i) / (n - 1)
+		var taper := lerpf(1.3, 1.02, u * u * (3.0 - 2.0 * u))
+		var swell := 1.0 + .08 * sin(PI * clampf(u / .75, 0.0, 1.0))
+		var flare := 1.0 + .4 * exp(-u / .06)
+		pts.append(Vector3(0, -a * u, 0))
+		rad.append(w * taper * swell * flare)
+	var g := CreatureGeo.alloc_tube(n + cap_n, 14)
+	g.fill_tube(pts, rad, 14, X0, false)
+	return g
 
 
 func _creator_foot(kind: String, w: float, o: Vector3, lo: Node3D, ft: Node3D, b: float) -> void:

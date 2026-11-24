@@ -21,7 +21,9 @@
       "Aquatic plants",
       "Soft shoots",
       "Algae"
-    ]
+    ],
+    "trophic": "primary_consumer",
+    "role": "grazer"
   },
   "body": "Stilt-wading legs with splayed toes distribute weight across soft tidal mud, preventing sinkage in 1.6-bar dense air. A braced, flexible neck and spear-strike beak allow rapid, low-energy plucking without torso bending, conserving stamina for quick escapes.",
   "chains": [

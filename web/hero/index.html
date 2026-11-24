@@ -1015,9 +1015,11 @@ gl_FragColor.rgb=aerial(gl_FragColor.rgb,vW);}`}));scene.add(water);
        float lod=offset.w;
        // World-anchored blades: wrap each offset toroidally onto a world grid of period 2R around center.
        float R=lod>.5?140.:44.;vec2 o=offset.xy,base=o+floor((center.xz-o)/(2.*R)+.5)*(2.*R);vec4 t=samp(base);
-       float d=length(base-center.xz),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,44.,d);
+       float d=length(base-center.xz),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,80.,d);
+       // Smooth height fade over the wider band so tall blades at the edge look like short stubble.
+       float tH=lod>.5?smoothstep(30.,48.,d):smoothstep(30.,80.,d);
        float rolling=.65+.55*sin(base.x*.033+sin(base.y*.027))*.5+t.b*.4;
-       float hg=mix(.48+.75*clump,.30+.40*clump,lod)*rolling*t.g*fade;
+       float hg=mix(.48+.75*clump,.30+.40*clump,lod)*rolling*t.g*fade*tH;
        float hx=samp(base+vec2(1.,0.)).r-samp(base-vec2(1.,0.)).r,hz=samp(base+vec2(0.,1.)).r-samp(base-vec2(0.,1.)).r;
        float light=max(dot(normalize(vec3(-hx,2.,-hz)),sun),0.);
        vec3 gp=vec3(base.x,t.r,base.y);float sh=1.,push=0.;vec2 pd=vec2(0.);
@@ -1043,7 +1045,10 @@ gl_FragColor.rgb=aerial(gl_FragColor.rgb,vW);}`}));scene.add(water);
       void main(){
        float h=vBlade.x,wave=meadowWave(vGrassWorld.xz,uTime);
        vec3 c=meadowColor(vField,vBlade.y,wave,vGrassWorld.xz);
-       c*=mix(${glv(LD.tuft0)},${glv(LD.tuft1)},vTuft);
+       // Fade the blade-colour accent (tuft variation) toward meadow ground colour
+       // so the near-grass ring blends invisibly at high-elevation views.
+       float tH=length(vGrassWorld.xz-center.xz)>44.?1.:length(vGrassWorld.xz-center.xz)<30.?1.:(60.-length(vGrassWorld.xz-center.xz))/30.;
+       c*=mix(${glv(LD.tuft0)},${glv(LD.tuft1)},vTuft*tH+.5*(1.-tH));
        c*=mix(${gf(LD.bladeLo)},${gf(LD.bladeHi)},smoothstep(0.,1.,h))*mix(${HL.shK},1.,vBlade.z);
        ${LD_BLADE_TIP}${LD_BLADE_SH}
        c+=vec3(.14,.20,.035)*pow(h,2.)*vBlade.w*vBlade.z;

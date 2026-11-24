@@ -17,6 +17,7 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
  * Tuning constants that are not per-move data.
  * ------------------------------------------------------------------ */
 #define CB_BLEED_DPT      0.6f    /* hp per tick while bleeding               */
+#define CB_BURN_DPT       0.5f    /* hp per tick while burning (the flame)    */
 #define CB_REGEN          1.6f    /* stamina per idle tick                     */
 #define CB_REGEN_DELAY    4       /* ticks after spending before regen starts  */
 #define CB_WATER_SPEED    0.6f
@@ -35,6 +36,10 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
 #define CB_GUARD_LEVEL_K  0.15f
 #define CB_LEVEL_DAMAGE   0.20f
 #define CB_LEVEL_STAMINA  0.10f
+#define CB_PECK_MIN_RUN   2.5f    /* surface gap (m) below which a peck has no run-up                  */
+#define CB_PECK_JAB_REACH 1.8f    /* reach of the standing jab                                          */
+#define CB_PECK_JAB_K     0.5f    /* damage of the standing jab, against the galloping peck             */
+#define CB_CHAIN_TICKS    7       /* a connected move within this many ticks makes the peck a jab (A64 chain) */
 /* facing turns by this much per tick: cos/sin(0.8 rad), as literals */
 #define CB_TURN_COS       0.69670671f
 #define CB_TURN_SIN       0.71735609f
@@ -49,12 +54,27 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
  * Balance rationale and acceptance evidence are in docs/COMBAT.md.
  * ------------------------------------------------------------------ */
 const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
-  { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH, CB_ROLE_BASIC, 0 },
-  { "charge",     10, 5, 2,  5.0f, 0.70f, 18.0f, 30.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE, CB_ROLE_ENGAGE, 0 },
-  { "guard",       1,14, 2,  0.0f, 2.40f,  1.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_GUARD,                  CB_PART_GUARD, CB_ROLE_DEFENCE, 0 },
-  { "spit",        6, 1, 4,  6.0f, 0.25f, 12.0f, 13.0f, CB_ST_SLOW,  20, CB_F_RANGED,                             CB_PART_SPIT, CB_ROLE_POKE, 0 },
-  { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 17.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL, CB_ROLE_CONTROL, 0 },
-  { "dodge",       1, 3, 2,  2.2f, 0.00f, 20.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE, CB_ROLE_DEFENCE, 0 },
+  { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH, CB_ROLE_BASIC, 0, 0, 0 },
+  { "charge",     10, 5, 2,  5.0f, 0.70f, 18.0f, 30.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE, CB_ROLE_ENGAGE, 0, 0, 0 },
+  { "guard",       1,14, 2,  0.0f, 2.40f,  1.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_GUARD,                  CB_PART_GUARD, CB_ROLE_DEFENCE, 0, 0, 0 },
+  { "spit",        6, 1, 4,  6.0f, 0.25f, 12.0f, 13.0f, CB_ST_SLOW,  20, CB_F_RANGED,                             CB_PART_SPIT, CB_ROLE_POKE, 0, 0, 0 },
+  { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 17.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL, CB_ROLE_CONTROL, 0, 0, 0 },
+  { "dodge",       1, 3, 2,  2.2f, 0.00f, 20.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE, CB_ROLE_DEFENCE, 0, 0, 0 },
+  { "claw_swipe", 3,1,3, 1.8f,1.4f,9,11, CB_ST_BLEED,8,0, CB_PART_CLAW,CB_ROLE_BASIC,0,0,0 },
+  /* A65: the peck is a galloping strike (dash like charge and pounce): 3 ticks to gather, 3 ticks to run 4.5 m, ends on contact. A strong
+   * opener, not a spam move: 14 damage (was 9) and a 6 s cooldown (starting values; combat_test checks the shape). Inside CB_PECK_MIN_RUN
+   * of the target there is no run-up, and the order becomes the standing bite; right after a connected move (the A64 chain) it is a
+   * standing jab at half damage (dash vector 0). */
+  { "peck", 3,3,3, 4.5f,.7f,8,14, CB_ST_NONE,0,CB_F_DASH|CB_F_NO_WATER, CB_PART_BEAK,CB_ROLE_ENGAGE,0,0,60 },
+  { "pounce", 8,4,4, 4.8f,.7f,18,25, CB_ST_STUN,4,CB_F_DASH|CB_F_NO_WATER, CB_PART_LEGS,CB_ROLE_ENGAGE,0,0,30 },
+  { "quill_volley", 6,1,5, 6,.3f,13,13, CB_ST_BLEED,8,CB_F_RANGED, CB_PART_QUILL,CB_ROLE_POKE,0,0,15 },
+  { "roar", 6,1,6, 4,6.28318531f,18,14, CB_ST_FEAR,12,CB_F_SWEEP, CB_PART_THROAT,CB_ROLE_CONTROL,0,0,12 },
+  { "stomp", 7,1,6, 2.5f,6.28318531f,18,22, CB_ST_KNOCKDOWN,6,CB_F_SWEEP, CB_PART_HEAVY,CB_ROLE_CONTROL,0,0,12 },
+  { "curl_up", 1,14,2, 0,6.28318531f,1,0, CB_ST_NONE,0,CB_F_GUARD, CB_PART_ROCK,CB_ROLE_DEFENCE,0,0,0 },
+  { "spine_volley", 5,1,3, 7,.3f,6,16, CB_ST_BLEED,8,CB_F_RANGED, CB_PART_BACKSPINE,CB_ROLE_SIGNATURE,20,2,30 },
+  /* first-quest: the fire gland's flamethrower. A short cone (sweep: every enemy in it, once per use), a small direct
+   * burn, then the burning status (0.5 hp per tick for 4 s), a long cooldown. Poke role: it hurts without closing in. */
+  { "flame",       6, 6, 5,  3.5f, 0.90f, 14.0f,  5.0f, CB_ST_BURN,   40, CB_F_SWEEP,                              CB_PART_FIRE, CB_ROLE_POKE, 0, 0, 60 },
 };
 
 /* ------------------------------------------------------------------ *
@@ -69,6 +89,23 @@ const CpCombatCounter CP_COMBAT_COUNTERS[] = {
   { CB_TAIL_STRIKE,CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_REDUCE,    5,  0.0f, 0.25f,  0.10f },
   { CB_SPIT,       CB_CHARGE, CB_PH_BIT(CB_PH_WINDUP),                 CB_EFF_INTERRUPT, 6,  0.0f, 1.0f,  0.0f },
   { CB_BITE,       CB_SPIT,   CB_PH_BIT(CB_PH_WINDUP) | CB_PH_BIT(CB_PH_ACTIVE),
+                                                                      CB_EFF_INTERRUPT, 4,  2.0f, 1.25f, 0.0f },
+  { CB_SPINE_VOLLEY, CB_GUARD, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_PIERCE,0,0,.6f,1 },
+  { CB_BITE, CB_SPINE_VOLLEY, CB_PH_BIT(CB_PH_WINDUP)|CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_INTERRUPT,4,2,1.25f,0 },
+  { CB_CLAW_SWIPE, CB_GUARD, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_NEGATE,5,0,0,.1f },
+  { CB_CLAW_SWIPE, CB_POUNCE, CB_PH_BIT(CB_PH_WINDUP), CB_EFF_INTERRUPT,4,2,1.25f,0 },
+  { CB_PECK, CB_GUARD, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_NEGATE,5,0,0,.1f },
+  { CB_POUNCE, CB_GUARD, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_BREAK,5,0,.6f,20 },
+  { CB_QUILL_VOLLEY, CB_CHARGE, CB_PH_BIT(CB_PH_WINDUP), CB_EFF_INTERRUPT,6,0,1,0 },
+  { CB_BITE, CB_QUILL_VOLLEY, CB_PH_BIT(CB_PH_WINDUP)|CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_INTERRUPT,4,2,1.25f,0 },
+  { CB_ROAR, CB_CHARGE, CB_PH_BIT(CB_PH_WINDUP), CB_EFF_INTERRUPT,4,0,1,0 },
+  { CB_PECK, CB_ROAR, CB_PH_BIT(CB_PH_WINDUP), CB_EFF_INTERRUPT,4,2,1.25f,0 },
+  { CB_STOMP, CB_POUNCE, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_INTERRUPT,4,0,1,0 },
+  { CB_CHARGE, CB_STOMP, CB_PH_BIT(CB_PH_WINDUP), CB_EFF_INTERRUPT,4,0,1,0 },
+  { CB_CHARGE, CB_CURL_UP, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_BREAK,5,0,.6f,20 },
+  { -1, CB_CURL_UP, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_REDUCE,5,0,.25f,.1f },
+  { CB_FLAME,      CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_REDUCE,    5,  0.0f, 0.50f,  0.10f },
+  { CB_BITE,       CB_FLAME,  CB_PH_BIT(CB_PH_WINDUP) | CB_PH_BIT(CB_PH_ACTIVE),
                                                                       CB_EFF_INTERRUPT, 4,  2.0f, 1.25f, 0.0f },
 };
 const int CP_COMBAT_N_COUNTERS = (int)(sizeof(CP_COMBAT_COUNTERS) / sizeof(CP_COMBAT_COUNTERS[0]));
@@ -97,6 +134,7 @@ const char *cp_combat_order_error(int code)
 {
     switch (code) {
     case CB_OK:              return "ok";
+    case CB_ERR_NO_METER: return "no_meter";
     case CB_ERR_BAD_ID:      return "no such creature";
     case CB_ERR_DEAD:        return "the creature is dead";
     case CB_ERR_BAD_VERB:    return "unknown verb";
@@ -130,7 +168,9 @@ static float cb_maxf(float a, float b) { return a > b ? a : b; }
  * ------------------------------------------------------------------ */
 void cp_combat_profile_default(CpCombatProfile *p)
 {
+    memset(p,0,sizeof *p);
     p->mouth = p->charge = p->spit = p->tail = p->guard = 2;
+    p->fire = 0;
     p->hp = 100.0f; p->stamina = 100.0f; p->speed = 4.0f;
     p->radius_cm = 0;   /* CB_RADIUS; omitted from the canonical hash */
 }
@@ -143,7 +183,8 @@ int cp_combat_part_level(const CpCombatProfile *p, int part)
     case CB_PART_SPIT:   return p->spit;
     case CB_PART_TAIL:   return p->tail;
     case CB_PART_GUARD:  return p->guard;
-    default:             return 1;     /* CB_PART_NONE: always available */
+    case CB_PART_FIRE:   return p->fire;
+    default:             return part>=CB_PART_CLAW&&part<CB_PART_COUNT?p->extra[part-CB_PART_CLAW]:1;     /* CB_PART_NONE: always available */
     }
 }
 
@@ -170,12 +211,13 @@ int cp_combat_move_available(const CpCombatCreature *c, int move)
     if (move < 0 || move >= CB_MOVE_COUNT) return 0;
     const CpCombatMove *m = &CP_COMBAT_MOVES[move];
     if (cp_combat_part_level(&c->prof, m->part) <= 0) return 0;
+    if (m->meter_cost && (!c->prof.carnivore || c->prof.mouth<2 || c->prof.extra[7]<2 || !(c->lo.known&(1u<<move)))) return 0;
     if ((m->flags & CB_F_NO_WATER) && c->medium == CB_WATER) return 0;
     return 1;
 }
 
 #ifdef CP_COMBAT_TEST
-static int cb_cd_override[CB_MOVE_COUNT] = { -1, -1, -1, -1, -1, -1 };
+static int cb_cd_override[CB_MOVE_COUNT] = { [0 ... CB_MOVE_COUNT - 1] = -1 };
 void cp_combat_test_cooldown(int move, int ticks)
 {
     if (move >= 0 && move < CB_MOVE_COUNT) cb_cd_override[move] = ticks;
@@ -193,7 +235,7 @@ uint16_t cp_combat_known_default(const CpCombatProfile *p)
 {
     uint16_t k = 0;
     for (int i = 0; i < CB_MOVE_COUNT; i++)
-        if (!(CP_COMBAT_MOVES[i].flags & CB_F_SELF) && cp_combat_part_level(p, CP_COMBAT_MOVES[i].part) > 0)
+        if (!CP_COMBAT_MOVES[i].meter_cost && !(CP_COMBAT_MOVES[i].flags & CB_F_SELF) && cp_combat_part_level(p, CP_COMBAT_MOVES[i].part) > 0)
             k |= (uint16_t)(1u << i);
     return k;
 }
@@ -207,6 +249,19 @@ void cp_combat_loadout_default(CpCombatLoadout *lo, const CpCombatProfile *p)
     int s = 0;
     for (int i = 0; i < CB_MOVE_COUNT && s < CB_LOADOUT_SLOTS; i++)
         if (lo->known & (1u << i)) lo->slot[s++] = (int8_t)i;
+}
+
+void cp_combat_loadout_starter(CpCombatLoadout *lo, const CpCombatProfile *p)
+{
+    static const int8_t pref[4] = { CB_BITE, CB_POUNCE, CB_SPIT, CB_ROAR };
+    cp_combat_loadout_default(lo, p);
+    if (!(lo->known & ((1u << CB_POUNCE) | (1u << CB_ROAR)))) return;   /* a body without legs or throat for them keeps the table order (every older world) */
+    memset(lo->slot, 0, sizeof lo->slot);
+    for (int i = 0; i < CB_LOADOUT_SLOTS; i++) lo->slot[i] = CB_MOVE_NONE;
+    int s = 0;
+    for (int k = 0; k < 4; k++) if (lo->known & (1u << pref[k])) lo->slot[s++] = pref[k];
+    for (int i = 0; i < CB_MOVE_COUNT && s < CB_LOADOUT_SLOTS; i++)
+        if ((lo->known & (1u << i)) && cp_combat_loadout_slot_of(lo, i) < 0) lo->slot[s++] = (int8_t)i;
 }
 
 int cp_combat_loadout_slot_of(const CpCombatLoadout *lo, int move)
@@ -311,10 +366,17 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
         const CpCombatHill *h = &w->hill[i];
         ff(&f, h->cx); ff(&f, h->cy); ff(&f, h->radius); ff(&f, h->height);
     }
+    for (int k = 0; k < CB_MAX_PROJ; k++) {
+        const CpCombatProj *p = &w->proj[k];
+        if (!p->alive) continue;
+        fu32(&f, 0x50524f4a); fu8(&f, (uint8_t)k); fu8(&f, p->owner); fu8(&f, p->kind); fu8(&f, p->t_left); ff(&f, p->x); ff(&f, p->y);
+    }
     for (int i = 0; i < w->n; i++) {
         const CpCombatCreature *c = &w->c[i];
         int tiered=0;for(int k=0;k<CB_PART_COUNT;k++)tiered|=c->tiers[k];
         if(tiered){fu32(&f,0x54494552);for(int k=0;k<CB_PART_COUNT;k++)fu8(&f,c->tiers[k]);}
+        int extra=c->prof.carnivore;for(int k=0;k<8;k++)extra|=c->prof.extra[k];
+        if(extra||c->calcium||c->mineral||c->fear_t||c->volleys){fu32(&f,0x43324d56);for(int k=0;k<8;k++)fu8(&f,c->prof.extra[k]);fu8(&f,c->prof.carnivore);fu8(&f,c->calcium);fu8(&f,c->mineral);fu8(&f,c->fear_t);if(c->fear_t)fu8(&f,c->fear_src);fu32(&f,c->volleys);}
         fu8(&f, c->alive); fu8(&f, c->medium); fu8(&f, c->team);
         fu8(&f, c->prof.mouth); fu8(&f, c->prof.charge); fu8(&f, c->prof.spit);
         fu8(&f, c->prof.tail); fu8(&f, c->prof.guard);
@@ -327,6 +389,14 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
             fu8(&f, (uint8_t)(c->prof.radius_cm >> 8));
         }
         ff(&f, c->x); ff(&f, c->y); ff(&f, c->fx); ff(&f, c->fy);
+        if(c->prof.grip_traits||c->prof.grip_legs){fu32(&f,0x47524950);fu32(&f,c->prof.grip_traits);fu8(&f,c->prof.grip_legs);}
+        if (c->prof.fire) { fu32(&f, 0x46495245); fu8(&f, c->prof.fire); }
+        if (c->burn_t) { fu32(&f, 0x4255524e); fu8(&f, c->burn_t); fu8(&f, (uint8_t)c->burn_src); }
+        if (c->ctx_on || c->mctx || c->over_t || c->kbx != 0.0f || c->kby != 0.0f) {
+            fu32(&f, 0x43545831);
+            fu8(&f, c->ctx_on); fu8(&f, c->vctx); fu8(&f, c->vhold); fu8(&f, c->mctx); fu8(&f, c->mhold); fu8(&f, c->over_t);
+            ff(&f, c->mspd); ff(&f, c->kbx); ff(&f, c->kby);
+        }
         ff(&f, c->hp); ff(&f, c->stamina);
         fu8(&f, (uint8_t)c->move); fu8(&f, c->phase); fu8(&f, c->ptick); fu8(&f, c->plen);
         fu8(&f, c->hit_mask); ff(&f, c->dash_x); ff(&f, c->dash_y);
@@ -370,11 +440,14 @@ static void norm_or(float *x, float *y, float dx, float dy)
 
 static void clamp_prof(CpCombatProfile *p)
 {
+    for(int k=0;k<8;k++)if(p->extra[k]>5)p->extra[k]=5;
+    p->carnivore=p->carnivore?1:0;
     if (p->mouth  > CB_PART_MAX_LEVEL) p->mouth  = CB_PART_MAX_LEVEL;
     if (p->charge > CB_PART_MAX_LEVEL) p->charge = CB_PART_MAX_LEVEL;
     if (p->spit   > CB_PART_MAX_LEVEL) p->spit   = CB_PART_MAX_LEVEL;
     if (p->tail   > CB_PART_MAX_LEVEL) p->tail   = CB_PART_MAX_LEVEL;
     if (p->guard  > CB_PART_MAX_LEVEL) p->guard  = CB_PART_MAX_LEVEL;
+    if (p->fire   > CB_PART_MAX_LEVEL) p->fire   = CB_PART_MAX_LEVEL;
     p->hp      = cb_clampf(p->hp, 1.0f, 100000.0f);
     p->stamina = cb_clampf(p->stamina, 1.0f, 100000.0f);
     p->speed   = cb_clampf(p->speed, 0.5f, 12.0f);
@@ -414,6 +487,7 @@ void cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s)
         c->alive = 1;
         c->medium = sp->medium ? CB_WATER : CB_GROUND;
         c->team = sp->team;
+        c->calcium=s->c[i].calcium>100?100:s->c[i].calcium;c->mineral=s->c[i].mineral>100?100:s->c[i].mineral;
         c->prof = sp->prof;
         clamp_prof(&c->prof);
         c->x = sp->x; c->y = sp->y; c->fx = sp->fx; c->fy = sp->fy;
@@ -445,6 +519,7 @@ void cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s)
         c->since_spend = 255;
         c->verb_target = -1;
         c->bleed_src = -1;
+        c->burn_src = -1;
         c->died_tick = -1;
     }
     w->hash = cp_combat_hash(w);
@@ -460,7 +535,7 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
     if (!c->alive) return CB_ERR_DEAD;
     if (a->verb >= CB_V_COUNT) return CB_ERR_BAD_VERB;
 
-    int target = -1, move = 0, dir = 0;
+    int target = -1, move = 0, dir = 0, vctx = 0, vhold = 0;
     int16_t hx = 0, hy = 0;
     switch (a->verb) {
     case CB_V_IDLE: break;
@@ -475,8 +550,10 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
             if (CP_COMBAT_MOVES[a->move].flags & CB_F_SELF) return CB_ERR_BAD_MOVE;
             if (!cp_combat_move_available(c, a->move)) return CB_ERR_UNAVAILABLE;
             if (!cp_combat_move_equipped(c, a->move)) return CB_ERR_NOT_EQUIPPED;
+            if (c->calcium < CP_COMBAT_MOVES[a->move].meter_cost) return CB_ERR_NO_METER;
             if (c->cd[a->move]) return CB_ERR_ON_COOLDOWN;
             move = a->move;
+            if (c->ctx_on) { vctx = cp_combat_pick_ctx(w, id, target); vhold = a->hold && (move == CB_SPIT || move == CB_ROAR); }   /* A72: the press picks the variant */
         }
         break;
     case CB_V_GUARD:
@@ -498,8 +575,9 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
 
     /* identical standing order: nothing to do (lets agents repeat it per tick) */
     if (c->verb == a->verb && c->verb_target == target && c->verb_move == (uint8_t)move &&
-        c->verb_dir == dir && c->heading_x == hx && c->heading_y == hy && a->verb != CB_V_IDLE)
+        c->verb_dir == dir && c->heading_x == hx && c->heading_y == hy && c->vhold == vhold && a->verb != CB_V_IDLE)
         return CB_OK;
+    c->vctx = (uint8_t)vctx; c->vhold = (uint8_t)vhold;
 
     c->verb = a->verb;
     c->verb_target = (int8_t)target;
@@ -520,33 +598,39 @@ static int8_t target_id(int target)
 
 int cp_combat_approach(CpCombatWorld *w, int id, int t)
 {
-    CpCombatAction a = { CB_V_APPROACH, 0, target_id(t), 0, 0, 0 };
+    CpCombatAction a = { CB_V_APPROACH, 0, target_id(t), 0, 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_attack(CpCombatWorld *w, int id, int t, int m)
 {
     CpCombatAction a = { CB_V_ATTACK,
-        (int8_t)(m >= 0 && m < CB_MOVE_COUNT ? m : -1), target_id(t), 0, 0, 0 };
+        (int8_t)(m >= 0 && m < CB_MOVE_COUNT ? m : -1), target_id(t), 0, 0, 0, 0 };
+    return cp_combat_order(w, id, &a);
+}
+int cp_combat_attack_hold(CpCombatWorld *w, int id, int t, int m, int hold)
+{
+    CpCombatAction a = { CB_V_ATTACK,
+        (int8_t)(m >= 0 && m < CB_MOVE_COUNT ? m : -1), target_id(t), 0, 0, 0, (uint8_t)(hold ? 1 : 0) };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_guard(CpCombatWorld *w, int id)
 {
-    CpCombatAction a = { CB_V_GUARD, 0, 0, 0, 0, 0 };
+    CpCombatAction a = { CB_V_GUARD, 0, 0, 0, 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_dodge(CpCombatWorld *w, int id, int d)
 {
-    CpCombatAction a = { CB_V_DODGE, 0, 0, (int8_t)(d >= 0 && d < 8 ? d : -1), 0, 0 };
+    CpCombatAction a = { CB_V_DODGE, 0, 0, (int8_t)(d >= 0 && d < 8 ? d : -1), 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_flee(CpCombatWorld *w, int id, int t)
 {
-    CpCombatAction a = { CB_V_FLEE, 0, target_id(t), 0, 0, 0 };
+    CpCombatAction a = { CB_V_FLEE, 0, target_id(t), 0, 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_idle(CpCombatWorld *w, int id)
 {
-    CpCombatAction a = { CB_V_IDLE, 0, 0, 0, 0, 0 };
+    CpCombatAction a = { CB_V_IDLE, 0, 0, 0, 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 
@@ -565,6 +649,7 @@ static void cancel_move(CpCombatCreature *c)
 {
     c->move = CB_MOVE_NONE; c->phase = CB_PH_IDLE; c->ptick = c->plen = 0;
     c->verb_started = 0;
+    c->mctx = c->mhold = 0; c->mspd = 0.0f;
 }
 static void stagger(CpCombatCreature *c, int ticks)
 {
@@ -577,20 +662,43 @@ static void kill(CpCombatWorld *w, int i, int killer)
     CpCombatCreature *c = &w->c[i];
     c->alive = 0; c->hp = 0.0f;
     cancel_move(c);
-    c->verb = CB_V_IDLE; c->stun_t = c->bleed_t = c->slow_t = 0; c->bleed_src = -1;
+    c->verb = CB_V_IDLE; c->fear_t=0;c->stun_t = c->bleed_t = c->slow_t = c->burn_t = 0; c->bleed_src = c->burn_src = -1;
     c->died_tick = w->tick;
     if (killer >= 0 && killer < w->n) w->c[killer].kills++;
     ev_add(w, CB_EV_DEATH, killer >= 0 ? killer : 255, i, CB_MOVE_NONE, 0.0f);
 }
 
+/* A74: which (move, context) pairs keep the legs going while the attack plays. Bite: on the move, in passing, the charge. Spit and roar:
+ * on the move, on the run; A75 roar B also keeps running from far (mhold). Pounce: only the gather (the leap itself is the dash). Everything else stops, as before. */
+static int moving_ctx(const CpCombatCreature *c, int move, int ctx)
+{
+    switch (move) {
+    case CB_BITE:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP || ctx == CB_CTX_FAR;
+    case CB_SPIT:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP;
+    case CB_ROAR:  return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP || (ctx == CB_CTX_FAR && c->mhold);
+    case CB_POUNCE: return ctx == CB_CTX_WALK || ctx == CB_CTX_GALLOP || ctx == CB_CTX_FAR;
+    default: return 0;
+    }
+}
+/* the creature walks on while its attack plays */
+static int layered(const CpCombatCreature *c)
+{
+    if (!c->ctx_on || !c->mctx || c->move == CB_MOVE_NONE || !moving_ctx(c, c->move, c->mctx)) return 0;
+    return c->move != CB_POUNCE || c->phase == CB_PH_WINDUP;
+}
+#define CB_WIDE_COS 0.92106099f   /* cos/sin(0.4 rad): half the turn rate, the wide turn of a moving attack and its overshoot */
+#define CB_WIDE_SIN 0.38941834f
+
 static void turn_toward(CpCombatCreature *c, float dx, float dy)
 {
+    const int wide = c->over_t > 0 || layered(c);
+    const float tc = wide ? CB_WIDE_COS : CB_TURN_COS, ts = wide ? CB_WIDE_SIN : CB_TURN_SIN;
     float dot = c->fx * dx + c->fy * dy;
-    if (dot >= CB_TURN_COS) { c->fx = dx; c->fy = dy; return; }
+    if (dot >= tc) { c->fx = dx; c->fy = dy; return; }
     float cross = c->fx * dy - c->fy * dx;
-    float s = cross >= 0.0f ? CB_TURN_SIN : -CB_TURN_SIN;
-    float nx = c->fx * CB_TURN_COS - c->fy * s;
-    float ny = c->fx * s + c->fy * CB_TURN_COS;
+    float s = cross >= 0.0f ? ts : -ts;
+    float nx = c->fx * tc - c->fy * s;
+    float ny = c->fx * s + c->fy * tc;
     norm_or(&nx, &ny, c->fx, c->fy);
     c->fx = nx; c->fy = ny;
 }
@@ -606,9 +714,43 @@ static float dir_to(const CpCombatCreature *a, const CpCombatCreature *b, float 
     return d;
 }
 
+float cp_combat_canter_speed(const CpCombatCreature *c)
+{
+    return sqrtf(CB_CANTER_FR * 9.81f * CB_HIP_PER_RADIUS * cp_combat_body_radius(&c->prof));
+}
+int cp_combat_band(float gap)
+{
+    return gap < CB_BAND_MID_GAP ? CB_BAND_CLOSE : (gap < CB_BAND_FAR_GAP ? CB_BAND_MID : CB_BAND_FAR);
+}
+int cp_combat_pick_ctx(const CpCombatWorld *w, int id, int tgt)
+{
+    if (id < 0 || id >= w->n || tgt < 0 || tgt >= w->n || id == tgt) return CB_CTX_NONE;
+    const CpCombatCreature *c = &w->c[id], *t = &w->c[tgt];
+    float ux, uy;
+    float gap = dir_to(c, t, &ux, &uy) - cp_combat_body_radius(&t->prof);
+    if (cp_combat_band(gap) == CB_BAND_FAR) return CB_CTX_FAR;
+    if (c->spd >= cp_combat_canter_speed(c)) return CB_CTX_GALLOP;
+    return c->spd > CB_MOVING_SPD ? CB_CTX_WALK : CB_CTX_STAND;
+}
+void cp_combat_ctx_enable(CpCombatWorld *w, int id, float speed)
+{
+    if (id < 0 || id >= w->n) return;
+    CpCombatCreature *c = &w->c[id];
+    c->ctx_on = 1;
+    c->spd = speed;
+    c->vx = c->fx * speed; c->vy = c->fy * speed;
+}
+/* surface gap from which a move launches; the far spit is a lob */
+static float cb_reach(const CpCombatCreature *c, int mv)
+{
+    if (mv == CB_SPIT && c->ctx_on && c->vctx == CB_CTX_FAR) return CB_LOB_REACH;
+    return CP_COMBAT_MOVES[mv].reach;
+}
+
 /* cone test: attacker facing vs unit direction to target */
 static int in_cone(const CpCombatCreature *a, float ux, float uy, float dist, float arc)
 {
+    if(arc>=6.28318f)return 1; /* full circle, including directly behind */
     float cosang = a->fx * ux + a->fy * uy;
     if (cosang >= cb_cos(arc * 0.5f)) return 1;
     float lateral = a->fx * uy - a->fy * ux;     /* sin of the angle */
@@ -633,15 +775,20 @@ static float move_damage(const CpCombatCreature *c,int move){return cp_combat_mo
 static float walk_speed(const CpCombatCreature *c)
 {
     float s = c->prof.speed-tier_mod(c,CB_PART_GUARD)->speed;
+    if (c->mineral) s *= 1.f-(float)c->mineral*.003f;
     if (c->medium == CB_WATER) s *= CB_WATER_SPEED;
     if (c->slow_t > 0) s *= CB_SLOW_SPEED;
     return s;
 }
 
+/* the peck as a standing jab: no dash vector */
+static int standing_peck(const CpCombatCreature *c){return c->move==CB_PECK&&c->dash_x==0.0f&&c->dash_y==0.0f;}
+
 static void begin_move(CpCombatCreature *c, int move)
 {
     const CpCombatMove *m = &CP_COMBAT_MOVES[move];
     float cost = move_cost(c, move);
+    if(m->meter_cost){c->calcium-=m->meter_cost;c->volleys++;}
     c->stamina = cb_maxf(0.0f, c->stamina - cost);
     c->stamina_spent += cost;
     c->since_spend = 0;
@@ -649,7 +796,18 @@ static void begin_move(CpCombatCreature *c, int move)
     c->move = (int8_t)move;
     c->hit_mask = 0;
     c->ptick = 0;
+    /* A74: the context the order picked travels with the move; moving attacks carry the speed they were launched at */
+    c->mctx = c->mhold = 0; c->mspd = 0.0f;
+    if (c->ctx_on && c->verb == CB_V_ATTACK && c->verb_move == (uint8_t)move && c->vctx) {
+        c->mctx = c->vctx;
+        c->mhold = (uint8_t)(c->vhold && (move == CB_SPIT || move == CB_ROAR));
+        if (moving_ctx(c, move, c->mctx)) c->mspd = c->spd;
+    }
     int windup=m->windup+tier_mod(c,m->part)->windup;
+    if (c->mctx && move == CB_POUNCE) {        /* the gather shortens as the body already moves: a leap off the stride, from the gallop, out of the run-in */
+        if (c->mctx == CB_CTX_WALK) windup = 6;
+        else if (c->mctx == CB_CTX_GALLOP || c->mctx == CB_CTX_FAR) windup = 3;
+    }
     if (windup)        { c->phase = CB_PH_WINDUP; c->plen = windup; }
     else if (m->active)   { c->phase = CB_PH_ACTIVE; c->plen = m->active; }
     else                  { c->phase = CB_PH_RECOVERY; c->plen = m->recovery; }
@@ -668,6 +826,12 @@ static void begin_move(CpCombatCreature *c, int move)
 static void finish_move(CpCombatCreature *c)
 {
     int was_verb = c->verb_started;
+    /* a moving attack on the run overshoots: the body carries on, turns wide, and a miss costs more (exposure) */
+    if (c->ctx_on && c->mctx && moving_ctx(c, c->move, c->mctx) && c->mspd >= 0.5f * cp_combat_canter_speed(c)) {
+        const int body = c->move == CB_BITE || c->move == CB_POUNCE;
+        c->over_t = (uint8_t)((body && !c->hit_mask) ? CB_OVER_MISS : CB_OVER_HIT);
+    } else c->mspd = 0.0f;
+    c->mctx = c->mhold = 0;
     c->move = CB_MOVE_NONE; c->phase = CB_PH_IDLE; c->ptick = c->plen = 0;
     c->verb_started = 0;
     if (was_verb && (c->verb == CB_V_ATTACK || c->verb == CB_V_GUARD || c->verb == CB_V_DODGE))
@@ -713,9 +877,24 @@ static void walk(const CpCombatWorld *w, int i, Disp *d, float ux, float uy, flo
 static void plan(CpCombatWorld *w, int i, Disp *d)
 {
     CpCombatCreature *c = &w->c[i];
+    if (c->alive && c->stun_t == 0 && layered(c)) {      /* A74: the attack plays over the gait, the legs keep going toward the target */
+        float lx, ly;
+        if (c->verb_target >= 0 && c->verb_target < w->n && w->c[(int)c->verb_target].alive) {
+            dir_to(c, &w->c[(int)c->verb_target], &lx, &ly);
+            turn_toward(c, lx, ly);
+        }
+        walk(w, i, d, c->fx, c->fy, c->mspd);
+        c->mspd *= CB_MOM_DECAY;
+        return;
+    }
     if (!c->alive || c->stun_t > 0 || c->phase != CB_PH_IDLE) return;
+    if (c->over_t && c->verb == CB_V_IDLE && c->mspd > 0.0f) {   /* overshoot: the run does not stop on the spot */
+        walk(w, i, d, c->fx, c->fy, c->mspd);
+        c->mspd *= 0.85f;
+    }
 
     float ux, uy, dist;
+    if(c->fear_t && c->fear_src<w->n){dir_to(c,&w->c[c->fear_src],&ux,&uy);walk(w,i,d,-ux,-uy,walk_speed(c));return;}
     switch (c->verb) {
     case CB_V_IDLE:
         return;
@@ -752,16 +931,35 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
         const CpCombatMove *m = &CP_COMBAT_MOVES[mv];
         dist = dir_to(c, t, &ux, &uy);
         float gap = dist - cp_combat_body_radius(&t->prof);
-        if (gap <= m->reach * 0.92f) {
+        if ((m->flags&CB_F_GUARD) || gap <= cb_reach(c, mv) * 0.92f) {
             int aligned = (c->fx * ux + c->fy * uy) >= cb_cos(m->arc * 0.25f);
             if (!aligned) { turn_toward(c, ux, uy); return; }
             if (c->cd[mv]) { turn_toward(c, ux, uy); return; }   /* recharging: hold the standing order */
-            if (c->stamina >= move_cost(c, mv)) begin_move(c, mv);
+            if(c->calcium < CP_COMBAT_MOVES[mv].meter_cost){ev_add(w,CB_EV_NO_METER,i,i,mv,0);c->verb=CB_V_IDLE;return;}
+            if (mv == CB_PECK && gap < CB_PECK_MIN_RUN) {      /* no run-up */
+                int jab = c->hit_mask && c->since_spend <= CB_CHAIN_TICKS;
+                if (!jab && cp_combat_move_available(c, CB_BITE) && cp_combat_move_equipped(c, CB_BITE) && !c->cd[CB_BITE]) mv = CB_BITE;
+                if (c->stamina >= move_cost(c, mv)) {
+                    begin_move(c, mv);
+                    if (mv == CB_PECK) { c->dash_x = c->dash_y = 0.0f; c->cd[CB_PECK] = 0; }    /* the jab does not spend the opener's cooldown */
+                }
+                else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
+                return;
+            }
+            if (c->stamina >= move_cost(c, mv)) {
+                begin_move(c, mv);
+                if (layered(c)) { walk(w, i, d, c->fx, c->fy, c->mspd); c->mspd *= CB_MOM_DECAY; }   /* no stop on the launch tick */
+            }
             else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
             return;
         }
         turn_toward(c, ux, uy);
-        walk(w, i, d, ux, uy, walk_speed(c));
+        float sp = walk_speed(c);
+        if (c->ctx_on) {
+            if (c->vctx == CB_CTX_FAR) sp *= CB_RUN_K;                    /* far band: the run-in is a burst */
+            else if ((c->vctx == CB_CTX_WALK || c->vctx == CB_CTX_GALLOP) && c->spd > CB_MOVING_SPD && c->spd < sp) sp = c->spd;   /* keeps the pace it was pressed at */
+        }
+        walk(w, i, d, ux, uy, sp);
         return;
     }
     case CB_V_GUARD:
@@ -884,6 +1082,8 @@ typedef struct {
     HitEval ev;
     float damage, payment;
     uint8_t spent, avoided, blocked, broke, interrupted, status;
+    uint8_t proj;      /* A69: a spit projectile arriving (the owner's own state no longer matters) */
+    float   k;         /* damage multiplier of the projectile (charged glob) */
 } Hit;
 
 static void separate(CpCombatWorld *w)
@@ -922,10 +1122,10 @@ static int gather_hits(const CpCombatWorld *w, Hit *hits)
         const CpCombatCreature *a = &w->c[i];
         if (!a->alive || a->phase != CB_PH_ACTIVE || a->move == CB_MOVE_NONE) continue;
         const CpCombatMove *m = &CP_COMBAT_MOVES[a->move];
-        if (m->flags & CB_F_SELF) continue;
+        if (m->flags & (CB_F_SELF|CB_F_GUARD)) continue;
         if (!(m->flags & CB_F_SWEEP) && a->hit_mask) continue;   /* single-hit move already spent */
 
-        int best = -1; float best_d = 0.0f;
+        int best = -1,second=-1; float best_d = 0.0f,second_d=0.0f;
         for (int j = 0; j < w->n; j++) {
             const CpCombatCreature *t = &w->c[j];
             if (j == i || !t->alive || t->team == a->team) continue;
@@ -934,21 +1134,26 @@ static int gather_hits(const CpCombatWorld *w, Hit *hits)
             float dist = dir_to(a, t, &ux, &uy);
             float gap = dist - cp_combat_body_radius(&t->prof);
             int ok;
-            if (m->flags & CB_F_DASH)
+            if (standing_peck(a))
+                ok = gap <= CB_PECK_JAB_REACH;
+            else if (m->flags & CB_F_DASH)
                 ok = dist - (cp_combat_body_radius(&a->prof) + cp_combat_body_radius(&t->prof)) <= CB_CONTACT_GAP;
             else
                 ok = gap <= m->reach;
             if (!ok || !in_cone(a, ux, uy, dist, m->arc)) continue;
             if (m->flags & CB_F_SWEEP) {
                 Hit *h = &hits[nh++];
-                h->atk = (uint8_t)i; h->def = (uint8_t)j; h->move = a->move; h->gap = gap;
-            } else if (best < 0 || dist < best_d) { best = j; best_d = dist; }
+                h->atk = (uint8_t)i; h->def = (uint8_t)j; h->move = a->move; h->gap = gap; h->proj = 0; h->k = 1.0f;
+            } else if (best < 0 || dist < best_d) { second=best;second_d=best_d;best = j; best_d = dist; }
+            else if(second<0||dist<second_d){second=j;second_d=dist;}
         }
-        if (best >= 0) {
-            const CpCombatCreature *t = &w->c[best];
-            Hit *h = &hits[nh++];
-            h->atk = (uint8_t)i; h->def = (uint8_t)best; h->move = a->move;
-            h->gap = sqrtf((t->x - a->x) * (t->x - a->x) + (t->y - a->y) * (t->y - a->y)) - cp_combat_body_radius(&t->prof);
+        int selected[2]={best,second};
+        if(m->max_targets>1 && second>=0 && second<best){selected[0]=second;selected[1]=best;}
+        int count=m->max_targets>1?2:1;
+        for(int k=0;k<count;k++)if(selected[k]>=0){
+            int j=selected[k];const CpCombatCreature *t=&w->c[j];Hit *h=&hits[nh++];
+            h->atk=(uint8_t)i;h->def=(uint8_t)j;h->move=a->move;h->proj=0;h->k=1.0f;
+            h->gap=sqrtf((t->x-a->x)*(t->x-a->x)+(t->y-a->y)*(t->y-a->y))-cp_combat_body_radius(&t->prof);
         }
     }
     return nh;
@@ -959,6 +1164,8 @@ static void apply_status(CpCombatWorld *w, int atk, int def, const CpCombatMove 
     CpCombatCreature *d = &w->c[def];
     if (!d->alive || m->status == CB_ST_NONE) return;
     switch (m->status) {
+    case CB_ST_FEAR: d->fear_t=m->status_ticks;d->fear_src=(uint8_t)atk;cancel_move(d);break;
+    case CB_ST_KNOCKDOWN:
     case CB_ST_STUN:
         if (d->stun_t < m->status_ticks) d->stun_t = m->status_ticks;
         stagger(d, 0);
@@ -971,13 +1178,87 @@ static void apply_status(CpCombatWorld *w, int atk, int def, const CpCombatMove 
         }
         break;
     case CB_ST_SLOW:  if (d->slow_t  < m->status_ticks) d->slow_t  = m->status_ticks; break;
+    case CB_ST_BURN:
+        if (d->burn_t < m->status_ticks) d->burn_t = m->status_ticks;
+        d->burn_src = (int8_t)atk;
+        break;
     }
+}
+
+/* A69: a context spit fires a projectile on its active tick; the damage lands when the shot arrives, at the target's predicted
+ * position (leading: fixed-point iteration, 4 passes, over the target's last velocity). The hit-scan of the old spit is suppressed
+ * by marking the target hit; the arrival below is the real hit and goes through the same counter rules (a dodge in time avoids it). */
+static void proj_spawn(CpCombatWorld *w)
+{
+    for (int i = 0; i < w->n; i++) {
+        CpCombatCreature *c = &w->c[i];
+        if (!c->alive || !c->ctx_on || !c->mctx || c->move != CB_SPIT || c->phase != CB_PH_ACTIVE || c->ptick != 0) continue;
+        if (c->verb_target < 0 || c->verb_target >= w->n || !w->c[(int)c->verb_target].alive) continue;
+        const int tg = c->verb_target;
+        const CpCombatCreature *t = &w->c[tg];
+        int slot = -1;
+        for (int k = 0; k < CB_MAX_PROJ; k++) if (!w->proj[k].alive) { slot = k; break; }
+        if (slot < 0) continue;
+        const int far = c->mctx == CB_CTX_FAR;
+        const int kind = c->mhold ? (far ? CB_PROJ_LOB_CHARGED : CB_PROJ_GLOB) : (far ? CB_PROJ_LOB : CB_PROJ_JET);
+        const int fixed = kind == CB_PROJ_JET ? 0 : (kind == CB_PROJ_GLOB ? 8 : (kind == CB_PROJ_LOB ? 11 : 13));   /* ticks of flight: lab 0.81 / 1.12 / 1.27 s */
+        float ax = t->x, ay = t->y;
+        int ticks = fixed ? fixed : 1;
+        for (int pass = 0; pass < 4; pass++) {
+            if (!fixed) {
+                float dx = ax - c->x, dy = ay - c->y;
+                ticks = (int)(sqrtf(dx * dx + dy * dy) / (CB_JET_SPEED * CB_DT)) + 1;
+                if (ticks > 30) ticks = 30;
+            }
+            ax = t->x + t->vx * (float)ticks * CB_DT;
+            ay = t->y + t->vy * (float)ticks * CB_DT;
+        }
+        CpCombatProj *p = &w->proj[slot];
+        p->alive = 1; p->owner = (uint8_t)i; p->kind = (uint8_t)kind; p->t_left = (uint8_t)(ticks + 1); p->x = ax; p->y = ay;
+        c->hit_mask |= (uint8_t)(1u << tg);
+        ev_add(w, CB_EV_PROJECTILE, i, tg, CB_SPIT, (float)ticks);
+    }
+}
+static int proj_arrive(CpCombatWorld *w, Hit *hits, int nh)
+{
+    for (int k = 0; k < CB_MAX_PROJ; k++) {
+        CpCombatProj *p = &w->proj[k];
+        if (!p->alive) continue;
+        if (--p->t_left > 0) continue;
+        p->alive = 0;
+        const CpCombatCreature *o = &w->c[p->owner];
+        int best = -1; float best_d = 0.0f;
+        for (int j = 0; j < w->n; j++) {
+            const CpCombatCreature *t = &w->c[j];
+            if (!t->alive || t->team == o->team) continue;
+            float dx = t->x - p->x, dy = t->y - p->y, d = sqrtf(dx * dx + dy * dy);
+            if (d > cp_combat_body_radius(&t->prof) + CB_SPLASH) continue;
+            if (best < 0 || d < best_d) { best = j; best_d = d; }
+        }
+        if (best < 0 || nh >= CB_MAX_CREATURES * CB_MAX_CREATURES) continue;
+        Hit *h = &hits[nh++];
+        const CpCombatCreature *t = &w->c[best];
+        h->atk = p->owner; h->def = (uint8_t)best; h->move = CB_SPIT; h->proj = 1;
+        h->k = (p->kind == CB_PROJ_GLOB || p->kind == CB_PROJ_LOB_CHARGED) ? CB_GLOB_K : 1.0f;
+        float dx = t->x - o->x, dy = t->y - o->y;
+        h->gap = sqrtf(dx * dx + dy * dy) - cp_combat_body_radius(&t->prof);
+    }
+    return nh;
+}
+/* momentum: a moving attack at speed hits harder (starting values, combat_test checks them) */
+static float momentum(const CpCombatCreature *a, const Hit *h)
+{
+    if (h->proj || !a->ctx_on || !a->mctx || !moving_ctx(a, h->move, a->mctx)) return 1.0f;
+    float m = a->mspd / (2.0f * cp_combat_canter_speed(a));
+    return 1.0f + CB_MOM_DMG * cb_clampf(m, 0.0f, 1.0f);
 }
 
 static void resolve_hits(CpCombatWorld *w)
 {
     Hit hits[CB_MAX_CREATURES * CB_MAX_CREATURES];
+    proj_spawn(w);
     int nh = gather_hits(w, hits);
+    nh = proj_arrive(w, hits, nh);
     if (!nh) return;
 
     /* Counter/flank/height and cancellations all read the same snapshot.
@@ -1000,13 +1281,13 @@ static void resolve_hits(CpCombatWorld *w)
         h->damage = h->payment = 0;
         h->spent = h->avoided = h->blocked = h->broke = h->interrupted = 0;
         h->status = 1;
-        if (cancelled[h->atk]) continue;
+        if (cancelled[h->atk] && !h->proj) continue;
         const CpCombatCreature *a = &w->c[h->atk], *d = &w->c[h->def];
         float var = cp_rng_range(&w->rng[CB_RNG_HIT], CB_VAR_LO, CB_VAR_HI);
 #ifdef CP_COMBAT_TEST
         if (test_fixed_variance) var = 1.0f;
 #endif
-        float base = move_damage(a, h->move) * h->ev.flank * h->ev.height * var;
+        float base = move_damage(a, h->move) * (h->move == CB_PECK && standing_peck(a) ? CB_PECK_JAB_K : 1.0f) * h->ev.flank * h->ev.height * var * momentum(a, h) * h->k;
         h->damage = base;
         float *pool = &stamina[h->def];
         const CpCombatCounter *r = h->ev.rule;
@@ -1014,7 +1295,8 @@ static void resolve_hits(CpCombatWorld *w)
             if (*pool >= r->stamina) {
                 h->payment = r->stamina; h->spent = h->avoided = 1;
                 h->damage = 0; h->status = 0;
-                *pool -= h->payment;
+                h->damage*=1.f-(float)d->mineral*.0025f;
+        *pool -= h->payment;
                 continue;
             }
             r = h->ev.alt;
@@ -1022,7 +1304,8 @@ static void resolve_hits(CpCombatWorld *w)
         if (r) {
             switch (r->effect) {
             case CB_EFF_NEGATE:
-            case CB_EFF_REDUCE: {
+            case CB_EFF_REDUCE:
+            case CB_EFF_PIERCE: {
                 float gl = 1.0f + CB_GUARD_LEVEL_K * (float)(d->prof.guard > 0 ? d->prof.guard - 1 : 0);
                 const TierMod *tm=tier_mod(d,CB_PART_GUARD);
                 float cost = base * r->stamina * (1.f-tm->block_cost) / (gl+tm->guard_factor);
@@ -1030,7 +1313,7 @@ static void resolve_hits(CpCombatWorld *w)
                 if (*pool >= cost) {
                     h->payment = cost;
                     h->damage = base * r->mult;
-                    h->status = 0; h->blocked = 1;
+                    h->status = r->effect==CB_EFF_PIERCE; h->blocked = 1;
                 } else {
                     h->payment = *pool; h->broke = 1;
                 }
@@ -1049,6 +1332,7 @@ static void resolve_hits(CpCombatWorld *w)
             default: break;
             }
         }
+        h->damage*=1.f-(float)d->mineral*.0025f;
         *pool -= h->payment;
     }
 
@@ -1058,7 +1342,7 @@ static void resolve_hits(CpCombatWorld *w)
         const Hit *h = &hits[k];
         CpCombatCreature *a = &w->c[h->atk], *d = &w->c[h->def];
         a->hit_mask |= (uint8_t)(1u << h->def);
-        if (cancelled[h->atk]) continue;
+        if (cancelled[h->atk] && !h->proj) continue;
         d->stamina -= h->payment; d->stamina_spent += h->payment;
         if (h->spent) d->since_spend = 0;
         if (h->avoided) {
@@ -1091,13 +1375,21 @@ static void resolve_hits(CpCombatWorld *w)
             stagger(d, h->interrupted); d->interrupted++;
         }
         if (h->damage > 0) {
+            /* Mineral shell: up to 25% mitigation, paid for by 30% slower movement. */
             d->hp -= h->damage;
             d->dmg_taken += h->damage; d->hits_taken++;
             a->dmg_dealt += h->damage; a->hits++;
             if (killer[h->def] < 0) killer[h->def] = h->atk;
             ev_add(w, CB_EV_HIT, h->atk, h->def, h->move, h->damage);
+            if (a->ctx_on && a->mctx && !h->proj && !h->blocked) {      /* A72: knockback = base + 0.5 x closing speed; the charge recoils both */
+                float kx, ky, v0 = CB_KB_BASE + 0.5f * a->mspd;
+                if (v0 > CB_KB_MAX) v0 = CB_KB_MAX;
+                dir_to(a, d, &kx, &ky);
+                d->kbx = kx * v0; d->kby = ky * v0;
+                if (a->mctx == CB_CTX_FAR && h->move == CB_BITE) { a->kbx = -kx * 0.5f * v0; a->kby = -ky * 0.5f * v0; }
+            }
         }
-        if (h->status){CpCombatMove mod=CP_COMBAT_MOVES[h->move];mod.status_ticks+=tier_mod(a,mod.part)->status;apply_status(w, h->atk, h->def, &mod);}
+        if (h->status){CpCombatMove mod=CP_COMBAT_MOVES[h->move];mod.status_ticks+=tier_mod(a,mod.part)->status;if(h->k>1.0f)mod.status_ticks=(uint8_t)(mod.status_ticks*2);apply_status(w, h->atk, h->def, &mod);}
     }
     for (int i = 0; i < w->n; i++) {
         w->c[i].stamina = stamina[i];
@@ -1121,6 +1413,19 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         if (c->hp <= 0.0f) kill(w, i, c->bleed_src);
     }
 
+    /* 1b. burning (the flame): the same bookkeeping as bleeding */
+    for (int i = 0; i < w->n; i++) {
+        CpCombatCreature *c = &w->c[i];
+        if (!c->alive || c->burn_t == 0) continue;
+        c->hp -= CB_BURN_DPT;
+        c->dmg_taken += CB_BURN_DPT;
+        if (c->burn_src >= 0 && c->burn_src < w->n) w->c[c->burn_src].dmg_dealt += CB_BURN_DPT;
+        if (c->hp <= 0.0f) kill(w, i, c->burn_src);
+    }
+
+    float ox[CB_MAX_CREATURES], oy[CB_MAX_CREATURES], kdx[CB_MAX_CREATURES], kdy[CB_MAX_CREATURES];
+    for (int i = 0; i < w->n; i++) { ox[i] = w->c[i].x; oy[i] = w->c[i].y; kdx[i] = kdy[i] = 0.0f; }
+
     /* 2. verbs decide: walk, turn, or launch a move */
     for (int i = 0; i < w->n; i++) plan(w, i, &disp[i]);
 
@@ -1131,6 +1436,13 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         const CpCombatMove *m = &CP_COMBAT_MOVES[c->move];
         if (!(m->flags & CB_F_DASH)) continue;
         if (!(m->flags & CB_F_SWEEP) && c->hit_mask && !(m->flags & CB_F_SELF)) continue; /* dash ends on contact */
+        if (standing_peck(c)) continue;
+        if (c->move == CB_PECK && c->verb_target >= 0 && c->verb_target < w->n && w->c[(int)c->verb_target].alive) {
+            /* the gallop homes on its target (A65): the run-up is straight but the last metres follow the target, so it does not run past */
+            const CpCombatCreature *t = &w->c[(int)c->verb_target];
+            float hx = t->x - c->x, hy = t->y - c->y, hl = sqrtf(hx * hx + hy * hy);
+            if (hl > 1e-4f) { c->dash_x = hx / hl; c->dash_y = hy / hl; c->fx = c->dash_x; c->fy = c->dash_y; }
+        }
         float step = m->reach / (float)m->active;
         if (c->medium == CB_WATER) step *= 0.5f;
         disp[i].dx += c->dash_x * step;
@@ -1140,10 +1452,22 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         CpCombatCreature *c = &w->c[i];
         if (!c->alive) continue;
         float rad = cp_combat_body_radius(&c->prof);
+        if (c->kbx != 0.0f || c->kby != 0.0f) {            /* knockback slides the body, decaying */
+            kdx[i] = c->kbx * CB_DT; kdy[i] = c->kby * CB_DT;
+            disp[i].dx += kdx[i]; disp[i].dy += kdy[i];
+            c->kbx *= CB_KB_DECAY; c->kby *= CB_KB_DECAY;
+            if (c->kbx * c->kbx + c->kby * c->kby < 0.0025f) c->kbx = c->kby = 0.0f;
+        }
         c->x = cb_clampf(c->x + disp[i].dx, rad, CB_ARENA_W - rad);
         c->y = cb_clampf(c->y + disp[i].dy, rad, CB_ARENA_H - rad);
     }
     separate(w);
+    for (int i = 0; i < w->n; i++) {                       /* derived velocity (not hashed): what the next press and the projectile lead read */
+        CpCombatCreature *c = &w->c[i];
+        if (!c->alive) { c->vx = c->vy = c->spd = 0.0f; continue; }
+        c->vx = (c->x - ox[i] - kdx[i]) / CB_DT; c->vy = (c->y - oy[i] - kdy[i]) / CB_DT;
+        c->spd = sqrtf(c->vx * c->vx + c->vy * c->vy);
+    }
 
     /* 4. hits of this tick, simultaneously */
     resolve_hits(w);
@@ -1153,9 +1477,12 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         CpCombatCreature *c = &w->c[i];
         if (!c->alive) continue;
         if (c->phase != CB_PH_IDLE) advance_phase(c);
+        if(c->fear_t)c->fear_t--;
         if (c->stun_t)  c->stun_t--;
         if (c->slow_t)  c->slow_t--;
         if (c->bleed_t) c->bleed_t--;
+        if (c->burn_t)  c->burn_t--;
+        if (c->over_t && --c->over_t == 0 && c->phase == CB_PH_IDLE) c->mspd = 0.0f;
         if (c->phase == CB_PH_IDLE && !disp[i].sprinted && c->since_spend >= CB_REGEN_DELAY) {
             float rg = disp[i].walked ? CB_REGEN * 0.5f : CB_REGEN;
             c->stamina = c->stamina + rg;

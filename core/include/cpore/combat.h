@@ -49,6 +49,9 @@ enum {
     CB_SPIT,
     CB_TAIL_STRIKE,
     CB_DODGE,
+    CB_CLAW_SWIPE, CB_PECK, CB_POUNCE, CB_QUILL_VOLLEY, CB_ROAR, CB_STOMP,
+    CB_CURL_UP, CB_SPINE_VOLLEY,
+    CB_FLAME,         /* first-quest: the fire gland's cone (core/src/combat.c); after the 14 tourney moves */
     CB_MOVE_COUNT
 };
 #define CB_MOVE_NONE  (-1)
@@ -59,7 +62,7 @@ enum { CB_ROLE_BASIC = 0, CB_ROLE_ENGAGE, CB_ROLE_POKE, CB_ROLE_CONTROL, CB_ROLE
 const char *cp_combat_role_name(int role);
 
 /* statuses a move can apply */
-enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
+enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_FEAR, CB_ST_KNOCKDOWN, CB_ST_BURN, CB_ST_COUNT };
 
 /* move flags */
 #define CB_F_RANGED   0x01   /* hit-scan along the facing: nearest enemy in the ray   */
@@ -73,7 +76,8 @@ enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
 
 /* which profile part gates a move */
 enum { CB_PART_NONE = 0, CB_PART_MOUTH, CB_PART_CHARGE, CB_PART_SPIT,
-       CB_PART_TAIL, CB_PART_GUARD, CB_PART_COUNT };
+       CB_PART_TAIL, CB_PART_GUARD, CB_PART_CLAW, CB_PART_BEAK, CB_PART_LEGS,
+       CB_PART_QUILL, CB_PART_THROAT, CB_PART_HEAVY, CB_PART_ROCK, CB_PART_BACKSPINE, CB_PART_FIRE, CB_PART_COUNT };
 
 typedef struct {
     const char *name;
@@ -89,6 +93,7 @@ typedef struct {
     uint8_t  flags;                     /* CB_F_*                                */
     uint8_t  part;                      /* CB_PART_*                             */
     uint8_t  role;                      /* CB_ROLE_*                             */
+    uint8_t meter_cost, max_targets; /* calcium cost; 0 means normal target rules */
     uint16_t cooldown;                  /* ticks before the move can start again,
                                            counted from the tick it starts; 0 = none */
 } CpCombatMove;
@@ -112,6 +117,7 @@ enum {
     CB_EFF_REDUCE,      /* damage x mult, status suppressed; same block/riposte rule */
     CB_EFF_BREAK,       /* damage x mult, defender's move cancelled, defender
                            pays `stamina` flat (to 0) and is staggered `ticks`   */
+    CB_EFF_PIERCE,      /* reduced damage, status retained, no riposte */
     CB_EFF_INTERRUPT    /* damage x mult, defender's move cancelled, defender
                            staggered `ticks`; also cancels the defender's own
                            hit in the same tick                                  */
@@ -143,6 +149,13 @@ typedef struct {
      * default-radius worlds stay bit-identical to the golden logs.
      * 60*0.01f is not bit-identical to 0.6f; do not recompute the default. */
     uint16_t radius_cm;
+    uint8_t extra[8]; /* claw, beak, strong legs, quills, throat, heavy legs, rock, back spines */
+    uint8_t carnivore; /* derived from genome mouths, not host diet */
+    /* The fire gland level (0 = none). Last member, written to the hash only when nonzero, so positional
+     * initialisers and every existing hash stay as they were. */
+    uint8_t fire;
+    uint16_t grip_traits; /* A59: genome-derived contact adaptations */
+    uint8_t grip_legs;    /* actual ground contacts; 0 uses stage legs */
 } CpCombatProfile;
 
 /* Resolved metres. Default values return the CB_RADIUS literal. */
@@ -180,6 +193,9 @@ uint16_t cp_combat_known_default(const CpCombatProfile *p);
 void     cp_combat_loadout_default(CpCombatLoadout *lo, const CpCombatProfile *p);
 /* slot 0..3, move id or CB_MOVE_NONE to empty it. Returns CB_OK or CB_ERR_BAD_SLOT / CB_ERR_UNKNOWN_MOVE /
  * CB_ERR_NOT_KNOWN; a rejected call changes nothing. A move already in another slot is moved. */
+/* A62/A69 starting loadout: bite, pounce, acid spit, roar (those the body can use), then any other known move in table order.
+ * Dodge and guard are never in a slot. A body that cannot pounce or roar keeps the table-order moves in the gaps. */
+void     cp_combat_loadout_starter(CpCombatLoadout *lo, const CpCombatProfile *p);
 int      cp_combat_loadout_is_default(const CpCombatLoadout *lo, const CpCombatProfile *p);
 int      cp_combat_loadout_set(CpCombatLoadout *lo, int slot, int move);
 /* slot holding the move, or -1 */
@@ -204,6 +220,7 @@ typedef struct {
     int8_t  target;   /* creature id                                              */
     int8_t  dir;      /* dodge                                                    */
     int16_t heading_x, heading_y; /* MOVE with dir=-1; nonzero vector */
+    uint8_t hold;     /* A74/A75: spit charged glob/lob; roar set B bellow in stride; ignored by other moves */
 } CpCombatAction;
 
 /* order() return codes (readable text via cp_combat_order_error) */
@@ -220,6 +237,7 @@ enum {
     CB_ERR_NOT_EQUIPPED = -9,  /* attack move is not in the loadout             */
     CB_ERR_BAD_SLOT = -10,     /* slot must be 0..3 (text: 1..4); signature rules */
     CB_ERR_NOT_KNOWN = -11,    /* loadout: the creature does not know the move  */
+    CB_ERR_NO_METER = -25,
     CB_ERR_UNKNOWN_MOVE = -12  /* loadout: not an attack move id                */
 };
 const char *cp_combat_order_error(int code);
@@ -248,7 +266,11 @@ typedef struct {
 
     /* statuses and stamina bookkeeping, in ticks */
     uint8_t  stun_t, bleed_t, slow_t, since_spend;
+    uint8_t fear_t, fear_src, calcium, mineral;
+    uint16_t volleys;
     int8_t   bleed_src;         /* who gets credit for the bleed damage, -1 none  */
+    uint8_t  burn_t;            /* ticks of burning left (hashed only while nonzero) */
+    int8_t   burn_src;          /* who gets credit for the burn damage, -1 none     */
 
     CpCombatLoadout lo;         /* hashed only when not the default                      */
     uint16_t cd[CB_MOVE_COUNT]; /* ticks left before each move can start again; hashed
@@ -264,7 +286,48 @@ typedef struct {
     float    dmg_dealt, dmg_taken, stamina_spent;
     int32_t  hits, hits_taken, blocked, dodged, interrupted, kills;
     int32_t  died_tick;         /* -1 while alive                                 */
+
+    /* A72/A74 context attacks. Everything here is inert (zero, unhashed) unless `ctx_on` is set, so the arena duels, the tourney
+     * and their goldens keep their numbers; the stage turns it on for the player. */
+    uint8_t  ctx_on;            /* opt-in: pressed attacks pick a variant by distance and speed                     */
+    uint8_t  vctx, vhold;       /* context (CB_CTX_*) and hold picked when the attack order was given               */
+    uint8_t  mctx, mhold;       /* the same, for the move that is running (0 = a plain move)                         */
+    uint8_t  over_t;            /* ticks of overshoot / wide turn left after a moving attack                        */
+    float    mspd;              /* speed (m/s) the moving attack carries: set at launch, decays per tick            */
+    float    kbx, kby;          /* knockback velocity (m/s), decays per tick                                       */
+    float    spd, vx, vy;       /* derived each tick from the displacement (m/s); not hashed                        */
 } CpCombatCreature;
+
+/* ---- A72/A74 context attacks (starting values, checked by combat_test) ---- */
+enum { CB_CTX_NONE = 0, CB_CTX_STAND, CB_CTX_WALK, CB_CTX_GALLOP, CB_CTX_FAR };
+enum { CB_BAND_CLOSE = 0, CB_BAND_MID, CB_BAND_FAR };
+#define CB_BAND_MID_GAP    3.0f   /* surface gap (m): below = close                                  */
+#define CB_BAND_FAR_GAP    5.0f   /* from here to CB_BAND_MAX_GAP = far (run-in / lob)                  */
+#define CB_BAND_MAX_GAP    20.0f
+#define CB_CANTER_FR       0.50f  /* the canter band of loco_gait.gd (CANTER_FR); gallop context = speed at or above it */
+#define CB_HIP_PER_RADIUS  0.56f  /* the stage's hip height per body radius (A39)                       */
+#define CB_MOVING_SPD      0.25f  /* m/s: slower than this counts as standing                        */
+#define CB_MOM_DMG         0.35f  /* damage x (1 + this * momentum), momentum 0..1 = speed / (2 x canter speed) */
+#define CB_KB_BASE         2.5f   /* knockback m/s of a context hit, plus 0.5 x the closing speed, capped         */
+#define CB_KB_MAX          4.5f
+#define CB_KB_DECAY        0.4f   /* knockback velocity x this per tick                              */
+#define CB_RUN_K           1.25f  /* run-in (charge) speed x walk speed (same as the sprint)         */
+#define CB_MOM_DECAY       0.95f  /* a moving attack's carried speed x this per tick                 */
+#define CB_OVER_HIT        7      /* ticks of overshoot + wide turn after a moving hit (lab 0.7 s)    */
+#define CB_OVER_MISS       12     /* ... after a miss: the exposure (lab +0.5 s)                       */
+#define CB_LOB_REACH       11.0f  /* surface gap the far lob is thrown from                           */
+#define CB_GLOB_K          1.8f   /* charged glob damage                                              */
+#define CB_JET_SPEED       26.0f  /* m/s of the jet (lab)                                             */
+#define CB_SPLASH          0.6f   /* a projectile lands if the aim point is within radius + this of the body */
+#define CB_MAX_PROJ        6
+enum { CB_PROJ_JET = 0, CB_PROJ_GLOB, CB_PROJ_LOB, CB_PROJ_LOB_CHARGED };
+typedef struct {
+    uint8_t alive, owner, kind, t_left;   /* flight ticks left; lands when it reaches 0                    */
+    float   x, y;                         /* the aim point (the target's predicted position)             */
+} CpCombatProj;
+float cp_combat_canter_speed(const CpCombatCreature *c);   /* m/s, from the body radius */
+int   cp_combat_band(float gap);                           /* CB_BAND_* */
+
 
 typedef struct {
     float cx, cy, radius, height;   /* a smooth bump: h * (1 - d^2/r^2)^2         */
@@ -279,7 +342,9 @@ enum {
     CB_EV_INTERRUPTED,   /* b's move was cancelled by a                           */
     CB_EV_STUNNED,       /* b stunned by a                                        */
     CB_EV_DEATH,         /* b died (a = killer or 255)                            */
-    CB_EV_NO_STAMINA     /* a could not afford its move                           */
+    CB_EV_NO_STAMINA,    /* a could not afford its move */
+    CB_EV_NO_METER,
+    CB_EV_PROJECTILE     /* a fired a projectile at b (move = the spit, amount = flight ticks); the hit comes later as CB_EV_HIT */
 };
 typedef struct {
     uint8_t type, a, b;
@@ -299,6 +364,7 @@ typedef struct {
     CpCombatHill hill[CB_MAX_HILLS];
     int32_t  n_hills;
     CpCombatCreature c[CB_MAX_CREATURES];
+    CpCombatProj proj[CB_MAX_PROJ];   /* spit projectiles in flight (A69: damage lands on arrival); hashed while any is alive */
 
     /* derived outputs of the last tick (not part of the hashed state) */
     CpCombatEvent ev[CB_MAX_EVENTS];
@@ -313,6 +379,7 @@ typedef struct {
     uint8_t medium, team;
     uint8_t has_loadout;        /* 1: use `loadout` as given; 0: the default loadout    */
     CpCombatLoadout loadout;
+    uint8_t calcium,mineral;
 } CpCombatSpawn;
 
 typedef struct {
@@ -336,6 +403,8 @@ void     cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s);
 int      cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a);
 int      cp_combat_approach(CpCombatWorld *w, int id, int target);
 int      cp_combat_attack(CpCombatWorld *w, int id, int target, int move);
+/* A74: the attack with the key held (spit: charged glob, or the charged lob from far) */
+int      cp_combat_attack_hold(CpCombatWorld *w, int id, int target, int move, int hold);
 int      cp_combat_guard(CpCombatWorld *w, int id);
 int      cp_combat_dodge(CpCombatWorld *w, int id, int dir);
 int      cp_combat_flee(CpCombatWorld *w, int id, int target);
@@ -375,6 +444,10 @@ typedef struct {
     float damage;        /* mean damage if launched and landing as things stand   */
     int   effect;        /* CB_EFF_* of the matching counter rule, 0 if none      */
 } CpCombatPreview;
+/* the context a pressed attack by `id` on `tgt` picks now (CB_CTX_*): far band = run-in, else the speed (gallop at or above the canter band) */
+int   cp_combat_pick_ctx(const CpCombatWorld *w, int id, int tgt);
+/* opt a creature into the context attacks (the stage does it for the player) and seed its speed */
+void  cp_combat_ctx_enable(CpCombatWorld *w, int id, float speed);
 void  cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt,
                         CpCombatPreview *out);
 

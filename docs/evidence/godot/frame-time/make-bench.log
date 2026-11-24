@@ -1,0 +1,158 @@
+GODOT_CPP=/tmp/cpore-frame-godot-cpp nice -n 10 /home/diego/Desarrollo/cpore-wt/_agent/godot-venv/bin/scons -C godot/extension -j4 \
+  target=template_debug build_profile=/home/diego/Desarrollo/cpore-wt/frame-time/godot/extension/build_profile.json
+scons: Entering directory `/home/diego/Desarrollo/cpore-wt/frame-time/godot/extension'
+scons: Reading SConscript files ...
+Building for architecture x86_64 on platform linux
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `/tmp/cpore-frame-godot-cpp/bin/libgodot-cpp.linux.template_debug.x86_64.a' is up to date.
+scons: `/home/diego/Desarrollo/cpore-wt/frame-time/godot/bin/libcpore.linux.template_debug.x86_64.so' is up to date.
+scons: done building targets.
+nice -n 10 timeout 600 godot --headless --path godot --import
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "_sock == -1" is true. Returning: FAILED
+   at: _inet_open (drivers/unix/net_socket_unix.cpp:288)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Inicialización del proyecto (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Escaneando la estructura del archivo...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Cargando nombres de clases globales...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verificando GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creando scripts de carga automática...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Inicializando plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Iniciando escaneo de archivos...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Cargando editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Cargando diseño del editor...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Cargando docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+ERROR: Condition "_sock == -1" is true. Returning: FAILED
+   at: _inet_open (drivers/unix/net_socket_unix.cpp:288)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
+XDG_CONFIG_HOME=/tmp/cpore-frame-command/config XDG_DATA_HOME=/tmp/cpore-frame-command/data LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 60 godot --headless --rendering-driver opengl3 --path godot --check-only --script res://game/tests/frame_bench.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+renderer: gl_compatibility (blocked (headless, script, explicit method or already relaunched))
+grass built in 8 ms (3000 blades)
+radial fauna: corona on a tide-pool flat at (-724, -1432), 1457 m from the lowest tidal cave mouth (caves are slope notches)
+island entry (): 7901 ms since goto_island; build environment 3, terrain_meshes 53, water 1165, rivers 147, grass 8, camera 0, stage_setup 1145, props_flora 1031, stage_reset 148, nav_warm 2012, creatures 854, ui_and_rest 401, total 7901
+LOD final intervals: { 0: 0, 1: 1, 2: 1, 4: 0 }
+FRAME BENCH nest_start renderer=headless creatures=2 radial=5 frames=600
+| System (exclusive) | ms/frame | calls/frame |
+|---|---:|---:|
+| world advance + HUD signals | 0.128 | 1.00 |
+| dev monitors | 0.003 | 1.00 |
+| legend | 0.005 | 1.00 |
+| options HUD | 0.017 | 1.00 |
+| world sampling | 0.043 | 4.00 |
+| locomotion gait/support | 0.517 | 1.50 |
+| locomotion IK/rig | 0.160 | 1.50 |
+| actor driver/actions | 0.287 | 1.50 |
+| grass uniforms | 0.001 | 1.00 |
+| actors/context/occluders | 0.082 | 1.00 |
+| camera | 0.151 | 1.00 |
+| flora | 0.030 | 1.00 |
+| island other | 0.014 | 1.00 |
+| terrain LOD | 0.001 | 1.00 |
+| stage UI/audio | 0.016 | 1.00 |
+| HUD animation | 0.017 | 1.00 |
+| minimap | 0.001 | 1.00 |
+| ambient radial fauna | 0.006 | 1.00 |
+| day/night uniforms | 0.016 | 1.00 |
+| minimap draw | 0.057 | 1.00 |
+| Instrumented script total | 1.551 | |
+Performance last process=9.251 ms physics=0.027 ms nodes=3886 objects=10093 frame_p95=3.365 ms
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 193 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 21 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+renderer: gl_compatibility (blocked (headless, script, explicit method or already relaunched))
+grass built in 6 ms (3000 blades)
+radial fauna: corona on a tide-pool flat at (-724, -1432), 1457 m from the lowest tidal cave mouth (caves are slope notches)
+island entry (): 7912 ms since goto_island; build environment 2, terrain_meshes 63, water 1230, rivers 127, grass 6, camera 0, stage_setup 1129, props_flora 998, stage_reset 158, nav_warm 2099, creatures 829, ui_and_rest 361, total 7912
+LOD final intervals: { 0: 0, 1: 6, 2: 0, 4: 0 }
+FRAME BENCH crowd renderer=headless creatures=6 radial=5 frames=600
+| System (exclusive) | ms/frame | calls/frame |
+|---|---:|---:|
+| world advance + HUD signals | 0.162 | 1.00 |
+| dev monitors | 0.005 | 1.00 |
+| legend | 0.009 | 1.00 |
+| options HUD | 0.031 | 1.00 |
+| world sampling | 0.112 | 8.00 |
+| locomotion gait/support | 2.453 | 6.00 |
+| locomotion IK/rig | 0.714 | 6.00 |
+| actor driver/actions | 1.308 | 6.00 |
+| grass uniforms | 0.002 | 1.00 |
+| actors/context/occluders | 0.185 | 1.00 |
+| camera | 0.186 | 1.00 |
+| flora | 0.033 | 1.00 |
+| island other | 0.023 | 1.00 |
+| terrain LOD | 0.002 | 1.00 |
+| stage UI/audio | 0.028 | 1.00 |
+| HUD animation | 0.033 | 1.00 |
+| minimap | 0.002 | 1.00 |
+| ambient radial fauna | 0.011 | 1.00 |
+| day/night uniforms | 0.034 | 1.00 |
+| minimap draw | 0.070 | 1.00 |
+| Instrumented script total | 5.403 | |
+Performance last process=9.505 ms physics=0.613 ms nodes=4279 objects=11095 frame_p95=8.786 ms
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 219 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 27 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+renderer: gl_compatibility (blocked (headless, script, explicit method or already relaunched))
+grass built in 6 ms (3000 blades)
+radial fauna: corona on a tide-pool flat at (-724, -1432), 1457 m from the lowest tidal cave mouth (caves are slope notches)
+island entry (): 7343 ms since goto_island; build environment 3, terrain_meshes 64, water 1138, rivers 133, grass 6, camera 0, stage_setup 1237, props_flora 1097, stage_reset 163, nav_warm 2362, creatures 778, ui_and_rest 362, total 7343
+LOD final intervals: { 0: 21, 1: 1, 2: 1, 4: 1 }
+FRAME BENCH nest_all renderer=headless creatures=24 radial=5 frames=600
+| System (exclusive) | ms/frame | calls/frame |
+|---|---:|---:|
+| world advance + HUD signals | 0.186 | 1.00 |
+| dev monitors | 0.004 | 1.00 |
+| legend | 0.007 | 1.00 |
+| options HUD | 0.023 | 1.00 |
+| world sampling | 0.220 | 26.00 |
+| locomotion gait/support | 0.574 | 1.52 |
+| locomotion IK/rig | 0.178 | 1.52 |
+| actor driver/actions | 0.327 | 1.52 |
+| grass uniforms | 0.002 | 1.00 |
+| actors/context/occluders | 0.416 | 1.00 |
+| camera | 0.076 | 1.00 |
+| flora | 0.028 | 1.00 |
+| island other | 0.018 | 1.00 |
+| terrain LOD | 0.001 | 1.00 |
+| stage UI/audio | 0.022 | 1.00 |
+| HUD animation | 0.023 | 1.00 |
+| minimap | 0.001 | 1.00 |
+| ambient radial fauna | 0.008 | 1.00 |
+| day/night uniforms | 0.024 | 1.00 |
+| minimap draw | 0.069 | 1.00 |
+| Instrumented script total | 2.207 | |
+Performance last process=7.229 ms physics=0.025 ms nodes=6058 objects=15356 frame_p95=5.114 ms
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 193 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 21 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)

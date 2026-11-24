@@ -95,7 +95,7 @@
           "en": "Silent Gestation"
         },
         "role": "Control",
-        "effect": "Converts 1 host unit into a temporary parasite carrier with +3 stealth",
+        "effect": "The parasite infests a nearby creature, transforming it into a carrier that moves silently and remains concealed for a short while.",
         "numbers": {}
       },
       "weakness": "Hosts that discover infection will violently purge them",

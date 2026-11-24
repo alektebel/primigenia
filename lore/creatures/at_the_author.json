@@ -44,7 +44,7 @@
           "en": "Strata Spectrometry"
         },
         "role": "Control",
-        "effect": "Decodes degraded fossil chemistry, revealing 2 hidden environmental traits of a ruined biome.",
+        "effect": "The creature scans ancient fossils with its photoreceptive forelimb patches, uncovering hidden environmental secrets of the ruined landscape.",
         "numbers": {}
       },
       "weakness": "Requires prolonged exposure to specific stellar wavelengths; artificial light sources yield false positives.",

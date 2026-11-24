@@ -93,7 +93,7 @@
           "en": "Grind Ice"
         },
         "role": "Engage",
-        "effect": "Consumes ice to heal 10 mass and recharge Sail Burn",
+        "effect": "The creature crushes nearby ice with its mandibles, absorbing it to restore its health and prepare its Sail Burn.",
         "numbers": {}
       },
       "weakness": "Slow feed rate; unable to keep pace in high-shear lanes",

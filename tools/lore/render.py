@@ -204,7 +204,7 @@ def render_all(root):
     wdir = os.path.join(root, "lore", "worlds")
     worlds = {}
     for n in sorted(os.listdir(wdir)):
-        if n.endswith(".json"):
+        if n.endswith(".json") and not n.endswith(".derivation.json"):
             w = load(os.path.join(wdir, n)); worlds[w["id"]] = w
     reflist = load(os.path.join(root, "lore", "references.json"))
     refs = {r["id"]: r for r in reflist}

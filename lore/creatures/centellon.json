@@ -92,7 +92,7 @@
           "en": "Thermal Glide"
         },
         "role": "Passive",
-        "effect": "Lose only 0.3 stamina per second while gliding; gains altitude from updrafts",
+        "effect": "The creature glides effortlessly, barely tiring as it soars. It rides rising air currents to climb higher.",
         "numbers": {}
       },
       "weakness": "Heavy precipitation saturates vesicles, increasing descent rate by 3x",

@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+renderer: gl_compatibility (blocked (headless, script, explicit method or already relaunched))
+grass built in 8 ms (3000 blades)
+radial fauna: corona on a tide-pool flat at (-724, -1432), 1457 m from the lowest tidal cave mouth (caves are slope notches)
+island entry (): 10989 ms since goto_island; build environment 4, terrain_meshes 78, water 1678, rivers 170, grass 8, camera 0, stage_setup 1653, props_flora 1366, stage_reset 217, nav_warm 2928, creatures 1086, ui_and_rest 504, total 10989
+LOD final intervals: { 0: 0, 1: 1, 2: 1, 4: 0 }
+FRAME BENCH nest_start renderer=headless creatures=2 radial=5 frames=600
+| System (exclusive) | ms/frame | calls/frame |
+|---|---:|---:|
+| world advance + HUD signals | 0.197 | 1.00 |
+| dev monitors | 0.004 | 1.00 |
+| legend | 0.007 | 1.00 |
+| options HUD | 0.021 | 1.00 |
+| world sampling | 0.059 | 4.00 |
+| locomotion gait/support | 0.711 | 1.50 |
+| locomotion IK/rig | 0.218 | 1.50 |
+| actor driver/actions | 0.388 | 1.50 |
+| grass uniforms | 0.002 | 1.00 |
+| actors/context/occluders | 0.108 | 1.00 |
+| camera | 0.203 | 1.00 |
+| flora | 0.045 | 1.00 |
+| island other | 0.018 | 1.00 |
+| terrain LOD | 0.001 | 1.00 |
+| stage UI/audio | 0.021 | 1.00 |
+| HUD animation | 0.023 | 1.00 |
+| minimap | 0.001 | 1.00 |
+| ambient radial fauna | 0.007 | 1.00 |
+| day/night uniforms | 0.021 | 1.00 |
+| minimap draw | 0.079 | 1.00 |
+| Instrumented script total | 2.135 | |
+Performance process=9.545 ms physics=0.027 ms nodes=3886 objects=10093 frame_p95=4.548 ms
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 193 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 21 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)

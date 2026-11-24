@@ -200,6 +200,11 @@ func _caps(c, desc: Dictionary, morph, legged: bool) -> void:
 	if hooks.has("sacs"): caps.append("sacs")
 	if hooks.has("sway"): caps.append("crest")
 	for e in c.parts:
+		var mt := str(e.type)
+		if mt in ["trompa", "snout_trumpet"] and not caps.has("proboscis"): caps.append("proboscis")
+		elif mt == "pico" and not caps.has("beak"): caps.append("beak")
+		elif mt in ["fauces", "jaw_nipper", "mandible_shear"] and not caps.has("fauces"): caps.append("fauces")
+	for e in c.parts:
 		var cat := str(e.get("category", ""))
 		if cat == "weapons" and float(e.t) > 0.6: caps.append("horns"); break
 	for e in c.parts:

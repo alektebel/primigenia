@@ -105,7 +105,7 @@
           "en": "Lure Flash"
         },
         "role": "Engage",
-        "effect": "Spends charge to flash bright blue. Draws nearby creatures toward tendrils. 470 nm peak.",
+        "effect": "The creature flashes a bright blue light that strongly pulls nearby creatures toward its tendrils.",
         "numbers": {}
       },
       "weakness": "Flash reveals position to predators and rivals.",

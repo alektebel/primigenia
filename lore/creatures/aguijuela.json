@@ -1,0 +1,311 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "aguijuela",
+  "name": {
+    "en": "Aguijuela"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Shallows (tidal zone)",
+    "diet": "Host blood, mucus, and gill tissue",
+    "active": "Nocturnal",
+    "predators": [
+      "cuarteta",
+      "limosilla"
+    ],
+    "trophic": "parasite",
+    "role": "parasite",
+    "prey": [
+      "cuarteta"
+    ]
+  },
+  "body": "Length 3.5 cm, mass 2.8 g",
+  "chains": [
+    {
+      "id": "aguijuela.c1",
+      "trait": "Nocturnal activity under moonlight",
+      "links": [
+        "Hunts only when moon bright",
+        "Relies on moonlight for navigation and host location",
+        "Moon 1.2 Luna mass gives bright nights",
+        "F6"
+      ],
+      "roots": [
+        "F6"
+      ],
+      "skill": {
+        "id": "aguijuela.moon_sting",
+        "name": {
+          "en": "Moon-sting"
+        },
+        "role": "Signature",
+        "effect": "Bathed in moonlight, the creature strikes with heightened ferocity, momentarily paralyzing its host.",
+        "numbers": {}
+      },
+      "weakness": "Inactive at new moon; cannot hunt without moonlight.",
+      "observe": [
+        "Active only when moon bright",
+        "Rests in crevices at new moon",
+        "Attacks more aggressively under moon"
+      ],
+      "journal": {
+        "en": "It waits for the moon."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Tie activity to lunar-spring high tides and nocturnal cleaning-predator avoidance: peak attachment when the tidal causeway floods (F13) and hosts (e.g. Cuarteta) pack the shallows; moonlight aids navigation on bright nights but electroreception/chemoreception still allow reduced feeding at new moon in turbid water (F20). Weaken skill weakness to ‘−damage / sluggish at new moon,’ not total shutdown.",
+        "fixes": [
+          "Tie activity to lunar-spring high tides and nocturnal cleaning-predator avoidance: peak attachment when the tidal causeway floods (F13) and hosts (e.g. Cuarteta) pack the shallows; moonlight aids navigation on bright nights but electroreception/chemoreception still allow reduced feeding at new moon in turbid water (F20). Weaken skill weakness to ‘−damage / sluggish at new moon,’ not total shutdown."
+        ],
+        "analogues": [
+          {
+            "organism": "Horseshoe crabs (Limulus): spawn on spring high tides tied to lunar phase; not ‘inactive without moonlight.’ Some zooplankton diel/lunar vertical migration uses moonlight as one cue among several.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "aguijuela.c2",
+      "trait": "Electroreceptive sensors on head",
+      "links": [
+        "Senses host biofields",
+        "Hosts emit weak electricity",
+        "Turbid water hides visual cues",
+        "F20"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "aguijuela.sense_pulse",
+        "name": {
+          "en": "Sense pulse"
+        },
+        "role": "Poke",
+        "effect": "Reveal host hidden by turbidity or camouflage; detect weak hosts.",
+        "numbers": {}
+      },
+      "weakness": "Sensory overload near strong electric sources or storms.",
+      "observe": [
+        "Antennae twitching toward electrical source",
+        "Moves toward host biofields",
+        "Ignores visual decoys"
+      ],
+      "journal": {
+        "en": "It feels the heartbeat."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "F20 selects against vision in turbid shallows; weak bioelectric fields from gill-breathing hosts are detectable at centimetre range in conductive seawater. At 3.5 cm and 2.8 g, added sensory neurons are affordable under F5 (high pO₂). Storm/noise overload near lightning (F8) or strong ambient fields is a fair weakness.",
+        "fixes": [
+          "F20 selects against vision in turbid shallows; weak bioelectric fields from gill-breathing hosts are detectable at centimetre range in conductive seawater. At 3.5 cm and 2.8 g, added sensory neurons are affordable under F5 (high pO₂). Storm/noise overload near lightning (F8) or strong ambient fields is a fair weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Elasmobranch ampullae of Lorenzini (sharks, rays) detecting prey biofields; weak electric sense also in some bony fish and amphibian larvae—not homologous to arachnids but same physics.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "aguijuela.c3",
+      "trait": "Cutaneous gas exchange",
+      "links": [
+        "Absorbs oxygen through skin",
+        "Water holds more oxygen",
+        "High atmospheric pressure increases gas solubility",
+        "F4"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "aguijuela.lunge",
+        "name": {
+          "en": "Lunge"
+        },
+        "role": "Basic",
+        "effect": "The creature launches a swift strike to firmly attach itself to its host, briefly propelling them forward.",
+        "numbers": {}
+      },
+      "weakness": "Suffocates rapidly if removed from water.",
+      "observe": [
+        "Skin glistens with moisture",
+        "Active even in low-oxygen water",
+        "Dies if air-exposed"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Re-root in F5/D10 (high pO₂) + small body size; note supplementary branchial or ventral plate exchange if hosts damage dorsal skin—keeps ‘suffocates in air’ honest.",
+        "fixes": [
+          "Re-root in F5/D10 (high pO₂) + small body size; note supplementary branchial or ventral plate exchange if hosts damage dorsal skin—keeps ‘suffocates in air’ honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Monogenean flatworms and small ectoparasitic crustaceans (e.g. Argulus) rely heavily on tegument/cuticle gas exchange; amphibian skin respiration shows the size limit.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "rohde_1994_marine"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "aguijuela.c4",
+      "trait": "Arachnid body plan",
+      "links": [
+        "Eight legs, two body segments",
+        "Convergent arachnid form",
+        "Island radiation fills niches with diverse archetypes",
+        "F27"
+      ],
+      "roots": [
+        "F27"
+      ],
+      "skill": {
+        "id": "aguijuela.grip",
+        "name": {
+          "en": "Grip"
+        },
+        "role": "Engage",
+        "effect": "The creature clamps tightly onto its host, holding on firmly and resisting any attempts to dislodge it.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to shellfish claws and cleaning behaviors.",
+      "observe": [
+        "Leg count of eight",
+        "Two distinct body segments",
+        "Claws grip slippery host"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Call sensors ‘prosomal palps’ or pit-organs (homoplasy with Lorenini), not antennae; optionally clarify lineage as chelicerate radiation from seed stock, not Earth arachnid copy. Check host size: 3.5 cm is plausible on medium shallow hosts but should be rare on the smallest Cuarteta juveniles (Kuris-style equilibrium size).",
+        "fixes": [
+          "Call sensors ‘prosomal palps’ or pit-organs (homoplasy with Lorenini), not antennae; optionally clarify lineage as chelicerate radiation from seed stock, not Earth arachnid copy. Check host size: 3.5 cm is plausible on medium shallow hosts but should be rare on the smallest Cuarteta juveniles (Kuris-style equilibrium size)."
+        ],
+        "analogues": [
+          {
+            "organism": "Argulus (branchiuran fish louse): crustacean, not arachnid, but eight effective attachment limbs and convergent ‘spidery’ ectoparasite on fish; pycnogonids (sea spiders): true chelicerates with cutaneous respiration in cold, O₂-rich water.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cuarteta",
+      "kind": "prey",
+      "note": "Gill parasite; drains blood and tissue from Cuarteta and other shallow fish."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 8
+  },
+  "temperament": "Cautious, opportunistic",
+  "secrets": [
+    "Larvae filter-feed on drifting carcass particles.",
+    "Nocturnal variant emits faint bioluminescence under full moon.",
+    "Albinos have reduced electroreception and are blind in turbid water.",
+    "Clusters of larvae form drift-nets that trap small prey.",
+    "Fossilized in volcanic tuff shows ancient arachnid ancestor."
+  ],
+  "moments": [
+    "Under the full moon, the shallow causeway floods, and the water surface shimmers with a thousand tiny Aguijuela as they swarm over a stranded jellyfish."
+  ],
+  "journal": [
+    {
+      "en": "It feels the pulse and strikes."
+    },
+    {
+      "en": "A tiny thief of blood."
+    }
+  ]
+}

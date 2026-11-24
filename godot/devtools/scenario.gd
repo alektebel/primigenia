@@ -15,9 +15,10 @@ const WorldLog := preload("res://game/stage/world_log.gd")
 const FORMAT := "primigenia.scenario/1"
 const FORMAT_READS := 1
 const DEV_DIR := "res://scenarios"
-const USER_DIR := "user://scenarios"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+static var USER_DIR := TestIsolation.user("scenarios")
 ## Where game saves go; tests point it elsewhere so they never touch the owner's slot.
-static var save_dir := "user://saves"
+static var save_dir := TestIsolation.user("saves")
 const SAVE_SLOT := "slot1"
 ## Species with a body, by entity id, recorded so a load can dress restored entities.
 const BODY_PATHS := {3: "res://game/data/garfio.json"}
@@ -45,9 +46,12 @@ static func build(stage, ctx: Dictionary, kind: String, scenario_name: String, n
 		"setup": _jsonable(w.get_setup()),
 		"state": scenario_name.get_file() + ".cpstate", "tick": int(st.tick), "hash": st.hash,
 		"genome": ctx.get("genome", {}),
+		"legacy": ctx.get("legacy", {}),
 		"wild_bodies": _bodies(st),
 		"lineage": JSON.parse_string(w.lineage()),
 		"camera": ctx.get("camera", {}),
+		"plants": ctx.get("plants", []),
+		"quest": ctx.get("quest", {}),
 		"tuning": ctx.get("tuning", {}),
 		"time": ctx.get("time", {"timescale": stage.timescale, "paused": stage.paused}),
 	}
@@ -179,7 +183,7 @@ static func load_into(parsed: Dictionary, stage, ctx: Dictionary = {}) -> Dictio
 		_apply_time(d, stage)
 		return {"ok": true, "error": "", "rebuilt": false, "note": ""}
 	var msg: String = CporeWorld.snapshot_error(rc)
-	if (rc == -3 or rc == -4) and parsed.get("recipe", "") != "":
+	if (rc == -2 or rc == -3 or rc == -4) and parsed.get("recipe", "") != "":      # -2: an older snapshot format (the migration is the recipe)
 		var rec: Dictionary = WorldLog.parse(parsed.recipe)
 		if not rec.ok:
 			return {"ok": false, "error": "scenario %s: %s, and its recipe does not parse (%s)" % [label, msg, rec.error], "rebuilt": false}

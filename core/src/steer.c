@@ -2,6 +2,8 @@
 #include "cpore/steer.h"
 #include <math.h>
 #define DT .1f
+#define RUN_BURST_ACC 1.7f
+#define RUN_BURST_EASE 1.2f
 static float clampf_(float x,float a,float b){
     return x<a?a:x>b?b:x;
 }
@@ -55,7 +57,7 @@ float cp_steer_slope(const CpStageMotion *m,const CpSteerBody *b,float grade){
     return maxf_(1+m->down_gain-(d-.2f)*(1+m->down_gain)*1.25f,.4f);
 }
 float cp_steer_slide(const CpStageMotion *m,const CpSteerBody *b,float g){
-    return g>b->slide?minf_(m->slide_k*(g-b->slide)+.4f,5):0;
+    return g>b->slide+.0001f?minf_(m->slide_k*(g-b->slide)+.4f,5):0;
 }
 float cp_steer_tick(const CpStageMotion *m,const CpSteerBody *b,CpSteer *s,float dx,float dz,float wanted,float jog,float slope){
     const float n=sqrtf(dx*dx+dz*dz),old=s->speed;
@@ -80,8 +82,11 @@ float cp_steer_tick(const CpStageMotion *m,const CpSteerBody *b,CpSteer *s,float
         wt*=f;
     }
     wt*=slope;
-    float dv=(wt-old)*m->ease;
-    dv=clampf_(dv,-b->brk*DT,b->acc*DT);
+    /* A54: a run (wanted well above the jog) bursts: the acceleration cap and the ease are raised so a creature reaches its gallop speed in
+     * about half a second from a walk or a standstill (starting values; measured in docs/evidence/loco/creature-feedback/gallop.md). */
+    const int burst=has&&wanted>1.25f*jog&&wt>old;
+    float dv=(wt-old)*(burst?minf_(1.f,m->ease*RUN_BURST_EASE):m->ease);
+    dv=clampf_(dv,-b->brk*DT,b->acc*(burst?RUN_BURST_ACC:1.f)*DT);
     float v=old+dv;
     if(v<.015f&&wt<.015f)v=0;
     /* yaw: angular acceleration towards a yaw rate that brakes in time for the remaining angle */
@@ -131,4 +136,49 @@ void cp_steer_carrot(const float (*path)[2],int n,int first,float px,float pz,fl
     }
     *ox=ax;
     *oz=az;
+}
+
+/* A59 starting values; validation and rationale: docs/evidence/sim/slope-grip.md.
+ * Adhesion establishes a 75-degree floor; all bonuses are presence-only. */
+#ifndef CP_GRIP_BASE_DEG
+#define CP_GRIP_BASE_DEG 51.6f   /* the pre-A59 global grade ceiling: plain bodies keep the island passable (docs/evidence/sim/slope-grip.md) */
+#endif
+float cp_stage_grip_deg(const CpCombatProfile *p,int legs){
+    unsigned t=p->grip_traits;
+    if(p->grip_legs)legs=p->grip_legs;
+    float d=CP_GRIP_BASE_DEG;
+    if(t&CP_GRIP_CLAW)d+=10;
+    if(t&CP_GRIP_ARM)d+=8;
+    if(t&CP_GRIP_CLING)d+=20;
+    if(legs>=6)d+=8;
+    if(t&CP_GRIP_LOW)d+=5;
+    if(t&CP_GRIP_TAIL)d+=5;
+    if(cp_combat_body_radius(p)>3)d-=5;   /* heavy: bigger than the 3 m hero-size body the island tests walk */
+    /* Hooves: no penalty until a substrate map lets them slip on rock only (a global -5 broke island travel for the hoofed starters). */
+    if(t&CP_GRIP_CLING){if(d<75)d=75;if(d>80)d=80;}
+    else if(d>70)d=70;
+    return d;
+}
+float cp_stage_grip_grade(const CpCombatProfile *p,int legs){
+    float d=cp_stage_grip_deg(p,legs);
+    /* Fixed polynomial sin/cos, no platform trig. Preserve the old exact grade at 51.6 degrees. */
+    if(d==51.6f)return CP_STEER_GRADE_MAX;
+    float x=d*.017453292519943295f,x2=x*x;
+    float si=x*(1+x2*(-1.f/6+x2*(1.f/120+x2*(-1.f/5040+x2/362880))));
+    float co=1+x2*(-1.f/2+x2*(1.f/24+x2*(-1.f/720+x2*(1.f/40320-x2/3628800))));
+    return si/co;
+}
+void cp_steer_creature(const CpStageMotion *m,const CpStageCreature *c,CpSteerBody *b){
+    cp_steer_body(m,cp_combat_body_radius(&c->profile),c->legs,b);
+    /* The leg-derived slide limit (capped at the old 1.26 ceiling) is kept, and adaptations above the plain 51.6 add to it; a penalty
+     * (heavy body) lowers it. A plain 4-leg body is exactly the pre-A59 ceiling, a 2-leg body still slides earlier than that. */
+    const float g=cp_stage_grip_grade(&c->profile,c->legs);
+    float leg=b->slide<CP_STEER_GRADE_MAX?b->slide:CP_STEER_GRADE_MAX;
+    if(g>CP_STEER_GRADE_MAX)leg+=g-CP_STEER_GRADE_MAX;
+    b->slide=leg<g?leg:g;
+    /* Adaptations above the plain 51.6 raise the standing/climb limits by the same margin (suckers hold their whole grip); never past grip. */
+    const float bonus=g>CP_STEER_GRADE_MAX?g-CP_STEER_GRADE_MAX:0;
+    b->climb+=bonus;b->stall+=bonus;
+    if(c->profile.grip_traits&CP_GRIP_CLING){b->climb=g;if(b->stall<g)b->stall=g;}
+    if(b->climb>g)b->climb=g;   /* the old use sites capped climb at 1.26 themselves; now the cap is the body's own grip. Stall is left as on main. */
 }

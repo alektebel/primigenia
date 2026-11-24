@@ -119,3 +119,4 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-20 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-21 trophic-web task: id renamed ceniza_roja -> ceniza_roja_void: it collided with the Primigenia flora ceniza_roja (duplicate chain ids failed validate)

@@ -12,7 +12,9 @@
     "habitat": "Intertidal shelves and shallow lagoons behind sea arches and islets (F13, F21)",
     "diet": "Filter-suspension, mollusk crusts, drifting carrion, salt-rich detritus",
     "active": "Diurnal, tidal-cycle driven (high tide active, low tide sealed)",
-    "predators": []
+    "predators": [],
+    "trophic": "secondary_consumer",
+    "role": "small_predator"
   },
   "body": "Pentaradial disc with five long, hydrostatic arms; central mouth; suction-cupped tube feet; no head; extensive central nerve ring",
   "chains": [
@@ -40,14 +42,15 @@
         "effect": "The creature rotates its arms in a full circle to watch for threats, projecting a strong aura of intimidation while trudging forward at a slow pace.",
         "numbers": {}
       },
-      "weakness": "Player can flank and deliver frontal impact to stun before retreat",
+      "weakness": "Strike the soft underside between raised arms while the tube feet release their grip",
       "observe": [
         "Watch it align arms with incoming swell",
         "See it orient toward distant predator",
         "Note feeding without a fixed front"
       ],
       "journal": {
-        "en": "No front. No back. Just five equal claims on the world."
+        "en": "No front. No back. Five equal claims on the world. When the tube feet release, the soft underside between raised arms is exposed.",
+        "es": "Sin frente ni espalda. Cinco formas iguales de reclamar el mundo. Al soltar los pies ambulacrales, queda expuesta la cara inferior blanda entre los brazos alzados."
       },
       "plausibility": {
         "verdict": "plausible",

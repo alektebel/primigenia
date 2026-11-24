@@ -53,3 +53,29 @@ static func pick_entity(origin: Vector3, dir: Vector3, entities: Array, ground: 
 			best_t = t
 			best = {"id": e.id, "pos": Vector3(e.x, ground.call(e.x, e.z), e.z)}
 	return best
+
+# Verb-first lock-on (docs/briefs/verb-target.md): the creature whose body is nearest the mouse in SCREEN space, with a generous
+# radius so a moving creature is easy to lock. cands: Array of {id, feet: Vector3, height: float}; project: Callable(Vector3) ->
+# Vector2 or null (behind the camera); returns the id or -1. The allowed distance is the body's own on-screen half height times
+# PICK_BODY plus PICK_PAD pixels, never under `min_px`, so it scales with the distance (a far creature is small but still
+# catchable) and the nearest by that measure wins. Starting values: owner test V-LOCK checks them.
+const PICK_BODY := 1.5
+const PICK_PAD := 28.0
+static func pick_screen(mouse: Vector2, cands: Array, project: Callable, min_px: float = 44.0) -> int:
+	var best := -1
+	var best_score := 1.0
+	for c in cands:
+		var feet: Vector3 = c.feet
+		var h: float = maxf(float(c.get("height", 1.0)), 0.3)
+		var mid = project.call(feet + Vector3(0, h * 0.5, 0))
+		if mid == null:
+			continue
+		var top = project.call(feet + Vector3(0, h, 0))
+		var body_px: float = absf((mid as Vector2).y - (top as Vector2).y) if top != null else 0.0
+		var allowed: float = maxf(min_px, body_px * PICK_BODY + PICK_PAD)
+		var d: float = (mid as Vector2).distance_to(mouse)
+		var score := d / allowed
+		if score <= best_score:
+			best_score = score
+			best = int(c.id)
+	return best

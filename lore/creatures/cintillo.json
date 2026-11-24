@@ -92,7 +92,7 @@
           "en": "Phasing Spawn"
         },
         "role": "Social",
-        "effect": "Launches spores to ally orbit; heals 15 mass and adjusts ally inclination by 0.1°",
+        "effect": "The creature springs its capsule, sending a cloud of spores drifting toward nearby allies. The mist gently restores their vitality and subtly shifts their loyalty in your favor.",
         "numbers": {}
       },
       "weakness": "Aiming error; miss can waste spores or hit enemies",

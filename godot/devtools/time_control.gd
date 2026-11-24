@@ -77,7 +77,7 @@ func _process(_dt: float) -> void:
 	chip.text = " " + txt + " "
 
 func _unhandled_input(e: InputEvent) -> void:
-	if stage == null or Game.console_open or not (e is InputEventKey) or not e.pressed or e.echo:
+	if stage == null or Game.console_open or Game.options_open or not (e is InputEventKey) or not e.pressed or e.echo:
 		return
 	if e.is_action_pressed("time_pause"):
 		toggle_pause()

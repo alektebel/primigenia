@@ -35,7 +35,7 @@
           "en": "Filter Feed"
         },
         "role": "Basic",
-        "effect": "Converts organic snow into 15 stamina, passive regeneration in plumes",
+        "effect": "The creature continuously sifts through the falling snow with its gill rakers, drawing nourishment from the particles. This constant filtering causes its plumes to gently pulse with a soft, lingering glow.",
         "numbers": {}
       },
       "weakness": "Cannot distinguish toxic vent plumes from food sources",

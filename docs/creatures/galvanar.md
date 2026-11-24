@@ -37,9 +37,12 @@ Trait ← Blood transports charge with low resistance ← Transmits shock throug
   2. Skin sheen of dissolved metal ions
   3. Blood visible through thin skin is dark and reflective
 - **Journal:** Lightning wrapped in salt and iron-blood.
-- **Plausibility:** unreviewed (judge none, 2026-11-24)
-  - scores: skeptic 3
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Choose one pigment: copper hemocyanin (blue when oxygenated) or iron hemerythrin/hemoglobin; describe low-resistance internal paths rather than 'iron-hemocyanin'; replace the plant citation and remove the 5 m, 20 damage and 30% cold stats.
+  - scores: astrobio 6, skeptic 3
+  - Analogue: Copper hemocyanin in molluscs and arthropods, iron hemerythrin in sipunculans, hemoglobin in vertebrates; electric fish couple discharge through surrounding water and body tissue (from memory, unverified).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
+  - Fix: Choose one pigment: copper hemocyanin (blue when oxygenated) or iron hemerythrin/hemoglobin; describe low-resistance internal paths rather than 'iron-hemocyanin'; replace the plant citation and remove the 5 m, 20 damage and 30% cold stats.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### galvanar.c2: Stacked electrocyte organs
@@ -53,9 +56,12 @@ Trait ← Organs generate high voltage discharge ← Stuns prey in low-visibilit
   2. Arcs of blue-white light between electro-ports
   3. Rapid muscle contractions before discharge
 - **Journal:** It strikes without moving.
-- **Plausibility:** unreviewed (judge none, 2026-11-24)
-  - scores: skeptic 5
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Keep stacked electrocytes but show the strike as prey twitching, water disturbance and electrolysis bubbles rather than arcs; mark 'highly speculative'; write the effect as 'stuns nearby prey in brackish water' with no numbers.
+  - scores: astrobio 6, skeptic 5
+  - Analogue: Electric eel (Electrophorus) and torpedo rays: stacked muscle-derived electrocytes; high voltage works best in low-conductance fresh water, low-voltage high-current discharges in seawater (from memory, unverified).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
+  - Fix: Keep stacked electrocytes but show the strike as prey twitching, water disturbance and electrolysis bubbles rather than arcs; mark 'highly speculative'; write the effect as 'stuns nearby prey in brackish water' with no numbers.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### galvanar.c3: Electroreceptive pores along flanks
@@ -69,8 +75,11 @@ Trait ← Pores detect bio-electric signals ← Hunts prey hiding in conductive 
   2. Head tilting to scan electric fields
   3. Grooming behavior rubbing against conductive rocks
 - **Journal:** It sees the heartbeat of the mud.
-- **Plausibility:** unreviewed (judge none, 2026-11-24)
-  - scores: skeptic 5
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Add F16 to the roots, note that conductivity shapes detection range and that brine changes the signal, keep the dust-clogging weakness, and strip the reveal-radius and 2-turn prediction numbers.
+  - scores: astrobio 6, skeptic 5
+  - Analogue: Sharks and rays with ampullae of Lorenzini; weakly electric fish detecting and jamming one another's fields (from memory, unverified).: as named by the judge; no mechanism or reference recorded
+  - Fix: Add F16 to the roots, note that conductivity shapes detection range and that brine changes the signal, keep the dust-clogging weakness, and strip the reveal-radius and 2-turn prediction numbers.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### galvanar.c4: Vacuolar metal-chelation crystals
@@ -84,9 +93,12 @@ Trait ← Crystals sequester toxic Cu/Zn ions ← Prevents protein denaturation 
   2. Shedding skin revealing shiny crystals
   3. Avoiding metal-rich sludge while shedding
 - **Journal:** Shedding crystals is the only time it bleeds.
-- **Plausibility:** unreviewed (judge none, 2026-11-24)
-  - scores: skeptic 6
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Rewrite as metal tolerance with a moulting cost, cite the plant work only as an analogue, root it in F24/F28, and remove 'immunity' and 'environmental corrosion'.
+  - scores: astrobio 6, skeptic 6
+  - Analogue: Metal-hyperaccumulator plants storing Ni/Zn in vacuoles, and animal metallothionein/granule sequestration of excess metals (from memory, unverified).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
+  - Fix: Rewrite as metal tolerance with a moulting cost, cite the plant work only as an analogue, root it in F24/F28, and remove 'immunity' and 'environmental corrosion'.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -117,6 +129,8 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 autoloop: removed rejected references from analogues
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues
 - 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues

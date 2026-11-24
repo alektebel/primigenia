@@ -24,7 +24,7 @@ A spherical colony of ~4,000 bilateral zooids spaced 15 cm apart in a rigid latt
 | khol_zhar.c1 | Zooids float in rigid sphere bound by hum | Standing wave radiation pressure counters 1.85g gravity ← 10-bar atmosphere provides high acoustic impedance ← F8 | **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Phase Disrupt (`khol_zhar.phase_disrupt`) | Poke | The creature emits a sharp counter-wave that breaks its rigid formation and scatters the floating zooids across the area for a short while. | Vulnerable to frequency jamming; scattered zooids cannot fly or filter food and lose cohesion immediately. |
 | khol_zhar.c2 | Colony concentrates food in wave nodes | Acoustic standing waves create high-pressure nodes that trap particulates ← High density air amplifies acoustic trapping force ← F8, F10 | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F10** Sound speed ~355 m/s with low-frequency attenuation reduced. | Resonant Harvest (`khol_zhar.resonant_harvest`) | Basic | The creature mimics a steady hum that strongly draws nearby food particles toward itself or the player, temporarily improving its filtration. | Attracts predators that hunt by sound. |
 | khol_zhar.c3 | Low-frequency hum (50 Hz) penetrates haze | Low frequency minimizes scattering in thick haze ← Amber haze filters high frequencies via Mie scattering ← F11, F19 | **F11** Diffuse amber haze with Mie scattering dominant and ~650 W/m² irradiance.; **F19** Peak photosynthetic photon flux at 700–780 nm with haze optical depth of 0.8 at 550 nm. | Harmonic Resonance (`khol_zhar.harmonic_resonance`) | Social | The creature perfectly matches a low-frequency hum to merge with a nearby zooid, creating a passive helper that stays by its side for a short while. | Requires precise pitch matching; failure causes rejection and stress. |
-| khol_zhar.c4 | Hemolymph is azure-blue copper complex | Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in crustal silicates due to weathering under high pressure ← F21 | **F21** Copper-based hemocyanin analogs for O₂ transport. | Copper Lash (`khol_zhar.copper_lash`) | Engage | Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12. | Copper blood is less efficient in low-O2 pockets. |
+| khol_zhar.c4 | Hemolymph is azure-blue copper complex | Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in crustal silicates due to weathering under high pressure ← F21 | **F21** Copper-based hemocyanin analogs for O₂ transport. | Copper Lash (`khol_zhar.copper_lash`) | Engage | The creature hurls a splash of blue fluid that coats nearby mechanical targets, causing them to lock up or slowly decay into rust. | Copper blood is less efficient in low-O2 pockets. |
 
 ### khol_zhar.c1: Zooids float in rigid sphere bound by hum
 
@@ -86,7 +86,7 @@ Trait ← Low frequency minimizes scattering in thick haze ← Amber haze filter
 
 Trait ← Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in crustal silicates due to weathering under high pressure ← F21 ← F21
 
-- **Skill:** Copper Lash (Engage): Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12.
+- **Skill:** Copper Lash (Engage): The creature hurls a splash of blue fluid that coats nearby mechanical targets, causing them to lock up or slowly decay into rust.
 - **Weakness:** Copper blood is less efficient in low-O2 pockets.
 - **Observe:**
   1. Zooids bleed when cut

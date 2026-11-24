@@ -13,6 +13,7 @@ protected:
     static void _bind_methods();
 
 public:
+    static godot::Dictionary cave_mesh(const godot::Dictionary &params);
     static int version();
     static godot::Dictionary defaults();
     static int validate(const godot::Dictionary &params);

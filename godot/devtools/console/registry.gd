@@ -7,7 +7,7 @@ extends RefCounted
 ##         complete: Callable(arg_index, prefix, tokens) -> Array of strings
 ## Commands that change the simulation build a debug op or an order; nothing writes C state otherwise.
 
-const HISTORY_PATH := "user://console_history.txt"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
 const HISTORY_MAX := 50
 
 var commands := {}
@@ -125,14 +125,18 @@ func help_text(name: String = "") -> String:
 		lines.append("  %-10s %-26s %s" % [n, c.args, c.help])
 	return "\n".join(lines)
 
-func load_history(path: String = HISTORY_PATH) -> void:
+func load_history(path: String = "") -> void:
+	if path == "":
+		path = TestIsolation.user("console_history.txt")
 	if not FileAccess.file_exists(path):
 		return
 	history = PackedStringArray()
 	for l in FileAccess.get_file_as_string(path).split("\n", false):
 		history.append(l)
 
-func save_history(path: String = HISTORY_PATH) -> void:
+func save_history(path: String = "") -> void:
+	if path == "":
+		path = TestIsolation.user("console_history.txt")
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f != null:
 		f.store_string("\n".join(history) + "\n")

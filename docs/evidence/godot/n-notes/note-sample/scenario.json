@@ -1,0 +1,2772 @@
+{
+	"camera": {
+		"distance": 4.59199571609497,
+		"orbit_pitch": 0.0,
+		"pitch": 0.261799387799149,
+		"yaw": -2.74889355458867,
+		"z_target": 0.15
+	},
+	"created": "2026-11-22T21:58:08",
+	"engine": {
+		"build": "unknown",
+		"layout": "f1f0680344bedf6f",
+		"snapshot_version": 3,
+		"stage_version": 3
+	},
+	"format": "primigenia.scenario/1",
+	"genome": {
+		"name": "Starter B: Lean runner",
+		"nodes": [
+			{
+				"r": 0.03,
+				"y": 0.58,
+				"z": -0.7
+			},
+			{
+				"r": 0.046,
+				"y": 0.6,
+				"z": -0.52
+			},
+			{
+				"r": 0.092,
+				"y": 0.63,
+				"z": -0.32
+			},
+			{
+				"r": 0.12,
+				"y": 0.66,
+				"z": -0.1
+			},
+			{
+				"r": 0.115,
+				"y": 0.68,
+				"z": 0.12
+			},
+			{
+				"r": 0.087,
+				"y": 0.72,
+				"z": 0.3
+			},
+			{
+				"r": 0.06,
+				"y": 0.88,
+				"z": 0.44
+			},
+			{
+				"r": 0.087,
+				"y": 0.98,
+				"z": 0.58
+			}
+		],
+		"parts": [
+			{
+				"ang": 0.0,
+				"level": 1,
+				"size": 0.2,
+				"t": 1.0,
+				"tier": 0,
+				"type": "pico"
+			},
+			{
+				"ang": 1.0,
+				"level": 1,
+				"size": 0.26,
+				"t": 0.9,
+				"tier": 0,
+				"type": "ojo"
+			},
+			{
+				"ang": 0.5,
+				"level": 1,
+				"size": 0.14,
+				"t": 0.88,
+				"tier": 0,
+				"type": "oreja"
+			},
+			{
+				"ang": 2.1,
+				"f": [
+					0.07,
+					-0.58,
+					-0.02
+				],
+				"k": [
+					0.05,
+					-0.28,
+					0.14
+				],
+				"level": 1,
+				"t": 0.36,
+				"tier": 0,
+				"type": "pezuna",
+				"w": 0.05
+			},
+			{
+				"ang": 2.1,
+				"f": [
+					0.07,
+					-0.62,
+					0.02
+				],
+				"k": [
+					0.05,
+					-0.3,
+					-0.12
+				],
+				"level": 1,
+				"t": 0.62,
+				"tier": 0,
+				"type": "pezuna",
+				"w": 0.05
+			},
+			{
+				"ang": 0.0,
+				"level": 1,
+				"size": 0.1,
+				"t": 0.8,
+				"tier": 0,
+				"type": "cresta"
+			}
+		],
+		"regions": [],
+		"schema": "cpore.creature/5",
+		"skin": {
+			"cA": "#b98f5a",
+			"cB": "#5a4026",
+			"cC": "#eadfc4",
+			"pat": 2.0,
+			"scale": 8.0,
+			"wet": 0.08
+		}
+	},
+	"hash": "c44935ec18b49d86",
+	"island": {
+		"seed": 1,
+		"terrain_hash": "7137e3ea79830ad7",
+		"terrain_version": 4
+	},
+	"kind": "note",
+	"legacy": {},
+	"lineage": {
+		"current_deeds": {
+			"befriends": 0.0,
+			"bigger_approaches": 0.0,
+			"building": 0.0,
+			"deep_dives": 0.0,
+			"digging": 0.0,
+			"distance_cm": 0.0,
+			"fights_fled": 0.0,
+			"fights_started": 0.0,
+			"flight_ticks": 0.0,
+			"foraging": 0.0,
+			"gifts": 0.0,
+			"hoarding": 0.0,
+			"hunts": 0.0,
+			"intimidations": 0.0,
+			"kills": 0.0,
+			"meat": 0.0,
+			"nest_ticks": 186.0,
+			"new_places": 0.0,
+			"night_ticks": 0.0,
+			"observations": 0.0,
+			"plants": 0.0,
+			"stealth": 0.0,
+			"swimming_ticks": 0.0,
+			"void_ticks": 0.0
+		},
+		"deeds": {
+			"befriends": 0.0,
+			"bigger_approaches": 0.0,
+			"building": 0.0,
+			"deep_dives": 0.0,
+			"digging": 0.0,
+			"distance_cm": 0.0,
+			"fights_fled": 0.0,
+			"fights_started": 0.0,
+			"flight_ticks": 0.0,
+			"foraging": 0.0,
+			"gifts": 0.0,
+			"hoarding": 0.0,
+			"hunts": 0.0,
+			"intimidations": 0.0,
+			"kills": 0.0,
+			"meat": 0.0,
+			"nest_ticks": 186.0,
+			"new_places": 0.0,
+			"night_ticks": 0.0,
+			"observations": 0.0,
+			"plants": 0.0,
+			"stealth": 0.0,
+			"swimming_ticks": 0.0,
+			"void_ticks": 0.0
+		},
+		"deeds_aggregated": 0.0,
+		"enabled": true,
+		"entries": [
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 0.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 1.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 2.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 3.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 4.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 5.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 6.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 7.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 8.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 9.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 10.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 11.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 12.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 13.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 14.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 15.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 16.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 17.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 18.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 19.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 20.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 21.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 22.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 23.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 24.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 25.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 26.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 27.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 28.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 29.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 30.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 31.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 32.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 33.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 34.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 35.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 36.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 37.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 38.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 39.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 40.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 41.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 42.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 43.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 44.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 45.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 46.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 47.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 48.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 49.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 50.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 51.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 52.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 53.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 54.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 55.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 56.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 57.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 58.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 59.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 60.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 61.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 62.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 63.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 64.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 65.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 66.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 67.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 68.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 69.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 70.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 71.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 72.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 73.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 74.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 75.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 76.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 77.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 78.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 79.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 80.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 81.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 82.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 83.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 84.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 85.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 86.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 87.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 88.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 89.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 90.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 91.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 92.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 93.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 94.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 95.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 96.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 97.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 98.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 99.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 100.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 101.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 102.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 103.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 104.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 105.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 106.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 107.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 108.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 109.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 110.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 111.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 112.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 113.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 114.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 115.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 116.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 117.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 118.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 119.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 120.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 121.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 122.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 123.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 124.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 125.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 126.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 127.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 128.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 129.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 130.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 131.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 132.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 133.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 134.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 135.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 136.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 137.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 138.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 139.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 140.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 141.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 142.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 143.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 144.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 145.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 146.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 147.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 148.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 149.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 150.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 151.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 152.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 153.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 154.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 155.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 156.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 157.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 158.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 159.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 160.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 161.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 162.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 163.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 164.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 165.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 166.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 167.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 168.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 169.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 170.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 171.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 172.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 173.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 174.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 175.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 176.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 177.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 178.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 179.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 180.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 181.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 182.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 183.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 184.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			},
+			{
+				"cause": 0.0,
+				"id": 7.0,
+				"kind": "deed",
+				"tick": 185.0,
+				"value": 1.0,
+				"x": 0.0,
+				"z": 0.0
+			}
+		],
+		"format": "cpore.lineage/1",
+		"generation": 1.0,
+		"generations": [
+			{
+				"body_json": "{\"name\":\"Starter B: Lean runner\",\"nodes\":[{\"r\":0.03,\"y\":0.58,\"z\":-0.7},{\"r\":0.046,\"y\":0.6,\"z\":-0.52},{\"r\":0.092,\"y\":0.63,\"z\":-0.32},{\"r\":0.12,\"y\":0.66,\"z\":-0.1},{\"r\":0.115,\"y\":0.68,\"z\":0.12},{\"r\":0.087,\"y\":0.72,\"z\":0.3},{\"r\":0.06,\"y\":0.88,\"z\":0.44},{\"r\":0.087,\"y\":0.98,\"z\":0.58}],\"parts\":[{\"ang\":0.0,\"level\":1,\"size\":0.2,\"t\":1.0,\"tier\":0,\"type\":\"pico\"},{\"ang\":1.0,\"level\":1,\"size\":0.26,\"t\":0.9,\"tier\":0,\"type\":\"ojo\"},{\"ang\":0.5,\"level\":1,\"size\":0.14,\"t\":0.88,\"tier\":0,\"type\":\"oreja\"},{\"ang\":2.1,\"f\":[0.07,-0.58,-0.02],\"k\":[0.05,-0.28,0.14],\"level\":1,\"t\":0.36,\"tier\":0,\"type\":\"pezuna\",\"w\":0.05},{\"ang\":2.1,\"f\":[0.07,-0.62,0.02],\"k\":[0.05,-0.3,-0.12],\"level\":1,\"t\":0.62,\"tier\":0,\"type\":\"pezuna\",\"w\":0.05},{\"ang\":0.0,\"level\":1,\"size\":0.1,\"t\":0.8,\"tier\":0,\"type\":\"cresta\"}],\"regions\":[],\"schema\":\"cpore.creature/5\",\"skin\":{\"cA\":\"#b98f5a\",\"cB\":\"#5a4026\",\"cC\":\"#eadfc4\",\"pat\":2.0,\"scale\":8.0,\"wet\":0.08}}",
+				"counts_progress": false,
+				"cousin_id": 0.0,
+				"diet": 0.0,
+				"generation": 1.0,
+				"home_cm": [
+					0.0,
+					0.0
+				],
+				"name": "Starter B: Lean runner gen 1",
+				"species_id": 5.0,
+				"temperament": 0.0,
+				"trait_mask": 0.0,
+				"trust_bonus": 0.0,
+				"type": -1.0,
+				"type_code": "?-?-I-?",
+				"type_name": "Undetermined"
+			}
+		],
+		"live_type": {
+			"code": "?-?-I-?",
+			"description": "Your deeds have not yet decided what this body becomes.",
+			"index": 68.0,
+			"name": "Undetermined",
+			"perk": -1.0,
+			"scores": [
+				0.0,
+				0.0,
+				100.0,
+				0.0
+			]
+		},
+		"traits": []
+	},
+	"name": "scenario",
+	"note": "legs cross when it turns toward the water",
+	"plants": [],
+	"quest": {
+		"collapsed": false,
+		"done_at": {},
+		"flags": {},
+		"id": "first",
+		"skipped": {},
+		"step": 0
+	},
+	"setup": {
+		"cave": {
+			"fx": -0.615702271461487,
+			"fz": -0.787978887557983,
+			"half": 0.0,
+			"length": 0.0,
+			"radius": 0.0,
+			"x": 61.5234375,
+			"z": 620.5078125
+		},
+		"flat_height": 2.0,
+		"nest": [
+			0.0,
+			0.0
+		],
+		"obstacles": [],
+		"player": {
+			"carnivore": 0,
+			"charge": 0,
+			"extra": [
+				0,
+				1,
+				0,
+				0,
+				1,
+				2,
+				0,
+				0
+			],
+			"fire": 0,
+			"guard": 0,
+			"hp": 100.0,
+			"mouth": 1,
+			"radius_cm": 64,
+			"speed": 4.0,
+			"spit": 1,
+			"stamina": 100.0,
+			"tail": 0
+		},
+		"player_legs": 0,
+		"secrets": 3,
+		"seed": 1,
+		"start_clock": 4000,
+		"terrain": 2,
+		"terrain_seed": 7,
+		"water": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"wild": [
+			{
+				"bot": -1,
+				"home_x": 22.9610061645508,
+				"home_z": 55.4327697753906,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 90.0,
+					"mouth": 2,
+					"radius_cm": 50,
+					"speed": 5.5,
+					"spit": 2,
+					"stamina": 20.0,
+					"tail": 2
+				},
+				"species": 3,
+				"x": 22.9610061645508,
+				"z": 55.4327697753906
+			},
+			{
+				"bot": -1,
+				"home_x": 79.2743148803711,
+				"home_z": 30.6689186096191,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 60.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 4.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 0,
+				"x": 79.2743148803711,
+				"z": 30.6689186096191
+			},
+			{
+				"bot": -1,
+				"home_x": 79.2743148803711,
+				"home_z": 30.6689186096191,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 60.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 4.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 0,
+				"x": 81.7743148803711,
+				"z": 34.9990463256836
+			},
+			{
+				"bot": -1,
+				"home_x": 79.2743148803711,
+				"home_z": 30.6689186096191,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 60.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 4.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 0,
+				"x": 85.3364944458008,
+				"z": 34.1689186096191
+			},
+			{
+				"bot": -1,
+				"home_x": 79.2743148803711,
+				"home_z": 30.6689186096191,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 60.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 4.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 0,
+				"x": 82.2743148803711,
+				"z": 30.6689186096191
+			},
+			{
+				"bot": -1,
+				"home_x": 58.9409484863281,
+				"home_z": -92.8760681152344,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 5.19999980926514,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 1
+				},
+				"species": 1,
+				"x": 58.9409484863281,
+				"z": -92.8760681152344
+			},
+			{
+				"bot": -1,
+				"home_x": 58.9409484863281,
+				"home_z": -92.8760681152344,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 5.19999980926514,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 1
+				},
+				"species": 1,
+				"x": 61.4409484863281,
+				"z": -88.5459442138672
+			},
+			{
+				"bot": -1,
+				"home_x": 58.9409484863281,
+				"home_z": -92.8760681152344,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 5.19999980926514,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 1
+				},
+				"species": 1,
+				"x": 65.0031280517578,
+				"z": -89.3760681152344
+			},
+			{
+				"bot": -1,
+				"home_x": 58.9409484863281,
+				"home_z": -92.8760681152344,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 5.19999980926514,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 1
+				},
+				"species": 1,
+				"x": 61.9409484863281,
+				"z": -92.8760681152344
+			},
+			{
+				"bot": -1,
+				"home_x": -118.205909729004,
+				"home_z": -75.015754699707,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 1,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 1,
+					"hp": 100.0,
+					"mouth": 2,
+					"radius_cm": 0,
+					"speed": 4.0,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 2
+				},
+				"species": 2,
+				"x": -118.205909729004,
+				"z": -75.015754699707
+			},
+			{
+				"bot": -1,
+				"home_x": -118.205909729004,
+				"home_z": -75.015754699707,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 1,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 1,
+					"hp": 100.0,
+					"mouth": 2,
+					"radius_cm": 0,
+					"speed": 4.0,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 2
+				},
+				"species": 2,
+				"x": -115.705909729004,
+				"z": -70.6856307983398
+			},
+			{
+				"bot": -1,
+				"home_x": -118.205909729004,
+				"home_z": -75.015754699707,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 1,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 1,
+					"hp": 100.0,
+					"mouth": 2,
+					"radius_cm": 0,
+					"speed": 4.0,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 2
+				},
+				"species": 2,
+				"x": -112.143730163574,
+				"z": -71.515754699707
+			},
+			{
+				"bot": -1,
+				"home_x": 55.3664169311523,
+				"home_z": 612.628051757812,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 1,
+					"radius_cm": 0,
+					"speed": 5.40000009536743,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 2
+				},
+				"species": 4,
+				"x": 55.3664169311523,
+				"z": 612.628051757812
+			},
+			{
+				"bot": -1,
+				"home_x": 55.3664169311523,
+				"home_z": 612.628051757812,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 1,
+					"radius_cm": 0,
+					"speed": 5.40000009536743,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 2
+				},
+				"species": 4,
+				"x": 52.2145004272461,
+				"z": 615.090881347656
+			},
+			{
+				"bot": -1,
+				"home_x": 55.3664169311523,
+				"home_z": 612.628051757812,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 70.0,
+					"mouth": 1,
+					"radius_cm": 0,
+					"speed": 5.40000009536743,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 2
+				},
+				"species": 4,
+				"x": 58.5183334350586,
+				"z": 610.165222167969
+			},
+			{
+				"bot": -1,
+				"home_x": -58.4912261962891,
+				"home_z": 110.470703125,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 2,
+					"hp": 80.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 2.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 5,
+				"x": -58.4912261962891,
+				"z": 110.470703125
+			},
+			{
+				"bot": -1,
+				"home_x": -58.4912261962891,
+				"home_z": 110.470703125,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 2,
+					"hp": 80.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 2.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 5,
+				"x": -55.9912261962891,
+				"z": 114.800827026367
+			},
+			{
+				"bot": -1,
+				"home_x": -58.4912261962891,
+				"home_z": 110.470703125,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 2,
+					"hp": 80.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 2.40000009536743,
+					"spit": 2,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 5,
+				"x": -52.4290466308594,
+				"z": 113.970703125
+			},
+			{
+				"bot": -1,
+				"home_x": -725.761047363281,
+				"home_z": -1429.71801757812,
+				"legs": 6,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 1,
+					"hp": 50.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 1.39999997615814,
+					"spit": 1,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 7,
+				"x": -725.761047363281,
+				"z": -1429.71801757812
+			},
+			{
+				"bot": -1,
+				"home_x": -722.074829101562,
+				"home_z": -1432.09643554688,
+				"legs": 6,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 1,
+					"hp": 50.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 1.39999997615814,
+					"spit": 1,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 7,
+				"x": -722.074829101562,
+				"z": -1432.09643554688
+			},
+			{
+				"bot": -1,
+				"home_x": -450.535858154297,
+				"home_z": 1221.93994140625,
+				"legs": 5,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 2,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 2.0,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 6,
+				"x": -450.535858154297,
+				"z": 1221.93994140625
+			},
+			{
+				"bot": -1,
+				"home_x": -444.485961914062,
+				"home_z": 1226.65185546875,
+				"legs": 5,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 2,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 2.0,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 6,
+				"x": -444.485961914062,
+				"z": 1226.65185546875
+			},
+			{
+				"bot": -1,
+				"home_x": -447.212615966797,
+				"home_z": 1224.98413085938,
+				"legs": 5,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 2,
+					"hp": 70.0,
+					"mouth": 0,
+					"radius_cm": 0,
+					"speed": 2.0,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 0
+				},
+				"species": 6,
+				"x": -447.212615966797,
+				"z": 1224.98413085938
+			},
+			{
+				"bot": -1,
+				"home_x": 0.0,
+				"home_z": 12.0,
+				"legs": 0,
+				"profile": {
+					"carnivore": 0,
+					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
+					"fire": 0,
+					"guard": 0,
+					"hp": 80.0,
+					"mouth": 3,
+					"radius_cm": 0,
+					"speed": 5.80000019073486,
+					"spit": 0,
+					"stamina": 100.0,
+					"tail": 1
+				},
+				"species": 3,
+				"x": 0.0,
+				"z": 12.0
+			}
+		]
+	},
+	"stage": "creature",
+	"state": "scenario.cpstate",
+	"tick": 186,
+	"time": {
+		"paused": true,
+		"timescale": 1.0
+	},
+	"tuning": {
+		"A": {},
+		"B": {},
+		"active": "A",
+		"names": {
+			"A": "",
+			"B": ""
+		},
+		"options": {}
+	},
+	"wild_bodies": {
+		"1": "res://game/data/garfio.json",
+		"24": "res://game/data/garfio.json"
+	}
+}

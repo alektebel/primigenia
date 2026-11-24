@@ -26,7 +26,7 @@ func fixture(name: String) -> String:
 	return FileAccess.get_file_as_string(root_dir.path_join("tests/fixtures/studio/" + name))
 
 func _init() -> void:
-	root_dir = ProjectSettings.globalize_path("res://").path_join("../..").simplify_path()
+	root_dir = ProjectSettings.globalize_path(get_script().resource_path.get_base_dir()).path_join("../../..").simplify_path()
 	db = PartsDB.new()
 	test_parts_table()
 	test_fixtures_and_migrations()
@@ -36,6 +36,7 @@ func _init() -> void:
 	test_undo_redo_every_edit()
 	test_transactions()
 	test_spine()
+	test_direct_manipulation()
 	test_roundtrip_and_storage()
 	test_placeholder_view()
 	await test_ui()
@@ -46,7 +47,15 @@ func _init() -> void:
 func test_parts_table() -> void:
 	var web := FileAccess.get_file_as_string(root_dir.path_join("web/studio/parts.json"))
 	var mine := FileAccess.get_file_as_string("res://data/parts.json")
-	ok(web == mine, "data/parts.json identical to web/studio/parts.json")
+	# the Godot table is the web one plus the Godot-only parts (entries flagged godot_only: wing_vane, wing_flap, fire_gland)
+	var wj: Dictionary = JSON.parse_string(web)
+	var mj: Dictionary = JSON.parse_string(mine)
+	var kept: Array = mj.parts.filter(func(e): return not bool(e.get("godot_only", false)))
+	var same: bool = kept == wj.parts and mj.parts.size() - kept.size() <= 3
+	for k in mj:
+		if k != "parts" and mj[k] != wj.get(k):
+			same = false
+	ok(same, "data/parts.json is web/studio/parts.json plus the Godot-only wings")
 	ok(db.categories.size() == 9, "nine categories")
 	ok(db.parts.size() >= 40, "parts loaded")
 	for c in db.categories:
@@ -257,6 +266,99 @@ func test_spine() -> void:
 	m.set_node_radius(2, 99.0)
 	ok(m.doc["nodes"][2]["r"] <= 1.7, "radius clamped")
 
+## A73: a new part starts in proportion to the creature at its attach point, in every category, on a small and a big body.
+func test_default_size_scales() -> void:
+	var cats := {}
+	for p in db.parts:
+		cats[p["category"]] = p["id"] if not cats.has(p["category"]) else cats[p["category"]]
+	var sizes := {}
+	for seed_name in ["Hatchling", "Starter B", "Merodeador"]:
+		var m := Model.new(db)
+		m.new_from_seed(seed_name)
+		var tot := 0.0
+		for cat in cats:
+			var id: String = cats[cat]
+			var i := m.add_part(id, db.defaults(id)["t"], db.defaults(id)["ang"])
+			var part: Dictionary = m.doc["parts"][i]
+			ok(m.validate()["ok"], "%s: %s placed on %s stays valid" % [id, cat, seed_name])
+			if db.is_leg(id):
+				var reach := Vector3(part["f"][0], part["f"][1], part["f"][2]).length()
+				ok(reach >= .15 and reach <= 6.0 and part["w"] >= .05, "%s: leg reach %.2f in range on %s" % [id, reach, seed_name])
+				tot += reach
+			else:
+				ok(part["size"] >= .1 and part["size"] <= 2.2, "%s: size %.2f in range on %s" % [id, part["size"], seed_name])
+				tot += part["size"]
+			if cat == "senses" and id == "ojo":
+				sizes[seed_name] = part["size"]
+	ok(sizes["Hatchling"] < .45 and sizes["Starter B"] < .45, "an eye on a starter or the hatchling is small (%.2f, %.2f)" % [sizes["Hatchling"], sizes["Starter B"]])
+	ok(sizes["Merodeador"] > sizes["Starter B"] * 2.0, "the same eye on a big body is bigger (%.2f vs %.2f)" % [sizes["Merodeador"], sizes["Starter B"]])
+	var sb := Model.new(db)
+	sb.new_from_seed("Starter B")
+	ok(absf(sizes["Starter B"] - float(sb.doc["parts"][1]["size"])) < .15, "the default eye matches the starter's own hand-tuned eye (%.2f vs %.2f)" % [sizes["Starter B"], sb.doc["parts"][1]["size"]])
+	var w := Model.new(db)
+	w.new_from_seed("Starter B")
+	var wi := w.add_part("ojo", .9, 1.0, {"size": 1.0})
+	ok(is_equal_approx(w.doc["parts"][wi]["size"], 1.0), "explicit params still win")
+
+func test_direct_manipulation() -> void:
+	var m := Model.new(db)
+	m.new_from_seed("Merodeador")
+	var eye := 1
+	var s0: float = m.doc["parts"][eye]["size"]
+	var r: Dictionary = m.scale_part(eye, 1.2)
+	ok(r["kind"] == "size" and is_equal_approx(m.doc["parts"][eye]["size"], s0 * 1.2) and r["changed"] and not r["at_limit"], "scale_part grows a part")
+	r = m.scale_part(eye, 100.0)
+	ok(is_equal_approx(m.doc["parts"][eye]["size"], 2.2) and r["at_limit"], "scale_part clamps at the maximum")
+	r = m.scale_part(eye, .0001)
+	ok(is_equal_approx(m.doc["parts"][eye]["size"], PartsDB.RANGES["size"][0]) and r["at_limit"], "scale_part clamps at the minimum (A73: .1, the genome limit)")
+	ok(m.validate()["ok"], "scaled genome validates")
+	ok(m.scale_part(99, 1.1).is_empty(), "scale_part ignores a bad index")
+	var leg := 3
+	var f0: Array = m.doc["parts"][leg]["f"].duplicate()
+	r = m.scale_part(leg, 1.5)
+	ok(r["kind"] == "reach" and absf(m.doc["parts"][leg]["f"][1]) > absf(f0[1]) and m.doc["parts"][leg]["w"] > .23, "scale_part lengthens and thickens a leg")
+	r = m.scale_part(leg, 100.0)
+	var ff: Array = m.doc["parts"][leg]["f"]
+	ok(Vector3(ff[0], ff[1], ff[2]).length() <= 6.0 + 1e-4 and m.doc["parts"][leg]["w"] <= .45 + 1e-6 and r["at_limit"], "leg reach and thickness clamp")
+	ok(m.validate()["ok"], "scaled leg validates")
+	m.undo(); m.undo(); m.undo(); m.undo(); m.undo()
+	ok(m.doc["parts"][eye]["size"] == s0 and m.doc["parts"][leg]["f"] == f0, "every scale undoes")
+	# bending a spine end
+	m.new_from_seed("Merodeador")
+	var N: Array = m.doc["nodes"]
+	var n0: int = N.size()
+	var head: Dictionary = N[n0 - 1].duplicate()
+	var nb: Dictionary = N[n0 - 2].duplicate()
+	var out: int = m.bend_end(n0 - 1, head["y"] + 1.0, head["z"])
+	ok(out == m.doc["nodes"].size() - 1 and m.doc["nodes"][out]["y"] > head["y"] + .5, "bend_end moves the head end")
+	ok(m.doc["nodes"][out - 1]["y"] > nb["y"] or m.doc["nodes"].size() > n0, "the neighbour leans with it")
+	ok(m.bend_end(3, 2.0, 0.0) == 3 and m.doc["nodes"][3]["y"] == N[3]["y"], "bend_end ignores interior nodes")
+	m.new_from_seed("Merodeador")
+	out = m.bend_end(0, 1.6, -6.0)
+	out = m.bend_end(0, 1.6, -7.0)
+	ok(m.doc["nodes"].size() > n0 and out == 0, "dragging the tail end outward adds vertebrae")
+	for k in range(1, m.doc["nodes"].size()):
+		var a: Dictionary = m.doc["nodes"][k - 1]; var b: Dictionary = m.doc["nodes"][k]
+		var d := Vector2(a["y"] - b["y"], a["z"] - b["z"]).length()
+		ok(d >= .29 and d <= 1.96, "tail spacing kept at %d (%.2f)" % [k, d])
+	ok(m.doc["nodes"].size() <= m.MAX_NODES_EDIT and m.validate()["ok"], "limits and validity after a tail drag")
+	m.begin()
+	for i in 30:
+		out = m.bend_end(out, 1.6, m.doc["nodes"][0]["z"] + 1.0)
+	m.end()
+	ok(m.doc["nodes"].size() >= 4 and m.validate()["ok"], "shortening never goes under four vertebrae")
+	m.undo()
+	ok(m.doc["nodes"].size() > n0, "a whole drag is one undo step")
+	# actuator choices (pure rules on a bio dictionary)
+	var bio := {"skeleton": "endo", "skel_cands": ["endo"], "limbs": {3: {"act": "muscle"}}}
+	var opts: Array = m.actuation_options(bio, 3)
+	ok(opts.size() == 4 and opts[0]["current"] and opts[3]["allowed"] and not opts[1]["allowed"] and not opts[2]["allowed"], "endo body: muscle current, hydrostat allowed, hydraulic and exo not")
+	ok(not m.set_limb_actuation(bio, 3, "hydraulic"), "a disallowed actuator is refused")
+	ok(m.set_limb_actuation(bio, 3, "hydrostat") and m.doc["parts"][3]["act"] == "hydrostat", "hydrostat applied")
+	var bio2 := {"skeleton": "endo", "skel_cands": ["exo", "endo"], "limbs": {3: {"act": "muscle"}}}
+	ok(m.set_limb_actuation(bio2, 3, "exo") and m.doc["skin"]["sk"] == "exo" and m.doc["parts"][3]["act"] == "muscle", "exo choice sets the skeleton and muscle")
+	ok(m.validate()["ok"], "genome valid after actuator choices")
+
 func test_roundtrip_and_storage() -> void:
 	var st := Storage.new("user://studio_test")
 	for f in st.list():
@@ -400,6 +502,7 @@ func test_parity_panels() -> void:
 	if has_caps:
 		await process_frame
 		ok(ui.panel_box.find_child("Pips_vel", true, false) != null, "capabilities pips in the build panel")
+		ok(ui.panel_box.find_child("GripLimit", true, false) != null, "A59 grip degrees in abilities panel")
 	ok(ui.panel_box.find_child("AddRegion", true, false) != null, "regions panel in build mode")
 	ui.panel_box.find_child("AddRegion", true, false).pressed.emit()
 	await process_frame

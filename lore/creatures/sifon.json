@@ -12,7 +12,9 @@
     "habitat": "Shallows, Sea arches, Sunken cave entrance",
     "diet": "Plankton, drifting carcass bits, salt",
     "active": "Diurnal and nocturnal",
-    "predators": []
+    "predators": [],
+    "trophic": "primary_consumer",
+    "role": "filter_feeder"
   },
   "body": "Babosa (aquatic adaptation: hydrostatic skin, siphon appendage)",
   "chains": [

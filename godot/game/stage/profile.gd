@@ -9,8 +9,9 @@ const RULES := [
 	{"c_type": "CP4_HORN", "category": "weapons", "charge": 1},
 	{"c_type": "CP4_TAIL", "category": "weapons", "tail": 1},
 	{"c_type": "CP4_PLATE", "category": "details", "guard": 1},
+	{"c_type": "CP4_FIRE", "category": "weapons", "fire": 1},
 ]
-const LEVELS := ["mouth", "charge", "spit", "tail", "guard"]
+const LEVELS := ["mouth", "charge", "spit", "tail", "guard", "fire"]
 const RADIUS_CM_MIN := 40
 const RADIUS_CM_MAX := 400
 const RADIUS_CM_DEFAULT := 60
@@ -51,7 +52,7 @@ static func from_studio(creature: Dictionary, manifest: Dictionary) -> Dictionar
 	var catalog := {}
 	for p in mparts:
 		catalog[p.id] = p
-	var result := {"mouth": 0, "charge": 0, "spit": 0, "tail": 0, "guard": 0, "hp": 100.0, "stamina": 100.0, "speed": 4.0}
+	var result := {"mouth": 0, "charge": 0, "spit": 0, "tail": 0, "guard": 0, "fire": 0, "hp": 100.0, "stamina": 100.0, "speed": 4.0}
 	for part in parts:
 		var entry = catalog.get(part.get("type", "") if typeof(part) == TYPE_DICTIONARY else "")
 		if entry == null:
@@ -63,6 +64,7 @@ static func from_studio(creature: Dictionary, manifest: Dictionary) -> Dictionar
 				break
 	result.hp += result.guard * 5
 	result["radius_cm"] = body_radius_cm(creature.get("nodes"))
+	result.merge(CporeWorld.grip_profile(JSON.stringify(creature)), true)
 	return {"ok": true, "profile": result}
 
 static func load_json(path: String) -> Dictionary:

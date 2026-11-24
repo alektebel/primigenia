@@ -33,7 +33,7 @@ for (const [seed,n] of [[1,256],[7,256],[42,256],[99,256],[1234,256],[31337,256]
     for(const key of ['position','facing','size'])for(let j=0;j<v[key].length;j++)assert.ok(Math.abs(v[key][j]-features.caves[i][key][j])<1e-5);
     assert.equal(v.waterfall,Boolean(features.caves[i].waterfall));
   }
-  assert.equal(t.size,3600);assert.equal(t.version,4);
+  assert.equal(t.size,3600);assert.equal(t.version,5);
   assert.ok(t.level.every((v,i)=>t.height[i]<=0||v>=t.height[i]),'water level under the ground');
   console.log(`seed ${seed} N=${n}: ${t.hash}; native ${native[1]}s, WASM ${t.seconds.toFixed(4)}s`);
   rows.push({seed,n,hash:t.hash,native_seconds:Number(native[1]),wasm_seconds:t.seconds});

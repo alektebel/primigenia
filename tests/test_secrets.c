@@ -26,7 +26,7 @@ static void generate(unsigned seed){
 static void setup(CpStageSetup *s,int secrets,int legs,int radius){
     cp_stage_setup_default(s,5);
     s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=s->nest_z=0;s->player_legs=legs;
-    s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius};
+    s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius,0};
     s->secrets=secrets?3:0;
     if(secrets&&t.cave_count>0){
         const CpTerrainCave *c=&t.caves[0];
@@ -191,10 +191,10 @@ static void flat(int clock,int n,const int *species){
     assert(!cp_stage_reset(&w,&fs));
 }
 static void flat_tests(void){
-    assert(CP_STAGE_SPECIES_COUNT==6&&!strcmp(CP_STAGE_SPECIES[4].name,"Acechalunas")&&!strcmp(CP_STAGE_SPECIES[5].name,"Babosa"));
+    assert(CP_STAGE_SPECIES_DEFINED==8&&!strcmp(CP_STAGE_SPECIES[4].name,"Acechalunas")&&!strcmp(CP_STAGE_SPECIES[5].name,"Babosa"));
     assert(CP_STAGE_SPECIES[4].activity==CP_ACT_NOCTURNAL&&CP_STAGE_SPECIES[5].activity==CP_ACT_CREPUSCULAR);
     for(int i=0;i<4;i++)assert(CP_STAGE_SPECIES[i].activity==CP_ACT_DIURNAL);
-    PASS("six species, with their daily rhythm");
+    PASS("eight species, with their daily rhythm");
     /* the clock: 500 ticks an hour, dawn 05-07, dusk 18-20 */
     const int sp[]={4};
     flat(0,1,sp);assert(cp_stage_daylight(&w)==0);

@@ -1,5 +1,6 @@
 /* The studio and playable stage use this single anatomy/material/IK implementation.
  * World placement is optional: the studio retains its circular test path. */
+import {analyzeMorphology,Locomotion} from './locomotion.js';
 export async function createCreatureRig({T,scene,SUN,partTable,partManifest,
   assetBase='../studio/',onStats=()=>{},getDrag=()=>null}) {
 const V=(x=0,y=0,z=0)=>new T.Vector3(x,y,z);
@@ -412,6 +413,12 @@ function layout(freeze){/* altura del cuerpo, postura de reposo de cada pata y r
   let st=1e9;for(const l of legs){l.hang=Math.max(0,l.sole+off);const L=l.a+l.b,hh=l.h0.y+off-l.w*.6-l.hang,mh=Math.sqrt(Math.max(L*L-hh*hh,0));if(l.hang<.08)st=Math.min(st,1.25*L,2.9*mh)}
   stride=st<1e8?Math.max(.25,st):1;
   const ts=[...new Set(legs.map(l=>l.p.t))].sort((a,b)=>a-b);for(const l of legs){const k=ts.indexOf(l.p.t);l.grp=(k+(l.sg>0?0:1))%2;l.front=ts.length>1&&k>=ts.length/2}
+  locomotionState=null;
+  locomotion=new Locomotion(analyzeMorphology(G,{
+    spine:rest.map((p,i)=>({x:p.x,y:p.y,z:p.z,r:RAD[i]})),catalog:partTable.parts,groundOffset:off,
+    attachments:objs.map(o=>{anchor(rest,o.p.t,o.sg*o.p.ang,A1);return {index:G.parts.indexOf(o.p),side:o.sg,position:{...A1.p}}}),
+    legs:legs.map(l=>({hip:{...l.h0},home:{x:l.home.x,y:l.hang,z:l.home.z},a:l.a,b:l.b,w:l.w,side:l.sg,footType:LIB[l.p.type].foot})),
+  }));
   placeBody();for(const l of legs){poseAt(theta,l.home,l.foot);l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang}computeStats()}
 let spineG=null,spineOn=false,spineA=0;
 const vertM=new T.MeshStandardMaterial({color:lin('#eadfc2'),emissive:lin('#4a3c24'),roughness:.5,depthTest:false,transparent:true,opacity:0}),cordM=new T.MeshBasicMaterial({color:0xffc04a,depthTest:false,transparent:true,opacity:0});
@@ -441,10 +448,11 @@ function computeStats(){const P=G.parts,has=t=>P.filter(p=>p.type===t).length,m=
   speed=lg.length?1+stats.vel*.55:.7;onStats()}
 const ZA=V(0,0,1),rotH=new T.Mesh(new T.SphereGeometry(.1,14,10),new T.MeshBasicMaterial({color:0x9fd45c,depthTest:false,transparent:true}));rotH.renderOrder=22;rotH.visible=false;creature.add(rotH);
 const _m=new T.Matrix4(),_q=new T.Quaternion(),_a=V(),_b=V(),_c=V(),_d=V(),_e=V(),DOWN=V(0,-1,0);
-let world=null,worldTravel=0,worldTurn=0,tailLag=0,lookYaw=0;
+let world=null,locomotion=null,locomotionState=null,tailLag=0,lookYaw=0;
 function placeBody(bob){
- if(world){creature.position.set(world.x,world.groundY(world.x,world.z)+off+(bob||0),world.z);creature.rotation.set(world.pitch||0,world.yaw,world.roll||0,'YXZ')}
- else{creature.position.set(CX+RC*Math.cos(theta),off+(bob||0),RC*Math.sin(theta));creature.rotation.y=-theta}
+ const b=mode==='test'?locomotionState?.body:null;
+ if(world){creature.position.set(world.x+(b?.x||0),world.groundY(world.x,world.z)+off+(bob||0),world.z+(b?.z||0));creature.rotation.set(b?.pitch??world.pitch??0,world.yaw,b?.roll??world.roll??0,'YXZ')}
+ else{creature.position.set(CX+RC*Math.cos(theta)+(b?.x||0),off+(bob||0),RC*Math.sin(theta)+(b?.z||0));creature.rotation.set(b?.pitch||0,-theta,b?.roll||0,'YXZ')}
  creature.updateMatrixWorld(true)
 }
 const poseAt=(th,loc,o)=>{
@@ -454,16 +462,24 @@ const poseAt=(th,loc,o)=>{
 const selAx={x:V(),y:V(),p:V(),n:V()};
 function orient(g,A,sink,rot,tilt,keep){_b.copy(A.u).addScaledVector(A.n,-A.n.dot(A.u)).addScaledVector(A.t,A.n.dot(A.u));_b.addScaledVector(A.n,-_b.dot(A.n));if(_b.lengthSq()<1e-4)_b.copy(A.t);_b.normalize();_a.crossVectors(_b,A.n);if(keep){selAx.x.copy(_a);selAx.y.copy(_b);selAx.p.copy(A.p);selAx.n.copy(A.n)}_m.makeBasis(_a,_b,A.n);g.quaternion.setFromRotationMatrix(_m);if(rot)g.quaternion.multiply(_q.setFromAxisAngle(ZA,rot));if(tilt)g.quaternion.multiply(_q.setFromAxisAngle(X0,tilt));g.position.copy(A.p).addScaledVector(A.n,-sink)}
 function update(dt){
-  clock+=dt;grassU.uTime.value=clock;const test=mode==='test',sp=world?world.speed:test?speed*(run?1.8:1):0,freq=Math.max(.001,sp/stride),SW=.38;
-  if(test){if(!world){theta+=sp*dt/RC;phase+=freq*dt}else{phase+=(worldTravel+Math.abs(worldTurn)*stride*.22)/stride;worldTravel=0;worldTurn=0} biteT=Math.max(0,biteT-dt);singT=Math.max(0,singT-dt)}
+  clock+=dt;grassU.uTime.value=clock;const test=mode==='test',sp=world?world.speed:test?speed*(run?1.8:1):0;
+  if(test){
+    if(!world)theta+=sp*dt/RC;
+    const pose=world||{x:CX+RC*Math.cos(theta),z:RC*Math.sin(theta),yaw:-theta,speed:sp,turnRate:-sp/RC,groundY:()=>0};
+    locomotionState=locomotion.update(dt,pose);phase=locomotion.phase;stride=locomotionState.gait.stride;
+    biteT=Math.max(0,biteT-dt);singT=Math.max(0,singT-dt);
+  }
   const look=world?.lookTarget;
   let desiredLook=look?Math.atan2(look.x-world.x,look.z-world.z)-world.yaw:sp<.1?Math.sin(clock*.47)*Math.max(0,Math.sin(clock*.19))*.4:0;
   desiredLook=Math.atan2(Math.sin(desiredLook),Math.cos(desiredLook));
   lookYaw+=(clamp(desiredLook,-.65,.65)-lookYaw)*(1-Math.exp(-dt*5));
-  tailLag+=((world?.turnRate||0)*-.12-tailLag)*(1-Math.exp(-dt*4));
-  const w=phase*6.28318,len=rest[NS-1].distanceTo(rest[0]),amp=len*(legs.length?.03:.075),bob=test?Math.sin(clock*1.7)*.012+Math.sin(w*2)*.022*stride*Math.min(1,sp)+(singT>0?Math.abs(Math.sin(clock*9))*.18:0):0;
+  tailLag=test?locomotionState.body.tail:0;
+  const w=phase*6.28318,len=rest[NS-1].distanceTo(rest[0]),amp=len*(legs.length?.008:.075),bob=test?locomotionState.body.bob:0;
   for(let i=0;i<NS;i++){pts[i].copy(rest[i]);if(test){const q=1-i/(NS-1),k=Math.pow(q,1.4);pts[i].x+=Math.sin(w-3.2*q)*amp*(legs.length?k:1)+Math.sin(clock*1.3-2*q)*amp*.5*k;
-    if(world){const neck=sstep(.68,1,i/(NS-1)),base=rest[Math.floor(NS*.68)],z=rest[i].z-base.z;pts[i].x+=Math.sin(lookYaw*neck)*z;pts[i].z+= (Math.cos(lookYaw*neck)-1)*z;pts[i].x+=tailLag*k*.35}
+    const neck=sstep(.68,1,i/(NS-1)),base=rest[Math.floor(NS*.68)],z=rest[i].z-base.z;
+    pts[i].y+=locomotionState.body.neck*neck*z+tailLag*k*(rest[i].z-rest[Math.floor(NS*.35)].z)*.15;
+    if(world){pts[i].x+=Math.sin(lookYaw*neck)*z;pts[i].z+= (Math.cos(lookYaw*neck)-1)*z}
+    pts[i].x+=tailLag*k*.35;
   }}
   fillTube(body.geometry,pts,RAD,RN,null,true,frames);placeBody(bob);
   const jawA=.06+.04*Math.sin(clock*2.1)+(biteT>0?Math.sin(Math.PI*biteT/.6)*.75:0)+(singT>0?.3+.25*Math.sin(clock*14):0),bl=Math.max(0,Math.sin(clock*1.6))**60;
@@ -475,20 +491,19 @@ function update(dt){
     if(ud.tail)ud.tail.rotation.y=test?Math.sin(w-1.2)*.12+tailLag:0;
   }
   const facing=world?world.yaw:-theta,fwd=_c.set(Math.sin(facing),0,Math.cos(facing));
-  for(const l of legs){const ph=world&&sp<.015?SW:((phase+l.grp*.5)%1+1)%1,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
+  for(const [index,l] of legs.entries()){const foot=test?locomotionState.feet[index]:null,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
     if(!test){K.copy(H).add(l.rk).applyMatrix4(creature.matrixWorld);A.copy(H).add(l.rf).applyMatrix4(creature.matrixWorld);H.applyMatrix4(creature.matrixWorld);l.sw=false}
-    else{if(ph<SW){if(!l.sw){l.sw=true;l.from.copy(l.foot)}poseAt(theta+sp*((SW-ph)/freq+(1-SW)/freq*.5)/RC,l.home,_a);_a.y+=l.hang;const q=ph/SW;l.foot.lerpVectors(l.from,_a,q*q*(3-2*q));l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang+Math.sin(Math.PI*q)*.2*(l.a+l.b)}
-      else{if(l.sw&&world){l.stanceYaw=world.yaw;world.onFootContact?.(l.foot)}l.sw=false;l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang}
+    else{l.foot.set(foot.position.x,foot.position.y,foot.position.z);l.sw=foot.swing;l.stanceYaw=foot.yaw;
+      if(foot.contact)world?.onFootContact?.(l.foot);
       H.applyMatrix4(creature.matrixWorld);A.copy(l.foot);A.y+=l.w*.6;const dv=_d.subVectors(A,H);let d=dv.length();dv.normalize();
-      // Terrain changes the reach required of a leg. Keep the sole at its
-      // ground target and stretch the existing bones only as much as needed;
-      // the flat studio path retains its original lengths and transforms.
-      const extension=world?Math.max(1,(d+.01)/(l.a+l.b)):1,la=l.a*extension,lb=l.b*extension;
-      if(world)l.up.scale.y=l.lo.scale.y=extension;
-      d=clamp(d,.08,la+lb-.01);const x=(la*la-lb*lb+d*d)/(2*d),h=Math.sqrt(Math.max(la*la-x*x,0));
-      const pole=_n.copy(l.pole).applyAxisAngle(Y,facing);pole.addScaledVector(dv,-pole.dot(dv));if(pole.lengthSq()<1e-4)pole.copy(fwd);pole.normalize();K.copy(H).addScaledVector(dv,x).addScaledVector(pole,h);A.copy(H).addScaledVector(dv,d)}
+      // Retain the exact ankle target; stretch bones for unreachable creator
+      // anatomies instead of clamping the foot away from its planted contact.
+      const extension=Math.max(1,(d+.01)/(l.a+l.b)),la=l.a*extension,lb=l.b*extension;
+      l.up.scale.y=l.lo.scale.y=extension;
+      d=Math.max(d,.001);const x=(la*la-lb*lb+d*d)/(2*d),h=Math.sqrt(Math.max(la*la-x*x,0));
+      const pole=_n.copy(l.pole).applyAxisAngle(Y,facing);pole.addScaledVector(dv,-pole.dot(dv));if(pole.lengthSq()<1e-4)pole.copy(fwd);pole.normalize();K.copy(H).addScaledVector(dv,x).addScaledVector(pole,h)}
     l.up.position.copy(H);l.up.quaternion.setFromUnitVectors(DOWN,_t.subVectors(K,H).normalize());l.lo.position.copy(K);l.lo.quaternion.setFromUnitVectors(DOWN,_t.subVectors(A,K).normalize());
-    l.ft.position.set(A.x,A.y-l.w*.6,A.z);l.ft.rotation.set(l.sw?-.5*Math.sin(Math.PI*clamp(ph/SW,0,1)):0,(world&&!l.sw?(l.stanceYaw??facing):facing)+l.sg*.18,0,'YXZ')}
+    l.ft.position.set(A.x,A.y-l.w*.6,A.z);l.ft.rotation.set(l.sw?-.5*Math.sin(Math.PI*foot.progress):0,(test&&!l.sw?l.stanceYaw:facing)+l.sg*.18,0,'YXZ')}
   spineA=lerp(spineA,mode==='build'&&(spineOn||(getDrag()?.k==='node'))?1:0,1-Math.pow(.0004,dt));vertM.opacity=spineA*.96;cordM.opacity=spineA*.85;if(spineG)spineG.visible=spineA>.02;
   positionGrowth();
   const show=mode==='build'&&sel;selRings.forEach((r,i)=>{const sg=i?-1:1;r.visible=!!show&&(i===0||!centered(sel));if(!r.visible)return;anchor(pts,sel.t,sg*sel.ang,A1);r.position.copy(A1.p).addScaledVector(A1.n,.03);r.quaternion.setFromUnitVectors(V(0,0,1),A1.n);r.scale.setScalar(LIB[sel.type].leg?sel.w*2.4:.32*(sel.size||1))});
@@ -545,12 +560,9 @@ get spineG(){return spineG},set spineG(value){spineG=value},
 get spineOn(){return spineOn},set spineOn(value){spineOn=value},
 get spineA(){return spineA},set spineA(value){spineA=value},
 get growthBuilds(){return growthBuilds},set growthBuilds(value){growthBuilds=value},
+get locomotion(){return locomotion},get locomotionState(){return locomotionState},
  setWorld(pose){
-  const travel=world?Math.hypot(pose.x-world.x,pose.z-world.z):0,reset=!world||travel>3;
-  if(!reset){worldTravel+=travel;worldTurn+=Math.atan2(Math.sin(pose.yaw-world.yaw),Math.cos(pose.yaw-world.yaw))}
-  else{worldTravel=worldTurn=0}
   world={...pose};mode='test';placeBody();
-  if(reset)for(const l of legs){poseAt(theta,l.home,l.foot);l.foot.y+=l.hang;l.sw=false;l.stanceYaw=pose.yaw}
  },
  load(genome){G=structuredClone(genome);sel=null;phase=0;refresh(true);const s=G.skin;SU.cA.value.copy(lin(s.cA));SU.cB.value.copy(lin(s.cB));SU.cC.value.copy(lin(s.cC));SU.uPat.value=s.pat;SU.uWet.value=s.wet;SU.uScale.value=s.scale;skinM.clearcoat=skinM2.clearcoat=s.wet*.8;membraneM.clearcoat=s.wet*.12;update(0)},
 };

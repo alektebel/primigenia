@@ -44,7 +44,7 @@
           "en": "Union Consensus"
         },
         "role": "Control",
-        "effect": "Coordinates ally actions and reduces discord in multi-faction encounters by 2.",
+        "effect": "The creature synchronizes the actions of nearby allies and strongly calms tensions among rival groups.",
         "numbers": {}
       },
       "weakness": "Vulnerable to neural latency if both heads are targeted simultaneously.",

@@ -190,6 +190,13 @@
             "refs": [
               "waren_2003_scaly"
             ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_scaly"
+            ]
           }
         ]
       },
@@ -223,7 +230,7 @@
           "en": "Ore Breaker"
         },
         "role": "Poke",
-        "effect": "Deal 15 piercing damage to mineral-armor foes or harvest 3 resource units from sinter beds.",
+        "effect": "Its heavy iron-sulfide claws strike with crushing force to break through the thick armor of mineral foes, or it can collect useful materials straight from nearby sinter beds.",
         "numbers": {}
       },
       "weakness": "Claw tips degrade in high-salinity brine (conductivity 10 S/m) due to galvanic corrosion.",
@@ -243,6 +250,13 @@
           "skeptic": 5
         },
         "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_metallophytes"
+            ]
+          },
           {
             "organism": "real biology behind this chain",
             "mechanism": "see the cited works; chain wording is the council's own",
@@ -321,6 +335,11 @@
       "date": "2026-11-24",
       "who": "autoloop",
       "what": "carcinisation links to 6 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

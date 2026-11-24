@@ -1,0 +1,289 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cazanoche",
+  "name": {
+    "en": "Cazanoche"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "forest, meadow",
+    "diet": "merodeador, rondo, carrion",
+    "active": "night",
+    "predators": [],
+    "trophic": "apex_predator",
+    "role": "apex_predator",
+    "prey": [
+      "merodeador",
+      "rondo",
+      "espinodo",
+      "bello_pico",
+      "zancuilla"
+    ]
+  },
+  "body": "2.3 m body, 1.2 m tail; 185 kg",
+  "chains": [
+    {
+      "id": "cazanoche.c1",
+      "trait": "Large corneas with tapetum lucidum and UV-sensitive cones",
+      "links": [
+        "Enhanced photon capture <- Long twilight and bright moonlit nights (F3, F6) <- Dense air scatters photons, extending visible light (D8) <- 1.6 bar atmosphere (D8)"
+      ],
+      "roots": [
+        "F3",
+        "F6"
+      ],
+      "skill": {
+        "id": "cazanoche.moonlit_focus",
+        "name": {
+          "en": "Moonlit Focus"
+        },
+        "role": "Engage",
+        "effect": "The creature's sharp night vision clearly reveals hidden paths and vulnerable spots in dim areas. You can easily spot these concealed routes and weak points when the light is low.",
+        "numbers": {}
+      },
+      "weakness": "Dazzled by sudden bright flashes or auroral pulses (F10)",
+      "observe": [
+        "Eyes gleam in torchlight",
+        "Tracks urine scents on bark",
+        "Pupils contract slowly in dawn light"
+      ],
+      "journal": {
+        "en": "It hunts the blue-dark; eyes built for the moon, not the midday sun."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "State peak activity as crepuscular + moonlit nights; treat UV cones as twilight/marking-edge enhancement, with rods + tapetum as the main night kit. Keep ‘Moonlit Focus’ radius modest (~20–30 m) in thick brush. Albino lacking tapetum is plausible (leucistic felids show reduced eyeshine).",
+        "fixes": [
+          "State peak activity as crepuscular + moonlit nights; treat UV cones as twilight/marking-edge enhancement, with rods + tapetum as the main night kit. Keep ‘Moonlit Focus’ radius modest (~20–30 m) in thick brush. Albino lacking tapetum is plausible (leucistic felids show reduced eyeshine)."
+        ],
+        "analogues": [
+          {
+            "organism": "Domestic cat and leopard: tapetum + rod-rich retina for night hunting; reindeer (Rangifer tarandus): UV-sensitive cones used in arctic twilight, not for full-moon rod vision.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cazanoche.c2",
+      "trait": "Elaborate vomeronasal organ and moisture-retaining nasal turbinates",
+      "links": [
+        "Prolonged odor trail persistence <- Slow molecular diffusion in still air (F16) <- High pressure reduces diffusion coefficient (D18) <- 1.6 bar atmosphere (D8)"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "cazanoche.scent_path",
+        "name": {
+          "en": "Scent Path"
+        },
+        "role": "Control",
+        "effect": "The creature tracks invisible movement paths and releases calming scents that soothe nearby animals. You can follow its trail and notice the frightened creatures settling down around it.",
+        "numbers": {}
+      },
+      "weakness": "Useless during gales; wind strips scent marks instantly (F16)",
+      "observe": [
+        "Twitches nose in calm air",
+        "Follows invisible paths through dense brush",
+        "Licks air with forked tongue"
+      ],
+      "journal": {
+        "en": "Nose maps the world in chemical static; wind is its only blind spot."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Drop ‘forked tongue’ from observe/journal unless the lineage is explicitly ophidian-derived; mammals use VNO via Flehmen, not forked-tongue sampling. Restrict ‘mimicking pheromones’ to herd species with documented marks (rondo)—tone as confusion/calming, not cross-species magic.",
+        "fixes": [
+          "Drop ‘forked tongue’ from observe/journal unless the lineage is explicitly ophidian-derived; mammals use VNO via Flehmen, not forked-tongue sampling. Restrict ‘mimicking pheromones’ to herd species with documented marks (rondo)—tone as confusion/calming, not cross-species magic."
+        ],
+        "analogues": [
+          {
+            "organism": "Felids (Flehmen, VNO for conspecific and prey chemistry); gray wolf and spotted hyena: large olfactory turbinates for long-distance carrion and trail work.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cazanoche.c3",
+      "trait": "Low-slung frame, reinforced shoulder girdle, and flexible lumbar spine",
+      "links": [
+        "Ambush grappling and ground-crawling <- High drag makes sustained sprinting costly (F4) <- Air density 1.6x Earth raises mechanical work (D11) <- 1.6 bar atmosphere (D8)"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cazanoche.ground_crawl",
+        "name": {
+          "en": "Ground Crawl"
+        },
+        "role": "Basic",
+        "effect": "The creature glides along the ground at a low stance without making a sound. You can approach unseen as it moves quietly through the wind.",
+        "numbers": {}
+      },
+      "weakness": "Trips on slick basalt and shallow water; slow acceleration",
+      "observe": [
+        "Shoulders roll like a predator stalking",
+        "Footpads splay on wet stone",
+        "Spine arches before a lunge"
+      ],
+      "journal": {
+        "en": "Built to press low and strike hard; heavy air demands stillness before violence."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Cap burst speed explicitly (short lunge only); note wet basalt weakness is honest on andesite coast/forest (F9). If ‘4 arms’ is literal, tag body plan ‘highly speculative’ separately—this chain only needs quadruped + grapple shoulders.",
+        "fixes": [
+          "Cap burst speed explicitly (short lunge only); note wet basalt weakness is honest on andesite coast/forest (F9). If ‘4 arms’ is literal, tag body plan ‘highly speculative’ separately—this chain only needs quadruped + grapple shoulders."
+        ],
+        "analogues": [
+          {
+            "organism": "Tiger (Panthera tigris): stalk–ambush, flexible spine for short rush; American alligator: low profile at land–water edge (different lineage, same mechanical logic).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cazanoche.c4",
+      "trait": "Inflatable laryngeal sac and reinforced hyoid apparatus",
+      "links": [
+        "Infrasonic territorial calls <- Low frequencies propagate farther in dense, foggy air (F4) <- High molar mass and pressure boost acoustic coupling (D8, D12) <- 1.6 bar atmosphere (D8)"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cazanoche.deep_hum",
+        "name": {
+          "en": "Deep Hum"
+        },
+        "role": "Social",
+        "effect": "The creature projects a deep vibration that freezes nearby animals with sudden fear and drives off competitors. You can watch the startled creatures stand still while the area falls under its control.",
+        "numbers": {}
+      },
+      "weakness": "Attracts scavengers and rival apexes to the caller's position (F27)",
+      "observe": [
+        "Throat vibrates below hearing range",
+        "Ripple runs down the neck",
+        "Prey freezes without knowing why"
+      ],
+      "journal": {
+        "en": "A voice that vibrates the ribs, not the ears; sound as a physical weight."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Rename effect to ‘Deep Hum’: intimidate/startle (still prey, deter rivals) within ~60 m in calm fog, not literal paralysis. Sac inflation is for display/long call, not silent hunting—haunting moment works if hum is post-ambush territorial or pre-strike intimidation, not simultaneous with full stealth. Social role fits solo apex marking borders, not pack coordination.",
+        "fixes": [
+          "Rename effect to ‘Deep Hum’: intimidate/startle (still prey, deter rivals) within ~60 m in calm fog, not literal paralysis. Sac inflation is for display/long call, not silent hunting—haunting moment works if hum is post-ambush territorial or pre-strike intimidation, not simultaneous with full stealth. Social role fits solo apex marking borders, not pack coordination."
+        ],
+        "analogues": [
+          {
+            "organism": "Howler monkey (Alouatta): enlarged hyoid + sac for low-frequency long-range calls; Asian elephant: infrasonic rumbles; tiger roar subharmonics for intimidation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "merodeador",
+      "kind": "prey",
+      "note": "Primary target; ambushes forest edges where merodeador patrols for carrion"
+    },
+    {
+      "with": "rondo",
+      "kind": "prey",
+      "note": "Secondary prey; targeted during fog-dense nights when herd cohesion breaks"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 4,
+    "origin": "quadrupedal ambush-grappler"
+  },
+  "temperament": "patient, territorial, solitary",
+  "secrets": [
+    "Albinos variant lacks tapetum reflection, forcing strict daytime rest in deep hollows",
+    "Old scars from espinodo spine volley on the shoulder mark failed hunts",
+    "Nest lined with shed rondo fur and dried ceniza_roja hides the pup site"
+  ],
+  "moments": [
+    "When it stands over a rondo herd, the low hum doesn't echo; it sinks into the grass, and the herd parts without a sound."
+  ],
+  "journal": [
+    {
+      "en": "It does not chase. It waits until the moon aligns with the treeline. Then the forest holds its breath."
+    },
+    {
+      "en": "A solitary king of the ecotone; its territory is a quiet conversation between predator and fog."
+    }
+  ]
+}

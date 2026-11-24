@@ -1,0 +1,52 @@
+{
+	"schema": "primigenia.quest/1",
+	"id": "first",
+	"title": {"en": "First steps", "es": "Primeros pasos"},
+	"steps": [
+		{
+			"id": "hunt",
+			"title": {"en": "Hunt", "es": "Caza"},
+			"hint": {"en": "Defeat a prey creature. A Rondo or a Zanco is within a hatchling's reach.", "es": "Derrota a una criatura presa. Un Rondo o un Zanco está al alcance de una cría."},
+			"done": {"en": "You have hunted. The valley will remember it.", "es": "Has cazado. El valle lo recordará."},
+			"cond": {"type": "kill", "count": 1},
+			"marker": "nearest_prey",
+			"reward": {"dna": 10}
+		},
+		{
+			"id": "friend",
+			"title": {"en": "Make a friend", "es": "Haz un amigo"},
+			"hint": {"en": "Befriend a creature of another species: sing, dance, offer a leaf.", "es": "Haz amistad con una criatura de otra especie: canta, baila, ofrécele una hoja."},
+			"done": {"en": "Not everything that breathes is prey.", "es": "No todo lo que respira es presa."},
+			"cond": {"type": "bond_other"},
+			"marker": "nearest_other",
+			"reward": {"dna": 10}
+		},
+		{
+			"id": "dig",
+			"title": {"en": "Dig", "es": "Excava"},
+			"hint": {"en": "Press X to dig, anywhere. Soft soil is quickest; hard ground and rock take longer.", "es": "Pulsa X para excavar, donde sea. La tierra blanda es lo más rápido; el suelo duro y la roca tardan más."},
+			"done": {"en": "The soil gives. Under it, more soil, and sometimes something else.", "es": "La tierra cede. Debajo hay más tierra, y a veces algo más."},
+			"cond": {"type": "dug", "count": 1},
+			"marker": "",
+			"reward": {"dna": 5}
+		},
+		{
+			"id": "wings",
+			"title": {"en": "Wings of the past", "es": "Alas del pasado"},
+			"hint": {"en": "Cracked, dry soil with bone splinters and a paler grass: dig there.", "es": "Tierra seca y agrietada, con astillas de hueso y hierba más pálida: excava ahí."},
+			"done": {"en": "Feathers turned to stone: someone here learned to fall slowly.", "es": "Plumas hechas piedra: alguien aquí aprendió a caer despacio."},
+			"cond": {"type": "part_found", "id": "wing_vane"},
+			"marker": "wing_bed",
+			"reward": {"dna": 20}
+		},
+		{
+			"id": "fire",
+			"title": {"en": "Fire", "es": "Fuego"},
+			"hint": {"en": "The seam of burnt rock held a fire gland too. Open the editor (menu, Edit creature), add it, and use the Flamethrower.", "es": "La veta de roca quemada guardaba también una glándula ígnea. Abre el editor (menú, Editar criatura), añádela y usa el Lanzallamas."},
+			"done": {"en": "A fire that did not fall from the sky: yours.", "es": "Un fuego que no cayó del cielo: el tuyo."},
+			"cond": {"type": "all", "of": [{"type": "move_known", "move": 14}, {"type": "move_used", "move": 14, "count": 1}]},
+			"marker": "",
+			"reward": {"dna": 25}
+		}
+	]
+}

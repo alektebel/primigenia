@@ -1,0 +1,292 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "chispilla",
+  "name": {
+    "en": "Chispilla"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "spring",
+    "diet": "Carnivore: insect, larva, detritus.",
+    "active": "dawn, dusk",
+    "predators": [
+      "garfio"
+    ],
+    "trophic": "secondary_consumer",
+    "role": "insectivore",
+    "prey": [
+      "alasucena"
+    ]
+  },
+  "body": "8 cm length, 150 g mass",
+  "chains": [
+    {
+      "id": "chispilla.c1",
+      "trait": "Broad, adhesive toe pads",
+      "links": [
+        "Need grip on wet rock surfaces",
+        "1.6-bar air retains high humidity (D8)",
+        "Algal mats form slick biofilm (F15)",
+        "Perpetual moisture dictates locomotion"
+      ],
+      "roots": [
+        "F15"
+      ],
+      "skill": {
+        "id": "chispilla.adhere",
+        "name": {
+          "en": "Adhere"
+        },
+        "role": "Basic",
+        "effect": "The creature scales slick, wet surfaces without slipping, holding on strongly to navigate vertical terrain.",
+        "numbers": {}
+      },
+      "weakness": "Pads lose suction on dry, dusty rock.",
+      "observe": [
+        "Pads flatten when stepping on wet stone",
+        "Climbs vertical tuff walls effortlessly",
+        "Shakes water off feet after rain"
+      ],
+      "journal": {
+        "en": "They stick to the wet stone like glass beads."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Permanent humidity at the spring (D8, F15) and slick algal biofilm on tuff favor wet-adhesion or mucus-assisted grip, not Gecko-style dry van der Waals alone. Loss of grip on dry dusty rock matches how many amphibians and some lizards trade wet-surface performance for dry friction.",
+        "fixes": [
+          "Permanent humidity at the spring (D8, F15) and slick algal biofilm on tuff favor wet-adhesion or mucus-assisted grip, not Gecko-style dry van der Waals alone. Loss of grip on dry dusty rock matches how many amphibians and some lizards trade wet-surface performance for dry friction."
+        ],
+        "analogues": [
+          {
+            "organism": "Torrent frogs (e.g. Amolops) and tree frogs use wet toe pads and mucus on submerged or spray-wetted rock; climbing salamanders (Bolitoglossa) on wet surfaces.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "chispilla.c2",
+      "trait": "Spring-loaded hind limbs",
+      "links": [
+        "Need rapid acceleration to catch prey",
+        "Dense air (1.6x drag) slows movement (F4)",
+        "1.6x density increases inertial resistance (D8)",
+        "Long levers maximize takeoff velocity"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "chispilla.power_leap",
+        "name": {
+          "en": "Power Leap"
+        },
+        "role": "Engage",
+        "effect": "It springs high into the air to snatch prey from above, extending its reach well beyond normal limits.",
+        "numbers": {}
+      },
+      "weakness": "Slow to recover balance after landing.",
+      "observe": [
+        "Hind legs fold tightly before leaping",
+        "Covers vertical distance in two bounds",
+        "Lands silently on mossy ground"
+      ],
+      "journal": {
+        "en": "A coiled spring in fur; they launch before you see them move."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Either lower mass to ~40-80 g at 8 cm, or lengthen body to ~12-15 cm at 150 g; cap vertical leap at ~0.5-0.7 m (still ~5-9 body lengths) and frame Power Leap as a snatch to low aerial insects above the pool, not rooftop height.",
+        "fixes": [
+          "Either lower mass to ~40-80 g at 8 cm, or lengthen body to ~12-15 cm at 150 g; cap vertical leap at ~0.5-0.7 m (still ~5-9 body lengths) and frame Power Leap as a snatch to low aerial insects above the pool, not rooftop height."
+        ],
+        "analogues": [
+          {
+            "organism": "Galago/small primate and kangaroo rat hindlimb tendon recoils; frogs and fleas for high relative jump; jerboas for saltatorial acceleration.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "chispilla.c3",
+      "trait": "Large forward-facing eyes",
+      "links": [
+        "Need photon capture during low light",
+        "Thick air creates 38-minute twilights (F3)",
+        "Sunlight is heavily scattered by dense air (D8)",
+        "Tapetum lucidum reflects ambient light"
+      ],
+      "roots": [
+        "F3"
+      ],
+      "skill": {
+        "id": "chispilla.twilight_focus",
+        "name": {
+          "en": "Twilight Focus"
+        },
+        "role": "Basic",
+        "effect": "Its large eyes gather dim light, allowing it to spot prey clearly during twilight hours.",
+        "numbers": {}
+      },
+      "weakness": "Dazzled by sudden bright flashes or direct sun.",
+      "observe": [
+        "Eyes glow green in moonlight",
+        "Tracks moving specks in fog",
+        "Squints sharply at noon"
+      ],
+      "journal": {
+        "en": "Their eyes catch the last light and hold it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Extended civil twilight (~38 min, F3) widens the crepuscular window where aerial insects are active and glare is absent. Forward-facing eyes plus tapetum lucidum increase binocular photon catch and motion detection at dusk/dawn; squinting and dazzle at midday are expected costs of a reflector-backed retina.",
+        "fixes": [
+          "Extended civil twilight (~38 min, F3) widens the crepuscular window where aerial insects are active and glare is absent. Forward-facing eyes plus tapetum lucidum increase binocular photon catch and motion detection at dusk/dawn; squinting and dazzle at midday are expected costs of a reflector-backed retina."
+        ],
+        "analogues": [
+          {
+            "organism": "Tarsiers and galagos (forward binocular vision, nocturnal/crepuscular); domestic cat tapetum for low-light predation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "chispilla.c4",
+      "trait": "Acute hearing with mobile ear flaps",
+      "links": [
+        "Need to locate fluttering targets",
+        "Insect wingbeats in dense air produce low frequencies (F4)",
+        "1.6x density carries low sound farther (D4)",
+        "Mobile ears triangulate prey location"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "chispilla.hearing",
+        "name": {
+          "en": "Hearing"
+        },
+        "role": "Engage",
+        "effect": "Its mobile ears swivel to catch faint wingbeats, pinpointing the location of flying prey nearby.",
+        "numbers": {}
+      },
+      "weakness": "Loud, high-pitched noises disrupt focus.",
+      "observe": [
+        "Ears swivel toward buzzing sounds",
+        "Freezes when wingbeats stop",
+        "Turns head sharply to triangulate"
+      ],
+      "journal": {
+        "en": "They listen to the buzz before they see the wing."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Rewrite the chain: predators localize low-frequency buzz and wing rustle carried in dense still air (e.g. ~80-400 Hz band for this world's larger crepuscular insects), not insects that 'produce low frequencies because of' 1.6-bar air; keep 10 m hearing range conservative in open spring mist, shorter in storm noise.",
+        "fixes": [
+          "Rewrite the chain: predators localize low-frequency buzz and wing rustle carried in dense still air (e.g. ~80-400 Hz band for this world's larger crepuscular insects), not insects that 'produce low frequencies because of' 1.6-bar air; keep 10 m hearing range conservative in open spring mist, shorter in storm noise."
+        ],
+        "analogues": [
+          {
+            "organism": "Fox and hare (mobile pinnae, small-prey localization); European nightjar (crepuscular insect capture, vision-heavy with auditory supplements).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "acechalunas",
+      "kind": "predation",
+      "note": "Small acechalunas patrol the spring edges and snatch them from cover."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "spring-dwelling quadruped"
+  },
+  "temperament": "energetic, skittish, fast",
+  "secrets": [
+    "Dawn chorus: they click in soft rhythms to coordinate hunting.",
+    "Albino variant: lacks dark pigment, highly sensitive to midday sun.",
+    "Fossil: found in spring-marl deposits, shows primitive toe pads."
+  ],
+  "moments": [
+    "At the first pale hint of dawn, the spring pool shimmers as dozens launch from the tuff, a cloud of living sparks catching the rising insects."
+  ],
+  "journal": [
+    {
+      "en": "They stick to the wet stone like glass beads."
+    },
+    {
+      "en": "A coiled spring in fur; they launch before you see them move."
+    }
+  ]
+}

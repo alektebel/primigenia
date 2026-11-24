@@ -1,4 +1,6 @@
 extends Control
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## The small round map, top-right (the owner's answer 3; replaces the design's compass strip). North-up, centred on you,
 ## about 420 m from its centre to its edge: the coastline as a thin bone line, the nest, the selected creature, your heading, and
 ## discovered `?` places when the game has any. Quiet: a thin bone ring with a halo and low opacity at rest. The zoomed-out
@@ -20,6 +22,8 @@ var heading := 0.0                 # radians, bearing from -z clockwise (north =
 var nest := Vector2.INF
 var target := Vector2.INF
 var target_hostile := false
+var quest_ping := Vector2.INF      # where the current task points (a quiet copper pulse, never an arrow); INF = none
+var _ping_t := 0.0
 var places: Array = []             # [Vector2] discovered places (drawn as `?`)
 var fade := 0.0                    # 1 = hidden (the strategic camera is on)
 var _tex: ImageTexture
@@ -78,12 +82,29 @@ func poke() -> void:
 	_act = 0.0
 
 func _process(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(dt)
+		return
+	FrameProfile.begin()
+	_profile__process(dt)
+	FrameProfile.end(&"minimap")
+
+func _profile__process(dt: float) -> void:
 	_act += dt
+	_ping_t += dt
 	if _act > Style.REST:
 		_bright = move_toward(_bright, 0.0, dt / Style.REST_FADE)
 	queue_redraw()
 
 func _draw() -> void:
+	if not FrameProfile.enabled:
+		_profile__draw()
+		return
+	FrameProfile.begin()
+	_profile__draw()
+	FrameProfile.end(&"minimap draw")
+
+func _profile__draw() -> void:
 	if not enabled or fade >= 0.999:
 		return
 	var c := map_centre()
@@ -109,6 +130,8 @@ func _draw() -> void:
 		_mark_text(c, r, p, a, "?")
 	if target.x < 1e8:
 		_target(c, r, target, a)
+	if quest_ping.x < 1e8:
+		_ping(c, r, quest_ping, a)
 	# you: a small arrow pointing along your heading
 	var fwd := Vector2(sin(heading), -cos(heading))
 	var side := Vector2(-fwd.y, fwd.x)
@@ -144,3 +167,16 @@ func _target(c: Vector2, r: float, wp: Vector2, a: float) -> void:
 	var s := Style.u(4.2)
 	var pts := PackedVector2Array([p + Vector2(0, -s), p + Vector2(s, 0), p + Vector2(0, s), p + Vector2(-s, 0), p + Vector2(0, -s)])
 	Style.polyline(self, pts, Color(col, a), Style.u(1.6))
+
+## The task's ping: a copper dot with a ring that opens and fades once per PULSE seconds (ease-out), a tick on the rim when it is
+## out of range. A hint toward the place, not a route.
+func _ping(c: Vector2, r: float, wp: Vector2, a: float) -> void:
+	var e := _edge(c, r, wp)
+	var k := fposmod(_ping_t, Style.PULSE) / Style.PULSE
+	var col := Palette.COPPER
+	if e[1]:
+		draw_circle(e[0], Style.u(2.4), Color(col, a))
+		draw_arc(e[0], Style.u(3.0 + 7.0 * Style.ease_out(k)), 0.0, TAU, 24, Color(col, a * (1.0 - k)), Style.u(1.3), true)
+	else:
+		var d: Vector2 = (e[0] - c).normalized()
+		Style.line(self, e[0] - d * Style.u(4.0), e[0] + d * Style.u(1.0), Color(col, a * (0.55 + 0.45 * (1.0 - k))), Style.u(2.4))

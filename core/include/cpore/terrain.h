@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Bump when the bytes for a seed change. Cached worlds key on this (W13). */
-#define CP_TERRAIN_VERSION 4
+#define CP_TERRAIN_VERSION 5   /* 5: island descs (island.h): cp_terrain_hash mixes the desc hash; splines, masks, trails (F1) */
 
 #define CP_TERRAIN_N_MIN   8
 #define CP_TERRAIN_N_MAX   2048
@@ -101,6 +101,7 @@ typedef struct CpTerrainParams {
     float caves;            /* 0 = no entrances/notches; 1 = seeded entrances */
     float cliff_deg;        /* bedrock: the sweep inside stream power */
     float rivers;           /* 0 = no channels; 1 = carved river network (v4) */
+    float layout;           /* 0 = v4 ring island; 1..4 = island layout candidates (DESIGN A83, design lab only) */
 } CpTerrainParams;
 
 enum {
@@ -134,6 +135,7 @@ typedef struct CpTerrain {
     int cave_count;
     CpTerrainCave caves[CP_TERRAIN_CAVES_MAX];
     float volcano_x_m, volcano_y_m, volcano_radius_m, crater_radius_m;
+    uint64_t island_hash;   /* cp_island_hash of the desc the terrain was generated from; 0 for layouts. Mixed into cp_terrain_hash */
 } CpTerrain;
 
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.
@@ -169,6 +171,10 @@ void cp_terrain_directions(const float *height, int n, float size_m, int8_t *dir
 /* FNV-1a 64 over a canonical little-endian dump: version, n, size, then
  * height, flow, sediment, material, volcano and cave records. +0 and -0 hash the same. */
 uint64_t cp_terrain_hash(const CpTerrain *t);
+
+/* A83 design lab: regions, routes and landmarks of layout 1..4 as one JSON object. Returns bytes written, 0 if unknown. */
+size_t cp_terrain_layout_json(int layout, char *buf, size_t cap);
+void cp_terrain_layout_apply(int layout, CpTerrainParams *p);
 
 #ifdef __cplusplus
 }

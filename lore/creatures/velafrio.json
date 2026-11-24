@@ -221,7 +221,7 @@
           "en": "Massive Harvest"
         },
         "role": "Basic",
-        "effect": "Gather 5 resources from the environment; costs 2 energy per resource.",
+        "effect": "The creature sweeps nearby, drawing materials from the earth and surroundings, though each gathering drains its own vitality. You can watch it deplete its strength as it collects the environment's bounty.",
         "numbers": {}
       },
       "weakness": "Cannot enter tight spaces; high energy cost makes it slow.",

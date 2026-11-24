@@ -1,0 +1,120 @@
+{
+ "checks": [
+  {
+   "actual": 0.4196,
+   "failure": "Flat light, no shadows",
+   "id": "creature_flat_light",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "contrast",
+   "op": ">=",
+   "source": "starting value: creature pixels (p95-p5)/255 >= 0.30 at every time of day; LOOK.md 7 and 5 (subtle rim, readable night)",
+   "value": 0.3,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.0094,
+   "failure": "Flat light, no shadows",
+   "id": "creature_crushed",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "crush_frac",
+   "op": "<",
+   "source": "starting value: at most 25% of creature pixels at luminance <= 12 ('readable night', LOOK.md 3)",
+   "value": 0.25,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.00024,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 2.8553,
+   "failure": "Noisy, dirty textures",
+   "id": "noise_creature",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "hf_noise",
+   "op": "<",
+   "source": "starting value: same limit on creature pixels (silhouette edges included, so loose)",
+   "value": 6.0,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 244,
+   "failure": "Too much bloom or blur",
+   "id": "blur",
+   "metric": "sharp_p99",
+   "op": ">=",
+   "source": "starting value: p99 of |Laplacian| >= 120 by day (dawn, midday, dusk); LOOK.md 7 sharpness",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 120,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.00065,
+   "failure": "Plastic shine",
+   "id": "plastic_shine",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "spec_frac",
+   "op": "<",
+   "source": "starting value: under 1% of creature pixels are white specular glints (V>0.95, S<0.2); LOOK.md 7 (full check is specular/roughness range per material, not measurable from an image)",
+   "value": 0.01,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.93,
+   "failure": "Light does not follow the day cycle",
+   "id": "day_cycle_warmth",
+   "metric": "warmth_shift",
+   "op": ">",
+   "source": "starting value: dawn and dusk are at least 5% warmer (mean R/B) than midday; LOOK.md 3 'warm dawn and dusk'",
+   "tods": [
+    "dawn",
+    "dusk"
+   ],
+   "value": 1.05,
+   "verdict": "FAIL"
+  }
+ ],
+ "info": {
+  "creature": "spider",
+  "kind": "creature",
+  "shot": "spider_chase",
+  "tier": "any",
+  "tod": "dawn",
+  "view": "chase"
+ },
+ "metrics": {
+  "clip_frac": 0.00024,
+  "contrast": 0.4196,
+  "crush_frac": 0.0094,
+  "hf_noise": 2.8553,
+  "lum_mean": 53.51,
+  "mask_frac": 0.18585,
+  "mean_b": 42.52,
+  "mean_r": 55.97,
+  "sat_mean": 0.415,
+  "sat_over": 0.00674,
+  "sat_p95": 0.698,
+  "sharp_p99": 244,
+  "spec_frac": 0.00065,
+  "warmth_shift": 0.93
+ },
+ "name": "creature_dawn_spider_chase"
+}

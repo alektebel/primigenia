@@ -23,7 +23,7 @@ static float grade(float x,float z){
 static void reset(float x,float z,int legs,int radius){
     CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;
     s.nest_x=x;s.nest_z=z;s.player_legs=legs;
-    s.player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius};
+    s.player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius,0};
     /* the hidden cave chamber is part of the walkable world (C2 secrets); shard placement is off here (it walks the whole island) */
     s.secrets=CP_SECRETS_CAVE;
     if(t.cave_count>0)s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};
@@ -117,7 +117,7 @@ int main(int argc,char **argv){
             }
             cp_stage_ack_events(&w);
         }
-        int reached=!rc&&arrived&&!deep_water&&maxgrade<=CP_STEER_GRADE_MAX+.0001f&&dist(w.player.x-x[b],w.player.z-z[b])<.3f;
+        int reached=!rc&&arrived&&!deep_water&&maxgrade<=cp_stage_grip_grade(&w.player.profile,w.player.legs)+.0001f&&dist(w.player.x-x[b],w.player.z-z[b])<.3f;
         printf("| %d/%.2f | %s → %s | %s | %d | %.2f | %.2f | %.4f | %d | %d | %d | %.3f | %.3f |\n",w.player.legs,cp_combat_body_radius(&w.player.profile),names[a],names[b],reached?"yes":"FAIL",ticks,planned,walked,maxgrade,fords,stalls,plans?plans-1:0,cold,warm);
         fflush(stdout);failed+=!reached;total++;
         /* Replay the actual trajectory, not only a planner's answer. */

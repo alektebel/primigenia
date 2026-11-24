@@ -87,7 +87,7 @@
           "en": "Tidal Sync"
         },
         "role": "Control",
-        "effect": "Speeds up turn order and boosts skill cooldowns by 1",
+        "effect": "The creature pulses with urgent rhythm, swiftly moving into position and frequently unleashing its abilities.",
         "numbers": {}
       },
       "weakness": "Becomes sluggish if tidal strain is disrupted",
@@ -199,7 +199,7 @@
           "en": "Loom Weave"
         },
         "role": "Defence",
-        "effect": "Creates a 3-tile calcite barrier blocking enemy movement and providing cover",
+        "effect": "The creature weaves a sturdy calcite barrier that halts advancing foes and shields nearby allies.",
         "numbers": {}
       },
       "weakness": "Secretion depletes calcium, weakening own carapace temporarily",
@@ -293,6 +293,11 @@
       "date": "2026-11-24",
       "who": "autoloop",
       "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     }
   ],
   "body_plan": {

@@ -1,0 +1,340 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "bello_pico",
+  "name": {
+    "en": "Bello-pico"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "meadow, shore",
+    "diet": "Ectoparasites, insect larvae, salt crusts",
+    "active": "day",
+    "predators": [
+      "cazanoche"
+    ],
+    "trophic": "secondary_consumer",
+    "role": "cleaner",
+    "prey": [
+      "pellizcador",
+      "enterrador"
+    ]
+  },
+  "body": "25 cm length, 150 g mass",
+  "chains": [
+    {
+      "id": "bello_pico.c1",
+      "trait": "Broad wings for low-speed maneuvering",
+      "links": [
+        "Dense air (1.6 bar) increases drag, making sustained flight costly.",
+        "Herds move constantly across meadows and shores.",
+        "High drag favors short bursts and hovering over gliding.",
+        "Broad wings provide high lift at low speeds for quick maneuvers."
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "bello_pico.hover",
+        "name": {
+          "en": "Hover"
+        },
+        "role": "Engage",
+        "effect": "The bird hovers steadily above a nearby target, making it easy to approach and interact. It remains suspended in the air for a short while, allowing anyone close by to calmly engage with it.",
+        "numbers": {}
+      },
+      "weakness": "Cannot fly against wind gusts (D19).",
+      "observe": [
+        "Watch it hover over a fleeing Rondo.",
+        "See wing shape during burst.",
+        "Note wind affects flight."
+      ],
+      "journal": {
+        "en": "Wings beat hard, defying the heavy air to hover just inches from fur."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Treat Hover as burst positioning (seconds) between perches on the host; primary locomotion is hop/cling along the flank. Retune weakness to F19 (1.6× wind force on ridges/shore), not D19.",
+        "fixes": [
+          "Treat Hover as burst positioning (seconds) between perches on the host; primary locomotion is hop/cling along the flank. Retune weakness to F19 (1.6× wind force on ridges/shore), not D19."
+        ],
+        "analogues": [
+          {
+            "organism": "Yellow-billed oxpecker (Buphagus africanus) and red-billed oxpecker (B. erythrorhynchus) on large ungulates—piciform feet, short flights between hosts, not hummingbird-style sustained hover.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "bello_pico.c2",
+      "trait": "Zygodactyl feet with locking claws",
+      "links": [
+        "Herbivore herds carry ectoparasites (D29).",
+        "Cleaner must cling to moving, shaggy hosts.",
+        "Gravity (1.05 g) requires strong grip.",
+        "Zygodactyl feet offer four-point contact and secure locking."
+      ],
+      "roots": [
+        "F24",
+        "F8"
+      ],
+      "skill": {
+        "id": "bello_pico.cling",
+        "name": {
+          "en": "Cling"
+        },
+        "role": "Defence",
+        "effect": "The bird clamps its locking claws onto a nearby host, making it impossible to dislodge. It stays firmly attached, strongly encouraging trust and affection.",
+        "numbers": {}
+      },
+      "weakness": "Stranded if host dies.",
+      "observe": [
+        "See feet gripping Rondo flank.",
+        "Watch claws lock.",
+        "Observe host behavior."
+      ],
+      "journal": {
+        "en": "Feet grip the shaggy flank like hooks, riding out the herd's panic."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "D29 ectoparasites on dense herds and 1.05 g (D6/F2) favor secure grip on moving, panicking hosts. Zygodactyl (two toes forward, two back) plus tendon locking is standard in Piciformes and gives four-point contact on fur and hide—mechanically matched to the cling-defence niche.",
+        "fixes": [
+          "D29 ectoparasites on dense herds and 1.05 g (D6/F2) favor secure grip on moving, panicking hosts. Zygodactyl (two toes forward, two back) plus tendon locking is standard in Piciformes and gives four-point contact on fur and hide—mechanically matched to the cling-defence niche."
+        ],
+        "analogues": [
+          {
+            "organism": "Oxpeckers (Buphagus spp.) and woodpeckers (Picidae)—zygodactyl feet and hallux locking for clinging to substrates including living hosts.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bock_1968_functional"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "bello_pico.c3",
+      "trait": "Curved bill with mechanoreceptive tip",
+      "links": [
+        "Parasites hide deep in fur.",
+        "Bill must probe without harming host.",
+        "Dense air dampens high-frequency sound, favoring tactile cues.",
+        "Bill tip detects host hair movement and parasite thrashing."
+      ],
+      "roots": [
+        "F27"
+      ],
+      "skill": {
+        "id": "bello_pico.probe",
+        "name": {
+          "en": "Probe"
+        },
+        "role": "Poke",
+        "effect": "The bird carefully probes the host with its curved bill, picking away parasites to strongly restore the creature's health. It consumes the pests to nourish itself and thrive.",
+        "numbers": {}
+      },
+      "weakness": "Bill breaks on bone if host moves too fast.",
+      "observe": [
+        "Watch bill probe into fur.",
+        "See host calm down.",
+        "Check for bill damage."
+      ],
+      "journal": {
+        "en": "The bill slips through fur like a needle, finding parasites by touch."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Optionally drop the acoustic-dampening rationale; root chain in D29 (parasite load) + host safety (non-penetrating groom) is sufficient.",
+        "fixes": [
+          "Optionally drop the acoustic-dampening rationale; root chain in D29 (parasite load) + host safety (non-penetrating groom) is sufficient."
+        ],
+        "analogues": [
+          {
+            "organism": "Probe-foraging shorebirds and ducks with bill-tip organs (e.g. Anas platyrhynchos tactile bill tip); oxpecker bills groom ticks and lesions on host skin.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bullock_1973_electroreception"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "bello_pico.c4",
+      "trait": "Iridescent wing patches and red throat",
+      "links": [
+        "Hosts must recognize cleaner as beneficial.",
+        "Visual signaling required in daylight.",
+        "High UV (F1) selects for UV-reflective feathers.",
+        "Bright signals advertise health and parasite-free status."
+      ],
+      "roots": [
+        "F1",
+        "F25"
+      ],
+      "skill": {
+        "id": "bello_pico.shine",
+        "name": {
+          "en": "Shine"
+        },
+        "role": "Social",
+        "effect": "The bird flashes its iridescent wings and bright red throat toward a nearby host, strongly building trust. The sudden display also exposes any hidden parasites clinging to the target.",
+        "numbers": {}
+      },
+      "weakness": "Iridescence attracts predators.",
+      "observe": [
+        "See wing flash.",
+        "Note color change.",
+        "Watch predator reaction."
+      ],
+      "journal": {
+        "en": "A flash of blue and red signals the giant: I am the cleaner, not the killer."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep iridescence for mate/status and player Charm; host '+10 Befriend' should lean on repeated Probe/Cling ritual and perch position (head/neck safe zones), with Shine as optional reinforcement. Mute display near acechalunas/garfio cover.",
+        "fixes": [
+          "Keep iridescence for mate/status and player Charm; host '+10 Befriend' should lean on repeated Probe/Cling ritual and perch position (head/neck safe zones), with Shine as optional reinforcement. Mute display near acechalunas/garfio cover."
+        ],
+        "analogues": [
+          {
+            "organism": "Bluestreak cleaner wrasse (Labroides dimidiatus) uses stereotyped movement more than iridescence; fairy-wrens and manakins show iridescent sexual/social plumage under high light—partial analog for display, not cleaner ID.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "endler_1992_signals"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "prey",
+      "note": "Eats ectoparasites and ticks from Rondo herds."
+    },
+    {
+      "with": "zanco",
+      "kind": "prey",
+      "note": "Eats ectoparasites from Zanco highlands herds."
+    },
+    {
+      "with": "garfio",
+      "kind": "predation",
+      "note": "Garfio raids nests and eats adults."
+    },
+    {
+      "with": "alula",
+      "kind": "predation",
+      "note": "Alula competes for larvae and eats eggs."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Ancestral bipedal bird-like lineage"
+  },
+  "temperament": "Timid solitary, bold near hosts",
+  "secrets": [
+    "Nest woven from shed Rondo hair and sea grass.",
+    "Albino variant has pale yellow feathers and avoids red-veined plants."
+  ],
+  "moments": [
+    "On the shore at spring low tide, a Coloso stands knee-deep in the surge. The Bello-pico flits up its massive neck, and the giant closes its eyes, swaying gently as the little bird works, trusting a creature it could crush."
+  ],
+  "journal": [
+    {
+      "en": "It rides the Rondo's flank, picking ticks with precise strokes."
+    },
+    {
+      "en": "A tiny bodyguard for a tax of bugs."
+    }
+  ]
+}

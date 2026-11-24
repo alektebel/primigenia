@@ -39,8 +39,13 @@ GAME_NUMBER = _re.compile(
     r"|\b(?:for|every|within|after)\s+" + _NUM + r"\b|\b" + _NUM + r"\s*[×x]\s", _re.I)
 
 
+_ANY_NUM = _re.compile(r"\b\d")
+
+
 def has_game_numbers(text):
-    return bool(GAME_NUMBER.search(text or ""))
+    """Units/percent/turns/seconds with digits, or any standalone number at all: a skill description needs none (A102.3)."""
+    t = text or ""
+    return bool(GAME_NUMBER.search(t) or _ANY_NUM.search(t))
 
 
 _PHRASE = _re.compile(r"[,;]?\s*\(?\b(?:from|at|up to|over|within|for|lasting|of|by|after|every|about|around)\s+(?:about\s+|around\s+)?" + GAME_NUMBER.pattern + r"\)?", _re.I)

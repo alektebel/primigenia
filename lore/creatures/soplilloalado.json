@@ -90,7 +90,7 @@
           "en": "Mist Strainer"
         },
         "role": "Basic",
-        "effect": "Automatically gathers nutrients while moving, grants +5 stamina regen per turn.",
+        "effect": "The creature drifts through the area, filtering particles from the air to feed itself. This constant nourishment allows it to recover continuously.",
         "numbers": {}
       },
       "weakness": "Cilia clog instantly in dry, volcanic ash storms; requires grooming cooldown.",

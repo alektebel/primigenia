@@ -13,6 +13,7 @@ const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
 const Glyphs := preload("res://ui/glyphs.gd")
 const Strings := preload("res://ui/strings.gd")
+const CreatureBars := preload("res://ui/creature_bars.gd")
 const Onboarding := preload("res://ui/onboarding.gd")
 const AudioManager := preload("res://audio/audio_manager.gd")
 const Settings := preload("res://audio/audio_settings.gd")
@@ -39,6 +40,7 @@ func _initialize() -> void:
 	test_ring_geometry()
 	test_minimap()
 	test_social_ui()
+	test_creature_bars()
 	test_volumes()
 	test_sounds()
 	call_deferred("_finish")
@@ -50,6 +52,7 @@ func _finish() -> void:
 	await test_menu_and_onboarding()
 	await test_journal()
 	await test_audio_manager()
+	await test_first_quest_ui()
 	print("ui tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)
 
@@ -277,6 +280,14 @@ func test_signs_and_words() -> void:
 	for k in 6:
 		s._process(0.5)
 	ok(not s.stamina_visible, "and hides 2 s after it is full again")
+	ok(not s.run_visible, "the run line is hidden at full")
+	ui.set_run(400, true)
+	s._process(0.1)
+	ok(s.run_visible and absf(s.run_frac - 0.4) < 0.001 and s.running, "the run line shows while running, at 40 %% (%.2f)" % s.run_frac)
+	ui.set_run(1000, false)
+	for k in 6:
+		s._process(0.5)
+	ok(not s.run_visible, "and hides 2 s after the run stamina is full again")
 	ui.set_fight(true)
 	s.set_fight(true)
 	s._process(0.1)
@@ -453,14 +464,16 @@ func _key_event(code: Key) -> InputEventKey:
 # --- the field journal (G38) -------------------------------------------------------------------------------------------
 
 func _journal_state() -> Dictionary:
-	# the shape of state().species (docs/SECRETS-REPORT.md): six entries, resolution as a word
+	# the shape of state().species (docs/SECRETS-REPORT.md): eight entries, resolution as a word
 	var species_rows := [
 		{"id": 0, "name": "Rondo", "activity": 0, "temperament": 0, "seen": true, "resolution": "open", "bonded": 2, "kills": 0, "observed": 2, "present": true, "hidden_now": false},
 		{"id": 1, "name": "Zanco", "activity": 0, "temperament": 0, "seen": true, "resolution": "ally", "bonded": 3, "kills": 0, "observed": 3, "present": true, "hidden_now": false},
 		{"id": 2, "name": "Espinodo", "activity": 0, "temperament": 1, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false},
 		{"id": 3, "name": "Garfio", "activity": 0, "temperament": 2, "seen": true, "resolution": "hunted", "bonded": 0, "kills": 3, "observed": 1, "present": true, "hidden_now": false},
 		{"id": 4, "name": "Acechalunas", "activity": 1, "temperament": 1, "seen": true, "resolution": "open", "bonded": 1, "kills": 0, "observed": 3, "present": true, "hidden_now": true},
-		{"id": 5, "name": "Babosa", "activity": 2, "temperament": 0, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false}]
+		{"id": 5, "name": "Babosa", "activity": 2, "temperament": 0, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false},
+		{"id": 6, "name": "Brujula", "seen": true, "observed": 3},
+		{"id": 7, "name": "Corona", "seen": true, "observed": 3}]
 	return {"species": species_rows, "social": {"dna_total": 137},
 		"entities": [{"species": 0, "dead": false, "likes": ["sing", "fruit"], "dislikes": ["bone"]}],
 		"parts": {"clues": 1, "recipes": 0, "discovered": [
@@ -485,11 +498,13 @@ func _species_table() -> Array:
 		{"name": "Espinodo", "roam": 24.0, "temperament": 1, "diet": "carnivore", "activity": 0, "nocturnal": false},
 		{"name": "Garfio", "roam": 30.0, "temperament": 2, "diet": "carnivore", "activity": 0, "nocturnal": false},
 		{"name": "Acechalunas", "roam": 28.0, "temperament": 1, "diet": "omnivore", "activity": 1, "nocturnal": true},
-		{"name": "Babosa", "roam": 12.0, "temperament": 0, "diet": "herbivore", "activity": 2, "nocturnal": false}]
+		{"name": "Babosa", "roam": 12.0, "temperament": 0, "diet": "herbivore", "activity": 2, "nocturnal": false},
+		{"name": "Brujula", "roam": 10.0, "temperament": 1, "diet": "omnivore", "activity": 0},
+		{"name": "Corona", "roam": 8.0, "temperament": 0, "diet": "carnivore", "activity": 2}]
 
 func _chains_table() -> Array:
 	var c := []
-	for i in 6:
+	for i in 8:
 		c.append({"observe": ["first clue %d" % i, "second clue %d" % i, "third clue %d" % i]})
 	return c
 
@@ -502,16 +517,17 @@ func test_journal() -> void:
 	# the model: pure functions of the world state
 	var st := _journal_state()
 	var m := JournalModel.build(st, _species_table(), _chains_table(), _catalogue())
-	ok(m.species.size() == 6 and m.species[0].seen and not m.species[2].seen, "journal: six species, seen and unseen")
+	ok(m.species.size() == 8 and m.species[0].seen and not m.species[2].seen, "journal: eight species, seen and unseen")
 	ok(m.species[0].clues == ["first clue 0", "second clue 0"] and m.species[3].clues == ["first clue 3"], "journal: the revealed clues are the first n of the chain")
 	ok(m.species[0].likes == ["sing", "fruit"] and m.species[1].likes.is_empty(), "journal: likes come from a living creature of the species")
 	ok(m.species[1].resolution == 1 and m.species[3].resolution == 2 and m.species[3].kills == 3 and m.species[0].resolution == 0, "journal: the Q43 state of each species (resolution words from state.species)")
 	ok(m.species[2].diet == 1 and m.species[0].diet == 0 and m.species[3].roam == 30 and m.species[4].diet == 2, "journal: diet (a word in the species table) and home range")
 	ok(m.species[4].name == "Acechalunas" and m.species[4].activity == 1 and m.species[4].nocturnal and m.species[4].seen and m.species[4].clues.size() == 3, "journal: Acechalunas is the nocturnal sixth-roster page")
 	ok(m.species[5].name == "Babosa" and m.species[5].activity == 2 and not m.species[5].nocturnal and not m.species[5].seen and m.species[0].activity == 0, "journal: Babosa is crepuscular and unseen until met")
+	ok(m.species[6].name == "Brujula" and m.species[6].diet == 2 and m.species[7].name == "Corona" and m.species[7].activity == 2, "journal: both radial species have pages and lore diets")
 	var old_shape := {"social": {"species": [{"seen": true, "resolution": 2, "kills": 1}]}}
 	ok(JournalModel.build(old_shape, _species_table(), _chains_table(), _catalogue()).species[0].resolution == 2, "journal: state.social.species (numeric resolution) is still read when state.species is missing")
-	ok(m.parts.size() == 46 and m.parts_found == 4 and m.parts_owned == 3, "journal: 46 catalogue parts, 4 found, 3 owned")
+	ok(m.parts.size() == 47 and m.parts_found == 4 and m.parts_owned == 3, "journal: 47 catalogue parts, 4 found, 3 owned")
 	var by := {}
 	for t in m.parts:
 		by[t.id] = t
@@ -548,13 +564,15 @@ func test_journal() -> void:
 	ui._unhandled_input(_key_event(KEY_J))
 	await process_frame
 	await process_frame
-	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 3, "journal: J opens on Species, three spreads for six species")
+	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 4, "journal: J opens on Species, four spreads for eight species")
 	ok(jv.hit_rect("tab", 3).size.x > 0.0 and jv.hit_rect("next").size.x > 0.0 and jv.hit_rect("prev").size.x == 0.0, "journal: tabs and next arrow are drawn, no previous arrow on the first spread")
 	jv.handle_input(_key_event(KEY_RIGHT))
 	ok(jv.page == 1, "journal: Right turns the page")
 	jv.handle_input(_key_event(KEY_RIGHT))
 	jv.handle_input(_key_event(KEY_RIGHT))
-	ok(jv.page == 2, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_RIGHT))
+	ok(jv.page == 3, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_LEFT))
 	jv.handle_input(_key_event(KEY_LEFT))
 	jv.handle_input(_key_event(KEY_LEFT))
 	ok(jv.page == 0, "journal: Left turns back")
@@ -740,11 +758,11 @@ func test_loadout_ui() -> void:
 	ok(req.size() == 1, "key L asks for the loadout sheet")
 	panel.open_panel()
 	ok(ui.veil.flat_amount > 0.3 and ui.veil.flat_amount < 0.5, "a light veil (0.42) comes with the sheet")
-	ok(panel.token_count() == 4, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
+	ok(panel.token_count() == 13, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
 	var names := []
 	for i in panel.token_count():
 		names.append(panel.token_id(i))
-	ok(names == ["bite", "charge", "spit", "tail_strike"], "tokens are the four attack moves (%s)" % [names])
+	ok(names == ["bite", "charge", "spit", "tail_strike", "claw_swipe", "peck", "pounce", "quill_volley", "roar", "stomp", "curl_up", "spine_volley", "flame"], "tokens are the four attack moves (%s)" % [names])
 	ok(panel.token_glyph(0) == "bite" and panel.token_glyph(1) == "charge" and panel.token_glyph(2) == "", "a known move is a token with a glyph; one not learned has none (no spoiler)")
 	ok(panel.token_enabled(0) and not panel.token_enabled(2), "a move not known cannot be chosen")
 	var shapes2 := {}
@@ -817,7 +835,7 @@ func test_audio_manager() -> void:
 func test_foundations() -> void:
 	for n in Glyphs.NAMES:
 		ok(Glyphs.has(n), "glyph %s loads" % n)
-	ok(Glyphs.NAMES.size() == 33, "33 glyphs")
+	ok(Glyphs.NAMES.size() == 35, "35 glyphs")
 	for id in ["bite", "charge", "spit", "tail_strike", "sing", "dance", "charm", "pose", "roar", "display", "observe", "eat", "guard", "dodge"]:
 		ok(Glyphs.has(Glyphs.for_move(id)), "move %s has a glyph" % id)
 	for i in 4:
@@ -847,7 +865,7 @@ func test_foundations() -> void:
 			found += 1
 			ok(Strings.clue(en) != en and Strings.clue(en) != "", "clue in Spanish: %s" % en)
 		g.settings["language"] = "en"
-		ok(found == 18 and Strings.CLUES_ES.size() == 18, "18 observe clues found in core and all in the table (%d)" % found)
+		ok(found == 24 and Strings.CLUES_ES.size() == 24, "24 observe clues found in core and all in the table (%d)" % found)
 		ok(Strings.clue("watch it purse its mouth and shoot a thread of sap at a pursuer") == "watch it purse its mouth and shoot a thread of sap at a pursuer", "English clue unchanged")
 	g.settings["language"] = old_lang
 	var old_scale = g.settings.get("ui_scale", 1.0)
@@ -860,3 +878,119 @@ func test_foundations() -> void:
 	for f in ["OFL-AlegreyaSans.txt", "OFL-Alegreya.txt"]:
 		ok(FileAccess.file_exists("res://ui/fonts/" + f), "licence %s sits next to the fonts" % f)
 	ok(Modes.NONE == &"" and Modes.is_mode(Modes.NONE), "Modes.NONE exists")
+
+# Health lines over hostile / fighting / selected creatures (brief creature-fixes 2).
+func test_creature_bars() -> void:
+	var B = CreatureBars.BarState
+	var b = B.new()
+	b.set_value(0.5)
+	ok(b.shown == 1.0 and b.lost == 1.0, "bar: a hit does not jump, the value starts where it was")
+	b.tick(0.1)
+	ok(b.shown < 1.0 and b.shown > 0.5, "bar: 100 ms into the tick-down it is between (%.3f)" % b.shown)
+	ok(b.shown < 1.0 - 0.5 * 0.5, "bar: ease-out is more than half way at half the time (%.3f)" % b.shown)
+	b.tick(0.1)
+	ok(is_equal_approx(b.shown, 0.5), "bar: 200 ms later it has arrived (%.3f)" % b.shown)
+	ok(b.lost > 0.99, "bar: the lost segment is still there after the value arrives (%.3f)" % b.lost)
+	b.tick(0.3)
+	ok(b.lost > 0.5, "bar: the lost segment waits ~0.35 s (%.3f at 0.4 s)" % b.lost)
+	for i in 30:
+		b.tick(0.05)
+	ok(is_equal_approx(b.lost, 0.5), "bar: and then closes (%.3f)" % b.lost)
+	b.set_value(0.9)
+	ok(b.lost == 0.9 or b.lost >= 0.9, "bar: healing raises the lost end with it, no ghost below")
+	ok(is_equal_approx(CreatureBars.distance_alpha(10.0, false), 1.0) and CreatureBars.distance_alpha(60.0, false) == 0.0, "bars: fade by distance (full near, gone far)")
+	ok(CreatureBars.distance_alpha(60.0, true) >= 0.8, "bars: the fight or the selection keeps its bar at any distance")
+	var bars = CreatureBars.new()
+	root.add_child(bars)
+	var rows := []
+	for i in range(1, 21):
+		rows.append({"id": i, "hp": 10.0, "hp_max": 20.0, "hostile": i <= 10, "focus": i == 15, "dist": 5.0 + i * 3.0})
+	bars.set_creatures(rows)
+	for i in 30:
+		bars._process(0.05)
+	ok(bars.visible_count() <= CreatureBars.MAX_BARS, "bars: a crowd draws at most %d (%d)" % [CreatureBars.MAX_BARS, bars.visible_count()])
+	ok(bars._bars.has(15), "bars: the selected creature always has its bar")
+	ok(not bars._bars.has(18), "bars: a far, peaceful creature has none")
+	bars.set_creatures([])
+	for i in 30:
+		bars._process(0.05)
+	ok(bars._bars.is_empty(), "bars: they fade out and go when nothing qualifies")
+	bars.free()
+	# brief creature-fixes 4: the pause settings have an "Edit anywhere" row (default on) and the menu's creature edit follows the world, not the loadout
+	var mn = preload("res://ui/menu.gd").new()
+	mn._build_rows()
+	ok(mn.rows.any(func(r): return r.key == "edit_anywhere"), "settings: the Edit anywhere row exists")
+	ok(Strings.t("edit_anywhere") != "edit_anywhere", "settings: the Edit anywhere row has a label")
+	ok(bool(mn.value_of("edit_anywhere")) == bool(root.get_node("Game").settings.get("edit_anywhere", true)) and bool(root.get_node("Game").settings.get("edit_anywhere", false)), "settings: Edit anywhere is on by default")
+	mn.loadout_available = false
+	mn.nest_edit_available = true
+	ok(mn.item_enabled("nest_edit") and not mn.item_enabled("loadout"), "menu: Edit creature is enabled by the world's can_edit, the loadout by the nest")
+	mn.free()
+	# brief creature-fixes 6: the journal has a Plants section, four to a spread
+	var jv = JournalView.new()
+	ok(JournalView.TABS.has("plants") and Strings.t("jt_plants") != "" and Strings.t("j_plants_empty") != "" and Strings.t("plant_new", ["x"]).contains("x"), "journal: the Plants tab and its strings exist")
+	var plants := []
+	for i in 5:
+		plants.append({"id": "p%d" % i, "name": {"en": "P", "es": "P"}, "habitat_text": {"en": "h", "es": "h"}, "lore": {"en": "l", "es": "l"}})
+	jv.model = {"plants": plants}
+	jv.set_tab(JournalView.TABS.find("plants"))
+	ok(jv.page_count() == 2, "journal: five plants take two spreads (%d)" % jv.page_count())
+	jv.model = {}
+	ok(jv.page_count() == 1, "journal: no plants is one empty spread")
+	jv.free()
+
+# first quest: the task card, the dig chip, the Tareas tab and the minimap ping
+func test_first_quest_ui() -> void:
+	var QuestCard := preload("res://ui/quest_card.gd")
+	var DigChip := preload("res://ui/dig_chip.gd")
+	var jv = JournalView.new()
+	ok(JournalView.TABS.has("tasks") and JournalView.TABS[JournalView.TABS.size() - 1] == "tasks", "journal: the Tasks tab is last, so the others keep their positions")
+	var rows := []
+	for i in 5:
+		rows.append({"title": {"en": "T%d" % i, "es": "T%d" % i}, "hint": {"en": "h", "es": "h"}, "done": {"en": "d", "es": "d"}, "reward": 5, "status": "now" if i == 1 else ("done" if i < 1 else "later")})
+	jv.model = {"tasks": rows}
+	jv.set_tab(JournalView.TABS.find("tasks"))
+	ok(jv.page_count() == 1, "journal: five tasks fit one spread (%d)" % jv.page_count())
+	jv.model = {"tasks": rows + rows}
+	ok(jv.page_count() == 2, "journal: ten tasks take two spreads")
+	jv.free()
+	ok(Strings.t("jt_tasks") == "Tasks" and Strings.t("j_task_now") == "now", "strings: the tab and the status words (English)")
+	var card = QuestCard.new()
+	root.add_child(card)
+	var model := {"title": "First steps", "index": 1, "total": 5, "marks": [true, false, false, false, false], "finished": false,
+		"step_title": "Make a friend", "hint": "Befriend a creature of another species: sing, dance, offer a leaf.", "parts": []}
+	await process_frame
+	card.set_model(model)
+	var open_rect: Rect2 = card.card_rect()
+	ok(open_rect.position.x > 0.0 and open_rect.position.y > 0.0 and open_rect.size.x >= 280.0 and open_rect.end.x < 420.0, "task card: top-left, about 300 px wide (%s)" % open_rect)
+	card.toggle()
+	var folded: Rect2 = card.card_rect()
+	ok(card.collapsed and folded.size.y < open_rect.size.y and folded.size.x < open_rect.size.x, "task card: K folds it to a tab (%s)" % folded)
+	card.toggle()
+	ok(not card.collapsed and card.card_rect().size.y == open_rect.size.y, "task card: and opens it again, at once")
+	model.parts = [{"text": "a", "done": true}, {"text": "b", "done": false}]
+	card.set_model(model)
+	ok(card.card_rect().size.y > open_rect.size.y, "task card: a task with parts grows by a row each")
+	ok(card.mouse_filter == Control.MOUSE_FILTER_IGNORE, "task card: never takes the mouse")
+	card.free()
+	var chip = DigChip.new()
+	root.add_child(chip)
+	chip.centre = Vector2(400, 300)
+	await process_frame
+	ok(not chip.visible, "dig ring: nothing on screen while not digging (A54: no dig button or prompt)")
+	chip.digging = 0.5
+	for _i in 20:
+		chip._process(0.05)
+	ok(chip.visible, "dig ring: the progress ring shows while digging")
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = Vector2(405, 302)
+	ok(not chip.handle_input(click), "dig ring: it takes no clicks, the world keeps them")
+	chip.free()
+	var mm = preload("res://ui/minimap.gd").new()
+	root.add_child(mm)
+	ok(mm.quest_ping.x > 1e8, "minimap: no ping by default")
+	mm.quest_ping = Vector2(30.0, 40.0)
+	ok(mm.quest_ping.x < 1e8, "minimap: a ping can be set")
+	mm.free()

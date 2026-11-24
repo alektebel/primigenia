@@ -94,7 +94,7 @@ pivot guards); the zoom is a new parameter `z` on top.
 - Distance is interpolated in log space, pitch linearly; both strictly increase. z eases (tau 0.2 s, cap 1.4 z/s, a full
   zoom takes about 0.7 s); a wheel notch is 0.04 z, a flick (several notches within 0.25 s) up to 3.5x that. From z 0.75 the
   look-at point drifts to the island centre; near plane grows with distance (0.25 to 40 m) to keep the depth buffer precise.
-- Orbit: left drag past 6 px (`pointer_gesture.gd`), right or middle drag. The orbit holds while the creature stands still;
+- Orbit: right or middle drag only (a left drag past 6 px is ignored, creature-fixes 1). The orbit holds while the creature stands still;
   after 1 s of moving the yaw and pitch ease back behind with the F1 caps (also from the front, unlike plain follow).
   Setting `camera/free_orbit` disables the return. Home or middle click resets (default zoom, behind). A left press is
   a click at release (picks or walks), a hold of 0.2 s keeps steering, a drag orbits. Q/E rotation was skipped: they dodge.
@@ -110,7 +110,7 @@ pivot guards); the zoom is a new parameter `z` on top.
 
 ## Hold to follow, steering (branch c1/movement-feel)
 
-Left button: a drag before 0.15 s orbits; a release before 0.15 s is a click (walk there, or select a creature); staying 0.15 s
+Left button: a drag before 0.15 s is ignored (it no longer orbits); a release before 0.15 s is a click (walk there, or select a creature); staying 0.15 s
 makes a **hold**: the creature follows the mouse while the button is down (target re-sent every 0.15 s, moves under 0.6 m
 ignored so a still mouse does not replan) and moving the mouse steers it instead of orbiting. Releasing keeps going to the last
 target. Turns are now size dependent and smooth: see LOCOMOTION.md section 8. Key legend: "Follow the mouse (hold, then move)".

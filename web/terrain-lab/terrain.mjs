@@ -10,8 +10,9 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
     module,
     generate(request = {}) {
       const { seed, n, stream, droplets, thermal, warp, ridge, erosion, base, gentle, variety, bands, coast, rock, volcano, caves, rivers } = { ...DEFAULTS, ...request };
+      const desc = request.desc;   // optional ISL1 blob (Uint8Array): generate that island instead of the seed's (core/include/cpore/island.h)
       if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw Error('Seed must be an integer from 0 to 4294967295.');
-      if (!Number.isInteger(n) || n < 8 || n > 1024) throw Error('Map size must be an integer from 8 to 1024.');
+      if (!Number.isInteger(n) || n < 8 || n > 1536) throw Error('Map size must be an integer from 8 to 1536.');
       if (!Number.isInteger(droplets) || droplets < 0 || droplets > 2000000 ||
           !Number.isInteger(thermal) || thermal < 0 || thermal > 48 ||
           !Number.isInteger(stream) || stream < 0 || stream > 256 ||
@@ -23,8 +24,14 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
       if (![coast,rock,volcano,caves].every(v => Number.isFinite(v) && v >= 0 && v <= 1)) throw Error('Terrain features must be from 0 to 1.');
       if (module._ct_features && module._ct_features(coast,rock,volcano,caves)) throw Error('Invalid terrain features.');
       if (module._ct_rivers && module._ct_rivers(Number.isFinite(rivers) ? rivers : 1)) throw Error('Invalid rivers switch.');
+      if (desc) {
+        if (!(desc instanceof Uint8Array) || desc.length > module._ct_desc_buf_size()) throw Error('The island blob must be a Uint8Array of at most 256 KiB.');
+        module.HEAPU8.set(desc, module._ct_desc_buf());
+        const drc = module._ct_desc_set(desc.length);
+        if (drc) throw Error(`Island blob refused (${drc}).`);
+      }
       const start = performance.now();
-      const result = module._ct_generate();
+      const result = desc ? (request.shape ? module._ct_shape_desc() : module._ct_generate_desc()) : module._ct_generate();   // shape: the desc's base height only, no erosion
       const seconds = (performance.now() - start) / 1000;
       if (result) throw Error(`Terrain generation failed (${result}).`);
       const words = module._ct_hash() >>> 2;
@@ -41,7 +48,7 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
           size:Array.from(f.slice(at+5,at+8)),waterfall:Boolean(module.HEAPU32[at+8])});
       }
       const landmark=module._ct_volcano ? Array.from(module.HEAPF32.slice(module._ct_volcano()>>>2,(module._ct_volcano()>>>2)+4)) : null;
-      return { seed, n, size: module._ct_size ? module._ct_size() : 2000, version: module._ct_version(), base, gentle, variety, bands, coast, rock, volcano, entrances, landmark, material, hash, seconds,
+      return { seed, n, desc: Boolean(desc), size: module._ct_size ? module._ct_size() : 2000, version: module._ct_version(), base, gentle, variety, bands, coast, rock, volcano, entrances, landmark, material, hash, seconds,
         height: maps[0], flow: maps[1], sediment: maps[2], level: maps[3] || maps[0].slice() };
     },
   };

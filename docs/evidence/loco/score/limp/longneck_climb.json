@@ -1,0 +1,217 @@
+{
+  "body": "longneck",
+  "fps": 30.0,
+  "frames": 720,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 18.22,
+    "body_pitch_deg": 1.47,
+    "cadence_hz": 2.799,
+    "duty_factor": {
+      "mean": 0.5219,
+      "per_foot": [
+        0.5263,
+        0.5035,
+        0.5526,
+        0.5053
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 150.827,
+      "mean": 0.706,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.82,
+      "p95": 3.5,
+      "stances": 226
+    },
+    "foot_spacing_ratio": 0.7143,
+    "footfall": {
+      "contact": [
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 4,
+      "stride_frames": 11
+    },
+    "gait_frac": {
+      "amble": 0.0514,
+      "trot": 0.7472,
+      "walk": 0.2014
+    },
+    "gait_symmetry": 0.93,
+    "ground_slope_deg": 1.32,
+    "head_pitch_deg": {
+      "mean": -5.64,
+      "p95": 9.19
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 14.24,
+      "p95": 140.34
+    },
+    "knee_flip_frac": 0.0014,
+    "leg_extension": 0.869,
+    "limp": {
+      "drop_ratio": 1.3739,
+      "index": 1.3739,
+      "paired": 2,
+      "per_foot": [
+        {
+          "drop_cm": 9.395,
+          "pair": 0,
+          "roll_deg": 0.205,
+          "samples": 54,
+          "side": 1
+        },
+        {
+          "drop_cm": 7.251,
+          "pair": 0,
+          "roll_deg": 0.243,
+          "samples": 55,
+          "side": -1
+        },
+        {
+          "drop_cm": 6.651,
+          "pair": 1,
+          "roll_deg": 4.622,
+          "samples": 56,
+          "side": 1
+        },
+        {
+          "drop_cm": 9.138,
+          "pair": 1,
+          "roll_deg": 4.732,
+          "samples": 55,
+          "side": -1
+        }
+      ],
+      "roll_ratio": 1.1854
+    },
+    "limp_index": 1.3739,
+    "min_turn_radius_m": 7.13,
+    "moving_frac": 0.7917,
+    "pitch_follow": 0.831,
+    "pivot_frac": 0.0042,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": 0.123,
+    "shoulder_hip_ratio": 1.508,
+    "slide_frac": 0.025,
+    "speed_mean_mps": 4.8837,
+    "stall_frac": 0.1167,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 14.85,
+    "stride_len_m": 1.661,
+    "stuck_frac": 0.1167,
+    "torso_bob_cm": 13.33,
+    "torso_bob_frac": 0.0918,
+    "torso_roll_deg": 5.02
+  },
+  "reasons": {
+    "pivot_frac_of_turns": "fewer than 10 frames of turning in this window"
+  },
+  "scenario": "climb",
+  "start_tick": 253,
+  "ticks": 240
+}

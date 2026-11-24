@@ -9,7 +9,7 @@ orbit around the creature. Mechanics reference only (Q4): no assets or UI copied
 | Input | Effect |
 |---|---|
 | **Scroll** | Continuous zoom along one curve: over-the-shoulder → chase → high → **strategic map**. Smooth (eased), with a fast flick going farther |
-| **Left drag** (moved more than ~6 px) | Orbit around the creature: yaw around its vertical axis, pitch within limits. A plain left **click** still moves the creature (G57); the drag threshold tells them apart |
+| **Left drag** (moved more than ~6 px) | Nothing. The left button never moves the camera (creature-fixes 1, CREATURE-FIXES.md); a plain left **click** moves the creature (G57) and the drag threshold only stops a drag from counting as a click |
 | **Right / middle drag** | Orbit too (already bound to `camera_orbit`) |
 | **Middle click / Home** | Reset behind the creature at the default distance |
 | **Q / E** (optional) | Rotate in steps without the mouse |
@@ -25,8 +25,8 @@ of view and what gets drawn:
 
 | z | Band | Distance | Pitch | What you see |
 |---|---|---|---|---|
-| 0.00 | close | 1.8 × body height | ~8° (almost level) | face and parts up close; good for photo mode and befriending |
-| 0.15 | **chase (default)** | ~4 h | ~15° | today's gameplay view, horizon visible |
+| 0.00 | **close (default, A54)** | 1.8 × body height | ~8° (almost level) | the gameplay view since the owner picked "Close" (2026-11-22); face and parts up close, befriending |
+| 0.15 | chase | ~4 h | ~15° | the earlier default, horizon visible |
 | 0.40 | high | ~12 h | ~35° | fights with several creatures, the pack later |
 | 0.70 | tactical | ~150 m | ~55° | the area around you: dens, nests, paths; creature icons begin to fade in |
 | 1.00 | **strategic** | whole island (~3 km) | ~70° | the island as a map: icons for your nest, species dens, `?` for undiscovered places, meteor shards found, your position. Terrain shown cheaply (LOD/imposters), grass and small props off |
@@ -34,7 +34,7 @@ of view and what gets drawn:
 - Terrain collision: the camera never goes underground or inside cliffs; it slides
   up along the slope.
 - At high zoom, **icons replace models** (PA-style strategic zoom). Clicking an
-  icon selects it (the G75 card); double-clicking zooms back down onto it.
+  icon selects it (the G75 card); a double click does nothing extra (the left button never moves the camera).
 - Time keeps running at every zoom (pause is separate, D7).
 - The same camera becomes the **Band command view** later (ARC-PLAN §2): scroll out
   to command, scroll in to act.

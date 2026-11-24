@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Primigenia — Food Plants & Ground Cover (G66)</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #2a3a20; color: #ccc; font-family: system-ui, sans-serif; overflow: hidden; }
+#view { width: 100vw; height: 100vh; display: block; }
+#ui { position: absolute; top: 10px; left: 10px; background: rgba(20,20,30,0.85); padding: 12px 16px; border-radius: 8px; font-size: 13px; z-index: 10; pointer-events: none; }
+#ui h1 { font-size: 15px; color: #ffd0a0; margin-bottom: 4px; }
+#ui p { margin: 2px 0; }
+#controls { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(20,20,30,0.85); padding: 8px 16px; border-radius: 8px; font-size: 12px; z-index: 10; display: flex; gap: 8px; }
+#controls button { background: #3a3a5a; color: #ddd; border: 1px solid #5a5a8a; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+#controls button:hover { background: #4a4a7a; }
+#controls button.active { background: #5a5a9a; border-color: #ffd0a0; }
+#debug { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; font-size: 11px; font-family: monospace; z-index: 10; pointer-events: none; color: #8f8; }
+</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div id="ui">
+  <h1>Food Plants & Ground Cover</h1>
+  <p>P4 herbivore food + meadow G12</p>
+  <p id="seedLabel">seed: 42</p>
+</div>
+<div id="debug"></div>
+<div id="controls">
+  <button id="btnFull">Full / Depleted</button>
+  <button id="btnSeed">Random Seed</button>
+  <button id="btnCapture">Capture Grid</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ---- Helper: create object with position ---- */
+function pos(obj, x, y, z) { obj.position.set(x, y, z); return obj; }
+function scale(obj, x, y, z) { obj.scale.set(x, y, z); return obj; }
+function rot(obj, x, y, z) { obj.rotation.set(x, y, z); return obj; }
+
+/* ---- Inline food module ---- */
+function makeRng(seed) {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function makeToon(hex, roughness) {
+  return new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: roughness || 0.8, metalness: 0 });
+}
+
+function makeEll(sx, sy, sz) {
+  const g = new THREE.SphereGeometry(1, 12, 8);
+  g.scale(sx, sy, sz);
+  return g;
+}
+
+/* Berry Bush */
+function makeBerryBush(seed, size, full) {
+  const rnd = makeRng(seed ^ 0x4B7F);
+  const s = size || 1;
+  const group = new THREE.Group();
+  const woodM = makeToon('#4a2a15', 0.85);
+  const leafM = makeToon('#2a6a1a', 0.8);
+
+  // Trunk
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08*s, 0.12*s, 0.6*s, 8), woodM);
+  group.add(pos(trunk, 0, 0.3*s, 0));
+
+  // Branches
+  const bc = 3 + Math.round(rnd() * 2);
+  for (let i = 0; i < bc; i++) {
+    const a = (i / bc) * Math.PI * 2 + rnd() * 0.5;
+    const len = (0.3 + rnd() * 0.25) * s;
+    const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.03*s, 0.05*s, len, 6), woodM);
+    group.add(pos(branch, Math.cos(a) * 0.15*s, (0.4 + 0.15 + rnd() * 0.15) * s, Math.sin(a) * 0.15*s));
+    group.add(rot(branch, Math.sin(a) * 0.6, 0, Math.cos(a) * 0.6));
+  }
+
+  // Leaf clusters
+  const cc = full ? 6 : 3;
+  for (let i = 0; i < cc; i++) {
+    const a = (i / cc) * Math.PI * 2 + rnd() * 0.8;
+    const cx = Math.cos(a) * (0.35 + rnd() * 0.15) * s;
+    const cy = (0.55 + rnd() * 0.15) * s;
+    const cz = Math.sin(a) * (0.35 + rnd() * 0.15) * s;
+    const sc = (0.15 + rnd() * 0.1) * s;
+    group.add(pos(new THREE.Mesh(makeEll(sc*1.2, sc*0.7, sc*1.2), leafM), cx, cy, cz));
+  }
+
+  // Berries
+  if (full) {
+    const berryCount = 18 + Math.round(rnd() * 8);
+    const berryGeo = makeEll(0.02*s, 0.02*s, 0.02*s);
+    const berryMat = makeToon('#6a1535', 0.65);
+    const berryMesh = new THREE.InstancedMesh(berryGeo, berryMat, berryCount);
+    const d = new THREE.Object3D();
+    let ci = 0;
+    for (let i = 0; i < 5 && ci < berryCount; i++) {
+      const a = (i / 5) * Math.PI * 2;
+      const br = 0.28 * s;
+      for (let j = 0; j < 4 && ci < berryCount; j++) {
+        const ba = a + (j - 1.5) * 0.4 + rnd() * 0.2;
+        pos(d, Math.cos(ba) * br, (0.52 + rnd() * 0.08) * s, Math.sin(ba) * br);
+        scale(d, 0.8 + rnd() * 0.5, 0.8 + rnd() * 0.5, 0.8 + rnd() * 0.5);
+        d.updateMatrix();
+        berryMesh.setMatrixAt(ci++, d.matrix);
+      }
+    }
+    berryMesh.instanceMatrix.needsUpdate = true;
+    berryMesh.frustumCulled = false;
+    group.add(berryMesh);
+  }
+
+  // Stubs (depleted)
+  if (!full) {
+    const stubCount = 5 + Math.round(rnd() * 3);
+    const stubMesh = new THREE.InstancedMesh(makeEll(0.01*s, 0.01*s, 0.01*s), makeToon('#4a5a30'), stubCount);
+    const d = new THREE.Object3D();
+    for (let i = 0; i < stubCount; i++) {
+      const a = rnd() * Math.PI * 2;
+      pos(d, Math.cos(a) * 0.25*s, (0.5 + rnd() * 0.15) * s, Math.sin(a) * 0.25*s);
+      d.updateMatrix();
+      stubMesh.setMatrixAt(i, d.matrix);
+    }
+    stubMesh.instanceMatrix.needsUpdate = true;
+    stubMesh.frustumCulled = false;
+    group.add(stubMesh);
+  }
+
+  return group;
+}
+
+/* Tuber Leaves */
+function makeTuberLeaves(seed, size, full) {
+  const rnd = makeRng(seed ^ 0xA3D1);
+  const s = size || 1;
+  const group = new THREE.Group();
+  const leafM = full ? makeToon('#3a8a2a', 0.75) : makeToon('#5a6a30', 0.85);
+  const midribM = makeToon('#1a5a15', 0.75);
+
+  const lc = full ? 7 : 4;
+  for (let i = 0; i < lc; i++) {
+    const a = (i / lc) * Math.PI * 2 + rnd() * 0.4;
+    const len = (0.25 + rnd() * 0.1) * s;
+    const width = (0.1 + rnd() * 0.06) * s;
+    const posArr = [], norArr = [], uvArr = [], idxArr = [];
+    const segs = 6;
+    for (let j = 0; j <= segs; j++) {
+      const t = j / segs, lw = width * (1 - Math.pow(t, 0.7)), ex = t * len;
+      posArr.push(-lw, 0, ex, lw, 0, ex);
+      norArr.push(0, 1, 0, 0, 1, 0);
+      uvArr.push(0, t, 1, t);
+      if (j < segs) { const b = j * 2; idxArr.push(b, b+2, b+1, b+1, b+2, b+3); }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(posArr, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(norArr, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvArr, 2));
+    geo.setIndex(idxArr);
+    geo.computeVertexNormals();
+    const leaf = new THREE.Mesh(geo, leafM);
+    group.add(
+      pos(leaf, Math.cos(a) * len * 0.2, (0.04 + rnd() * 0.03) * s, Math.sin(a) * len * 0.2),
+      rot(leaf, 0, a + Math.PI/2, -0.25 - rnd() * 0.2)
+    );
+    const midrib = new THREE.Mesh(new THREE.CylinderGeometry(0.003*s, 0.005*s, len * 0.85, 4), midribM);
+    group.add(pos(midrib, Math.cos(a) * len * 0.2, (0.042 + rnd() * 0.03) * s, Math.sin(a) * len * 0.2));
+  }
+
+  // Grass tufts
+  for (let i = 0; i < 6; i++) {
+    const a = rnd() * Math.PI * 2, r = 0.15 + rnd() * 0.15, h = (0.06 + rnd() * 0.06) * s;
+    const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.015*s, h, 5), makeToon('#3a7020', 0.8));
+    group.add(
+      pos(tuft, Math.cos(a) * r * s, h * 0.4, Math.sin(a) * r * s),
+      rot(tuft, (rnd()-0.5)*0.3, 0, (rnd()-0.5)*0.3)
+    );
+  }
+
+  return group;
+}
+
+/* Fruiting Stalk */
+function makeFruitingStalk(seed, height, full) {
+  const rnd = makeRng(seed ^ 0xC7E2);
+  const s = 1, stalkH = (height || 1.5) * s;
+  const group = new THREE.Group();
+  const stalkM = full ? makeToon('#3a7020', 0.75) : makeToon('#6a7a30', 0.85);
+
+  const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.02*s, 0.035*s, stalkH, 8), stalkM);
+  group.add(pos(stalk, 0, stalkH/2, 0));
+
+  // Ridge details
+  const rc = 8 + Math.round(rnd() * 4);
+  for (let i = 0; i < rc; i++) {
+    const t = 0.15 + (i / rc) * 0.8;
+    group.add(pos(new THREE.Mesh(makeEll(0.045*s, 0.008*s, 0.045*s), stalkM), 0, t * stalkH, 0));
+    group.add(rot(group.children[group.children.length-1], Math.PI/2, 0, 0));
+  }
+
+  // Leaf blades
+  const lcc = 4 + Math.round(rnd() * 3);
+  for (let i = 0; i < lcc; i++) {
+    const t = 0.3 + (i / lcc) * 0.55, a = rnd() * Math.PI * 2, lLen = (0.12 + rnd() * 0.08) * s;
+    const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.02*s, 0.005*s, lLen), makeToon('#2a6018', 0.75));
+    group.add(pos(leaf, Math.cos(a)*0.03*s, t*stalkH, Math.sin(a)*0.03*s), rot(leaf, 0, a, 0.4));
+  }
+
+  // Fruit cluster at top
+  if (full) {
+    const fruitCount = 8 + Math.round(rnd() * 5);
+    const fruitMat = makeToon('#c06020', 0.65);
+    const fruitMesh = new THREE.InstancedMesh(makeEll(0.035*s, 0.03*s, 0.035*s), fruitMat, fruitCount);
+    const d = new THREE.Object3D();
+    let fi = 0;
+    for (let i = 0; i < 3 && fi < fruitCount; i++) {
+      const a = (i/3) * Math.PI * 2 + rnd() * 0.5;
+      for (let j = 0; j < 3 && fi < fruitCount; j++) {
+        const fa = a + (j-1) * 0.5, fr = 0.04 + rnd() * 0.03;
+        pos(d, Math.cos(fa)*fr*s, (0.85+rnd()*0.1)*stalkH, Math.sin(fa)*fr*s);
+        scale(d, 0.7+rnd()*0.5, 0.7+rnd()*0.5, 0.7+rnd()*0.5);
+        d.updateMatrix();
+        fruitMesh.setMatrixAt(fi++, d.matrix);
+      }
+    }
+    fruitMesh.instanceMatrix.needsUpdate = true;
+    fruitMesh.frustumCulled = false;
+    group.add(fruitMesh);
+    group.add(pos(new THREE.Mesh(new THREE.ConeGeometry(0.015*s, 0.08*s, 6), stalkM), 0, stalkH + 0.04*s, 0));
+  }
+
+  return group;
+}
+
+/* Flower Patches */
+function makeFlowerPatches(seed, count, flowerType, full) {
+  const rnd = makeRng(seed ^ 0x1F9A + (flowerType || 0) * 1000);
+  count = count || 30;
+  const types = [
+    { petals: 5, petalColor: '#d02060', centerColor: '#c0a020', stemColor: '#2a6a1a', size: 0.04 },
+    { petals: 5, petalColor: '#3050d0', centerColor: '#c0a020', stemColor: '#2a6a1a', size: 0.035 },
+    { petals: 6, petalColor: '#d07020', centerColor: '#501515', stemColor: '#2a6a1a', size: 0.05 },
+    { petals: 4, petalColor: '#a030c0', centerColor: '#d0d020', stemColor: '#2a6a1a', size: 0.03 },
+  ];
+  const ft = types[flowerType] || types[0];
+  const fullScale = full !== false ? 1 : 0.5;
+
+  const stemGeo = new THREE.CylinderGeometry(0.002, 0.003, 0.08, 4);
+  const stemMat = makeToon(ft.stemColor);
+  const petalGeo = makeEll(0.012, 0.001, 0.006);
+  const petalMat = makeToon(ft.petalColor);
+  const centerGeo = makeEll(0.008, 0.003, 0.008);
+  const centerMat = makeToon(ft.centerColor);
+
+  const stemMesh = new THREE.InstancedMesh(stemGeo, stemMat, count);
+  const petalMesh = new THREE.InstancedMesh(petalGeo, petalMat, count * ft.petals);
+  const centerMesh = new THREE.InstancedMesh(centerGeo, centerMat, count);
+
+  const d = new THREE.Object3D();
+  let si = 0, pi = 0, ci = 0;
+
+  for (let i = 0; i < count; i++) {
+    const x = (rnd()-0.5) * 8, z = (rnd()-0.5) * 6, h = 0.06 + rnd() * 0.06;
+    pos(d, x, h/2, z);
+    rot(d, (rnd()-0.5)*0.15, rnd()*Math.PI*2, (rnd()-0.5)*0.15);
+    d.updateMatrix();
+    stemMesh.setMatrixAt(si++, d.matrix);
+
+    const topY = h + 0.005;
+    for (let p = 0; p < ft.petals; p++) {
+      const a = (p / ft.petals) * Math.PI * 2, pr = ft.size * 0.6;
+      pos(d, x + Math.cos(a)*pr, topY, z + Math.sin(a)*pr);
+      scale(d, fullScale, fullScale, fullScale);
+      rot(d, Math.PI/2, a, 0);
+      d.updateMatrix();
+      petalMesh.setMatrixAt(pi++, d.matrix);
+    }
+    pos(d, x, topY + 0.001, z);
+    scale(d, fullScale, fullScale, fullScale);
+    d.updateMatrix();
+    centerMesh.setMatrixAt(ci++, d.matrix);
+  }
+
+  stemMesh.instanceMatrix.needsUpdate = true;
+  petalMesh.instanceMatrix.needsUpdate = true;
+  centerMesh.instanceMatrix.needsUpdate = true;
+  [stemMesh, petalMesh, centerMesh].forEach(m => m.frustumCulled = false);
+
+  const group = new THREE.Group();
+  group.add(stemMesh, petalMesh, centerMesh);
+  return group;
+}
+
+/* Moss Patches */
+function makeMossPatches(seed, count) {
+  const rnd = makeRng(seed ^ 0x3E7B);
+  count = count || 40;
+  const mossGeo = makeEll(1, 0.04, 1);
+  const mossMat = makeToon('#2a5a15', 0.85);
+  const mossMesh = new THREE.InstancedMesh(mossGeo, mossMat, count);
+  const d = new THREE.Object3D();
+
+  for (let i = 0; i < count; i++) {
+    const x = (rnd()-0.5) * 8, z = (rnd()-0.5) * 6, sc = 0.15 + rnd() * 0.35;
+    pos(d, x, 0.02, z);
+    scale(d, sc*(0.8+rnd()*0.6), 0.5+rnd()*0.5, sc*(0.8+rnd()*0.6));
+    rot(d, 0, rnd()*Math.PI*2, 0);
+    d.updateMatrix();
+    mossMesh.setMatrixAt(i, d.matrix);
+  }
+  mossMesh.instanceMatrix.needsUpdate = true;
+  mossMesh.frustumCulled = false;
+  return mossMesh;
+}
+
+/* Fern Patches */
+function makeFernPatches(seed, count) {
+  const rnd = makeRng(seed ^ 0x5D2C);
+  count = count || 25;
+
+  function makeFernGeo() {
+    const posArr = [], idxArr = [];
+    const leaflets = 4, stemH = 0.15;
+    for (let i = 0; i < leaflets; i++) {
+      const t = (i+1)/(leaflets+1), y = t * stemH, lLen = (1-t*0.5) * 0.12;
+      for (const side of [-1, 1]) {
+        const base = posArr.length / 3;
+        posArr.push(side*0.005, y, 0, side*lLen*0.5, y+0.01, 0.01, side*lLen*0.3, y-0.01, 0.005);
+        idxArr.push(base, base+1, base+2, base, base+2, base+3);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(posArr, 3));
+    geo.setIndex(idxArr);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  const fernGeo = makeFernGeo();
+  const fernMat = makeToon('#1a5a0a', 0.8);
+  const fernMesh = new THREE.InstancedMesh(fernGeo, fernMat, count);
+  const d = new THREE.Object3D();
+  for (let i = 0; i < count; i++) {
+    const x = (rnd()-0.5)*8, z = (rnd()-0.5)*6, sc = 0.8 + rnd()*1.0;
+    pos(d, x, 0.02, z);
+    scale(d, sc, sc, sc);
+    rot(d, 0, rnd()*Math.PI*2, (rnd()-0.5)*0.3);
+    d.updateMatrix();
+    fernMesh.setMatrixAt(i, d.matrix);
+  }
+  fernMesh.instanceMatrix.needsUpdate = true;
+  fernMesh.frustumCulled = false;
+  return fernMesh;
+}
+
+/* Clover Patches */
+function makeCloverPatches(seed, count) {
+  const rnd = makeRng(seed ^ 0x7F4E);
+  count = count || 35;
+
+  function makeCloverGeo() {
+    const posArr = [], idxArr = [];
+    for (let l = 0; l < 3; l++) {
+      const a = (l/3)*Math.PI*2 - Math.PI/2;
+      const cx = Math.cos(a)*0.015, cz = Math.sin(a)*0.015, lw = 0.018, lh = 0.025;
+      const base = posArr.length / 3;
+      posArr.push(
+        cx, 0.005, cz,
+        cx+Math.sin(a)*lw, 0.015, cz+Math.cos(a)*lw,
+        cx, 0.005+lh, cz,
+        cx-Math.sin(a)*lw, 0.015, cz-Math.cos(a)*lw
+      );
+      idxArr.push(base, base+1, base+2, base, base+2, base+3);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(posArr, 3));
+    geo.setIndex(idxArr);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  const cloverGeo = makeCloverGeo();
+  const cloverMat = makeToon('#3a7020', 0.8);
+  const cloverMesh = new THREE.InstancedMesh(cloverGeo, cloverMat, count);
+  const d = new THREE.Object3D();
+  for (let i = 0; i < count; i++) {
+    const x = (rnd()-0.5)*8, z = (rnd()-0.5)*6, sc = 0.7 + rnd()*0.8;
+    pos(d, x, 0.005, z);
+    scale(d, sc, sc, sc);
+    rot(d, 0, rnd()*Math.PI*2, 0);
+    d.updateMatrix();
+    cloverMesh.setMatrixAt(i, d.matrix);
+  }
+  cloverMesh.instanceMatrix.needsUpdate = true;
+  cloverMesh.frustumCulled = false;
+  return cloverMesh;
+}
+
+/* Label sprite */
+function makeLabel(text, x, y, z) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 128; canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = '14px system-ui, sans-serif';
+  ctx.fillText(text, 4, 22);
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+  const sprite = new THREE.Sprite(mat);
+  pos(sprite, x, y, z);
+  scale(sprite, 1.2, 0.3, 1);
+  return sprite;
+}
+
+/* ---- Three.js Scene Setup ---- */
+const T = THREE;
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('view'), antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x8a9a7a);
+scene.fog = new THREE.Fog(0x9aa88a, 25, 70);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(5, 4, 7); camera.lookAt(0, 0.5, 0);
+
+
+/* ---- Lighting ---- */
+const SUN = new THREE.Vector3(-0.62, 0.28, -0.72).normalize();
+const sun = new THREE.DirectionalLight(0xffd4a4, 4.0);
+sun.position.copy(SUN.clone().multiplyScalar(10));
+sun.castShadow = true;
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 50;
+sun.shadow.camera.left = -15;
+sun.shadow.camera.right = 15;
+sun.shadow.camera.top = 15;
+sun.shadow.camera.bottom = -15;
+sun.shadow.mapSize.width = 1024;
+sun.shadow.mapSize.height = 1024;
+sun.shadow.bias = -0.0005;
+sun.shadow.mapSize.width = 1024;
+sun.shadow.mapSize.height = 1024;
+sun.shadow.camera.left = -12; sun.shadow.camera.right = 12;
+sun.shadow.camera.top = 12; sun.shadow.camera.bottom = -12;
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 30;
+scene.add(sun);
+
+const hemi = new THREE.HemisphereLight(0xc8d8f0, 0x5a7a3a, 0.7);
+const ambient = new THREE.AmbientLight(0x404040, 0.3); scene.add(ambient);
+scene.add(hemi);
+
+/* ---- Ground ---- */
+const groundGeo = new THREE.PlaneGeometry(24, 18, 48, 36);
+const posAttr = groundGeo.attributes.position;
+for (let i = 0; i < posAttr.count; i++) {
+  const x = posAttr.getX(i), y = posAttr.getY(i);
+  posAttr.setZ(i, (Math.sin(x*0.5)*0.08 + Math.cos(y*0.4)*0.06) * 0.3);
+}
+groundGeo.computeVertexNormals();
+const groundMat = new THREE.MeshStandardMaterial({ color: 0x4a6a30, roughness: 0.85 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* ---- Background grass ---- */
+const bladeCount = 8000;
+const bladeGeo = new THREE.PlaneGeometry(0.02, 0.25, 1, 3);
+const bPos = bladeGeo.attributes.position;
+for (let i = 0; i < bPos.count; i++) {
+  if (bPos.getY(i) > 0) bPos.setX(bPos.getX(i) * 0.5);
+}
+bladeGeo.computeVertexNormals();
+const bladeMat = new THREE.MeshBasicMaterial({ color: 0x4a7a2a, side: THREE.DoubleSide });
+const bladeMesh = new THREE.InstancedMesh(bladeGeo, bladeMat, bladeCount);
+const bd = new THREE.Object3D();
+for (let i = 0; i < bladeCount; i++) {
+  pos(bd, (Math.random()-0.5)*20, 0.1, (Math.random()-0.5)*14);
+  scale(bd, 0.8+Math.random()*0.5, 0.7+Math.random()*0.8, 1);
+  rot(bd, (Math.random()-0.5)*0.3, Math.random()*Math.PI*2, (Math.random()-0.5)*0.3);
+  bd.updateMatrix();
+  bladeMesh.setMatrixAt(i, bd.matrix);
+}
+bladeMesh.instanceMatrix.needsUpdate = true;
+bladeMesh.frustumCulled = false;
+scene.add(bladeMesh);
+
+/* ---- Plant placement ---- */
+let SEED = 42;
+let showDepleted = true;
+const plantsGroup = new THREE.Group();
+scene.add(plantsGroup); sun.target = plantsGroup;
+
+function buildScene() {
+  // Clear
+  while (plantsGroup.children.length) plantsGroup.remove(plantsGroup.children[0]);
+
+  const group = new THREE.Group();
+
+  // Food plants
+  group.add(makeBerryBush(SEED + 1, 0.7, true));
+  pos(group.children[group.children.length-1], -3, 0, -1.5);
+
+  group.add(makeBerryBush(SEED + 2, 0.6, showDepleted));
+  pos(group.children[group.children.length-1], 0, 0, -1.5);
+
+  group.add(makeTuberLeaves(SEED + 3, 0.7, true));
+  pos(group.children[group.children.length-1], 3, 0, -1.5);
+
+  group.add(makeFruitingStalk(SEED + 4, 1.0, true));
+  pos(group.children[group.children.length-1], -3, 0, 0);
+
+  // Ground cover clusters
+  group.add(makeFlowerPatches(SEED + 10, 12, 0));
+  pos(group.children[group.children.length-1], 0, 0, 0);
+
+  group.add(makeFlowerPatches(SEED + 11, 12, 1));
+  pos(group.children[group.children.length-1], 3, 0, 0);
+
+  group.add(makeFlowerPatches(SEED + 12, 12, 2));
+  pos(group.children[group.children.length-1], -3, 0, 1.5);
+
+  group.add(makeFlowerPatches(SEED + 13, 12, 3));
+  pos(group.children[group.children.length-1], 0, 0, 1.5);
+
+  group.add(makeMossPatches(SEED + 20, 20));
+  pos(group.children[group.children.length-1], 3, 0, 1.5);
+
+  group.add(makeFernPatches(SEED + 30, 15));
+  pos(group.children[group.children.length-1], -2, 0, -3);
+
+  group.add(makeCloverPatches(SEED + 40, 20));
+  pos(group.children[group.children.length-1], 2, 0, -3);
+
+  // Labels
+  const labels = [
+    ['berry (full)', -3, 1.0, -1.5],
+    ['berry (eaten)', 0, 1.0, -1.5],
+    ['tuber', 3, 0.5, -1.5],
+    ['fruit stalk', -3, 1.0, 0],
+    ['pink', 0, 0.5, 0],
+    ['blue', 3, 0.5, 0],
+    ['orange', -3, 0.5, 1.5],
+    ['purple', 0, 0.5, 1.5],
+    ['moss', 3, 0.3, 1.5],
+    ['ferns', -2, 0.4, -3],
+    ['clover', 2, 0.3, -3],
+  ];
+  for (const [text, x, y, z] of labels) {
+    group.add(makeLabel(text, x, y, z));
+  }
+
+  plantsGroup.add(group);
+
+  document.getElementById('debug').textContent =
+    'draw calls: ' + renderer.info.render.calls +
+    ' | geos: ' + renderer.info.memory.geometries +
+    ' | triangles: ' + renderer.info.render.triangles;
+}
+
+buildScene();
+
+/* ---- Grid capture for screenshot ---- */
+const gridCams = [
+  { name: 'Close - Full Berry', offset: [0, 1.5, 2.5], target: [-3, 0.3, -1.5], fov: 45 },
+  { name: 'Close - Depleted', offset: [0, 1.5, 2.5], target: [0, 0.3, -1.5], fov: 45 },
+  { name: 'Mid - All', offset: [4, 3.5, 5], target: [0, 0.5, 0], fov: 55 },
+  { name: 'Far - All', offset: [8, 6, 10], target: [0, 0.5, 0], fov: 65 },
+  { name: 'Ground Cover', offset: [3, 1.5, 3], target: [0.5, 0.1, 0.75], fov: 50 },
+  { name: 'Depleted View', offset: [2, 2, 4], target: [-0.5, 0.3, -0.75], fov: 55 },
+];
+
+function captureGrid() {
+  const cols = 3, rows = 2;
+  const cellW = 800, cellH = 600;
+  const outCanvas = document.createElement('canvas');
+  outCanvas.width = cols * cellW;
+  outCanvas.height = rows * cellH;
+  const ctx = outCanvas.getContext('2d');
+  ctx.fillStyle = '#2a3a20';
+  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+
+  let idx = 0;
+  gridCams.forEach((cv) => {
+    camera.position.set(...cv.offset);
+    camera.fov = cv.fov;
+    camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
+
+    const scale = Math.min(cellW / renderer.domElement.width, cellH / renderer.domElement.height);
+    ctx.drawImage(renderer.domElement,
+      0, 0, renderer.domElement.width, renderer.domElement.height,
+      idx % cols * cellW + (cellW - renderer.domElement.width * scale) / 2,
+      Math.floor(idx / cols) * cellH + (cellH - renderer.domElement.height * scale) / 2,
+      renderer.domElement.width * scale,
+      renderer.domElement.height * scale
+    );
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(idx % cols * cellW, Math.floor(idx / cols) * cellH, cellW, 24);
+    ctx.fillStyle = '#ffd0a0';
+    ctx.font = '14px system-ui';
+    ctx.fillText(cv.name, idx % cols * cellW + 8, Math.floor(idx / cols) * cellH + 17);
+    idx++;
+  });
+
+  const link = document.createElement('a');
+  link.download = 'food-grid.png';
+  link.href = outCanvas.toDataURL('image/png');
+  link.click();
+}
+
+/* ---- UI ---- */
+document.getElementById('btnFull').addEventListener('click', () => {
+  showDepleted = !showDepleted;
+  document.getElementById('btnFull').textContent = showDepleted ? 'Full / Depleted' : 'Full Only';
+  document.getElementById('btnFull').classList.toggle('active', showDepleted);
+  buildScene();
+});
+document.getElementById('btnSeed').addEventListener('click', () => {
+  SEED = Math.floor(Math.random() * 100000);
+  document.getElementById('seedLabel').textContent = 'seed: ' + SEED;
+  buildScene();
+});
+document.getElementById('btnCapture').addEventListener('click', captureGrid);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ---- Animate ---- */
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
+
+// Print stats
+
+</script>
+</body>
+</html>

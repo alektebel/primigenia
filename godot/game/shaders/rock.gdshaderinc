@@ -113,7 +113,7 @@ float rock_lit_mask(float light, float fw) {
 
 // Light of a detail normal: n = normalize(gn + tilt). Returns the light and its fwidth (clamped).
 float rock_light(vec3 gn, vec3 tilt, out float fw) {
-	float l = max(dot(normalize(gn + tilt), SUN_DIR), 0.0);
+	float l = max(dot(normalize(gn + tilt), sun_dir), 0.0);
 	fw = min(fwidth(l), 0.25);
 	return l;
 }

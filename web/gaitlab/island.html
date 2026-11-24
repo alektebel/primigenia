@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Island layouts (A83)</title>
+<link rel="icon" href="data:,">
+<style>
+:root{color-scheme:dark;--bg:#16191d;--panel:#20252b;--ink:#efebe2;--dim:#b5babf;--line:#424850;--gold:#edc578;--teal:#9fd3cb;--red:#ff9a8c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,sans-serif}
+button,textarea{font:inherit}
+button{background:#2c3239;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 12px;cursor:pointer;transition:transform 120ms ease-out,background 120ms ease-out}
+button:hover{background:#3a424b}button:active{transform:scale(.97)}
+button:focus-visible,textarea:focus-visible,a:focus-visible,.shot:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+header{padding:14px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{font-size:21px;line-height:1.2;margin:0 0 4px}
+header p{margin:2px 0;color:var(--dim);font-size:13px;max-width:110ch}
+.rules{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;font-size:12px;color:var(--dim)}
+.rules b{color:var(--ink);font-weight:600}
+main{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:0;align-items:start}
+#cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:16px;padding:16px 20px}
+aside{position:sticky;top:0;padding:14px;background:var(--panel);border-left:1px solid var(--line);min-height:100vh}
+aside h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim);margin:6px 0}
+#choices p{margin:8px 0;color:var(--ink);font-size:13px}#choices strong{color:var(--gold)}
+#copy-status{min-height:18px}
+#copy-fallback{width:100%;min-height:90px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px;font:12px ui-monospace,monospace}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.card[data-starred=true]{border:2px solid var(--gold)}
+.card header{background:transparent;border:0;padding:12px 14px 4px}
+.card h2{font-size:18px;margin:0}
+.tag{color:var(--teal);font-size:13px;margin:1px 0 0}
+.star{position:absolute;right:10px;top:9px;font-size:20px;line-height:1;padding:4px 9px;background:transparent}
+.star[aria-pressed=true]{color:var(--gold);border-color:var(--gold)}
+.tabs{display:flex;gap:6px;padding:4px 14px}
+.tabs button[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}
+.map{position:relative;margin:4px 14px 0;background:#0e1114;border-radius:6px;overflow:hidden}
+.map img{display:block;width:100%;height:auto;cursor:zoom-in}
+.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 14px 0}
+.shot{display:block;margin:0;padding:0;border:1px solid var(--line);border-radius:5px;overflow:hidden;background:#0e1114;cursor:zoom-in;position:relative;text-align:left}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.shot span{position:absolute;left:0;right:0;bottom:0;padding:2px 5px;font-size:10.5px;line-height:1.25;background:#0e1114d0;color:var(--ink)}
+.body{padding:10px 14px 14px;display:grid;gap:8px}
+.body p{margin:0;font-size:13px}
+.body .why{color:var(--dim);font-size:12.5px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{text-align:left;padding:3px 6px;border-bottom:1px solid #30363d;vertical-align:top}
+th{color:var(--dim);font-weight:600;width:34%}
+.ok{color:#a3d4ad}.warn{color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11px;padding:1px 7px;border-radius:9px;border:1px solid var(--line);color:var(--ink)}
+.chip.gate{border-color:#ff8a7a;color:#ffc1b8}
+footer{padding:10px 20px 24px;color:var(--dim);font-size:12px;max-width:120ch}
+#lightbox{position:fixed;inset:0;z-index:20;background:#0a0c0ff2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:96vw;max-height:84vh;object-fit:contain;border-radius:4px}
+#lightbox p{margin:0;color:var(--ink);font-size:14px;max-width:90ch;text-align:center}
+@media(max-width:900px){main{display:block}aside{position:static;min-height:0;border-left:0;border-top:1px solid var(--line)}#cards{grid-template-columns:minmax(0,1fr);padding:12px 10px}.shots{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>Primigenia island layouts · DESIGN A83 step 5</h1>
+<p>Four candidate islands, all made by the real C generator (<code>core/src/terrain.c</code>, <code>CpTerrainParams.layout</code> 1 to 4, full erosion, seed 1), each about 5 km across (A86). The shipped island is unchanged. Pick one (or say what to mix); the owner pick is what the generator is then built around.</p>
+<div class="rules">
+<span><b>Island</b> about 5 km across (17 km² of land) in an 8 km square of sea</span><span><b>Climate</b> a mountain spine splits a wet windward side from a dry leeward rain shadow</span><span><b>8 biomes</b> meadow (nest), mountain range, jungle, desert/badlands + canyon, tundra, cliffs, Caribbean reef sea, abyssal trench; volcano and Oklo-style reactor sites marked</span>
+<span><b>Nest</b> about 190 m valley, 3 to 4 natural exits, never a closed ring</span>
+<span><b>Depth</b> plateaus and terraces, a dense forest belt, a canyon or badlands</span>
+<span><b>Gating</b> 3 regions open from the nest, 2 gated: cliff plateau (climbers) and an islet (swim or glide)</span>
+<span><b>Grip</b> a plain body climbs 51.6 degrees (A66)</span>
+</div>
+</header>
+<main>
+<div id="cards"></div>
+<aside>
+<h2>Your choices</h2>
+<p>Star the layouts you like (any number; star one to pick it). Choices survive a reload.</p>
+<div id="choices"></div>
+<button id="copy">Copy choices</button>
+<p id="copy-status" role="status" aria-live="polite"></p>
+<textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea>
+<p>Keys: <b>1</b> to <b>4</b> star a card, <b>Esc</b> closes a picture.</p>
+</aside>
+</main>
+<footer>
+How these were made: <code>terrain_cli maps --layout N</code> runs the production generator (1536 cells, 5.2 m, same stream-power, droplet and thermal erosion, rivers and sea cliffs as the shipped island) and <code>tools/island/maps.py</code> draws the labels. Slope colours use the central-difference slope of the final height field; walkable reach is a flood fill from the nest over cells under 51.6 degrees that are not sea or deep river, and with climbing parts (75 degrees). Routes are the cheapest plain-body walking path through each exit's waypoints. In-engine shots are the Godot game scene (software GL) with the camera parked on the final terrain. Re-make everything with <code>python3 tools/island/maps.py</code>.
+</footer>
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Picture"><img alt=""><p></p><button id="lb-close">Close · Esc</button></div>
+<script>
+'use strict';
+(() => {
+const BASE = 'island/';
+const LAYOUTS = [
+ {id:'star-massif', bio:'Wind from the NE: jungle on the NE vale, desert and canyon in the SW rain shadow. Meadow: nest. Mountain: Crown Horn and the north spur. Tundra: the Mesa top. Cliffs: west coast. Reef: south-east beach, trench beyond it. Volcano site SW coast, reactor site in the SW badlands.', title:'1 · Star massif', tag:'Radial valleys around one central massif',
+  desc:'One big massif sits at the island\'s centre and sends five long spurs out to the coast; the valleys between them are the roads. The nest is a sheltered wedge at the massif\'s foot between two spurs, so its back is a 640 m horn and its front opens on the river valley.',
+  open:['Forest vale (NE, in the massif\'s lee)','Delta and terraces (SE)','Canyon badlands (S and SW)'], gates:['Mesa: cliff plateau on the NW spur end (climbers)','Islet NE (swim or glide)'],
+  exits:'River valley to the SE coast; north pass over the east spur into the forest vale; south pass to the canyon head; west saddle toward the mesa foot.',
+  marks:'Crown Horn (massif summit), meteor crater, Split Spire, Great tree, sea arch.',
+  why:'Strongest silhouette and easiest to learn: every route runs along a valley away from one landmark you can see from anywhere. Risk: from the nest it still reads as mountains to the north, and the three open regions are all one valley hop away, so there is little to find by wandering.',
+  shots:[['flyover','Flyover from the south-east'],['nest','The nest, looking up at the massif'],['canyon','Ground: the canyon'],['forest','Ground: the forest vale']]},
+ {id:'great-rift', bio:'Wind from the north: jungle terraces north of the spine and in the river corridor, desert in the south basin and the gorge. Tundra: Cloud mesa. Cliffs: north-west coast. Reef: the river-mouth coast (east), trench beyond. Volcano site NE, reactor site in the south badlands.', title:'2 · Great rift', tag:'A long river corridor from the nest to the coast, with a gorge',
+  desc:'A broad river corridor runs 2.5 km from the nest east to the sea, through a forest belt, then a narrow 60 m wide gorge cut through a cross-bar range, then out onto the coastal plain. Two long ranges wall the corridor north and south; passes lead over them to terraced uplands and to a badlands basin.',
+  open:['Forest corridor (E of the nest)','North terraces (over the north pass)','South badlands (over the south pass)','Rift gorge (on the river)'], gates:['Cloud mesa: cliff plateau NW (climbers)','Islet SE (swim or glide)'],
+  exits:'River corridor east; north pass; south pass; west col up under the headwall.',
+  marks:'Anvil (headwall peak), meteor crater, Gate Rock at the gorge mouth, Great tree, sea arch.',
+  why:'The best travel story: one obvious main road with a set-piece (the gorge) in the middle and side trips off it. Risk: the most linear of the four, and the ranges are separate blocks, so it feels less like a mountain island and more like a valley with walls.',
+  shots:[['flyover','Flyover from the east, down the corridor'],['nest','The nest and the corridor'],['gorge','Ground: the gorge'],['forest','Ground: the forest corridor']]},
+ {id:'stepped-plateau', bio:'Wind from the north-west: jungle on the western tier, desert in the south-east stair canyon and the red steps. Mountain: the upper tiers. Tundra: Sky terrace. Cliffs: east coast. Reef: south coast, trench beyond. Volcano site NE, reactor site in the red steps.', title:'3 · Stepped plateau', tag:'Tiers down from a high plateau, the nest sunk in a pit',
+  desc:'The whole island steps down from a high cliff plateau in 44 m treads, like a layered cake. The nest is a pit cut into a mid tier, with four ramps leading down or up the tiers. A stair canyon cuts through every tier to the south-east coast; a red-steps badlands and a forest tier fill the rest.',
+  open:['Forest tier (W and N, a wide belt)','Stair canyon (SE)','Red steps badlands (SW)'], gates:['Sky terrace: the top plateau, ringed by cliffs (climbers)','Islet SW (swim or glide)'],
+  exits:'SE ramp into the stair canyon; west ramp to the forest tier; north ramp up the tiers; south ramp to the red steps.',
+  marks:'Sky terrace, meteor crater, Stair falls, Giant tree, red spire, sea arch.',
+  why:'Most "plateaus and terraces" by far, and flat tread pockets are good for nests and building. Risk: it uses lighter erosion (8 stream steps, 10 000 droplets) so the treads survive, which means fewer sharp peaks; the nest pit is the most enclosed of the four.',
+  shots:[['flyover','Flyover from the south-west'],['nest','The nest pit and its ramps'],['terraces','Ground: terraces'],['canyon','Ground: the stair canyon']]},
+ {id:'windward-crescent', bio:'Wind from the east: jungle belt on the windward east side, desert in the red canyon at the south end of the arc. Mountain: the outer arc. Tundra: Karst plateau. Cliffs: north-west coast. Reef: the sheltered west coast under the arc, trench beyond. Volcano site NE, reactor site in the south badlands.', title:'4 · Windward crescent', tag:'An arc of ranges, the forest belt in the lee',
+  desc:'Two arcs of mountains curve around the west and north: a high outer range (600 m) and a low foothill arc inside it. Everything east and south is the lee: rolling land, a wide forest belt, a terraced bench and a deep red canyon cut through a rampart. The nest is inside the arcs, and four passes lead out of it.',
+  open:['Lee forest belt (E and SE, wide)','Windward bench: terraces under the foothills (W)','Red canyon (S)'], gates:['Karst plateau: the apex of the outer range (climbers)','Islet SE (swim or glide)'],
+  exits:'Lee valley east to the sea; south pass to the red canyon; west pass to the windward bench; north col.',
+  marks:'Gale Horn (apex), meteor crater, Red Arch, Giant tree, sea arch.',
+  why:'Biggest open playable area and the clearest big-versus-small contrast (wall of mountains against open forest), and it breaks the ring the most. Risk: the mountains are one barrier on one side, so only that side has climbing; the lee can feel like "just forest".',
+  shots:[['flyover','Flyover from the east, over the lee'],['nest','The nest inside the arc'],['canyon','Ground: the red canyon'],['arc','Ground: the outer range']]},
+];
+const $ = id => document.getElementById(id);
+let STARS = {};
+try { STARS = JSON.parse(localStorage.getItem('islandStars') || '{}') || {}; } catch (e) { STARS = {}; }
+const save = () => { try { localStorage.setItem('islandStars', JSON.stringify(STARS)); } catch (e) {} };
+let STATS = null;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function statsRows(L) {
+  const s = STATS && STATS[L.id];
+  if (!s) return '';
+  const g = s.regions.filter(r => r.gate);
+  const gate = r => {
+    const ok = r.gate === 1 ? (r.core_plain_pct < 15 && r.core_climb_only_pct > 50) : (r.core_plain_pct < 1 && r.core_climb_only_pct < 1);
+    const how = r.gate === 1 ? 'top is ' + r.core_climb_only_pct + '% reachable only with climbing parts, ' + r.core_plain_pct + '% on foot' : 'not reachable on foot or by climbing from the nest';
+    return '<span class="' + (ok ? 'ok' : 'warn') + '">' + esc(r.name) + ': ' + how + '</span>';
+  };
+  const routes = Object.entries(s.routes_walkable);
+  const nok = routes.filter(r => r[1]).length;
+  return '<tr><th>Land</th><td>' + s.land_km2 + ' km² of land; ' + s.plain_reach_pct + '% reachable on foot from the nest, ' + s.climb_reach_pct + '% with climbing parts</td></tr>' +
+    '<tr><th>Exits on foot</th><td class="' + (nok === routes.length ? 'ok' : 'warn') + '">' + nok + ' of ' + routes.length + ' exit routes have a walkable path (slope under 51.6°)</td></tr>' +
+    '<tr><th>Gate check</th><td>' + g.map(gate).join('<br>') + '</td></tr>';
+}
+
+function card(L) {
+  const el = document.createElement('article');
+  el.className = 'card'; el.dataset.id = L.id; el.dataset.starred = String(!!STARS[L.id]);
+  el.innerHTML =
+   '<header><h2>' + esc(L.title) + '</h2><p class="tag">' + esc(L.tag) + '</p></header>' +
+   '<button class="star" aria-pressed="' + (!!STARS[L.id]) + '" aria-label="Star ' + esc(L.title) + '" title="Star (' + (LAYOUTS.indexOf(L) + 1) + ')">' + (STARS[L.id] ? '★' : '☆') + '</button>' +
+   '<div class="tabs" role="group" aria-label="Map view"><button data-v="map" aria-pressed="true">Relief map</button><button data-v="slope" aria-pressed="false">Slope and walkability</button><button data-v="relief" aria-pressed="false">Relief only</button></div>' +
+   '<div class="map"><img alt="Top-down map of ' + esc(L.title) + '" src="' + BASE + L.id + '-map.jpg" width="1100" height="1100" loading="lazy"></div>' +
+   '<div class="shots">' + L.shots.map(s => '<button class="shot" data-cap="' + esc(s[1]) + '" data-src="' + BASE + L.id + '-' + s[0] + '.jpg" aria-label="' + esc(s[1]) + ', enlarge"><img alt="' + esc(s[1]) + '" src="' + BASE + L.id + '-' + s[0] + '.jpg" loading="lazy" width="1280" height="720"><span>' + esc(s[1]) + '</span></button>').join('') + '</div>' +
+   '<div class="body"><p>' + esc(L.desc) + '</p>' +
+   '<div class="chips">' + L.open.map(x => '<span class="chip">open · ' + esc(x) + '</span>').join('') + L.gates.map(x => '<span class="chip gate">gated · ' + esc(x) + '</span>').join('') + '</div>' +
+   '<table><tr><th>Nest exits</th><td>' + esc(L.exits) + '</td></tr><tr><th>Landmarks</th><td>' + esc(L.marks) + '</td></tr><tr class="stats"></tr></table>' +
+   '<p class="why">' + esc(L.why) + '</p></div>';
+  const mapImg = el.querySelector('.map img');
+  el.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    el.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    mapImg.src = BASE + L.id + '-' + b.dataset.v + (b.dataset.v === 'map' ? '.jpg' : '.jpg');
+    mapImg.alt = b.textContent + ' of ' + L.title;
+  });
+  mapImg.onclick = () => openBox(mapImg.src, mapImg.alt);
+  el.querySelectorAll('.shot').forEach(b => b.onclick = () => openBox(b.dataset.src, b.dataset.cap));
+  el.querySelector('.star').onclick = () => toggle(L.id);
+  return el;
+}
+function toggle(id) {
+  if (STARS[id]) delete STARS[id]; else STARS[id] = 1;
+  save(); render();
+}
+function render() {
+  document.querySelectorAll('.card').forEach(el => {
+    const on = !!STARS[el.dataset.id];
+    el.dataset.starred = String(on);
+    const b = el.querySelector('.star'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? '★' : '☆';
+  });
+  const picked = LAYOUTS.filter(L => STARS[L.id]);
+  $('choices').innerHTML = picked.length ? picked.map(L => '<p><strong>★</strong> ' + esc(L.title) + '</p>').join('') : '<p style="color:var(--dim)">Nothing starred yet.</p>';
+}
+function choicesText() {
+  const picked = LAYOUTS.filter(L => STARS[L.id]);
+  return 'Island layout (A83): ' + (picked.length ? picked.map(L => L.title.replace(/^\d · /, '') + ' (' + L.id + ')').join('; ') : 'none starred');
+}
+$('copy').onclick = async () => {
+  const txt = choicesText(), st = $('copy-status'), fb = $('copy-fallback');
+  try { await navigator.clipboard.writeText(txt); st.textContent = 'Copied: ' + txt; fb.hidden = true; }
+  catch (e) { fb.hidden = false; fb.value = txt; fb.select(); st.textContent = 'Select and copy the text below.'; }
+};
+const box = $('lightbox');
+function openBox(src, cap) { box.querySelector('img').src = src; box.querySelector('img').alt = cap; box.querySelector('p').textContent = cap; box.classList.add('open'); $('lb-close').focus(); }
+function closeBox() { box.classList.remove('open'); }
+$('lb-close').onclick = closeBox; box.onclick = e => { if (e.target === box) closeBox(); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeBox();
+  else if (/^[1-4]$/.test(e.key) && !e.target.matches('textarea,input') && !e.metaKey && !e.ctrlKey) toggle(LAYOUTS[+e.key - 1].id);
+});
+const cards = $('cards');
+LAYOUTS.forEach(L => cards.appendChild(card(L)));
+render();
+fetch(BASE + 'stats.json').then(r => r.ok ? r.json() : null).then(j => {
+  STATS = j; if (!j) return;
+  LAYOUTS.forEach(L => { const row = cards.querySelector('[data-id="' + L.id + '"] tr.stats'); if (row) row.outerHTML = statsRows(L); });
+}).catch(() => {});
+})();
+</script>
+</body>
+</html>

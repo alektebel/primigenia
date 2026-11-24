@@ -1,0 +1,48 @@
+{
+  "timestamp_utc": "2026-11-15T21:20:09.348122+00:00",
+  "sdk_revision": "8db700349a5570aac390e4780fa32e3eed6b587a",
+  "model_revision": "2731c2291fc65a797c5cb627a5e5526fc1490902",
+  "weights": "/home/diego/Desarrollo/cpore-wt/_agent/models/huggingface/hub/models--speridlabs--idol/snapshots/2731c2291fc65a797c5cb627a5e5526fc1490902",
+  "torch": "2.15.0+cu132",
+  "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "settings": {
+    "steps": 50,
+    "num_gaussians": 65536,
+    "seed": 42,
+    "mode": "real",
+    "optimize": false
+  },
+  "measurement": "CUDA synchronized wall seconds per request, including preprocess and encoders; excludes loading and PLY/GLB export. MiB = 2^20 bytes. Device peak sampled every 0.2s includes other processes.",
+  "model_load_seconds": null,
+  "assets": [
+    {
+      "id": "rock-03",
+      "input_sha256": "17b64985b066debf4dd708b029f036f5dc370c728b4d0ea25ddd30033aaad18d",
+      "status": "blocked_before_inference",
+      "inference_seconds": null,
+      "peak_allocated_mib": null,
+      "peak_reserved_mib": null,
+      "peak_device_used_mib": null
+    },
+    {
+      "id": "stump-01",
+      "input_sha256": "d51862de083b263016ec915fdb5e1eca7411cb919aa6cfb80b17ab82ac3f6831",
+      "status": "blocked_before_inference",
+      "inference_seconds": null,
+      "peak_allocated_mib": null,
+      "peak_reserved_mib": null,
+      "peak_device_used_mib": null
+    },
+    {
+      "id": "horn-01",
+      "input_sha256": "1795969548b631cb7e3581c8942f40f640236fc57858372fdab2548a185659ab",
+      "status": "blocked_before_inference",
+      "inference_seconds": null,
+      "peak_allocated_mib": null,
+      "peak_reserved_mib": null,
+      "peak_device_used_mib": null
+    }
+  ],
+  "status": "blocked_encoder_access",
+  "error": "Idol needs two image encoders that are downloaded from Hugging Face.\nYour Hugging Face account does not have access yet to these gated image encoders:\n  https://huggingface.co/facebook/dinov3-vith16plus-pretrain-lvd1689m\n  https://huggingface.co/black-forest-labs/FLUX.2-dev\n1. Accept the terms on each page above (approval can take a while).\n2. Make sure the token in use (`hf auth whoami`) belongs to the account that accepted them."
+}

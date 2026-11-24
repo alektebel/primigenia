@@ -915,6 +915,42 @@
       "shape_ref": "parts/wing_insect.glb"
     },
     {
+      "id": "wing_vane",
+      "category": "wings",
+      "name": {
+        "es": "Ala de plumas",
+        "en": "Vane wing"
+      },
+      "dna_cost": 24,
+      "source": "procedural",
+      "c_type": "CP4_WING",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "mount": "body",
+      "godot_only": true
+    },
+    {
+      "id": "wing_flap",
+      "category": "wings",
+      "name": {
+        "es": "Patagio",
+        "en": "Patagium flap"
+      },
+      "dna_cost": 16,
+      "source": "procedural",
+      "c_type": "CP4_WING",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "mount": "body",
+      "godot_only": true
+    },
+    {
       "id": "tail_hammer",
       "category": "weapons",
       "name": {
@@ -940,6 +976,38 @@
         }
       ],
       "shape_ref": "parts/tail_hammer.glb"
+    },
+    {
+      "id": "espinas_dorsales",
+      "category": "weapons",
+      "name": {
+        "es": "Espinas dorsales",
+        "en": "Back spines"
+      },
+      "dna_cost": 8,
+      "source": "procedural",
+      "c_type": "CP4_BACKSPINE",
+      "cosmetic": true,
+      "illustrative_abilities": [],
+      "cost": 30
+    },
+    {
+      "id": "fire_gland",
+      "category": "weapons",
+      "name": {
+        "es": "Glándula ígnea",
+        "en": "Fire gland"
+      },
+      "dna_cost": 30,
+      "source": "procedural",
+      "c_type": "CP4_FIRE",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "flamethrower"
+      ],
+      "attachment": "throat, under the jaw",
+      "mount": "body",
+      "godot_only": true
     }
   ],
   "attachment_frame": {

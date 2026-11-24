@@ -43,7 +43,7 @@
           "en": "Symbiotic Weave"
         },
         "role": "Engage",
-        "effect": "Splices subject genomes to purify toxins or heal allies, drawing on stored reserves to restore 8 health points and grant temporary resistance to environmental hazards.",
+        "effect": "The creature spins living threads to draw out toxins from nearby allies and mend their injuries. It draws upon its own reserves to strongly protect them from environmental hazards for a short while.",
         "numbers": {}
       },
       "weakness": "High metabolic cost during rapid niche-switching leaves them vulnerable to starvation, imposing disadvantage on strength checks until they consume nutrients.",

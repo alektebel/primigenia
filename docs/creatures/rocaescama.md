@@ -77,10 +77,14 @@ Trait ← Chains align with planetary field ← Spatial orientation in zero-visc
   2. Glowing faintly under specific magnetic sensors
   3. Stops spinning when magnetic field stabilizes
 - **Journal:** It carries a compass inside its flesh.
-- **Plausibility:** unreviewed (judge none, 2026-11-24)
-  - scores: skeptic 4
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Demote to a passive compass sense used together with plume-flow cues for blind rift navigation; delete 'zero-viscosity' and all knockback-immunity stats; label the macro-scale use 'highly speculative'.
+  - scores: astrobio 6, skeptic 4
+  - Analogue: Magnetotactic bacteria (e.g. Magnetospirillum): intracellular magnetite chains align with the geomagnetic field; magnetic compass cues in larger animals are also known (from memory, unverified).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Blakemore 1975 [verified])
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Blakemore 1975 [verified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Blakemore 1975 [verified])
+  - Fix: Demote to a passive compass sense used together with plume-flow cues for blind rift navigation; delete 'zero-viscosity' and all knockback-immunity stats; label the macro-scale use 'highly speculative'.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ### rocaescama.c4: Gut symbionts oxidize Fe²⁺
@@ -94,8 +98,11 @@ Trait ← Symbionts harvest energy from iron redox ← Extracts calories from in
   2. Distended abdomen glowing faintly from symbiont activity
   3. Avoids eating acidic sludge near pH 4 vents
 - **Journal:** The rock feeds the bacteria; the bacteria feed the beast.
-- **Plausibility:** unreviewed (judge none, 2026-11-24)
-  - scores: skeptic 6
+- **Plausibility:** fixable (judge astrobio/rereview-2026-11-24, 2026-11-24)
+  - Add an oxidant supply (aerated foregut or nitrate), make iron digestion a supplement rather than the whole energy budget, change 'green gas' to CO₂/H₂S bubbles, delete the abdominal glow, and remove the turn/health numbers.
+  - scores: astrobio 6, skeptic 6
+  - Analogue: Vent clams and tubeworms housing chemosynthetic bacterial symbionts; free-living iron oxidisers such as Gallionella or Mariprofundus (from memory, unverified).: as named by the judge; no mechanism or reference recorded
+  - Fix: Add an oxidant supply (aerated foregut or nitrate), make iron digestion a supplement rather than the whole energy budget, change 'green gas' to CO₂/H₂S bubbles, delete the abdominal glow, and remove the turn/health numbers.
 - **Chain provenance:** council run `autoloop-2026-11-24`; by naturalist/qwen
 
 ## Relations
@@ -126,4 +133,5 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-24 import_got: imported from council run autoloop-2026-11-24
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

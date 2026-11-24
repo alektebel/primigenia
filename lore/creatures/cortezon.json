@@ -35,7 +35,7 @@
           "en": "Ice Shatter"
         },
         "role": "Poke",
-        "effect": "Deals 25 impact damage to walls and armor, breaks ice barriers",
+        "effect": "The creature vibrates its beak to shatter nearby ice and armor plating, leaving cracked surfaces that can be easily cleared.",
         "numbers": {}
       },
       "weakness": "Vibration exposes their position to predators",
@@ -149,7 +149,7 @@
           "en": "Gas Digest"
         },
         "role": "Engage",
-        "effect": "Converts atmospheric H2 into 30 energy, fuels burst sprints",
+        "effect": "The creature draws in vent vapors through its spiracles, converting the gases into a sudden burst of speed that carries it swiftly for a short while.",
         "numbers": {}
       },
       "weakness": "Cannot metabolize oxygen or nitrate efficiently",

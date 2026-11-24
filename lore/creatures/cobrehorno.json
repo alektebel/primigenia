@@ -160,7 +160,7 @@
           "en": "Metal Cache"
         },
         "role": "Passive",
-        "effect": "Stores 3 concentrated metal charges for crafting/alchemy",
+        "effect": "The creature gathers metal crystals within its nodules, holding them ready for use. These stored metals can be collected to craft items or brew alchemical concoctions.",
         "numbers": {}
       },
       "weakness": "Cannot relocate when heavily laden with nodules",
@@ -292,6 +292,11 @@
       "date": "2026-11-24",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
     },
     {
       "date": "2026-11-24",

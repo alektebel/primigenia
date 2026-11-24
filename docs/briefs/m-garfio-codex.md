@@ -1,0 +1,2 @@
+# Scoped task (verifiable): retune Garfio so every fixture is winnable 35–80% on the C-world stage
+Read /home/diego/Desarrollo/cpore-wt/_agent/briefs/m-garfio.md: same task, same constraints (only web/stage/species/garfio.json and garfio-combat.json). A previous model did not start; the worktree is clean. Verify with make test, make wasm-test and make stage-test (server: python3 -m http.server 8765 --bind 127.0.0.1 from the repo root; NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules). Report the final win rates. Commit.

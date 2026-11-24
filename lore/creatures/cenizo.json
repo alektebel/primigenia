@@ -89,7 +89,7 @@
           "en": "Sulfur Burn"
         },
         "role": "Engage",
-        "effect": "Deal 6 acid damage in cone; heals Cenizo based on damage dealt.",
+        "effect": "Cenizo vents a sweeping arc of corrosive fumes that scorches nearby creatures, then feeds on the burning vapors to renew its own vitality.",
         "numbers": {}
       },
       "weakness": "Vulnerable to wind shifts that invert H₂S plume; player can use wind skill to blow gas back.",

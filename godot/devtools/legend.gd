@@ -1,4 +1,6 @@
 extends CanvasLayer
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## D13 key legend (all builds). Every key name is generated from the InputMap, so a rebound key shows
 ## correctly; only the labels live in legend.json. F1 held: the full sheet, current context first.
 ## F1 tapped: the corner hint toggles (off by default now: the onboarding hints replace it in play).
@@ -6,6 +8,7 @@ extends CanvasLayer
 
 const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
+const Strings := preload("res://ui/strings.gd")
 const SPEC_PATH := "res://devtools/legend.json"
 const TAP_SECONDS := 0.3
 
@@ -96,13 +99,13 @@ static func rows(context: StringName, dev_enabled: bool) -> Array:
 		out.append({"label": e.label, "keys": keys, "group": e.group, "action": a,
 			"corner": context in e.get("corner", []), "dev": bool(e.get("dev", false)), "fixed": false})
 	for f in s.get("fixed", []):
-		if context in f.get("contexts", []):
-			out.append({"label": f.label, "keys": f.keys, "group": f.group, "action": "", "corner": false, "dev": false, "fixed": true})
+		if context in f.get("contexts", []) and not (bool(f.get("dev", false)) and not dev_enabled):
+			out.append({"label": f.label, "keys": f.keys, "group": f.group, "action": "", "corner": false, "dev": bool(f.get("dev", false)), "fixed": true})
 	# Mouse gestures: not InputMap actions (drag thresholds, wheel, double click), listed from the spec.
 	for g in s.get("gestures", []):
-		if context in g.get("contexts", []):
+		if context in g.get("contexts", []) and not (bool(g.get("dev", false)) and not dev_enabled):
 			out.append({"label": g.label, "keys": g.keys, "group": g.group, "action": "", "corner": context in g.get("corner", []),
-				"dev": false, "fixed": false, "gesture": true})
+				"dev": bool(g.get("dev", false)), "fixed": false, "gesture": true})
 	return out
 
 static func corner_rows(context: StringName, dev_enabled: bool) -> Array:
@@ -124,6 +127,9 @@ var _cols: HBoxContainer
 var _held_at := -1.0
 var _pinned := false
 var _sig := ""
+var _frame_context := ""
+var _frame_dev := false
+var _frame_extra := ""
 
 func _init() -> void:
 	layer = 20
@@ -216,8 +222,8 @@ func _refresh() -> void:
 	for r in crows:
 		var h := HBoxContainer.new()
 		h.add_theme_constant_override("separation", 8)
-		h.add_child(_row_label(r.keys, Palette.COPPER, 13))
-		h.add_child(_row_label(r.label, Palette.FOG, 13))
+		h.add_child(_row_label(Strings.legend(r.keys), Palette.COPPER, 13))
+		h.add_child(_row_label(Strings.legend(r.label), Palette.FOG, 13))
 		_corner_box.add_child(h)
 	if header_extra != "":
 		_corner_box.add_child(_row_label(header_extra, Palette.LICHEN, 12))
@@ -225,7 +231,7 @@ func _refresh() -> void:
 	for c in _sheet_box.get_children():
 		c.queue_free()
 		_sheet_box.remove_child(c)
-	_sheet_box.add_child(_row_label("Keys: %s%s" % [ctx, "   " + header_extra if header_extra != "" else ""], Palette.BONE, 23, true))
+	_sheet_box.add_child(_row_label("%s: %s%s" % [Strings.legend("Keys"), Strings.legend(String(ctx)), "   " + header_extra if header_extra != "" else ""], Palette.BONE, 23, true))
 	var all: Array = []
 	var seen := {}
 	for c in [ctx] + spec().get("contexts", []):
@@ -259,19 +265,31 @@ func _refresh() -> void:
 			col_i += 1
 			filled = 0
 		var col: VBoxContainer = columns[col_i]
-		col.add_child(_row_label(g, Palette.LICHEN, 17, true))
+		col.add_child(_row_label(Strings.legend(g), Palette.LICHEN, 17, true))
 		filled += 1
 		for r in by_group[g]:
 			var h := HBoxContainer.new()
-			h.add_child(_key_cap(r.keys, Palette.BONE if r.context == ctx else Palette.FOG))
-			var lab: String = r.label + ("" if r.context == ctx else "  (%s)" % r.context)
+			h.add_child(_key_cap(Strings.legend(r.keys), Palette.BONE if r.context == ctx else Palette.FOG))
+			var lab: String = Strings.legend(r.label) + ("" if r.context == ctx else "  (%s)" % Strings.legend(String(r.context)))
 			h.add_child(_row_label(lab, Palette.BONE if r.context == ctx else Palette.FOG, 13))
 			col.add_child(h)
 			filled += 1
 
 func _process(_dt: float) -> void:
-	var sig := "%s|%s|%s" % [context(), _dev(), header_extra]
-	if sig != _sig:
+	if not FrameProfile.enabled:
+		_profile__process(_dt)
+		return
+	FrameProfile.begin()
+	_profile__process(_dt)
+	FrameProfile.end(&"legend")
+
+func _profile__process(_dt: float) -> void:
+	var ctx := context()
+	var dev := _dev()
+	if ctx != _frame_context or dev != _frame_dev or header_extra != _frame_extra:
+		_frame_context = ctx
+		_frame_dev = dev
+		_frame_extra = header_extra
 		_refresh()
 
 func _input(e: InputEvent) -> void:

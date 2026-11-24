@@ -1,0 +1,23 @@
+# Task P4-world: the world simulation moves into the C core (G56), part 1 of P4
+
+Read docs/DESIGN.md (G56 is this task; also G57, Q9, Q10, Q16, Q24, Q43), docs/P4.md (spec of record for P4; this task implements only its world-simulation foundation), docs/COMBAT.md (determinism contract, CpRng streams, canonical hash, WASM/parity pattern), web/stage/{simulation.js,stage.js,pointer.js}, web/engine/*.
+
+Scope: today free roaming, perception and the wild species' behaviour run in JS (web/stage/simulation.js); only fights run in C. Move the world into C at a fixed 10 Hz tick, so an LLM/RL agent can play the same world through C, and JS only renders and sends inputs.
+Do NOT change the combat rules in core/src/combat.c or apps/combat_bots.c (another branch is rebalancing them); call into them through their public API.
+
+1. core/include/cpore/world.h + core/src/world.c (or a new name if world.c is taken: check core/src): a CpWorld holding the valley terrain sampler (for now the analytic valley height used by the stage, ported to C with only + - * / sqrtf and table/polynomial noise; it will be replaced by the W11 generator later, so keep the height source behind one interface), the player creature, N wild creatures of one or more species (data table: speed, sight radius, temperament timid/territorial/aggressive per P4 Q-20, home, roam radius), the nest, obstacles (trees/rocks as circles) and deep water.
+2. Per tick: player movement from a continuous heading/destination input (quantised vector as in the combat heading, G57 semantics: walk toward a destination point or along a heading; acceleration and turn-rate limits so the C motion matches the smooth JS locomotion), slope-adjusted speed, collision, water cutoff; wild AI: roam around home, perceive the player within sight (line of sight against terrain optional), react by temperament (flee / defend territory / approach), engagement → starts a combat encounter using the existing combat world (arena mapping as in web/engine/encounter.js), fight outcome → back to world (carcass, enemy home, respawn at nest). Day/night clock (Q43, W8) as state only.
+3. Determinism: CpRng streams per subsystem, canonical little-endian hash of the whole world state per tick, native == WASM parity (golden world logs for 3 seeds × 3,000 ticks; 100 random-input runs native vs WASM), replay from (setup + input log).
+4. Agent faces (Q9/Q10): a JSON observation builder (nearby entities with ids, bearing, distance, type; own state; clock) and id-targeted verbs (`go <x,z>`, `heading <deg>`, `approach #id`, `attack #id <move>`, `flee`, `go_nest`, `wait`) in a small C API plus a CLI that plays a scripted episode; Python binding stub optional.
+5. Web: web/stage uses the C world through WASM (keep visuals, pointer controls and audio; JS keeps only rendering/interpolation/input). The existing stage tests must pass (adapt them to the C world where they reached into simulation.js), including winnability 35–80% and the 30/73 fps log equality, and a new check that a recorded browser session replays natively to the same world hash.
+6. Docs: docs/WORLD.md (state, tick order, AI, observation/verbs, parity evidence). make test, make wasm-test, make stage-test, make studio-test pass; web/hero byte-identical.
+## Rules for this task (read first)
+- Project: "Primigenia" (codename cpore), a Spore-like game + LLM/RL benchmark. Decisions live in docs/DESIGN.md (§9 G1–G62 and §10 W1–W13 are the newest; G and W win over Q). Do not contradict them. P4 spec of record: docs/P4.md.
+- Never modify anything under art/reference/ (byte-identical references).
+- Browser screenshots: headless Chromium with SOFTWARE WebGL only: args ['--use-angle=swiftshader','--enable-unsafe-swiftshader'], executablePath ~/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome. Playwright: NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules . Never use GPU flags. Run every browser/heavy process with `nice -n 10` and always close the browser. Keep renders to the minimum you need (the owner's laptop fans matter).
+- Emscripten: `source ~/emsdk/emsdk_env.sh`.
+- Do not install system packages, do not download SDKs, do not push, do not touch other git worktrees or branches.
+- Commit your work on the current branch in small, clear commits as you go (the session may be killed; uncommitted work is lost). Imperative subject, body says what and why.
+- Report honestly: if something is not done or not verified, say so. Do not fabricate measurements.
+- Finish with a short report: what you built, files changed, commands run and their results, open issues.
+- Browser tests: python3 -m http.server 8765 --bind 127.0.0.1 from the repo root.

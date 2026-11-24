@@ -23,7 +23,9 @@
       "Base species prey",
       "Soft fruits",
       "Carrion"
-    ]
+    ],
+    "trophic": "omnivore",
+    "role": "omnivore"
   },
   "body": "Lacking cuticular detox enzymes and heavy melanin, translucent pink hide and pale fur offer no UV protection or chemical shielding, forcing reliance on shaded microclimates. Large, sensitive eyes compensate for poor contrast vision in low light, while rapid heat exchange demands constant thermoregulation.",
   "chains": [

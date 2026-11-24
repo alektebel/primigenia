@@ -7,6 +7,7 @@ const CS := preload("res://cell/cell_strings.gd")
 
 signal placed(kind: String)
 signal tool_cleared
+signal removed(kind: String)
 
 const INK := Color("3A352D")
 const SUB := Color("6A6356")
@@ -14,8 +15,8 @@ const PHOS := Color("9179C9")
 const ATPY := Color("E2C240")
 const WARN := Color("9E392C")
 const LIGHT := Color("E9E4D6")
-const STC := {"trabaja": Color("5E9E4A"), "recibe": Color("6F93C4"), "sin entrada": Color("8E8A82"), "atasco": Color("D08A2E"), "inhibida": Color("D08A2E"), "falta ATP": Color("C0392B")}
-const STT := {"trabaja": Color("3F6B2E"), "recibe": Color("2F5E99"), "sin entrada": Color("6A6356"), "atasco": Color("9A5A12"), "inhibida": Color("9A5A12"), "falta ATP": Color("9E392C"), "montando": Color("6A6356")}
+const STC := {"trabaja": Color("5E9E4A"), "recibe": Color("6F93C4"), "sin entrada": Color("8E8A82"), "atasco": Color("D08A2E"), "inhibida": Color("D08A2E"), "falta ATP": Color("C0392B"), "bloqueada": Color("7A5BB8"), "secuestrada": Color("5FA36B"), "oxidada": Color("B4382F"), "listo": Color("8EA38A")}
+const STT := {"trabaja": Color("3F6B2E"), "recibe": Color("2F5E99"), "sin entrada": Color("6A6356"), "atasco": Color("9A5A12"), "inhibida": Color("9A5A12"), "falta ATP": Color("9E392C"), "montando": Color("6A6356"), "bloqueada": Color("5B3F96"), "secuestrada": Color("3F7A4A"), "oxidada": Color("9E392C"), "listo": Color("5E7A5A")}
 const HC := [Color("9DB56A"), Color("CFAE55"), Color("C4703C"), Color("9E392C")]
 
 var sim
@@ -27,7 +28,12 @@ var play_rect := Rect2(0, 0, 800, 720)   # where the cell is shown (the part of 
 var hover_piece = null
 var hover_pos := Vector2.ZERO
 var mouse_in := false
-var drag = null
+var drag = null           # a placed piece being moved with the pointer
+var drag_out := false     # ... and it is out of the cell: releasing removes it
+var drag_kind := ""       # a tool card is being dragged over the cell (set by the stage)
+var drag_pos := Vector2.ZERO   # ... where its pointer is, canvas coordinates
+var _drag_from_a := 0.0
+var _drag_from_pos := Vector2.ZERO
 var t_draw := 0.0         # animation clock (keeps running while paused)
 var _crowd: Array = []
 var _font: Font
@@ -136,6 +142,7 @@ func _draw() -> void:
 		var x := fposmod(i * 97.3 * sz.x / 720.0 - tt * (6 + i % 5) * kk, sz.x)
 		var y := fposmod(i * 53.7 * sz.y / 720.0 + sin(tt * 0.4 + i) * 8.0, sz.y)
 		draw_circle(Vector2(x, y), (1.6 + (i % 3) * 0.5) * maxf(kk, 0.8), Color(0.56, 0.72, 0.72, 0.4))
+	_draw_weather(sz, tt)
 	_world()
 	var ag: Dictionary = sim.aggregation()
 	if ag.active:
@@ -155,7 +162,13 @@ func _draw() -> void:
 	var da: Array = sim.pieces.filter(func(q): return sim.is_mem(q))
 	_draw_lipids(da, br, tt)
 	for d in da:
-		_draw_door(d, T)
+		if d.type == "spn":
+			_draw_spines(d, T)
+		else:
+			_draw_door(d, T)
+	if sim.phase >= 5:
+		_draw_genome(tt)
+		_draw_warn_marks(tt)
 	# links of the glycolysis chain
 	for i in 2:
 		for a in sim.pieces.filter(func(q): return q.type == Sim.ORDER[i]):
@@ -164,11 +177,18 @@ func _draw() -> void:
 				_dashed_line(a.pos, b.pos, Color(0.42, 0.39, 0.34, 0.45))
 	if tool != "" and tool != "del" and mouse_in:
 		_draw_ghost()
+	if drag_kind != "":
+		_draw_drop_hint()
 	for p in sim.pieces:
 		if not sim.is_mem(p):
 			_draw_enz(p, T, tt)
 	for m in sim.mols:
 		_draw_mol(m, tt)
+	for f in sim.phages:
+		_draw_phage(f)
+	if sim.amoeba != null:
+		_draw_amoeba(sim.amoeba, tt)
+	_draw_threat_banner()
 	for f in sim.fx:
 		if f.k == "ring":
 			var p: float = f.t / 0.55
@@ -199,6 +219,17 @@ func _draw() -> void:
 	if paused:
 		_center_text(CS.t("paused"), play_rect.position.y + 24.0, 18, Color(0.98, 0.9, 0.55, 0.95))
 	_draw_hover_tip()
+	_draw_remove_hint()
+
+## A placed piece dragged out of the cell: it reddens and says what releasing does.
+func _draw_remove_hint() -> void:
+	if drag == null or not drag_out:
+		return
+	_screen()
+	var sp: Vector2 = to_screen(sim.ppos(drag))
+	draw_arc(sp, 26.0 * _S, 0, TAU, 40, Color("E06A5A"), 3.0, true)
+	var tp := Vector2(clampf(hover_pos.x, play_rect.position.x + 90.0, play_rect.end.x - 90.0), clampf(hover_pos.y, play_rect.position.y + 20.0, play_rect.end.y - 50.0))
+	tag(to_sim(tp + Vector2(0, 38.0)), CS.t("dr_remove"), Color("F2A59A"), 15.0, true)
 
 func _box(c: Color) -> StyleBoxFlat:
 	var b := StyleBoxFlat.new()
@@ -244,7 +275,7 @@ func _draw_lipids(da: Array, br: float, tt: float) -> void:
 		var dir: int = pr[1]
 		var n := int(round(TAU * Rb / 7.4))
 		for i in n:
-			var a := float(i) / n * TAU
+			var a: float = float(i) / n * TAU + sim.phi
 			var sk := false
 			for s in skips:
 				if sim.adiff(a, s[0]) < s[1]:
@@ -304,7 +335,7 @@ func _draw_enz(e, T: float, tt: float) -> void:
 		var j2 := sin(e.pulse * PI) * 0.22
 		sx = 1.0 + j2
 		sy = 1.0 - j2
-	_local(e.pos, 0.0 if still else sin(tt * 1.1 + e.ph) * 0.06, Vector2(k * sx, k * sy))
+	_local(e.pos + e.off, 0.0 if still else sin(tt * 1.1 + e.ph) * 0.06, Vector2(k * sx, k * sy))
 	var al := 1.0 if e.built else 0.35
 	if e.built:
 		for l in d.lobes:
@@ -312,6 +343,12 @@ func _draw_enz(e, T: float, tt: float) -> void:
 	for l in d.lobes:
 		draw_circle(Vector2(l[0], l[1]), l[2] + 1.3, Color(INK, al))
 	var col: Color = d.col
+	if e.hij > 0.0:
+		col = Color("8FC79A")
+	elif e.abx > 0:
+		col = Color("B9B2A6")
+	elif e.ox > 0.0:
+		col = col.lerp(Color("B4382F"), 0.45)
 	col.a = al
 	for l in d.lobes:
 		draw_circle(Vector2(l[0], l[1]), l[2], col)
@@ -320,8 +357,10 @@ func _draw_enz(e, T: float, tt: float) -> void:
 		tag(e.pos + Vector2(0, -28), "%d/%d ATP" % [e.got, d.c], SUB)
 		return
 	bead(e.pos + Vector2(17, -15), 4.5, STC.get(e.st, Color("8E8A82")))
-	if e.st == "inhibida" or e.st == "atasco" or e.st == "falta ATP":
-		var rc := Color(0.75, 0.22, 0.17, 0.45 + 0.4 * sin(tt * 6.0)) if e.st == "falta ATP" else Color(0.82, 0.54, 0.18, 0.75)
+	if e.st == "inhibida" or e.st == "atasco" or e.st == "falta ATP" or e.st == "bloqueada" or e.st == "secuestrada" or e.st == "oxidada":
+		var rc := Color(0.75, 0.22, 0.17, 0.45 + 0.4 * sin(tt * 6.0)) if (e.st == "falta ATP" or e.st == "secuestrada" or e.st == "oxidada") else Color(0.82, 0.54, 0.18, 0.75)
+		if e.st == "bloqueada":
+			rc = Color(0.48, 0.36, 0.72, 0.8)
 		dashed_circle(e.pos, 27.0, rc, 2.0, 5.0, 4.0)
 		tag(e.pos + Vector2(0, -32), CS.status(e.st), STT[e.st], 11.0, true)
 	if labels:
@@ -383,6 +422,29 @@ func _draw_mol(m, tt: float) -> void:
 			var pc := PackedVector2Array(pts)
 			pc.append(pts[0])
 			draw_polyline(pc, INK, 1.0, true)
+		"dna", "frag":
+			var sp2: float = maxf(m.v.length(), 0.0001)
+			var u2: Vector2 = -m.v / sp2 if m.type == "dna" else -Vector2.from_angle(m.ph)
+			var n2 := 5 if m.type == "dna" else 2
+			var pts2 := PackedVector2Array()
+			for i in n2:
+				var w2 := sin(tt * 10.0 + i * 1.4) * 3.0
+				pts2.append(x + u2 * i * 5.0 + Vector2(-u2.y, u2.x) * w2)
+			if pts2.size() > 1:
+				draw_polyline(pts2, Color(INK, al), 5.0, true)
+				draw_polyline(pts2, Color(Color("5FA36B"), al), 2.8, true)
+		"baby":
+			_local(x)
+			draw_colored_polygon(_hexpts(6.0), Color(Color("8FC79A"), al))
+			var hp2 := _hexpts(6.0)
+			hp2.append(hp2[0])
+			draw_polyline(hp2, Color(INK, al), 1.2, true)
+			_world()
+		"abx":
+			var dp := PackedVector2Array([x + Vector2(0, -9.0), x + Vector2(7.5, 0), x + Vector2(0, 9.0), x + Vector2(-7.5, 0)])
+			draw_colored_polygon(dp, Color(Color("7A5BB8"), al))
+			dp.append(dp[0])
+			draw_polyline(dp, Color(INK, al), 1.1, true)
 		_:
 			var sp: float = maxf(m.v.length(), 0.0001)
 			var u: Vector2 = -m.v / sp
@@ -392,11 +454,32 @@ func _draw_mol(m, tt: float) -> void:
 				bead(x + u * (4.0 + i * 4.6) + Vector2(-u.y, u.x) * w, 2.3, Color(PHOS, al))
 			bead(x, 5.0, Color(ATPY, al))
 
-func _draw_ghost() -> void:
-	var sp := to_sim(hover_pos)
-	var d: Dictionary = Sim.PIECES[tool]
+## While a card is dragged: where the piece can go. Membrane pieces light the ring and snap to the point of it nearest
+## the pointer; enzymes light the cytoplasm. Nothing snaps when the spot is refused (the ghost under the pointer is red).
+func _draw_drop_hint() -> void:
+	var d: Dictionary = Sim.PIECES[drag_kind]
 	var col: Color = d.col
-	col.a = 0.4
+	var pulse := 0.5 if still else 0.5 + 0.5 * sin(t_draw * 4.0)
+	var good: bool = sim.can_place(drag_kind, to_sim(drag_pos)) == ""
+	if d.has("mem"):
+		var mid: float = sim.mid()
+		var band: float = sim.RO - sim.RI + 56.0
+		draw_arc(Sim.CENTER, mid, 0, TAU, 120, Color(col.r, col.g, col.b, 0.26 + 0.12 * pulse), band, true)
+		dashed_circle(Sim.CENTER, mid, Color(1.0, 0.98, 0.9, 0.8 + 0.2 * pulse), 4.0, 16.0, 10.0)
+	else:
+		var rr: float = sim.RI - 8.0
+		draw_circle(Sim.CENTER, rr, Color(col.r, col.g, col.b, 0.07 + 0.05 * pulse))
+		dashed_circle(Sim.CENTER, rr, Color(0.97, 0.95, 0.88, 0.5 + 0.25 * pulse), 2.5, 10.0, 8.0)
+	if good:
+		_draw_ghost_at(drag_kind, to_sim(drag_pos), 0.85)
+
+func _draw_ghost() -> void:
+	_draw_ghost_at(tool, to_sim(hover_pos), 0.4)
+
+func _draw_ghost_at(kind: String, sp: Vector2, alpha: float) -> void:
+	var d: Dictionary = Sim.PIECES[kind]
+	var col: Color = d.col
+	col.a = alpha
 	if d.has("mem"):
 		var a := atan2(sp.y - Sim.CY, sp.x - Sim.CX)
 		var r: float = sim.rad(sp)
@@ -479,6 +562,53 @@ func _tip_box() -> StyleBoxFlat:
 	return _tipbox
 
 # ---------- input
+## Is the pointer (canvas coordinates) out of the cell, for dropping a placed piece to remove it?
+func is_outside(local: Vector2) -> bool:
+	return not play_rect.has_point(local) or sim.rad(to_sim(local)) > sim.RO + 80.0
+
+## What dropping a card here would do: {in_play, err, ok}. err is a CellSim.can_place code.
+func drop_eval(kind: String, local: Vector2) -> Dictionary:
+	var inp := play_rect.has_point(local)
+	var err: String = sim.can_place(kind, to_sim(local)) if inp else "outside"
+	return {"in_play": inp, "err": err, "ok": inp and err == ""}
+
+## A card dropped on the cell. Same rules as a tap: returns "" when placed, else the can_place code.
+func drop_place(kind: String, local: Vector2) -> String:
+	var sp := to_sim(local)
+	var err: String = sim.place(kind, sp)
+	if err == "":
+		placed.emit(kind)
+	elif err == "need_rib":
+		sim.float_text(sp + Vector2(0, -20), "need_rib", WARN)
+	return err
+
+func scale_px() -> float:
+	_update_base()
+	return _S
+
+## Esc (or the card drag ending elsewhere): a placed piece goes back where it was picked up.
+func cancel_drag() -> bool:
+	if drag == null:
+		return false
+	if sim.is_mem(drag):
+		drag.a = _drag_from_a
+	else:
+		drag.pos = _drag_from_pos
+	drag = null
+	drag_out = false
+	_set_cursor()
+	return true
+
+func _set_cursor() -> void:
+	if drag != null:
+		mouse_default_cursor_shape = Control.CURSOR_DRAG
+	elif tool != "":
+		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	elif hover_piece != null:
+		mouse_default_cursor_shape = Control.CURSOR_CAN_DROP
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW
+
 func _gui_input(ev: InputEvent) -> void:
 	if sim == null:
 		return
@@ -488,9 +618,10 @@ func _gui_input(ev: InputEvent) -> void:
 		var sp := to_sim(ev.position)
 		if drag != null:
 			sim.move_piece(drag, sp)
+			drag_out = is_outside(ev.position)
 		else:
 			hover_piece = sim.piece_at(sp)
-		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if (tool != "" or hover_piece != null) else Control.CURSOR_ARROW
+		_set_cursor()
 	elif ev is InputEventMouseButton:
 		var sp2 := to_sim(ev.position)
 		if ev.button_index == MOUSE_BUTTON_LEFT and ev.pressed:
@@ -500,13 +631,27 @@ func _gui_input(ev: InputEvent) -> void:
 					sim.remove_piece(h)
 				_clear_tool()
 			elif tool != "":
-				if sim.place(tool, sp2) == "":
+				var err: String = sim.place(tool, sp2)
+				if err == "":
 					placed.emit(tool)
 					_clear_tool()
+				elif err == "need_rib":
+					sim.float_text(sp2 + Vector2(0, -20), "need_rib", WARN)
 			elif h != null:
 				drag = h
+				drag_out = false
+				_drag_from_a = h.a
+				_drag_from_pos = h.pos
+				_set_cursor()
 		elif ev.button_index == MOUSE_BUTTON_LEFT and not ev.pressed:
+			if drag != null and drag_out:
+				var k: String = drag.type
+				sim.remove_piece(drag)
+				removed.emit(k)
 			drag = null
+			drag_out = false
+			hover_piece = null if hover_pos != ev.position else sim.piece_at(sp2)
+			_set_cursor()
 		elif ev.button_index == MOUSE_BUTTON_RIGHT and ev.pressed:
 			if tool != "":
 				_clear_tool()
@@ -521,3 +666,142 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_EXIT:
 		mouse_in = false
 		drag = null
+		drag_out = false
+
+# ---------- phase 5: threat drawing (ported from art/reference/cell/malos-tiempos.html)
+func _draw_weather(sz: Vector2, tt: float) -> void:
+	if sim.tide > 0.01:
+		# the antibiotic tide: purple water coming in from the right, specks carried with it
+		var n := 12
+		for i in n:
+			var f := float(i) / n
+			var x0: float = sz.x * (1.0 - 0.55 * sim.tide) + sz.x * 0.55 * sim.tide * f
+			draw_rect(Rect2(x0, 0, sz.x - x0, sz.y), Color(0.48, 0.34, 0.72, 0.045 + 0.05 * sim.tide))
+		for i in 30:
+			var y := fposmod(i * 61.7 + sin(tt * 0.6 + i) * 10.0, sz.y)
+			var x := fposmod(sz.x - fposmod(tt * (30.0 + i % 4 * 8.0) + i * 83.0, sz.x * 0.6), sz.x)
+			draw_rect(Rect2(x, y, 7, 3), Color(0.55, 0.42, 0.85, 0.5 * sim.tide))
+	if sim.flash > 0.01:
+		var pulse := 0.5 + 0.5 * sin(tt * 7.0)
+		draw_rect(Rect2(Vector2.ZERO, sz), Color(0.85, 0.25, 0.15, 0.10 * sim.flash * (0.4 + 0.6 * pulse)))
+
+func _draw_genome(tt: float) -> void:
+	var g: Vector2 = Sim.GENOME
+	var pulse: float = sim._genome_p.hij
+	draw_arc(g, 24.0, 0, TAU, 40, INK, 7.0, true)
+	draw_arc(g, 24.0, 0, TAU, 40, Color("D99A3C"), 4.6, true)
+	if sim.cas_primed:
+		draw_arc(g, 24.0, -0.9, -0.5, 8, Color("5FA36B"), 4.6, true)
+	if pulse > 0.0:
+		dashed_circle(g, 32.0, Color(0.75, 0.22, 0.17, 0.45 + 0.4 * sin(tt * 6.0)), 2.0, 5.0, 4.0)
+	tag(g + Vector2(0, 3), CS.t("genome"), INK, 11.0, true)
+
+func _draw_spines(p, T: float) -> void:
+	var k := back((T - p.born) / 0.35) if p.built else 1.0
+	var al := 1.0 if p.built else 0.35
+	var base: float = sim.RO + 2.0
+	for i in 5:
+		var a: float = p.a + (i - 2) * 0.115
+		var c := Vector2(cos(a), sin(a))
+		var n := Vector2(-c.y, c.x)
+		var tip: Vector2 = Sim.CENTER + c * (base + 30.0 * k)
+		var b0: Vector2 = Sim.CENTER + c * (base - 4.0) - n * 6.0
+		var b1: Vector2 = Sim.CENTER + c * (base - 4.0) + n * 6.0
+		var tri := PackedVector2Array([b0, tip, b1])
+		draw_colored_polygon(tri, Color(0.55, 0.49, 0.35, al))
+		draw_polyline(PackedVector2Array([b0, tip, b1]), Color(INK, al), 1.4, true)
+	_world()
+	if not p.built:
+		var q: Vector2 = sim.pol(sim.RO + 44.0, p.a)
+		tag(q, "%d/%d ATP" % [p.got, Sim.PIECES[p.type].c], LIGHT)
+
+func _draw_phage(f) -> void:
+	var a := atan2(Sim.CY - f.y, Sim.CX - f.x)
+	var al: float = f.al
+	_local(Vector2(f.x, f.y), a, Vector2(1.25, 1.25))
+	var down: bool = f.state == "land" or f.state == "empty"
+	var ink := Color(INK, al)
+	for s in [-1, 0, 1]:
+		draw_line(Vector2(14, 0), Vector2(26 if down else 20, s * (13 if down else 8)), ink, 1.8, true)
+	draw_rect(Rect2(0, -3.5, 16, 7), Color(0.79, 0.76, 0.71, al))
+	draw_rect(Rect2(0, -3.5, 16, 7), ink, false, 1.6)
+	var hp := _hexpts(12.0)
+	for i in hp.size():
+		hp[i] += Vector2(-10, 0)
+	var empty: bool = f.state == "empty" or f.state == "gone"
+	draw_colored_polygon(hp, Color(Color("DCEBDD") if empty else Color("8FC79A"), al))
+	var hc := PackedVector2Array(hp)
+	hc.append(hp[0])
+	draw_polyline(hc, ink, 1.9, true)
+	if not empty:
+		draw_polyline(PackedVector2Array([Vector2(-15, -3), Vector2(-10, 3), Vector2(-5, -3)]), Color(Color("3F7A4A"), al), 2.0, true)
+	_world()
+
+func _draw_amoeba(am, tt: float) -> void:
+	var a := atan2(am.y - Sim.CY, am.x - Sim.CX)
+	var k := 0.85
+	_local(Vector2(am.x, am.y), 0.0, Vector2(k, k))
+	var pts := PackedVector2Array()
+	for i in 49:
+		var t := float(i) / 48.0 * TAU
+		var to := cos(t - (a + PI))
+		var r := 150.0 * (1.0 + 0.1 * sin(t * 3.0 + tt * 1.3) + 0.06 * sin(t * 5.0 - tt * 1.9)) + (maxf(0.0, to) * 26.0 if am.contact else 0.0)
+		pts.append(Vector2(r * cos(t), r * sin(t)))
+	draw_colored_polygon(pts, Color(0.79, 0.60, 0.43, 0.86))
+	draw_polyline(pts, INK, 2.0, true)
+	var nuc := Vector2(30.0 + 8.0 * sin(tt * 0.7), 30.0)
+	draw_circle(nuc, 35.0, INK)
+	draw_circle(nuc, 33.0, Color("A9784F"))
+	for v in [[-50, 40, 14], [60, -50, 11], [-30, -60, 9], [-80, -20, 8]]:
+		var c := Vector2(v[0] + 3.0 * sin(tt + v[0]), v[1])
+		draw_circle(c, v[2] + 1.0, INK)
+		draw_circle(c, v[2], Color("E7C9A6"))
+	_world()
+
+func _draw_threat_banner() -> void:
+	if sim.phase < 5:
+		return
+	var th: Dictionary = sim.threat_info()
+	if not th.on or th.done:
+		return
+	var warn: bool = th.stage == "warn" or th.stage == "hit"
+	var txt := ""
+	var col := Color(0.98, 0.9, 0.55, 0.96)
+	if warn:
+		txt = CS.t("w_" + th.kind, [int(ceil(th.eta))]) if th.stage == "warn" else CS.t("hit_" + th.kind)
+		col = Color(1.0, 0.72, 0.55, 0.98)
+	elif th.stage == "settle":
+		txt = CS.t("settle_t", [th.min])
+	else:
+		txt = CS.t("next_t", [CS.t("kind_" + th.kind), int(ceil(th.eta))])
+		col = Color(0.91, 0.89, 0.84, 0.9)
+	_screen()
+	var fs := 18 if warn else 15
+	var w := _font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var r := Rect2(Vector2(play_rect.get_center().x - w / 2.0 - 14.0, play_rect.position.y + 8.0), Vector2(w + 28.0, fs + 14.0))
+	var bg := Color(0.30, 0.12, 0.08, 0.78) if warn else Color(0.06, 0.13, 0.16, 0.6)
+	draw_style_box(_box(bg), r)
+	draw_string(_font, r.position + Vector2(14, fs + 3), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+	_world()
+
+## What the warning points at: the door a phage is heading for, the arc a radical wave or an amoeba will hit.
+func _draw_warn_marks(tt: float) -> void:
+	var th: Dictionary = sim.threat_info()
+	if not th.on or th.done or (th.stage != "warn" and th.stage != "hit"):
+		return
+	var pulse := 0.55 + 0.45 * sin(tt * 6.0)
+	var col := Color(0.86, 0.32, 0.18, 0.35 + 0.45 * pulse)
+	match th.kind:
+		"phage":
+			if th.stage == "warn":
+				var mo: Vector2 = sim.pol(sim.RO + 26.0, th.a)
+				dashed_circle(mo, 26.0 + 3.0 * pulse, col, 3.0, 6.0, 5.0)
+				for f in sim.phages:
+					draw_dashed_line(Vector2(f.x, f.y), mo, Color(col, 0.35), 1.5, 6.0)
+		"ox":
+			draw_arc(Sim.CENTER, sim.RO + 26.0, th.a - 1.7, th.a + 1.7, 40, col, 8.0, true)
+			draw_arc(Sim.CENTER, sim.RO + 26.0, th.a - 1.7, th.a - 1.62, 3, Color(col, 0.9), 14.0, true)
+			draw_arc(Sim.CENTER, sim.RO + 26.0, th.a + 1.62, th.a + 1.7, 3, Color(col, 0.9), 14.0, true)
+		"amoeba":
+			if th.stage == "warn":
+				draw_arc(Sim.CENTER, sim.RO + 14.0, th.a - 0.5, th.a + 0.5, 24, col, 9.0, true)

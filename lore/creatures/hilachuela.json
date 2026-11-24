@@ -1,0 +1,323 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "hilachuela",
+  "name": {
+    "en": "Hilachuela"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Shallows",
+    "diet": "cinta_de_marea, drifting carcass particles, plankton",
+    "active": "Dawn, dusk",
+    "predators": [
+      "cuarteta"
+    ],
+    "trophic": "primary_consumer",
+    "role": "filter_feeder"
+  },
+  "body": "4 cm length, 0.2 g mass",
+  "chains": [
+    {
+      "id": "hilachuela.c1",
+      "trait": "Slender, limbless eel-like body",
+      "links": [
+        "Maneuvers through turbid volcanic shallows",
+        "Avoids snagging on sediment and algae",
+        "High turbidity and volcanic mud in shallows"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "hilachuela.undulate",
+        "name": {
+          "en": "Undulate"
+        },
+        "role": "Passive",
+        "effect": "It slips swiftly through narrow gaps and thick vegetation, allowing you to easily track its path as it navigates tight spaces.",
+        "numbers": {}
+      },
+      "weakness": "Exposed on open sand; slow to turn.",
+      "observe": [
+        "See them weave through algae clumps",
+        "Notice lack of fins",
+        "Watch undulating gill covers"
+      ],
+      "journal": {
+        "en": "Tiny rivers of flesh, slipping through the mud without a scratch."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep the limbless look but add vestigial continuous dorsal/anal fin folds (or undulating fin margins) for stability; reserve truly finless profile for juveniles only if you want extreme silhouette.",
+        "fixes": [
+          "Keep the limbless look but add vestigial continuous dorsal/anal fin folds (or undulating fin margins) for stability; reserve truly finless profile for juveniles only if you want extreme silhouette."
+        ],
+        "analogues": [
+          {
+            "organism": "Sand lance (Ammodytes) and leptocephalus-stage eels: elongate, limbless thrust via whole-body waves in coastal turbidity.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "weihs_1973_mechanics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "hilachuela.c2",
+      "trait": "Ciliated gill rakers filter-feed continuously",
+      "links": [
+        "Passive feeding while swimming",
+        "Maximizes intake in nutrient-rich waters",
+        "Volcanic runoff and plankton blooms in shallows"
+      ],
+      "roots": [
+        "F7",
+        "F20"
+      ],
+      "skill": {
+        "id": "hilachuela.strain",
+        "name": {
+          "en": "Strain"
+        },
+        "role": "Passive",
+        "effect": "It constantly strains the surrounding water, steadily gathering sustenance as it drifts along, leaving a visible trail of particles.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable if gills clog with sediment.",
+      "observe": [
+        "Watch gill movement",
+        "See cloud of filtered particles",
+        "Notice mouth opening"
+      ],
+      "journal": {
+        "en": "They drink the soup, gills fluttering like insect wings."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Describe as dense gill-raker mats plus epithelial mucus and cilia that flush sediment; optionally allow brief bouts of cough-spitting after ash pulses (playable counter to Strain buff).",
+        "fixes": [
+          "Describe as dense gill-raker mats plus epithelial mucus and cilia that flush sediment; optionally allow brief bouts of cough-spitting after ash pulses (playable counter to Strain buff)."
+        ],
+        "analogues": [
+          {
+            "organism": "Atlantic menhaden (Brevoortia): obligate filter feeders with gill raker mats and high turbidity clogging risk in estuaries.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "hilachuela.c3",
+      "trait": "Swarm activity peaks at dawn and dusk",
+      "links": [
+        "Follows prey vertical migration",
+        "Avoids midday storms and UV",
+        "Diel migration of zooplankton and intense convection"
+      ],
+      "roots": [
+        "F3",
+        "F8",
+        "F11"
+      ],
+      "skill": {
+        "id": "hilachuela.dusk_surge",
+        "name": {
+          "en": "Dusk Surge"
+        },
+        "role": "Passive",
+        "effect": "It darts eagerly toward food during twilight hours, moving with sudden bursts of energy that make it easy to spot.",
+        "numbers": {}
+      },
+      "weakness": "Predictable timing; easy ambush.",
+      "observe": [
+        "Count the sun's angle",
+        "See them surface",
+        "Note the swarm density"
+      ],
+      "journal": {
+        "en": "They rise with the mist, a silver breath in the shallows."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Peak swarm 30–90 min after dawn fog lifts and end dusk surge before evening convection builds; journal/observe hooks unchanged, timing stays honest to F8.",
+        "fixes": [
+          "Peak swarm 30–90 min after dawn fog lifts and end dusk surge before evening convection builds; journal/observe hooks unchanged, timing stays honest to F8."
+        ],
+        "analogues": [
+          {
+            "organism": "Anchovy and sprat shoals: crepuscular surface feeding tracking plankton vertical migration.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "scheuerell_2001_diel"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "hilachuela.c4",
+      "trait": "Lateral line and chemosensory barbels detect prey",
+      "links": [
+        "Compensates for low visibility",
+        "Locates prey swarms and predators",
+        "Turbid water limits vision"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "hilachuela.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Passive",
+        "effect": "It constantly senses nearby threats and food sources, adjusting its path with keen awareness so you can anticipate its movements.",
+        "numbers": {}
+      },
+      "weakness": "Relies on water flow; currents disperse scent.",
+      "observe": [
+        "See barbels twitch",
+        "Watch reaction to vibrations",
+        "Note orientation"
+      ],
+      "journal": {
+        "en": "Blind to the dark, but their skin feels the water's whispers."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Scope Scent Trail to ~1–2 m for vibration/predator wakes and ~0.5 m chemo in still pockets; add 2–4 short chin barbels (benthic-turbid specialist) rather than long catfish barbels; weaken effect in strong tidal current (F13 shelf tides).",
+        "fixes": [
+          "Scope Scent Trail to ~1–2 m for vibration/predator wakes and ~0.5 m chemo in still pockets; add 2–4 short chin barbels (benthic-turbid specialist) rather than long catfish barbels; weaken effect in strong tidal current (F13 shelf tides)."
+        ],
+        "analogues": [
+          {
+            "organism": "Yellow goatfish (Mulloidichthys): chin barbels + lateral line probing substratum in low visibility; schooling minnows use lateral line to maintain swarm cohesion.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "barany_2015_sensory"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Cuarteta",
+      "kind": "predation",
+      "note": "Eats Hilachuela larvae in the shallows."
+    },
+    {
+      "with": "brujula",
+      "kind": "predation",
+      "note": "Filters Hilachuela adults from the water column."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Larval eel-like"
+  },
+  "temperament": "Skittish, swarming",
+  "secrets": [
+    "Gill rakers can filter toxic sulfur particles (risk/reward).",
+    "Swarm movement reveals a hidden mineral lick scent trail.",
+    "Dusk activity aligns with the evening star line (F12)."
+  ],
+  "moments": [
+    "When the spring tide recedes, a thousand tiny bodies beat their gills in the shrinking puddles, a silver heartbeat against the dying light."
+  ],
+  "journal": [
+    {
+      "en": "Tiny threads of life, filtering the volcanic soup."
+    },
+    {
+      "en": "They dance with the mist, rising and falling with the light."
+    }
+  ]
+}

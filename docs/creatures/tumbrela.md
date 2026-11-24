@@ -131,3 +131,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 - 2026-11-24 autoloop: removed rejected references from analogues
 - 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

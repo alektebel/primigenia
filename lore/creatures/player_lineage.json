@@ -23,7 +23,9 @@
       "Fruit",
       "Carrion",
       "Insects"
-    ]
+    ],
+    "trophic": "omnivore",
+    "role": "omnivore"
   },
   "body": "A reinforced skeletal lattice and broad wing membranes exploit dense air for cheap gliding and controlled landings, while high aerobic capacity fuels sustained flight and manipulative forelimbs. Shared glycan markers enable flexible tissue integration between cousins, allowing rapid dietary shifts and detox adaptation.",
   "chains": [
@@ -106,7 +108,7 @@
           "en": "Graft"
         },
         "role": "Engage",
-        "effect": "Attach one found carcass part for +1 move slot; rejection chance scales with dietary mismatch and carcass age.",
+        "effect": "The creature pulls a nearby carcass fragment into its flesh, strongly binding it to its body to grant extra movement. If the meat is too old or fundamentally unlike its natural diet, the graft will reject itself and fall away.",
         "numbers": {}
       },
       "weakness": "A rejected graft burns 10 DNA and causes temporary mobility loss; test on cousins first. Heavy metal/arsenic exposure increases rejection.",

@@ -42,7 +42,7 @@
           "en": "Static Siphon"
         },
         "role": "Basic",
-        "effect": "Passively pulls 8 plankton per second, generating 2 food/sec",
+        "effect": "It strongly attracts nearby plankton, steadily converting them into nourishment.",
         "numbers": {}
       },
       "weakness": "Charge fully neutralizes during nearby lightning strikes, forcing a 6-second feeding drought",

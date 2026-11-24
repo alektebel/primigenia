@@ -33,7 +33,7 @@
           "en": "Gravity Crawl"
         },
         "role": "Basic",
-        "effect": "Moves across steep terrain without falling and grants +3 carry weight",
+        "effect": "It scrambles up steep inclines without ever losing its footing. You can secure extra supplies onto its back for the journey.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden weight loss or low-gravity zones",

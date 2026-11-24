@@ -17,7 +17,7 @@ const Art := preload("res://ui/journal_art.gd")
 signal opened
 signal closed
 
-const TABS := ["species", "parts", "secrets", "recipes"]
+const TABS := ["species", "parts", "secrets", "recipes", "plants", "tasks"]
 
 # Paper and ink (a naturalist's notebook in the game's thick air: warm paper, iron-gall ink, one copper accent).
 const PAPER := Color("#E9DFC6")
@@ -95,6 +95,10 @@ func page_count(t: int = -1) -> int:
 			return maxi(int(ceil(model.get("recipes", []).size() / 4.0)), 1)
 		"secrets":
 			return maxi(int(ceil(secret_pages().size() / 2.0)), 1)
+		"plants":
+			return maxi(int(ceil(model.get("plants", []).size() / 4.0)), 1)
+		"tasks":
+			return maxi(int(ceil(model.get("tasks", []).size() / 6.0)), 1)
 	return 1
 
 func _request_art() -> void:
@@ -222,6 +226,10 @@ func _draw() -> void:
 			_draw_secrets(pages, ink_mod)
 		"recipes":
 			_draw_recipes(pages, ink_mod)
+		"plants":
+			_draw_plants(pages, ink_mod)
+		"tasks":
+			_draw_tasks(pages, ink_mod)
 	_draw_footer(sheet)
 
 func _c(col: Color, mod: Color) -> Color:
@@ -640,6 +648,71 @@ func _draw_cave(p: Rect2, y: float, cave: String, mod: Color) -> void:
 	_para(fi, Vector2(p.position.x, y + Style.u(10.0)), text, 18.0, p.size.x, maxf(p.end.y - y - Style.u(10.0), 0.0), _c(INK_T if known else INK_FAINT, mod))
 
 # --- recipes ---------------------------------------------------------------------------------------------------------
+
+## Plants the player has watched (brief creature-fixes 6): four to a spread, name, habitat, one line of lore.
+## Tasks (first-quest): three to a page, six to a spread. Done ones show their whisper, the current one its hint, the rest only
+## their name; the mark on the left is a lichen dot (done), a copper ring (now) or a faint ring (later).
+func _draw_tasks(pages: Array, mod: Color) -> void:
+	var ts: Array = model.get("tasks", [])
+	if ts.is_empty():
+		_ink(Style.font_italic(), Vector2(pages[0].position.x, pages[0].position.y + Style.u(60.0)), Strings.t("j_tasks_empty"), 22.0, _c(INK_FAINT, mod))
+		return
+	var fi := Style.font_italic()
+	var fs := Style.font_sans()
+	var fm := Style.font_sans(true)
+	var lang := _lang()
+	for k in 2:
+		var p: Rect2 = pages[k]
+		var slot_h := p.size.y / 3.0
+		for j in 3:
+			var i := page * 6 + k * 3 + j
+			if i >= ts.size():
+				break
+			var e: Dictionary = ts[i]
+			var y := p.position.y + slot_h * j
+			var st := String(e.status)
+			var c := Vector2(p.position.x + Style.u(8.0), y + Style.u(18.0))
+			if st == "done":
+				draw_circle(c, Style.u(6.0), _c(LICHEN_D, mod))
+			elif st == "now":
+				draw_arc(c, Style.u(7.0), 0.0, TAU, 24, _c(COPPER_D, mod), 2.2, true)
+			else:
+				draw_arc(c, Style.u(6.0), 0.0, TAU, 24, _c(Color(INK_FAINT, 0.8), mod), 1.4, true)
+			var tag := Strings.t("j_task_" + st)
+			var tw := Style.text_width(fm, tag, Style.u(15.0))
+			var col: Color = {"done": LICHEN_D, "now": COPPER_D, "later": INK_FAINT}[st]
+			_ink(fi, Vector2(p.position.x + Style.u(26.0), y + Style.u(26.0)), _fit(fi, Model.text_of(e.title, lang), 26.0, p.size.x - Style.u(40.0) - tw), 26.0, _c(INK_T if st != "later" else INK_FAINT, mod))
+			_ink(fm, Vector2(p.end.x - tw, y + Style.u(26.0)), tag, 15.0, _c(col, mod))
+			draw_line(Vector2(p.position.x, y + Style.u(36.0)), Vector2(p.end.x, y + Style.u(36.0)), _c(Color(INK_FAINT, 0.7), mod), 1.0)
+			if st == "later":
+				continue
+			var line: String = Model.text_of(e.done if st == "done" else e.hint, lang)
+			_para(fs, Vector2(p.position.x + Style.u(26.0), y + Style.u(44.0)), line, 16.0, p.size.x - Style.u(26.0), maxf(slot_h - Style.u(56.0), 0.0), _c(INK_SOFT, mod))
+			if int(e.get("reward", 0)) > 0 and st == "done":
+				_ink(fm, Vector2(p.position.x + Style.u(26.0), y + slot_h - Style.u(12.0)), "+%d DNA" % int(e.reward), 14.5, _c(COPPER_D, mod))
+
+func _draw_plants(pages: Array, mod: Color) -> void:
+	var ps: Array = model.get("plants", [])
+	if ps.is_empty():
+		var f := Style.font_italic()
+		_ink(f, Vector2(pages[0].position.x, pages[0].position.y + Style.u(60.0)), Strings.t("j_plants_empty"), 22.0, _c(INK_FAINT, mod))
+		return
+	var fi := Style.font_italic()
+	var fs := Style.font_sans()
+	var lang := _lang()
+	for k in 2:
+		var p: Rect2 = pages[k]
+		var slot_h := p.size.y / 2.0
+		for j in 2:
+			var i := page * 4 + k * 2 + j
+			if i >= ps.size():
+				break
+			var e: Dictionary = ps[i]
+			var y := p.position.y + slot_h * j
+			_ink(fi, Vector2(p.position.x, y + Style.u(26.0)), _fit(fi, Model.text_of(e.name, lang), 26.0, p.size.x), 26.0, _c(INK_T, mod))
+			draw_line(Vector2(p.position.x, y + Style.u(36.0)), Vector2(p.end.x, y + Style.u(36.0)), _c(Color(INK_FAINT, 0.7), mod), 1.0)
+			_ink(fs, Vector2(p.position.x, y + Style.u(58.0)), _fit(fs, Model.text_of(e.habitat_text, lang), 15.5, p.size.x), 15.5, _c(COPPER_D, mod))
+			_para(fi, Vector2(p.position.x, y + Style.u(66.0)), Model.text_of(e.lore, lang), 17.0, p.size.x, maxf(slot_h - Style.u(80.0), 0.0), _c(INK_SOFT, mod))
 
 func _draw_recipes(pages: Array, mod: Color) -> void:
 	var rs: Array = model.get("recipes", [])

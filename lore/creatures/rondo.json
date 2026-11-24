@@ -16,7 +16,9 @@
       "Garfio",
       "Espinodo",
       "Coloso (accidental trampling)"
-    ]
+    ],
+    "trophic": "primary_consumer",
+    "role": "grazer"
   },
   "body": "Low-slung herbivore with a paired gular sac for 90 Hz humming and a proventriculus that ferments fruit into a sour, defensive spit. They cache dried fruit in shallow depressions and huddle tightly during the dense morning fog.",
   "chains": [

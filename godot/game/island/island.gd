@@ -1,8 +1,11 @@
 extends Node3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # The island scene: sky/environment, sun, terrain chunks, water, grass, the 10 Hz stage world,
 # creatures, chase camera and controls. Built in code from Game.data (set by the boot flow).
 
 const Look := preload("res://game/island/look.gd")
+const WorldLight := preload("res://game/island/world_light.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
@@ -18,16 +21,21 @@ const PlayerInput := preload("res://game/player/player_input.gd")
 const Pointer := preload("res://game/player/pointer.gd")
 const Gesture := preload("res://game/player/pointer_gesture.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
+const FlightMode := preload("res://game/player/flight_mode.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
 const StageUI := preload("res://game/stage/stage_ui.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const StrategicIcons := preload("res://game/island/strategic_icons.gd")
 const GroundMarks := preload("res://game/island/ground_marks.gd")
+const CellLegacy := preload("res://cell/cell_legacy.gd")
+const Strings := preload("res://ui/strings.gd")
 
 const FAR_GRASS_Z := 0.6          # zoom above which grass, shadows and models are switched off
 const MODEL_OFF_Z := 0.85
 const DEN_SEEN := 60.0
 const ActionFeed := preload("res://actions/action_feed.gd")
+const PlantGaze := preload("res://game/island/plant_gaze.gd")
+const CameraOccluders := preload("res://game/player/camera_occluders.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -45,6 +53,7 @@ var stage: Node
 var player_input
 var chase
 var stage_ui
+var first_quest                  # FirstQuest: the task chain, the dig verb and the flame's burn (game/stage/first_quest.gd)
 var ground_marks               # GroundMarks: the white circle where you click, the rings under creatures
 var _had_dest := false
 var _hover_id := -1            # the creature under the pointer (7.16): its ring shows after 0.25 s
@@ -54,8 +63,11 @@ var _hover_mouse := Vector2(-1, -1)
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
+var flight                         # FlightMode: the dev-flag flight test (null before the stage is built)
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
+var _cam_prev_player = null     # Vector2: where the player was at the last camera update
+const CAM_CUT_M := 25.0          # a player move this big in one frame is a teleport: the camera cuts
 var icons: CanvasLayer
 var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
@@ -63,11 +75,15 @@ var _follow_clock := 0.0       # hold to follow: the mouse target is sent at mos
 const FOLLOW_PERIOD := 0.15
 var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
+var gaze := PlantGaze.new()        # plants noticed by resting the pointer on them (brief creature-fixes 6)
+var _gaze_poll := 0.0
 var gesture := Gesture.new()       # the left button: click, hold or orbit drag
 var _orbit_btn := 0               # right/middle button held (1 = right, 2 = middle)
 var _mid_travel := 0.0
 var _far := false
+var _sun_shadows_ok := true    # the sun draws a shadow map on this tier (WorldLight); low does not
 var _nest := Vector2.ZERO
+var family: Node3D                  # Family: the siblings at the nest (visual only, no C slots)
 var _den = null
 var _den_seen := false
 var action_feed := ActionFeed.new()   # C state -> action signals (read only)
@@ -87,45 +103,170 @@ func set_sun_shadows(on: bool) -> void:
 	terrain_chunks.set_uniform("rock_shadows", 1.0 if on else 0.0)
 	grass.set_sun_shadows(on)
 
-func _place_props(setup: Dictionary) -> void:
-	_nest = setup.nest
-	grass.material.set_shader_parameter("nest_center", _nest)
+## The nest follows the player's body: the hatchling gets a hatchling's nest, the Merodeador the full one (the C nest radius is not touched).
+func _nest_scale() -> float:
+	return props.nest_scale_for(float(Profile.body_radius_cm(_genome.get("nodes", []))))
+
+## After the body changed (evolution, a loaded creature): rebuild only the nest if its size no longer fits.
+func refit_nest() -> void:
+	if props != null and props.get_child_count() > 0 and _nest != Vector2.ZERO:
+		props.set_nest_scale(_nest_scale(), Game.data, _nest, int(Game.terrain.seed))
+
+func _props_tier() -> int:
 	var tier: int = terrain_chunks.tier
 	if Game.settings.quality == "auto" and tier == 2:
 		tier = 1
-	props.build(Game.data, setup, int(Game.terrain.seed), tier, Game.settings)
+	return tier
+
+func _place_props(setup: Dictionary, records_in = null) -> void:
+	_nest = setup.nest
+	grass.material.set_shader_parameter("nest_center", _nest)
+	props.nest_scale = _nest_scale()
+	await props.build(Game.data, setup, int(Game.terrain.seed), _props_tier(), Game.settings, records_in, _slice)
 
 func data_for_shadows():
 	return Game.data
 
+var kit_reused := false            # terrain, water, rivers, grass and props came from Game's kit instead of being built
+var build_ms := {}                # phase -> milliseconds of the last build (brief creature-fixes 5; printed once per entry)
+var _phase_t := 0
+var build_cpu_ms := {}
+var build_stall_ms := {}
+var slowest_frames: Array = []
+var _phase_wait_us := 0
+var _phase_worker_us := 0
+var _frame_t := 0
+var _frame_phase := "environment"
+var _stage_was_paused := false
+
+# The pieces that only depend on the terrain and the quality settings: Game parks them across a scene change.
+func kit_nodes() -> Dictionary:
+	return {"terrain": terrain_chunks, "water": water, "rivers": rivers, "grass": grass, "props": props}
+
+func _phase(name: String) -> void:
+	var now := Time.get_ticks_usec()
+	build_ms[name] = (now - _phase_t) / 1000.0
+	build_stall_ms[name] = _phase_wait_us / 1000.0
+	build_cpu_ms[name] = (now - _phase_t - _phase_wait_us + _phase_worker_us) / 1000.0
+	_phase_wait_us = 0
+	_phase_worker_us = 0
+	_phase_t = now
+	Game.entry_phase(name)
+
+var _building := false             # the island is being built across frames (a loading screen is up): nothing runs yet
+
+## With a loading screen up, the build yields a frame between its phases so the screen animates; without one it never suspends.
+func _slice() -> void:
+	if Game.veil != null and is_instance_valid(Game.veil):
+		var t := Time.get_ticks_usec()
+		await get_tree().process_frame
+		_phase_wait_us += Time.get_ticks_usec() - t
+
+func _entry_frame() -> void:
+	var now := Time.get_ticks_usec()
+	if _frame_t > 0:
+		slowest_frames.append({"phase": _frame_phase, "ms": (now - _frame_t) / 1000.0})
+		slowest_frames.sort_custom(func(a, b): return a.ms > b.ms)
+		slowest_frames.resize(mini(5, slowest_frames.size()))
+	_frame_t = now
+
+## A pure-data computation on a worker thread while the screen animates (only when the loading screen is up).
+func _offload(fn: Callable) -> Variant:
+	if Game.veil == null or not is_instance_valid(Game.veil):
+		return fn.call()
+	var th := Thread.new()
+	var work := {"us": 0}
+	th.start(func():
+		var started := Time.get_ticks_usec()
+		var result = fn.call()
+		work.us = Time.get_ticks_usec() - started
+		return result)
+	while th.is_alive():
+		await _slice()
+	var result = th.wait_to_finish()
+	_phase_worker_us += work.us
+	return result
+
 func build() -> void:
 	var data = Game.data
+	_building = true
+	var rest_phases := ["camera", "stage_setup", "stage_reset", "props_flora", "nav_warm", "creatures", "ui_and_rest", "shader_warmup"]
+	Game.entry_plan((["environment", "kit_reused"] if Game.peek_kit() else ["environment", "terrain_meshes", "water", "rivers", "grass"]) + rest_phases)
+	_phase_t = Time.get_ticks_usec()
+	var t_start := _phase_t
+	get_tree().process_frame.connect(_entry_frame)
 	Clouds.apply(Game.settings.get("weather", ""))
 	world_env = WorldEnvironment.new()
 	world_env.environment = EnvironmentFactory.make_environment()
 	add_child(world_env)
 	sun = EnvironmentFactory.make_sun()
 	add_child(sun)
-	terrain_chunks = TerrainChunks.new()
-	terrain_chunks.name = "Terrain"
-	add_child(terrain_chunks)
-	terrain_chunks.build(data)
-	water = Water.new()
-	water.name = "Water"
-	add_child(water)
-	water.build(data)
-	rivers = Rivers.new()
-	rivers.name = "Rivers"
-	add_child(rivers)
-	rivers.build(data)
-	var t0 := Time.get_ticks_msec()
-	grass = Grass.new()
-	grass.name = "Grass"
-	add_child(grass)
-	grass.build(data, int(Game.settings.grass))
+	_frame_phase = "environment"
+	await _slice()
+	_phase("environment")
+	var kit: Dictionary = Game.take_kit()
+	if not kit.is_empty():
+		# the terrain, water, rivers, grass and flora of the last island are still built: take them back (see Game.park_island)
+		terrain_chunks = kit.terrain
+		water = kit.water
+		rivers = kit.rivers
+		grass = kit.grass
+		props.free()
+		props = kit.props
+		for n in [terrain_chunks, water, rivers, grass]:
+			add_child(n)
+		kit_reused = true
+		_frame_phase = "kit_reused"
+		await _slice()
+		_phase("kit_reused")
+	else:
+		_frame_phase = "terrain_meshes"
+		terrain_chunks = TerrainChunks.new()
+		terrain_chunks.name = "Terrain"
+		add_child(terrain_chunks)
+		terrain_chunks.build(data)
+		var tier0: int = terrain_chunks.tier
+		_frame_phase = "terrain_meshes"
+		await _slice()
+		_phase("terrain_meshes")
+		_frame_phase = "water"
+		water = Water.new()
+		water.tier = tier0
+		water.name = "Water"
+		add_child(water)
+		water.build(data, await _offload(func() -> Dictionary: return Water.lake_arrays(data)))
+		_frame_phase = "water"
+		await _slice()
+		_phase("water")
+		_frame_phase = "rivers"
+		rivers = Rivers.new()
+		rivers.tier = tier0
+		rivers.name = "Rivers"
+		add_child(rivers)
+		rivers.build(data, await _offload(func() -> Array: return Rivers.chains(data)))
+		_frame_phase = "rivers"
+		await _slice()
+		_phase("rivers")
+		_frame_phase = "grass"
+		var t0 := Time.get_ticks_msec()
+		grass = Grass.new()
+		grass.tier = tier0
+		grass.name = "Grass"
+		add_child(grass)
+		grass.build(data, int(Game.settings.grass))
+		_frame_phase = "grass"
+		await _slice()
+		_phase("grass")
+		print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
+	_frame_phase = "camera"
+	var wl_tier: int = terrain_chunks.tier
+	WorldLight.configure_sun(sun, wl_tier)   # shadow reach and cascades per tier; low draws none
+	_sun_shadows_ok = WorldLight.lit(wl_tier)
+	sun.shadow_enabled = _sun_shadows_ok
+	# Low tier has no shadow map. The baked terrain sun visibility (PLAN-rock step 9) could stand in for it, but with the 16 degree sun it darkens
+	# every bank and swell of the meadow (docs/godot/WL1.md), so it stays opt-in (settings.sun_shadows) as before.
 	if Game.settings.get("sun_shadows", false):
 		set_sun_shadows(true)
-	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
 	RenderTier.apply_viewport(get_viewport())
 	camera = Camera3D.new()
 	camera.name = "Camera"
@@ -134,23 +275,71 @@ func build() -> void:
 	camera.far = 12000.0
 	add_child(camera)
 	camera.current = true
+	# Submit island geometry together in the warm-up viewport, rather than
+	# compiling a new pipeline on every creature/flora build frame.
+	if Game.veil != null and is_instance_valid(Game.veil):
+		camera.cull_mask = 0
 	debug_camera = camera
 	Game.camera = camera
-	_build_stage()
+	_frame_phase = "camera"
+	await _slice()
+	_phase("camera")
+	await _build_stage()
+	build_ms["total"] = (Time.get_ticks_usec() - t_start) / 1000.0
+	_building = false
+	if stage != null:
+		stage.paused = _stage_was_paused
+	if not Game.applied_legacy.is_empty():      # the whisper starts when the loading screen hands over, not while it is up
+		stage_ui.ui.show_message(Strings.t("legacy_whisper", [Strings.t("legacy_cell_" + str(Game.applied_legacy.diet)), Strings.t("legacy_def_" + str(Game.applied_legacy.defense))]))
+	get_tree().process_frame.disconnect(_entry_frame)
+	Game.report_entry(build_ms, build_cpu_ms, build_stall_ms, slowest_frames)
 	set_process(true)
 	Game.island_ready.emit()
+	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else int(build_ms.get("total", 0)),
+		"phases": Game.entry_log[-1].phases if not Game.entry_log.is_empty() else build_ms, "entry": Game.entry_log.size()})
+
+## Dev builds: the player owns every part of the creature it brought (C debug op GRANT, part ids = the manifest order).
+func _grant_genome_parts(genome: Dictionary) -> void:
+	var ids: Array = preload("res://game/stage/lineage_session.gd").part_ids()
+	var done := {}
+	for p in genome.get("parts", []):
+		var id: int = ids.find(str(p.type))
+		if id >= 0 and not done.has(id):
+			done[id] = true
+			stage.debug_now({"op": 8, "id": 0, "a": id})
 
 func _build_stage() -> void:
+	_frame_phase = "stage_setup"
 	var manifest := Profile.load_json("res://game/data/parts.json")
 	var genome: Dictionary = Game.player_genome().duplicate(true)
 	if Game.pending_scenario.is_empty():
-		genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"])
-		if not genome.parts.any(func(p): return p.type == "pico"):
+		# A25 trims the creature to the starter parts. A31: in dev builds ("Jugar con esta criatura" in the studio, a creature saved from
+		# the creator) every part stays, and the C world is told the player owns them (debug op GRANT, logged), so the nest checks accept it.
+		var keep_all: bool = FlightMode._dev_on()
+		if not keep_all:
+			var keep: Array = ["pico", "pata", "ojo"]
+			# the starter's own legs and details are its identity (B: hooves, ears, crest); mouths and weapons still come from the nest
+			var starter: Dictionary = Game._read_genome(Game.STARTER_FILES[Game.STARTER])
+			if str(genome.get("name", "")) == str(starter.get("name", "?")):
+				var cat := {}
+				for mp in manifest.get("parts", []):
+					cat[str(mp.id)] = str(mp.get("category", ""))
+				for sp in starter.get("parts", []):
+					if not cat.get(str(sp.type), "") in ["mouths", "weapons"] and not keep.has(sp.type):
+						keep.append(sp.type)
+			genome.parts = genome.parts.filter(func(p): return p.type in keep)
+		if not genome.parts.any(func(p): return p.type == "pico") and not keep_all:
 			genome.parts.append({"type": "pico", "t": 1.0, "ang": 0.0, "size": 1.0, "level": 1, "tier": 0})
 		genome.schema = "cpore.creature/5"
 		for part in genome.parts:
 			part["level"] = 1
 			part["tier"] = 0
+	# The bridge: a NEW game started from the cell carries its legacy (scale and starter part here, diet and owned part in the C world).
+	Game.applied_legacy = {}
+	if Game.pending_scenario.is_empty() and not Game.creature_legacy.is_empty():
+		Game.applied_legacy = Game.creature_legacy
+		genome = CellLegacy.apply_genome(genome, Game.applied_legacy)
+	Game.creature_legacy = {}
 	_genome = genome
 	var pr := Profile.from_studio(genome, manifest)
 	if not pr.ok:
@@ -165,12 +354,17 @@ func _build_stage() -> void:
 		push_error("the island field was rejected: %s" % stage.world.last_error())
 		return
 	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
-	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)), bool(Game.settings.get("secrets", true)))
+	var radial_plan := {}
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)), bool(Game.settings.get("secrets", true)), radial_plan)
+	stage.edit_anywhere = bool(Game.settings.get("edit_anywhere", true))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
-	props.name = "IslandProps"
-	add_child(props)
-	_place_props(setup)
+	_stage_was_paused = stage.paused
+	stage.paused = true            # nothing ticks while the build is spread over frames
+	_frame_phase = "stage_setup"
+	await _slice()
+	_phase("stage_setup")
+	_frame_phase = "stage_reset"
 	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
 	var ground := Callable(Game, "visual_ground")
 	stage.ground_fn = ground
@@ -183,28 +377,71 @@ func _build_stage() -> void:
 	if stage.reset(setup) != 0:
 		push_error("the C world rejected the island setup")
 		return
-	stage.world.nav_warm()    # fill the GO walk grid now (about 0.6 s), so no click pays for it later
+	if not Game.applied_legacy.is_empty():
+		var lrc: int = stage.apply_legacy(CellLegacy.diet_for(Game.applied_legacy), CellLegacy.part_for(Game.applied_legacy))
+		if lrc != 0:
+			push_error("the cell legacy was rejected by the C world (%d)" % lrc)
+	_frame_phase = "stage_reset"
+	await _slice()
+	_phase("stage_reset")
+	# The stage is paused. No world reset, tick, debug or path query until join.
+	var nav_job := {"us": 0}
+	var nav_world = stage.world # hold the RefCounted world through the worker
+	var nav_task := WorkerThreadPool.add_task(func() -> void:
+		var started := Time.get_ticks_usec()
+		nav_world.nav_warm()
+		nav_job.us = Time.get_ticks_usec() - started)
+	_frame_phase = "props_flora"
+	props.name = "IslandProps"
+	add_child(props)
+	var rec = await _offload(func() -> Array: return props.records_for(Game.data, setup, int(Game.terrain.seed), _props_tier(), Game.settings))
+	await _place_props(setup, rec)
+	_frame_phase = "props_flora"
+	await _slice()
+	_phase("props_flora")
+	_frame_phase = "nav_warm"
+	while not WorkerThreadPool.is_task_completed(nav_task):
+		await _slice()
+	WorkerThreadPool.wait_for_task_completion(nav_task)
+	await _slice()
+	_phase("nav_warm")
+	build_cpu_ms["nav_warm"] += nav_job.us / 1000.0
 	stage.ticked.connect(func(state: Dictionary) -> void: Game.world_ticked.emit(state))
 	stage.combat_events.connect(func(events: Array) -> void: Game.combat_events.emit(events))
 	Game.stage = stage
+	_frame_phase = "creatures"
 	var player_host := ActorHost.new()
 	player_host.name = "Player"
 	add_child(player_host)
-	player_host.setup(genome, 0, setup.player, ground)
+	player_host.setup(genome, 0, setup.player, ground, Game.creature_cache)
 	hosts[0] = player_host
+	family = preload("res://game/island/family.gd").new()
+	family.name = "Family"
+	add_child(family)
+	family.setup(genome, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return player_pos,
+		func(p: Vector2) -> bool: return walk_blocked(Vector3(p.x, 0.0, p.y)))
+	await _slice()
 	for i in setup.wild.size():
 		var h := ActorHost.new()
 		h.name = "Wild%d" % (i + 1)
 		add_child(h)
-		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground)
+		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground, Game.creature_cache)
 		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
+		await _slice()
+	_frame_phase = "creatures"
+	await _slice()
+	_phase("creatures")
+	_frame_phase = "ui_and_rest"
 	var yaw := PI
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
 	chase = ChaseCamera.new(player_host.height(), yaw, ground)
 	chase.strategic_distance = Game.data.size_m * 0.85
 	chase.free_orbit = bool(Game.settings.get("camera/free_orbit", false))
+	var occ := CameraOccluders.new()          # trunks, bushes and rocks as camera-only proxies (the flora has no physics)
+	occ.build(props.records, props)
+	chase.occluders = occ
 	icons = StrategicIcons.new()
 	icons.camera = camera
 	icons.ground_fn = ground
@@ -215,31 +452,66 @@ func _build_stage() -> void:
 	ground_marks.name = "GroundMarks"
 	ground_marks.island = self
 	add_child(ground_marks)
+	await _slice()
 	Game.creature_clicked.connect(func(_id: int, _p: Vector3) -> void: ground_marks.clear_move(false))
 	stage_ui = StageUI.new()
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	await _slice()
+	flight = FlightMode.new()
+	flight.setup(self, stage)
+	await _slice()
 	if bool(Game.settings.wild):    # S5a: visual-only radial fauna (no C entities), see radial_fauna.gd
 		var radial_fauna := preload("res://game/island/radial_fauna.gd").new()
 		radial_fauna.name = "RadialFauna"
 		add_child(radial_fauna)
-		radial_fauna.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position)
+		var plan: Dictionary = radial_plan
+		if plan.is_empty():
+			plan = await _offload(func() -> Dictionary: return preload("res://game/island/radial_fauna.gd").plan(Game.data, int(Game.settings.seed), setup.nest))
+		await radial_fauna.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position, plan, _slice, Game.creature_cache)
+		await _slice()
+		var fliers := preload("res://game/island/fliers/flier_flock.gd").new()     # A59 ambient fliers: visual-only flocks over the valley
+		fliers.name = "Fliers"
+		add_child(fliers)
+		fliers.night_fn = func() -> float: return 1.0 - smoothstep(0.0, 0.8, day_night.k) if day_night != null else 0.0
+		fliers.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position, func() -> Vector3: return player_pos)
+	await _slice()
 	_build_secrets(ground)      # before the part nodes: the cave fossil stands on the chamber floor, not on the rock above it
+	await _slice()
 	var part_nodes := preload("res://game/stage/part_nodes.gd").new()
 	add_child(part_nodes)
 	part_nodes.setup(stage, ground)
+	await _slice()
 	var lineage_error := preload("res://game/stage/lineage_session.gd").install(stage, genome)
+	await _slice()
 	if lineage_error != "":
 		push_error(lineage_error)
+	stage_ui._on_tick(stage.cur)
+	if Game.pending_scenario.is_empty() and FlightMode._dev_on():
+		_grant_genome_parts(genome)
 	for h in hosts.values():
 		h.footfall.connect(stage_ui.on_footfall)
 	stage_ui.ui.menu_requested.connect(Game.goto_menu)
 	var lineage_controller := preload("res://game/stage/lineage_controller.gd").new()
 	add_child(lineage_controller)
 	lineage_controller.setup(self)
+	await _slice()
+	first_quest = preload("res://game/stage/first_quest.gd").new()
+	first_quest.name = "FirstQuest"
+	add_child(first_quest)
+	first_quest.setup(self)
 	_update_actors(0.0)
+	await _slice()
 	_update_camera(0.0)
+	_frame_phase = "ui_and_rest"
+	await _slice()
+	_phase("ui_and_rest")
+	_frame_phase = "shader_warmup"
+	await preload("res://game/loading/pipeline_warmup.gd").new().render(self, _slice)
+	camera.cull_mask = 0xFFFFF
+	await _slice()
+	_phase("shader_warmup")
 	if not Game.pending_scenario.is_empty():
 		var parsed: Dictionary = Game.pending_scenario
 		Game.pending_scenario = {}
@@ -264,7 +536,9 @@ func scenario_ctx() -> Dictionary:
 	if stage.world.has_field():
 		var info: Dictionary = stage.world.field_info()
 		isl = {"seed": info.seed, "terrain_version": CporeTerrain.version(), "terrain_hash": info.hash}
-	var ctx := {"genome": _genome, "island": isl, "camera": camera_state()}
+	var ctx := {"genome": _genome, "legacy": Game.applied_legacy, "island": isl, "camera": camera_state(), "plants": gaze.to_list()}
+	if first_quest != null:
+		ctx["quest"] = first_quest.to_dict()
 	var dev = get_tree().root.get_node_or_null("Dev")
 	if dev != null and dev.has_method("tuning_state"):
 		ctx["tuning"] = dev.tuning_state()
@@ -288,11 +562,13 @@ func load_scenario(parsed: Dictionary) -> String:
 	if not res.ok:
 		return res.error
 	var d: Dictionary = parsed.dict
+	Game.applied_legacy = d.get("legacy", {})
 	var genome: Dictionary = d.get("genome", {})
 	var setup: Dictionary = stage.world.get_setup()
 	_place_props(setup)
 	if not genome.is_empty() and genome != _genome:
 		_genome = genome
+		refit_nest()                 # a body that grew (evolution) gets the nest that fits it
 		hosts[0].queue_free()
 		var h := ActorHost.new()
 		h.name = "Player"
@@ -320,6 +596,9 @@ func load_scenario(parsed: Dictionary) -> String:
 		player_input.clear_destination()
 	if stage_ui != null:
 		stage_ui.ui.clear_selection()
+	gaze.from_list(d.get("plants", []))
+	if first_quest != null:
+		first_quest.from_dict(d.get("quest", {}))
 	if chase != null:
 		for k in d.get("camera", {}):
 			if chase.get(k) != null:
@@ -334,8 +613,8 @@ func load_scenario(parsed: Dictionary) -> String:
 # procedural creature builder and realism layer as the player. The C collision radius is the same 0.6 m for all four
 # (radius_cm 0 in CP_STAGE_SPECIES), so the scale puts each body's footprint width at about that circle: Garfio's is 1.12 m
 # unscaled, Rondo 1.22 x 0.8, Zanco 1.08 x 0.75 (tall: legs and neck), Espinodo 1.72 x 0.65 (its tail hammer sticks out).
-const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio", "acechalunas", "babosa"]
-const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0, 0.8, 0.85]
+const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio", "acechalunas", "babosa", "brujula", "corona"]
+const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0, 0.8, 0.85, 0.6, 0.55]
 static var _body_cache := {}
 
 func _species_body(species: int) -> Dictionary:
@@ -359,7 +638,7 @@ func _sync_hosts() -> void:
 		add_child(h)
 		var body: Dictionary = _species_body(int(es[i].species)) if cousin.is_empty() else JSON.parse_string(cousin.body_json)
 		var profile: Dictionary = _garfio_profile if cousin.is_empty() else stage.world.get_setup().wild[i - 1].profile
-		h.setup(body, i, profile, Callable(Game, "visual_ground"))
+		h.setup(body, i, profile, Callable(Game, "visual_ground"), Game.creature_cache)
 		h.set_meta("base_scale", _species_scale(int(es[i].species)))
 		if not cousin.is_empty():
 			h.set_meta("lineage_body", str(cousin.body_json))
@@ -389,19 +668,82 @@ func _build_secrets(ground: Callable) -> void:
 		add_child(shards)
 		shards.setup(stage, ground)
 
+# The player's pose: the C world's, or the flyer's while the flight test is in the air.
+func player_sample() -> Dictionary:
+	var base: Dictionary = stage.sample(0)
+	return flight.sample(base) if flight != null else base
+
+# A carcass shrinks by a quarter of its meat per C bite: eased (not a pop), pulled in a little by each bite, and gone with the last.
+var _food_scale := {}
+var _bite_pulse := {}
+func _carcass_scale(id: int, meat: int, dt: float) -> float:
+	var want := (0.3 + 0.7 * float(meat) / 4.0) if meat > 0 else 0.0
+	var cur: float = _food_scale.get(id, want)
+	cur = lerpf(cur, want, 1.0 - exp(-9.0 * dt)) if want < cur else want
+	if absf(cur - want) < 0.004:
+		cur = want
+	_food_scale[id] = cur
+	var pulse: float = _bite_pulse.get(id, 0.0)
+	_bite_pulse[id] = maxf(0.0, pulse - dt * 5.0)
+	return cur * (1.0 - 0.07 * pulse)
+
+## A C bite landed on carcass `target` (`left` bites remain): the pulse, the crumbs, the chunk flying off and a soft sound.
+func on_eat_bite(target: int, left: int) -> void:
+	_bite_pulse[target] = 1.0
+	if not hosts.has(target):
+		return
+	var at: Vector3 = hosts[target].global_position + Vector3.UP * 0.25 * float(hosts[target].scale.y)
+	var tint := Color(0.52, 0.18, 0.15)
+	var sz: float = 0.5 * hosts[target].scale.y
+	preload("res://actions/action_fx.gd").crumbs(self, at, tint, sz, left <= 0)
+	var audio = get_node_or_null("/root/Audio")
+	if audio != null and audio.has_method("eat_bite"):
+		audio.eat_bite(at, left <= 0)
+
+## What the player's layer reads while C runs the eat action: {mode: "act", t, target, pos (the food), kind}.
+func _eat_ctx() -> Dictionary:
+	var act = stage.cur.get("social", {}).get("action", null)
+	if typeof(act) != TYPE_DICTIONARY or str(act.get("verb", "")) != "eat":
+		return {}
+	var tid := int(act.get("target", -1))
+	if tid < 0 or tid >= stage.cur.entities.size():
+		return {}
+	var food: Vector3 = stage.sample(tid).pos
+	var pp: Vector3 = player_sample().pos
+	var toward := Vector3(pp.x - food.x, 0.0, pp.z - food.z).normalized()
+	var meat := float(stage.cur.entities[tid].get("meat", 0))
+	var r := 0.35 * (0.3 + 0.7 * meat / 4.0) * float(hosts[tid].get_meta("base_scale", 1.0)) if hosts.has(tid) else 0.2
+	return {"mode": "act", "t": int(act.get("t", 0)), "target": tid, "kind": "carcass", "pos": food + toward * r + Vector3.UP * r * 0.8}
+
 func _update_actors(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_actors(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_actors(dt)
+	FrameProfile.end(&"actors/context/occluders")
+
+func _profile__update_actors(dt: float) -> void:
 	_sync_hosts()
+	if flight != null:
+		flight.tick(dt)
 	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
 	var tick: int = int(stage.cur.combat.tick)
 	var alpha: float = stage.alpha()
-	var p0: Vector3 = stage.sample(0).pos
+	var player_pose := player_sample()
+	var samples := {0: player_pose}
+	var p0: Vector3 = player_pose.pos
 	_hidden.clear()
 	for e in stage.cur.entities:
 		if bool(e.get("hidden", false)):
 			_hidden[int(e.id)] = true
 	for id in hosts:
-		var sm: Dictionary = stage.sample(id)
+		if not samples.has(id):
+			samples[id] = stage.sample(id)
+		var sm: Dictionary = samples[id]
 		if id == 0:
+			sm["falling"] = bool(stage.cur.get("player", {}).get("falling", false))
+			sm["jumping"] = bool(stage.cur.get("player", {}).get("jumping", false)) or (bool(stage.prev.get("player", {}).get("jumping", false)) and stage.alpha() < 1.0)
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
 		var d: float = (sm.pos as Vector3).distance_to(p0)
 		var sig: Dictionary = action_signals.get(id, {})
@@ -411,27 +753,46 @@ func _update_actors(dt: float) -> void:
 			tid = selected_id
 		if tid >= 0 and hosts.has(tid) and tid != id:
 			var th: Node3D = hosts[tid]
-			var ts: Dictionary = stage.sample(tid)
+			if not samples.has(tid):
+				samples[tid] = stage.sample(tid)
+			var ts: Dictionary = samples[tid]
 			var ent: Dictionary = stage.cur.entities[tid]
 			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
 		if id == 0:
 			ctx["dodge_dir"] = int(dodge_hint.dir) if Time.get_ticks_msec() < int(dodge_hint.until) else 0
 			if int(stage.cur.order.verb) == 13:      # C is running the player's observe order
 				ctx["mode"] = "observe"
+			var eat := _eat_ctx()
+			if not eat.is_empty():
+				ctx["eat"] = eat
+				if hosts.has(int(eat.target)) and not ctx.has("target"):
+					var th2: Node3D = hosts[int(eat.target)]
+					ctx["target"] = {"id": int(eat.target), "pos": stage.sample(int(eat.target)).pos, "radius": 0.5, "height": th2.height(), "spheres": []}
 		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
 			ctx["attend"] = true
-		hosts[id].update(dt, sm, ctx)
+		hosts[id].update_visual(dt, sm, ctx, hosts[id].visual_interval(camera, d), Engine.get_process_frames())
 		if id > 0:
 			# the driver sets the host basis (yaw) every frame, so the size goes on after it: a species' size, and a carcass
 			# shrinks as it is eaten (4 bites)
 			var ent0: Dictionary = stage.cur.entities[id]
 			var base: float = float(hosts[id].get_meta("base_scale", 1.0))
-			hosts[id].scale = Vector3.ONE * base * (0.3 + 0.7 * float(ent0.get("meat", 0)) / 4.0 if bool(ent0.get("dead", false)) else 1.0)
-	var p: Dictionary = stage.sample(0)
+			if bool(ent0.get("dead", false)):
+				var cs := _carcass_scale(id, int(ent0.get("meat", 0)), dt)
+				hosts[id].scale = Vector3.ONE * base * maxf(cs, 0.001)
+				if cs <= 0.02 and int(ent0.get("meat", 0)) <= 0:
+					_hidden[id] = true            # eaten to the bone: gone
+			else:
+				hosts[id].scale = Vector3.ONE * base
+	if flight != null:
+		flight.post_update(dt)
+	var p: Dictionary = player_sample() if flight != null else player_pose
 	player_pos = p.pos
 	var occ := []
 	if occluders_enabled:
 		for id in hosts:
+			# Only the first twelve spheres reach the shaders; avoid constructing the discarded tail.
+			if occ.size() >= 12:
+				break
 			if id == 0 or (hosts[id].global_position - player_pos).length() < 40.0:
 				occ.append_array(hosts[id].occluders())
 	while occ.size() > 12:
@@ -442,25 +803,99 @@ func _update_actors(dt: float) -> void:
 	grass.apply_occluders(player_pos, occ)
 	grass.set_center(player_pos)
 
+# A landing after a fall: a small, short camera shake (presentation only: a decaying sine, no random numbers).
+# `impact` 0..1 is the strength (the drop beyond the safe height, saturating); a soft landing is a faint thump.
+var _shake_amp := 0.0
+var _cave_k := 0.0                 # 0 = the chase camera, 1 = the cave camera (eased)
+const CAVE_BLEND_TAU := 0.25
+var _shake_clock := 0.0
+const SHAKE_DECAY := 5.0
+const SHAKE_MAX := 0.12                # metres at the full strength
+func land_impact(impact: float) -> void:
+	_shake_amp = maxf(_shake_amp, SHAKE_MAX * clampf(impact, 0.15, 1.0))
+## A64 shared melee impact (actions/impact_fx.gd): the camera takes a small knock, scaled by the attacker's size and the damage, and
+## fading with the distance from the camera. Dust, sparks and the flash are spawned by the creatures themselves.
+const ImpactFx := preload("res://actions/impact_fx.gd")
+func melee_impact(data: Dictionary) -> void:
+	var strength: float = ImpactFx.shake_strength(float(data.size), float(data.amount))
+	var near: float = 1.0
+	if camera != null:
+		near = clampf(1.0 - (camera.global_position.distance_to(data.pos) - 4.0) / 24.0, 0.0, 1.0)
+	var mine: bool = int(data.attacker) == 0 or int(data.victim) == 0
+	if near <= 0.0:
+		return
+	land_impact(strength * near * (1.0 if mine else 0.5))
+var _sprint_idx := -2
+## The player's run speed (m/s), v = sqrt(Fr g h) with h = 0.56 x body radius and Fr = the C motion parameter sprint_k: the camera's speed
+## cues (wider fov, a little follow lag) start at 80% of it (A54).
+func _run_top_speed() -> float:
+	if stage == null or stage.cur == null or stage.cur.entities.is_empty():
+		return chase.top_speed
+	if _sprint_idx == -2:
+		_sprint_idx = -1
+		for p in CporeWorld.params():
+			if p.name == "sprint_k":
+				_sprint_idx = int(p.index)
+	var k: float = stage.world.param(_sprint_idx) if _sprint_idx >= 0 else 2.2
+	var r: float = maxf(0.6, float(stage.cur.entities[0].get("radius_cm", 60)) * 0.01)
+	return sqrt(k * 9.81 * 0.56 * r)
+
+func _landing_shake(dt: float) -> Vector3:
+	if _shake_amp < 0.001 or Game.settings.get("camera/shake", true) == false:
+		_shake_amp = 0.0
+		return Vector3.ZERO
+	_shake_clock += dt
+	_shake_amp *= exp(-SHAKE_DECAY * dt)
+	return Vector3(0.0, sin(_shake_clock * 38.0), 0.0) * _shake_amp + camera.global_transform.basis.x * (sin(_shake_clock * 31.0) * _shake_amp * 0.5)
+
 func _update_camera(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_camera(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_camera(dt)
+	FrameProfile.end(&"camera")
+
+func _profile__update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
 		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
 		return
-	var p: Dictionary = stage.sample(0)
+	var p: Dictionary = player_sample()
 	var state: Dictionary = stage.cur
 	var fighting: bool = state.active >= 0
+	if flight != null:
+		chase.air_on = flight.active() and flight.model.airborne()
+		chase.air_y = p.pos.y
+		chase.air_dive = flight.model != null and flight.model.mode == "dive"
+		chase.air_bank = flight.model.bank_t if chase.air_on else 0.0
 	var enemy = null
 	if fighting:
 		var e: Dictionary = state.entities[state.active + 1]
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
-	chase.kick = bool(Game.settings.get("camera/kick", false))
+	chase.kick = bool(Game.settings.get("camera/kick", true))
+	chase.top_speed = _run_top_speed()
+	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
+	# An explicit cut (a teleport, a respawn, a return from the editor): the eased camera state restarts instead of gliding across the map.
+	var here := Vector2(p.pos.x, p.pos.z)
+	if _cam_prev_player != null and here.distance_to(_cam_prev_player) > CAM_CUT_M:
+		chase.cut()
+	_cam_prev_player = here
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
-	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
-	var view := _cave_camera(r, p.pos)
-	camera.position = view.position
+	camera.near = clampf(float(r.distance) * 0.012, 0.05, 40.0)       # keep the depth buffer precise at 3 km
+	var in_cave: bool = cave_site != null and cave_site.on and cave_site.zone(p.pos.x, p.pos.z) != 0
+	_cave_k = lerpf(_cave_k, 1.0 if in_cave else 0.0, 1.0 - exp(-dt / CAVE_BLEND_TAU) if dt > 0.0 else 1.0)       # the cave's close camera blends in and out, it never cuts
+	if not in_cave and _cave_k < 0.002:
+		_cave_k = 0.0
+	var view := {"position": r.position, "aim": r.aim}
+	if _cave_k > 0.0:
+		var cave := _cave_camera(r, p.pos)
+		view = {"position": (r.position as Vector3).lerp(cave.position, _cave_k), "aim": (r.aim as Vector3).lerp(cave.aim, _cave_k)}
+	camera.position = view.position + _landing_shake(dt)
 	camera.look_at(view.aim)
+	if absf(float(r.get("roll", 0.0))) > 1e-4:
+		camera.rotate_object_local(Vector3.BACK, float(r.roll))       # the horizon tilts with part of the bank
 	player_input.view_yaw = chase.view_yaw
 	_apply_zoom_budget(chase.z)
 	icons.update_alpha(chase.icon_alpha())
@@ -468,7 +903,7 @@ func _update_camera(dt: float) -> void:
 # Inside the hidden cave the chase camera is replaced by a close one under the roof: 6.5 m back along the chase direction and 2.4 m
 # up, pulled toward the player until it is inside the shell (or in front of the mouth, in the open air), no higher than the roof.
 func _cave_camera(r: Dictionary, player: Vector3) -> Dictionary:
-	if cave_site == null or not cave_site.on or cave_site.zone(player.x, player.z) == 0:
+	if cave_site == null or not cave_site.on:
 		return {"position": r.position, "aim": r.aim}
 	var back := Vector3(r.position.x - player.x, 0.0, r.position.z - player.z)
 	back = Vector3(0, 0, 1) if back.length() < 0.1 else back.normalized()
@@ -490,7 +925,7 @@ func _apply_zoom_budget(zz: float) -> void:
 	if far != _far:
 		_far = far
 		grass.visible = not far
-		sun.shadow_enabled = not far
+		sun.shadow_enabled = _sun_shadows_ok and not far
 	var models := zz < MODEL_OFF_Z
 	for id in hosts:
 		var h = hosts[id]
@@ -530,8 +965,16 @@ func _sync_controls() -> void:
 		player_input.position = Vector2(e.x, e.z)
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"island other")
+
+func _profile__process(delta: float) -> void:
 	Clouds.set_time(Time.get_ticks_msec() * 0.001)
-	if stage == null:
+	if stage == null or _building:
 		return
 	_sync_controls()
 	_update_actors(delta)
@@ -539,6 +982,7 @@ func _process(delta: float) -> void:
 	gesture.tick(delta)
 	_update_move_marker()
 	_update_hover(delta)
+	_update_plants(delta)
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
 		_follow_clock -= delta
@@ -548,11 +992,21 @@ func _process(delta: float) -> void:
 	else:
 		_follow_clock = 0.0
 
-# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; a left press that moves more than
-# DRAG_PX is an orbit drag, otherwise it is a click (acted on at release) or, held, steers towards the mouse; right and
-# middle drag orbit; a middle click or Home puts the camera back behind the creature.
+# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; the LEFT button never moves the camera (a
+# press that moves more than DRAG_PX is ignored, otherwise it is a click acted on at release or, held, steers the creature
+# towards the mouse); right and middle drag orbit; a middle click or Home puts the camera back behind the creature.
 func _unhandled_input(event: InputEvent) -> void:
-	if stage == null or chase == null:
+	if stage == null or chase == null or _building:
+		return
+	if flight != null and flight.handle_input(event):
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.physical_keycode == KEY_SPACE and event.pressed and not event.echo:
+		# Space = jump on the ground, for every creature (a winged one flies if Space is pressed again in the air). In a fight Space keeps
+		# its combat meaning (guard, stage_ui.gd), so no jump is requested then.
+		if int(stage.cur.active) < 0:
+			player_input.request_jump()
+		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
 		_on_motion(event as InputEventMouseMotion)
@@ -585,12 +1039,15 @@ func _on_button(e: InputEventMouseButton) -> void:
 			chase.orbit_active = true
 		else:
 			_orbit_btn &= ~bit
-			chase.orbit_active = _orbit_btn != 0 or gesture.dragging
+			chase.orbit_active = _orbit_btn != 0
 			if e.button_index == MOUSE_BUTTON_MIDDLE and _mid_travel < Gesture.DRAG_PX:
 				chase.reset_behind()
+			elif e.button_index == MOUSE_BUTTON_RIGHT and _mid_travel < Gesture.DRAG_PX and stage_ui != null and (stage_ui.verb_is_armed() or stage_ui.locked_id > 0):
+				stage_ui.cancel_verb()          # a right click that was not an orbit drag cancels the verb and the lock
 
 func _on_motion(e: InputEventMouseMotion) -> void:
-	var orbiting := _orbit_btn != 0 or gesture.motion(e.position)
+	gesture.motion(e.position)           # a left drag is classified (and then ignored): the left button never moves the camera
+	var orbiting := _orbit_btn != 0
 	if _orbit_btn != 0:
 		_mid_travel += e.relative.length()
 	if orbiting:
@@ -600,30 +1057,35 @@ func _on_motion(e: InputEventMouseMotion) -> void:
 			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
 
 # A click: a strategic icon (select; double-click zooms back down), a creature, or the ground (walk there).
-func _click(pos: Vector2, double: bool) -> void:
+func _click(pos: Vector2, _double: bool) -> void:
 	if icons != null and icons.alpha >= 0.3:
 		var it: Dictionary = icons.pick(pos)
 		if not it.is_empty():
-			if double:
-				chase.set_zoom(chase.Z_CHASE)
 			last_click = pos
 			Game.creature_clicked.emit(it.id, it.pos)
 			return
-		if double:
-			chase.set_zoom(chase.Z_CHASE)
 	_click_ground(true, pos)
 
 func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
 	var ground := Callable(Game, "visual_ground")
-	if allow_pick:
+	var verb_first: bool = allow_pick and stage_ui != null and stage_ui.verb_is_armed()
+	if verb_first:
+		# verb first, then the creature: the nearest valid creature to the click in screen space (generous radius) is locked
+		var vid: int = stage_ui.pick_for_verb(mouse)
+		if vid > 0 and stage_ui.lock_target(vid):
+			player_input.clear_destination()
+			last_click = mouse
+			ground_marks.clear_move(false)
+			return
+	elif allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
 		if not picked.is_empty():
 			player_input.clear_destination()
 			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
-	if allow_pick and stage_ui != null and selected_id > 0:
-		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there)
+	if allow_pick and not verb_first and stage_ui != null and selected_id > 0:
+		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there); an armed verb keeps its lock
 	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
 		if walk_blocked(hit):
@@ -659,6 +1121,35 @@ func _update_move_marker() -> void:
 	_had_dest = has
 
 # Pointer over a creature for 0.25 s: its ring shows at 0.4 in its relationship style (docs/godot/UI-DIEGETIC.md 7.16).
+# Observing plants: the pointer resting on a plant for PlantGaze.DWELL seconds writes it into the journal. Creatures come first
+# (a hovered creature, a fight, a held button or an open book never count), so this never competes with the radial.
+func _update_plants(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_plants(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_plants(dt)
+	FrameProfile.end(&"flora")
+
+func _profile__update_plants(dt: float) -> void:
+	if camera == null or stage == null or stage_ui == null:
+		return
+	_gaze_poll += dt
+	if _gaze_poll < 0.1:
+		return
+	var step := _gaze_poll
+	_gaze_poll = 0.0
+	var id := ""
+	if not Game.movement_blocked() and not gesture.down and _hover_id < 0 and int(stage.cur.active) < 0 and selected_id <= 0:
+		var m := get_viewport().get_mouse_position()
+		id = gaze.pick(props.records, camera.project_ray_origin(m), camera.project_ray_normal(m))
+	var found := gaze.tick(step, id)
+	if found != "":
+		stage_ui.plant_noticed(found)
+
+func plant_rows() -> Array:
+	return gaze.journal_rows(preload("res://game/island/flora_placement.gd").recipes())
+
 func _update_hover(dt: float) -> void:
 	if ground_marks == null or camera == null or stage == null:
 		return

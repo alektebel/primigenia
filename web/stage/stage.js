@@ -4,20 +4,23 @@ import {profileFromStudio} from '../engine/profile.js';
 import {StageSimulation} from './simulation.js';
 import {pointerControls} from './pointer.js';
 import {StageAudio} from './audio.js';
+import {ChaseCamera} from './camera.js';
+import {FightFeedback,moveTell} from './feedback.js';
+import {waitForEnvironment} from './boot.js';
 
 const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mix=(a,b,t)=>a+(b-a)*t;
 const MOVES=[['mouth',MOVE.BITE,'Bite'],['charge',MOVE.CHARGE,'Charge'],['spit',MOVE.SPIT,'Spit'],['tail',MOVE.TAIL,'Tail']];
 const phases=['Ready','Windup','Strike','Recovery'];
-const down=new Set(),pressed=new Set();let stick=[0,0],pendingDodge=null,yaw=Math.PI,pitch=.24,distance=17,timeline=null;
-let pointer,audio,selected=false,orbitGrace=0,marker,selection;
+const down=new Set(),pressed=new Set();let stick=[0,0],pendingDodge=null,timeline=null;
+let pointer,audio,chase,feedback=new FightFeedback(),selected=false,marker,selection;
 let lastTap={},sim,rigs,env,shownOutcome=null,toastUntil=0;
 function message(text){$('status').textContent=text}
 async function json(path){const response=await fetch(path);if(!response.ok)throw Error(`Could not load ${path} (${response.status})`);return response.json()}
-function worldVector(x,z){return [x*Math.cos(yaw)+z*Math.sin(yaw),-x*Math.sin(yaw)+z*Math.cos(yaw)]}
+function worldVector(x,z){const yaw=chase.viewYaw;return [x*Math.cos(yaw)+z*Math.sin(yaw),-x*Math.sin(yaw)+z*Math.cos(yaw)]}
 function input(){
  const gamepad=navigator.getGamepads?.()[0];
- if(gamepad){yaw-=Math.abs(gamepad.axes[2]||0)>.15?gamepad.axes[2]*.08:0;pitch=clamp(pitch+(Math.abs(gamepad.axes[3]||0)>.15?gamepad.axes[3]*.04:0),.05,.9)}
+ if(gamepad){const x=Math.abs(gamepad.axes[2]||0)>.15?gamepad.axes[2]:0,y=Math.abs(gamepad.axes[3]||0)>.15?gamepad.axes[3]:0;if(x||y)chase.orbit(x*13,y*10)}
  const x=+(down.has('KeyD')||down.has('ArrowRight'))-+(down.has('KeyA')||down.has('ArrowLeft'))+stick[0]+(Math.abs(gamepad?.axes[0]||0)>.15?gamepad.axes[0]:0);
  const z=+(down.has('KeyS')||down.has('ArrowDown'))-+(down.has('KeyW')||down.has('ArrowUp'))+stick[1]+(Math.abs(gamepad?.axes[1]||0)>.15?gamepad.axes[1]:0);
  const attack=available.find((m,i)=>down.has(`Digit${i+1}`)||pressed.has(`Digit${i+1}`));
@@ -30,7 +33,7 @@ let available=[];
 function pause(value=!sim.paused){sim.paused=value;$('pause-panel').hidden=!value;$('pause').textContent=value?'Resume':'Pause';$('pause').setAttribute('aria-label',value?'Resume game':'Pause game');down.clear();pressed.clear();stick=[0,0];pendingDodge=null;pointer?.cancel();sim.destination=null;sim.pendingAttack=null;sim.accumulator=0;audio?.setPaused(value);if(value)$('resume').focus();else env.renderer.domElement.focus()}
 function controls(){
  const canvas=env.renderer.domElement;canvas.style.touchAction='none';canvas.tabIndex=0;canvas.setAttribute('aria-label','Creature valley. Click or hold to walk; WASD or arrows also move. Right drag to orbit.');
- pointer=pointerControls({env,rigs,sim,onSelect:value=>selected=value,onOrbit:(dx,dy)=>{yaw-=dx*.006;pitch=clamp(pitch+dy*.004,.04,.95);orbitGrace=2.5},onZoom:delta=>distance=clamp(distance+delta,8,30),onGesture:()=>audio.start()});
+ pointer=pointerControls({env,rigs,sim,onSelect:value=>selected=value,onOrbit:(dx,dy)=>chase.orbit(dx,dy),onZoom:delta=>chase.zoom(delta),onGesture:()=>audio.start()});
  addEventListener('pointerdown',()=>audio.start(),{once:true});
  addEventListener('keydown',()=>audio.start(),{once:true});
  addEventListener('keydown',e=>{
@@ -92,6 +95,7 @@ function combatGround(){
   }setTriangles(arena,points);
  }
  const state=e.current[1];if(state.phase===1&&[0,1,3,4].includes(state.move)){
+  cone.material.color.set(moveTell(state.move).color);cone.userData.move=state.move;
   const preview=sim.combat.preview(1,state.move,0),p=e.toValley(preview),facing=Math.atan2(preview.fx,preview.fy),points=[];
   for(let i=0;i<24;i++){const a=facing-preview.arc/2+preview.arc*i/24,b=facing-preview.arc/2+preview.arc*(i+1)/24,r=preview.reach+.6;points.push(p,{x:p.x+Math.sin(a)*r,z:p.z+Math.cos(a)*r},{x:p.x+Math.sin(b)*r,z:p.z+Math.cos(b)*r})}
   setTriangles(cone,points);cone.visible=true;
@@ -102,29 +106,30 @@ function targetGround(){
   for(let i=0;i<48;i++){const a=i/48*Math.PI*2,b=(i+1)/48*Math.PI*2,A={x:p.x+Math.sin(a)*r,z:p.z+Math.cos(a)*r},B={x:p.x+Math.sin(b)*r,z:p.z+Math.cos(b)*r},C={x:p.x+Math.sin(a)*(r+width),z:p.z+Math.cos(a)*(r+width)},D={x:p.x+Math.sin(b)*(r+width),z:p.z+Math.cos(b)*(r+width)};points.push(A,B,C,B,D,C)}setTriangles(mesh,points)};
  ring(marker,sim.destination,.35,.07);ring(selection,selected&&!sim.enemy.dead?sim.enemy:null,(sim.enemyProfile.radiusCm||60)/100+.2,.09);
  const label=$('selected-name');label.hidden=!selection.visible;
- if(selection.visible){const p=new env.T.Vector3(sim.enemy.x,env.groundY(sim.enemy.x,sim.enemy.z)+4,sim.enemy.z).project(env.camera);label.style.left=`${(p.x+1)*innerWidth/2}px`;label.style.top=`${(1-p.y)*innerHeight/2}px`;label.hidden=p.z>1}
+ if(selection.visible){const p=new env.T.Vector3(sim.enemy.x,env.groundY(sim.enemy.x,sim.enemy.z)+enemyHeight+.4,sim.enemy.z).project(env.camera);label.style.left=`${(p.x+1)*innerWidth/2}px`;label.style.top=`${(1-p.y)*innerHeight/2}px`;label.hidden=p.z>1||p.z< -1;$('selected-hp').max=sim.enemyProfile.hp;$('selected-hp').value=Math.max(0,sim.enemy.hp);$('selected-health').textContent=`${Math.ceil(Math.max(0,sim.enemy.hp))} / ${sim.enemyProfile.hp}`}
 }
 function poseRig(rig,entity,previous,dt,index){
  const a=sim.alpha,x=mix(previous.x,entity.x,a),z=mix(previous.z,entity.z,a),turn=Math.atan2(Math.sin(entity.yaw-previous.yaw),Math.cos(entity.yaw-previous.yaw)),facing=previous.yaw+turn*a;
- const fx=Math.sin(facing),fz=Math.cos(facing),slope=clamp((env.groundY(x+fx,z+fz)-env.groundY(x-fx,z-fz))/2,-.5,.5);
  const target=index===0?(selected?sim.enemy:sim.destination):sim.player;
- rig.setWorld({x,z,yaw:facing,groundY:env.groundY,speed:entity.speed||0,pitch:-Math.atan(slope)-clamp((entity.acceleration||0)*.008,-.07,.07),roll:clamp(-(entity.turnRate||0)*(entity.speed||0)*.012,-.16,.16),lookTarget:target,turnRate:entity.turnRate||0,onFootContact:p=>audio.footstep(p,entity.speed,(index?sim.enemyProfile:sim.profile).radiusCm||60)});
+ rig.setWorld({x,z,yaw:facing,groundY:env.groundY,speed:entity.speed||0,acceleration:entity.acceleration||0,lookTarget:target,turnRate:entity.turnRate||0,onFootContact:p=>audio.footstep(p,entity.speed,(index?sim.enemyProfile:sim.profile).radiusCm||60)});
  const state=sim.encounter?.current[index];
  rig.biteT=state?.phase===1?.18:state?.phase===2?.3:state?.phase===3?.08:0;rig.update(dt);
- if(sim.encounter&&state?.phase){const progress=clamp((state.ptick+sim.alpha)/Math.max(1,state.plen),0,1),pulse=state.phase===1?-progress*.13:state.phase===2?.22:(1-progress)*.15;
+ if(sim.encounter&&state?.phase){const progress=clamp((state.ptick+sim.alpha)/Math.max(1,state.plen),0,1),tell=moveTell(state.move),pulse=state.phase===1?Math.sin(progress*Math.PI/2)*tell.pitch:state.phase===2?.22:(1-progress)*.15;
+  rig.creature.userData.windup=state.phase===1?{move:state.move,progress,pitch:pulse,crouch:tell.crouch}:null;
+  if(state.phase===1)rig.creature.position.y-=Math.sin(progress*Math.PI/2)*tell.crouch;
   rig.creature.rotation.x+=pulse;
   for(const o of rig.objs){const u=o.g.userData;if(u.arm)u.arm.rotation.x+=pulse*4;if(u.tail&&state.move===MOVE.TAIL)u.tail.rotation.y+=Math.sin(progress*Math.PI)*1.1;if(u.sacs&&state.move===MOVE.SPIT)for(const sac of u.sacs)sac.scale.setScalar(1+Math.abs(pulse)*1.5)}
- }
+ }else rig.creature.userData.windup=null;
  if(index===1&&entity.dead){rig.creature.rotation.z=1.4;rig.creature.updateMatrixWorld(true);rig.body.geometry.computeBoundingBox();const bounds=new env.T.Box3().setFromObject(rig.body).union(new env.T.Box3().setFromObject(rig.partsG)),bottom=bounds.min.y;rig.creature.position.y+=env.groundY(x,z)+.04-bottom;rig.limbs.visible=false}
- const recent=sim.hits.filter(h=>h.id===index).at(-1),flash=recent?Math.max(0,1-(sim.ticks*.1+sim.alpha*.1-recent.time)/.5):0;
- for(const mat of [rig.skinM,rig.skinM2,rig.boneM])mat.emissive.setRGB(flash*.6,flash*.13,flash*.03);
 }
+function flashRig(rig,index){const flash=feedback.flash(index),color=flash.kind==='guard'?[.2,.65,1]:flash.kind==='dodge'?[.35,1,.8]:[1,.25,.08];for(const mat of [rig.skinM,rig.skinM2,rig.boneM])mat.emissive.setRGB(...color.map(c=>c*flash.strength))}
 function hud(){
  for(const [prefix,p,profile]of [['player',sim.player,sim.profile],['enemy',sim.enemy,sim.enemyProfile]]){
   for(const [field,max]of [['hp',profile.hp],['stamina',profile.stamina]]){const el=$(`${prefix}-${field}`);el.max=max;el.value=Math.max(0,p[field])}
  }
  $('player-health').textContent=Math.ceil(Math.max(0,sim.player.hp));$('enemy-hud').hidden=!sim.encounter;
- const state=sim.encounter?.current[1];$('enemy-phase').textContent=state?phases[state.phase]:'';
+ const state=sim.encounter?.current[1];$('enemy-phase').textContent=state?`${moveTell(state.move).name} · ${phases[state.phase]}`:'';
+ $('enemy-phase').style.color=state?.phase===1?moveTell(state.move).color:'';
  if(sim.encounter&&shownOutcome!==null){shownOutcome=null;message('Watch the windup · run beyond the boundary to flee')}
  if(sim.encounter&&!$('status').textContent.includes('windup'))message('Watch the windup · run beyond the boundary to flee');
  if(sim.outcome&&sim.outcome!==shownOutcome){shownOutcome=sim.outcome;toastUntil=sim.ticks+50;message({victory:'DNA +12\nA new trace of life. Keep exploring.',death:'Back to the nest…',fled:'Safe for now. The wild creature returns home.'}[sim.outcome])}
@@ -133,15 +138,16 @@ function hud(){
 }
 function pose(dt=0){rigs.forEach((rig,i)=>poseRig(rig,i?sim.enemy:sim.player,sim.previous[i],sim.paused?0:dt,i))}
 function draw(dt=0){
- pose(dt);
- const {T,camera,groundY,renderer,scene,sun,SUN,hU,sky}=env,p=rigs[0].creature.position,c=rigs[0].pts[rigs[0].NS>>1].clone().applyMatrix4(rigs[0].creature.matrixWorld);
- orbitGrace=Math.max(0,orbitGrace-dt);
- if(!sim.paused&&!orbitGrace&&sim.player.speed>.4){const delta=Math.atan2(Math.sin(sim.player.yaw+Math.PI-yaw),Math.cos(sim.player.yaw+Math.PI-yaw));yaw+=delta*(1-Math.exp(-dt*.7))}
- const d=distance*(camera.aspect<.7?1.25:1),cp=Math.cos(pitch);camera.fov=48;
- camera.position.set(c.x+Math.sin(yaw)*cp*d,c.y+Math.sin(pitch)*d,c.z+Math.cos(yaw)*cp*d);
- // Pull the boom in before it crosses a ridge; keep the lens above terrain.
- const desired=camera.position.clone();for(let i=1;i<=32;i++){const t=i/32,p=c.clone().lerp(desired,t);if(p.y<groundY(p.x,p.z)+.65){camera.position.copy(c).lerp(desired,Math.max(.08,(i-1)/32));break}}
- camera.position.y=Math.max(camera.position.y,groundY(camera.position.x,camera.position.z)+.65);camera.lookAt(c);camera.updateProjectionMatrix();sky.position.copy(camera.position);
+ if(!feedback.frozen)pose(dt);
+ rigs.forEach(flashRig);
+ const {T,camera,groundY,renderer,scene,sun,SUN,hU,sky}=env,p=rigs[0].creature.position;
+ const enemyPosition=rigs[1].creature.position;
+ const shot=chase.update({player:{...sim.player,x:p.x,z:p.z},enemy:{x:enemyPosition.x,z:enemyPosition.z},fighting:!!sim.encounter,groundY,dt:sim.paused?0:dt,aspect:camera.aspect});
+ camera.fov=48;camera.position.set(shot.position.x,shot.position.y,shot.position.z);
+ const shake=matchMedia('(prefers-reduced-motion: reduce)').matches?0:feedback.shake*chase.height*.025;
+ camera.position.x+=Math.sin(feedback.time*173)*shake;camera.position.y+=Math.sin(feedback.time*137)*shake*.6;
+ camera.position.y=Math.max(camera.position.y,groundY(camera.position.x,camera.position.z)+.65);
+ camera.lookAt(new T.Vector3(shot.target.x,shot.target.y,shot.target.z));camera.updateProjectionMatrix();camera.updateMatrixWorld(true);sky.position.copy(camera.position);
  sun.position.set(p.x+SUN.x*150,p.y+SUN.y*150,p.z+SUN.z*150);sun.target.position.copy(p);
  const occ=hU.occ.value;for(let k=0;k<8;k++){const i=rigs[0].NC+Math.round(k*(rigs[0].NSP-1)/7),w=rigs[0].pts[i].clone().applyMatrix4(rigs[0].creature.matrixWorld);occ[k].set(w.x,w.y,w.z,rigs[0].RAD[i]*1.05)}
  for(let k=0;k<4;k++){const l=rigs[0].legs[k];if(l)occ[k+8].set(l.ft.position.x,l.ft.position.y,l.ft.position.z,l.w*2.2);else occ[k+8].set(0,-999,0,0)}
@@ -149,14 +155,14 @@ function draw(dt=0){
  combatGround();targetGround();audio.update(sim,rigs,env,dt);hud();$('damage').replaceChildren();
  for(const hit of sim.hits){const age=sim.ticks*.1+sim.alpha*.1-hit.time;if(age>.9)continue;
   const v=new T.Vector3(hit.x,groundY(hit.x,hit.z)+3+age*1.8,hit.z).project(camera);if(v.z>1)continue;
-  const el=document.createElement('span');el.textContent='−'+Math.round(hit.amount);el.className=hit.id===0?'player':'';el.style.cssText=`left:${(v.x+1)*innerWidth/2}px;top:${(1-v.y)*innerHeight/2}px;opacity:${1-age/.9}`;$('damage').append(el);
+  const el=document.createElement('span');el.textContent='−'+Math.round(hit.amount);el.className=hit.id===0?'player':'';el.style.cssText=`left:${(v.x+1)*innerWidth/2+(hit.id?16:-16)}px;top:${(1-v.y)*innerHeight/2}px;opacity:${Math.min(1,(.9-age)*4)}`;$('damage').append(el);
  }
+ for(const label of feedback.labels){const entity=label.id?sim.enemy:sim.player,v=new T.Vector3(entity.x,groundY(entity.x,entity.z)+3.5,entity.z).project(camera);if(Math.abs(v.z)>1)continue;const el=document.createElement('span');el.textContent=label.text;el.className=label.kind;el.style.left=`${(v.x+1)*innerWidth/2}px`;el.style.top=`${(1-v.y)*innerHeight/2}px`;$('damage').append(el)}
  renderer.render(scene,camera);
 }
+let enemyHeight=3;
 async function boot(){
- env=window.__stageEnvironment;
- if(!env){await new Promise(resolve=>addEventListener('load',resolve,{once:true}));env=window.__stageEnvironment}
- if(!env)throw Error('Valley environment unavailable');
+ env=await waitForEnvironment();
  env.groundY=(x,z)=>window.__stageWorld.ground(x,z);
  const {T,scene,SUN,W,groundY,obstacles}=env;
  W.p.vis.root.visible=false;for(const npc of W.npcs){npc.vis.root.visible=false;npc.mark.g.visible=false}
@@ -180,14 +186,16 @@ async function boot(){
  // This wild species fights with its horn and tail. Its author-defined tiers
  // and HP are separate from the studio document; body radius still follows it.
  sim=new StageSimulation({world:window.__stageWorld,profile:profileFromStudio(creature,partTable),enemyProfile:{...profileFromStudio(rigs[1].G,partTable),...enemyTiers},nest,home,groundY,obstacles});
- yaw=Math.atan2(nest.x-home.x,nest.z-home.z);
- audio=new StageAudio();sim.onTick=s=>audio.tick(s);controls();audio.bindMenu($);lightEnvironment();marker=makeGroundMesh('#e9cf87',.9);selection=makeGroundMesh('#f5c86d',.9);arena=makeGroundMesh('#efd49c',.42);cone=makeGroundMesh('#ee9b51',.36);
+ const rigHeight=rig=>{rig.creature.updateMatrixWorld(true);rig.limbs.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(rig.creature).union(new T.Box3().setFromObject(rig.limbs));return Math.max(.5,bounds.max.y-bounds.min.y)};
+ chase=new ChaseCamera({height:rigHeight(rigs[0]),yaw:Math.atan2(nest.x-home.x,nest.z-home.z)});enemyHeight=rigHeight(rigs[1]);
+ const label=$('selected-name');label.replaceChildren();const name=document.createElement('b');name.textContent=enemy.name;const hp=document.createElement('meter');hp.id='selected-hp';hp.min=0;hp.setAttribute('aria-label',`${enemy.name} health`);const health=document.createElement('span');health.id='selected-health';label.append(name,hp,health);
+ audio=new StageAudio();sim.onTick=s=>{audio.tick(s);feedback.tick(s)};controls();audio.bindMenu($);lightEnvironment();marker=makeGroundMesh('#e9cf87',.9);selection=makeGroundMesh('#f5c86d',.9);arena=makeGroundMesh('#efd49c',.42);cone=makeGroundMesh('#ee9b51',.36);
  $('creature-name').textContent=creature.name;message('Your nest is behind you. Something is moving in the meadow.');
  window.Stage={ready:true,simulation:sim,rigs,env,
-  frame(dt){pointer.update();sim.advance(dt,timeline||(()=>input()));if(!window.__stageTesting)draw(dt)},
-  draw, pose, pause, audio, cameraState:()=>({yaw,pitch,distance}), get selected(){return selected}, setTimeline(fn){timeline=fn},
+  frame(dt){if(!sim.paused)feedback.update(dt);pointer.update();sim.advance(dt,timeline||(()=>input()));if(!window.__stageTesting)draw(dt)},
+  draw, pose, pause, audio, feedback, chase, cone, cameraState:()=>chase.state(), get selected(){return selected}, setTimeline(fn){timeline=fn},
   snapshot(){return {ticks:sim.ticks,player:{...sim.player},enemy:{...sim.enemy},started:sim.started,outcome:sim.outcome,respawn:sim.respawn,paused:sim.paused,home:sim.home,nest:sim.nest,profile:sim.profile,completed:sim.completed,encounter:sim.encounter?{tick:sim.encounter.tick,current:sim.encounter.current,previous:sim.encounter.previous,alpha:sim.encounter.alpha,log:sim.encounter.exportLog(),hash:sim.encounter.hashes.at(-1)}:null}}
  };
  draw(0);
 }
-boot().catch(error=>{message('The valley could not open. Reload, or return to Studio.');console.error(error)});
+boot().catch(error=>{message(`The valley could not open. ${error.message||error}\nReload, or return to Studio.`);console.error(error)});

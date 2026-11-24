@@ -22,9 +22,9 @@ Porous, branching tube-structure, central processing chamber
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
 | soplillo.c1 | Porous silica-carbonate filtration tubes capture particulates | Molecular diffusion moves scent 1 cm per day ← Low-flow zones starve mobile grazers ← Network nodes concentrate suspended mineral dust | **F11** At a molecular diffusion coefficient near 1e-9 m2/s, a scent molecule moves only about 1 cm per day, so chemical signals are local unless carried by flow. | Silt Filter (`soplillo.silt_filter`) | Social | The creature distributes nourishing particles to nearby allies, visibly strengthening their development. This shared sustenance helps them thrive and expand their presence. | Tubes clog if brine salinity spikes |
-| soplillo.c2 | Tidal-cycle activity gating synchronizes reproduction | 56-hour tidal month causes cyclic strain ← Fracture apertures open and close rhythmically ← Nutrient pulses align with reproductive windows | **F4** One moon of 620 km radius orbits at 12 planetary radii every 2.35 days; tidal despinning has locked the planet to a 56-hour spin, so the master clock is the 56-hour tidal month with cyclic strain of order 5e-7. | Tidal Sync (`soplillo.tidal_sync`) | Control | Speeds up turn order and boosts skill cooldowns by 1 | Becomes sluggish if tidal strain is disrupted |
+| soplillo.c2 | Tidal-cycle activity gating synchronizes reproduction | 56-hour tidal month causes cyclic strain ← Fracture apertures open and close rhythmically ← Nutrient pulses align with reproductive windows | **F4** One moon of 620 km radius orbits at 12 planetary radii every 2.35 days; tidal despinning has locked the planet to a 56-hour spin, so the master clock is the 56-hour tidal month with cyclic strain of order 5e-7. | Tidal Sync (`soplillo.tidal_sync`) | Control | The creature pulses with urgent rhythm, swiftly moving into position and frequently unleashing its abilities. | Becomes sluggish if tidal strain is disrupted |
 | soplillo.c3 | Symbiotic archaeal housing chambers offload redox processing | Energy limitation stretches generation times to millennia ← Microbial base sparse and concentrated at interfaces ← Host shelters archaea to accelerate metabolism | **F18** The shell could hold of order 1e30 microbial cells, but energy limitation stretches generation times to centuries or millennia. | Archaeal Bond (`soplillo.archaeal_bond`) | Social | The creature bonds with an ally, channeling energy that strongly amplifies their actions against redox targets. This symbiotic link allows the ally to push through those vulnerable foes with visible force. | Chamber damage kills symbionts permanently |
-| soplillo.c4 | Calcite-secretion weaving constructs stable nurseries | Geology edits the map faster than evolution ← Calcite precipitates as CO2 escapes from pores ← Parental care requires stable fracture architecture | **F16** CO2-rich fluid degassing precipitates calcite, sealing fractures on roughly 10^3-year timescales and rewriting permeability. | Loom Weave (`soplillo.loom_weave`) | Defence | Creates a 3-tile calcite barrier blocking enemy movement and providing cover | Secretion depletes calcium, weakening own carapace temporarily |
+| soplillo.c4 | Calcite-secretion weaving constructs stable nurseries | Geology edits the map faster than evolution ← Calcite precipitates as CO2 escapes from pores ← Parental care requires stable fracture architecture | **F16** CO2-rich fluid degassing precipitates calcite, sealing fractures on roughly 10^3-year timescales and rewriting permeability. | Loom Weave (`soplillo.loom_weave`) | Defence | The creature weaves a sturdy calcite barrier that halts advancing foes and shields nearby allies. | Secretion depletes calcium, weakening own carapace temporarily |
 
 ### soplillo.c1: Porous silica-carbonate filtration tubes capture particulates
 
@@ -48,7 +48,7 @@ Trait ← Molecular diffusion moves scent 1 cm per day ← Low-flow zones starve
 
 Trait ← 56-hour tidal month causes cyclic strain ← Fracture apertures open and close rhythmically ← Nutrient pulses align with reproductive windows ← F4
 
-- **Skill:** Tidal Sync (Control): Speeds up turn order and boosts skill cooldowns by 1
+- **Skill:** Tidal Sync (Control): The creature pulses with urgent rhythm, swiftly moving into position and frequently unleashing its abilities.
 - **Weakness:** Becomes sluggish if tidal strain is disrupted
 - **Observe:**
   1. Tube tips droop during peak strain
@@ -85,7 +85,7 @@ Trait ← Energy limitation stretches generation times to millennia ← Microbia
 
 Trait ← Geology edits the map faster than evolution ← Calcite precipitates as CO2 escapes from pores ← Parental care requires stable fracture architecture ← F16
 
-- **Skill:** Loom Weave (Defence): Creates a 3-tile calcite barrier blocking enemy movement and providing cover
+- **Skill:** Loom Weave (Defence): The creature weaves a sturdy calcite barrier that halts advancing foes and shields nearby allies.
 - **Weakness:** Secretion depletes calcium, weakening own carapace temporarily
 - **Observe:**
   1. Tube tips secrete mineral threads
@@ -134,3 +134,4 @@ council run `autoloop-2026-11-24`; by naturalist/qwen
 - 2026-11-24 autoloop: removed rejected references from analogues
 - 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee
 - 2026-11-24 autoloop: removed rejected references from analogues
+- 2026-11-24 claude: re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee

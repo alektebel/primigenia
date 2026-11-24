@@ -7,10 +7,14 @@ data/creatures/
 art/generated/
 node_modules/
 godot/.godot/
-feedback/
+/feedback/
 godot/devtools/build.txt
 godot/scenarios/creature/quick-*
 
 # lore council runs and HTTP cache
 tools/lore/council/runs/
 tools/lore/.cache/
+
+# visual scorecard runs are 14 MB each: only the baseline is committed (force-add a label when it is evidence for a merge)
+docs/evidence/look/score/*
+!docs/evidence/look/score/baseline/

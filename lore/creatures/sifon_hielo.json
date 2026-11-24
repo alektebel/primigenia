@@ -34,7 +34,7 @@
           "en": "Frost Bloom"
         },
         "role": "Basic",
-        "effect": "Opens pores; filters air, gains nutrients, and creates a zone of lowered density that slows nearby enemies by 1 movement.",
+        "effect": "The creature opens its pores to filter the air and absorb nutrients, releasing a shimmering zone of thin air that strongly slows nearby enemies.",
         "numbers": {}
       },
       "weakness": "Cannot move; exposed during bloom.",
@@ -152,7 +152,7 @@
           "en": "Deep Root"
         },
         "role": "Defence",
-        "effect": "Immobile but gains +3 Defence; immune to knockback.",
+        "effect": "The creature anchors itself firmly to the ground with crystalline roots, becoming completely stationary and firmly resisting any force that tries to move it.",
         "numbers": {}
       },
       "weakness": "Cannot relocate if threatened.",
@@ -208,7 +208,7 @@
           "en": "Pulse Anticipation"
         },
         "role": "Social",
-        "effect": "Shares pulse warning with allies; allies gain +1 initiative on pulse turn.",
+        "effect": "The creature emits a resonant warning hum that alerts nearby allies, allowing them to react swiftly to incoming threats.",
         "numbers": {}
       },
       "weakness": "Attracts attention from thermal predators.",

@@ -57,6 +57,13 @@ func until(cond: Callable, budget := 1800) -> bool:
 		n += 1
 	return cond.call()
 
+## Like until, with a wall-clock budget: the island builds under a loading screen on worker threads (seconds, however many frames spin).
+func until_ms(cond: Callable, budget_ms := 90000) -> bool:
+	var t0 := Time.get_ticks_msec()
+	while not cond.call() and Time.get_ticks_msec() - t0 < budget_ms:
+		await process_frame
+	return cond.call()
+
 func _initialize() -> void:
 	OS.add_logger(log)
 	_run.call_deferred()
@@ -74,6 +81,7 @@ func _run() -> void:
 	game.studio_dir = studio_dir
 	root.size = Vector2i(1280, 720)
 	game.persist_settings = false
+	game.legacy_path = "user://cell_legacy_play_test_none.json"     # the owner's real legacy would be applied by the menu's new game
 	game.settings.grass = 3000
 	for a in OS.get_cmdline_user_args():
 		game.settings.quality = a      # make godot-play-test QUALITY=low|medium|high|auto forces the rock tier
@@ -165,13 +173,16 @@ func _walk_check(name: String, c, desc: Dictionary, m) -> void:
 			var sole: Vector3 = l.foot.global_position
 			lowest = minf(lowest, sole.y)
 			if ctl.pose.contact[j]:
-				worst_reach = maxf(worst_reach, (sole - l.foot_target).length())
-				if ctl.pose.foot_pitch[j] < 0.01:
+				# A54: the foot pivots about the ankle (on its own up axis), so with the heel raised its origin is no longer the target;
+				# the IK is checked where it acts: the ankle sits a sole-height above the target along world up
+				var ankle_w: Vector3 = l.creature.global_transform * l.ankle
+				worst_reach = maxf(worst_reach, (ankle_w - (l.foot_target + Vector3.UP * (l.width * 0.6))).length())
+				if ctl.pose.foot_pitch[j] < 0.003:
 					worst_flat = maxf(worst_flat, absf(sole.y))
 			else:
 				swing_feet += 1
 	if not desc.leg_ids.is_empty():
-		check(worst_reach < 0.002, "%s: point 3, the IK reaches the planted soles (%.2f mm)" % [name, worst_reach * 1000.0])
+		check(worst_reach < 0.002, "%s: point 3, the IK reaches the planted ankles (%.2f mm)" % [name, worst_reach * 1000.0])
 		check(worst_flat < Adapter.SOLE_TOLERANCE + 0.001, "%s: point 3, flat-footed soles on the ground (%.2f mm)" % [name, worst_flat * 1000.0])
 		check(lowest > -0.01, "%s: no foot below the ground (%.1f mm)" % [name, lowest * 1000.0])
 		check(swing_feet > 0, "%s: feet really swing" % name)
@@ -211,6 +222,9 @@ func _bone_signs(c, desc: Dictionary, m) -> void:
 # 2. main -> menu -> Play -> stage
 # ------------------------------------------------------------------------------------------------
 func _scene_is(script_name: String) -> bool:
+	# the island is entered through the loading screen and builds across frames: it counts once it is built
+	if script_name == "island.gd" and current_scene != null and "_building" in current_scene and current_scene._building:
+		return false
 	return current_scene != null and current_scene.get_script() != null and current_scene.get_script().resource_path.ends_with(script_name)
 
 func _press(button: Button) -> void:
@@ -223,7 +237,7 @@ func _stage() -> void:
 	var menu = current_scene
 	check(menu.play_button != null and menu.creator_button != null, "menu has Play and Creator")
 	_press(menu.play_button)
-	check(await until(func(): return _scene_is("island.gd"), 600), "Play opens the stage")
+	check(await until_ms(func(): return _scene_is("island.gd")), "Play opens the stage")
 	var island = current_scene
 	await frames(5)
 	var ui = island.stage_ui.ui
@@ -258,33 +272,33 @@ func _stage() -> void:
 	var sui = island.stage_ui
 	ui.set_mode(&"attack")            # no default mode: the loadout slots show once Attack is chosen
 	var lo0: Dictionary = game.stage.cur.loadout
-	# A25: a new run starts with the starter parts (pico, pata, ojo): it knows bite and spit (parts decide what a creature can slot)
-	check(lo0.slots == [0, 3, -1, -1] and lo0.can_edit and int(lo0.known) == 0b1001, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
-	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 3 and ui.abilities[2].get("empty", false), "the hotbar carries the C move ids of the slots")
-	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(1) == "spit" and ui.petals.state_at(3) == &"empty", "the petals show the glyph of each loadout move and a dashed empty slot (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(1)])
-	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout
+	# A25/A62: starter B (pico, zanca legs, ojo, crest) knows bite, spit, peck, pounce and roar (the hoof stomp went with the pezuna legs); the slots are bite, pounce, spit, roar (parts decide what a creature can slot)
+	check(lo0.slots == [0, 8, 3, 10] and lo0.can_edit and int(lo0.known) == 1417, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
+	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 8 and ui.abilities[2].move == 3, "the hotbar carries the C move ids of the slots")
+	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(2) == "spit" and ui.petals.id_at(3) != "" and ui.petals.state_at(3) != &"empty", "the petals show the glyph of each loadout move, the fourth slot carries the starter's own move (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(2)])
+	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout, spit's own slot (3) empties
 	await sim_ticks(2)
-	check(game.stage.cur.loadout.slots == [3, -1, -1, -1], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
-	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(1) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 2 empty")
+	check(game.stage.cur.loadout.slots == [3, 8, -1, 10], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
+	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(2) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 3 empty")
 	sui.assign_loadout(2, 4)                  # tail_strike: this creature has no tail, C says not_known
 	await sim_ticks(1)                        # (the next tick's walking input would overwrite the error)
-	check(game.stage.cur.loadout.slots == [3, -1, -1, -1] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
+	check(game.stage.cur.loadout.slots == [3, 8, -1, 10] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
 	sui.selected_id = 1
 	var orders0: int = sui.attack_orders.size()
 	_key(KEY_1)
 	check(sui.attack_orders.size() > orders0 and str(sui.attack_orders.back().order) == "attack #1 spit", "key 1 fires the move in slot 1 (%s)" % [sui.attack_orders.back()])
 	sui._pending_attack = null
 	orders0 = sui.attack_orders.size()
-	_key(KEY_2)
-	check(sui.attack_orders.size() == orders0, "key 2 on an empty slot fires nothing")
+	_key(KEY_3)
+	check(sui.attack_orders.size() == orders0, "key 3 on an empty slot fires nothing")
 	sui.toggle_loadout_panel()
 	check(ui.loadout_panel.visible_open and game.modal_open == false, "the panel opens at the nest (key L)")
 	await frames(2)
 	check(game.modal_open, "an open panel blocks movement input (modal_open)")
 	ui.loadout_panel.choose(0, 0)
-	ui.loadout_panel.choose(1, 3)
+	ui.loadout_panel.choose(2, 3)
 	await sim_ticks(3)
-	check(game.stage.cur.loadout.slots == [0, 3, -1, -1], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
+	check(game.stage.cur.loadout.slots == [0, 8, 3, 10], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
 	ui.loadout_panel.close_panel()
 	await frames(2)
 	sui.selected_id = -1
@@ -301,7 +315,7 @@ func _stage() -> void:
 	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
 	var moved := Vector2(island.player_pos.x - start.x, island.player_pos.z - start.z).length()
 	check(game.stage.cur.tick - t0 >= 60, "6 s of game time passed (%d ticks)" % (game.stage.cur.tick - t0))
-	check(moved > 8.0, "the player walked %.1f m" % moved)
+	check(moved > 3.0, "the player walked %.1f m (A39: a body walks at Fr 0.24, the starter about 1 m/s)" % moved)
 	check(footfalls >= 6, "locomotion produced %d foot contacts" % footfalls)
 	var played1: int = int(root.get_node("Audio").played.get("step-0", 0)) + int(root.get_node("Audio").played.get("step-1", 0)) + int(root.get_node("Audio").played.get("step-2", 0))
 	check(played1 > played0, "footstep sounds played (%d)" % (played1 - played0))
@@ -309,7 +323,51 @@ func _stage() -> void:
 	for l in player.body.legs:
 		lowest = minf(lowest, l.foot.global_position.y - game.visual_ground(l.foot.global_position.x, l.foot.global_position.z))
 	check(lowest > -0.03, "feet are on the visible ground, Game.visual_ground (lowest %.1f mm relative)" % (lowest * 1000.0))
-	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
+	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.25, "the actor stands on Game.ground (within the owner style sprawl crouch, A42)")
+
+	print("== jump (Space): up, down, no damage, a running jump goes further")
+	await sim_ticks(8)
+	var hp_j: float = float(game.stage.cur.entities[0].hp)
+	var y_ground: float = float(game.stage.cur.player.y)
+	var jx0: Vector3 = island.player_pos
+	var press := {"forward": false, "back": false, "left": false, "right": false, "sprint": false, "jump": true}
+	island.player_input.keys_override = press
+	var peak := 0.0
+	var air_ticks := 0
+	var seen_jumping := false
+	var seen_pose_lift := false
+	for i in 40:
+		await process_frame
+		var pl: Dictionary = game.stage.cur.player
+		if bool(pl.get("jumping", false)):
+			seen_jumping = true
+			air_ticks += 1
+			peak = maxf(peak, float(pl.y) - y_ground)
+			var lift_now: float = island.player_pos.y - y_ground
+			seen_pose_lift = seen_pose_lift or lift_now > 0.1
+		if seen_jumping and not bool(pl.get("falling", false)):
+			break
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	check(seen_jumping, "Space makes the player airborne by a jump (C: player.jumping)")
+	check(peak > 0.25 and peak < 0.7, "the hop of starter B reaches %.2f m (about 0.8 x hip height)" % peak)
+	check(seen_pose_lift, "the actor rises with the jump")
+	await sim_ticks(8)
+	check(not bool(game.stage.cur.player.falling) and absf(float(game.stage.cur.player.y) - y_ground) < 0.3, "and lands")
+	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a jump on flat ground does no damage")
+	check(Vector2(island.player_pos.x - jx0.x, island.player_pos.z - jx0.z).length() < 0.5, "a standing jump stays in place")
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "run": false}
+	await sim_ticks(5)      # short: the shore is a few metres ahead on the current island, and C refuses a jump in deep water
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "jump": true}
+	await sim_ticks(1)
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
+	await until(func() -> bool: return bool(game.stage.cur.player.get("jumping", false)), 60)
+	var air_start: Vector2 = Vector2(island.player_pos.x, island.player_pos.z)
+	await until(func() -> bool: return not bool(game.stage.cur.player.get("falling", false)), 120)
+	var air_dist := Vector2(island.player_pos.x - air_start.x, island.player_pos.z - air_start.y).length()
+	check(air_dist > 0.5, "a running jump carries its speed: %.1f m through the air" % air_dist)
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	await sim_ticks(10)
+	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a running jump on flat ground does no damage either")
 
 	print("== pause menu: save game / load game")
 	var Scenario = load("res://devtools/scenario.gd")
@@ -338,13 +396,40 @@ func _stage() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://play-test/saves"))
 	Scenario.save_dir = "user://saves"
 
-	print("== camera: left drag orbits, a click does not")
+	print("== camera: the left button never moves the camera (brief creature-fixes 1)")
 	var yaw_before: float = island.chase.yaw
+	var pitch_before: float = island.chase.orbit_pitch
+	var zt_before: float = island.chase.z_target
 	island.player_input.clear_destination()
-	await _drag(Vector2(640, 500), Vector2(720, 500))
+	await _drag(Vector2(640, 500), Vector2(720, 420))
 	await frames(2)
-	check(island.chase.yaw != yaw_before, "a left drag orbits the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
+	check(island.chase.yaw == yaw_before and island.chase.orbit_pitch == pitch_before, "a left drag does not orbit the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
 	check(island.player_input.destination == null, "a left drag does not set a destination")
+	var dbl := InputEventMouseButton.new()
+	dbl.position = Vector2(640, 500)
+	dbl.button_index = MOUSE_BUTTON_LEFT
+	dbl.pressed = true
+	dbl.double_click = true
+	root.push_input(dbl)
+	dbl.pressed = false
+	root.push_input(dbl)
+	await frames(2)
+	check(island.chase.z_target == zt_before, "a left double click does not zoom")
+	_click(Vector2(640, 520))
+	await frames(2)
+	check(island.chase.mouse_walk == (island.player_input.destination != null), "walking to a left click does not turn the camera")
+	var walked := 0
+	var turned := 0
+	for i in 90:
+		var y0: float = island.chase.yaw
+		var walking: bool = island.chase.mouse_walk
+		await frames(1)
+		if walking and island.chase.mouse_walk:
+			walked += 1
+			if island.chase.yaw != y0:
+				turned += 1
+	check(turned == 0, "no camera yaw change in %d frames of walking to a click" % walked)
+	island.player_input.clear_destination()
 	island.chase.reset_behind()
 	var z_before: float = island.chase.z_target
 	var zin := InputEventMouseButton.new()
@@ -379,7 +464,9 @@ func _stage() -> void:
 	check(not ui.ring.visible and ui.mode == &"attack", "clicking the east side of the ring chooses Attack and closes it")
 	check(ui.petals.count() == 4 and ui.defence.shown, "Attack shows the four petals and the guard and dodge marks")
 	check(ui.abilities.size() == 4 and ui.abilities[0].id == "bite", "keys 1-4 carry the attack moves")
-	check(await until(func(): return game.stage.cur.active >= 0, 2400), "an encounter starts (active = %d)" % game.stage.cur.active)
+	# species-v8 (A31): Garfio takes no initiative during its grace minute and until the first evolution, so the player starts the fight
+	ui._press(0)
+	check(await until(func(): return game.stage.cur.active >= 0, 7200), "an encounter starts (active = %d)" % game.stage.cur.active)
 	await sim_ticks(2)
 	ui.clear_selection()
 	sui._fight_prev = false           # as if the fight had just started with nothing selected
@@ -394,6 +481,9 @@ func _stage() -> void:
 	_key(KEY_1)
 	await sim_ticks(40)
 	var p_now: Dictionary = game.stage.cur.entities[0]
+	check(p_now.has("grip_deg") and p_now.has("sliding"), "A59 exposes grip and slipping to animation")
+	var gp: Dictionary = CporeWorld.grip_profile(JSON.stringify({"nodes": [{"y": 0, "z": 0, "r": 1}], "parts": [{"type": "leg_sucker"}]}))
+	check(int(gp.get("grip_deg", 0)) == 75, "A59 sucker preview clings at 75 degrees")
 	var e_now: Dictionary = game.stage.cur.entities[1]
 	check(events_seen > 0, "combat events reached the stage (%d)" % events_seen)
 	check(windup_seen, "the wind-up tell was shown for an enemy wind-up")
@@ -459,6 +549,9 @@ func _actions_begin(island) -> Dictionary:
 		if f1 == null or int(f1.phase) != 1 or int(f1.move) < 0:
 			st.wind.n = 0
 			return
+		if w.driver.layer.paused():
+			st.wind.n = 0            # A64 hit-pause: the layer clock stands still, so the fade-in restarts after it
+			return
 		st.wind.n += 1
 		st.wind.seen += 1
 		if st.wind.n > 4 and w.driver.layer.weight_of(names[int(f1.move)]) < 0.99:
@@ -481,8 +574,13 @@ func _actions_end(island, st: Dictionary) -> void:
 	var skipped := 0
 	for kind in [0, 1]:
 		for hf in st.hits[kind]:
-			if int(hf) == last_frame and st.hits[0].has(last_frame) != st.hits[1].has(last_frame):
-				skipped += 1     # the lethal last hit ends the fight: its layer never plays an impact
+			var trade: bool = st.hits[0].has(last_frame) and st.hits[1].has(last_frame)
+			var attacker_dead: bool = "death" in island.hosts[kind].driver.layer.current_ids()
+			if int(hf) == last_frame and (not trade or attacker_dead):
+				# the lethal last hit ends the fight: its layer never plays an impact. When both creatures hit in that
+				# same tick (a trade), only the one that died is excused: its death replaces the attack instance, while
+				# the survivor's impact must still fire.
+				skipped += 1
 				matched += 1
 				continue
 			var best := 1000000
@@ -589,6 +687,9 @@ func _studio_and_back() -> void:
 	check(await until(func(): return current_scene != null and "model" in current_scene and current_scene.model != null, 600), "Creator opens the studio")
 	var studio = current_scene
 	await frames(5)
+	check(str(studio.model.doc.get("name", "")) == "Starter B", "the creator opens on the starter B (%s)" % studio.model.doc.get("name", ""))
+	studio.model.new_from_seed("Merodeador")           # the interface checks below need the horn and the big body
+	await frames(5)
 	var view = studio.view
 	check(view.get_script().resource_path.ends_with("creature_view_real.gd") and view.creature != null, "the studio uses the real creature view")
 	var before_parts: int = view.genome.parts.size()
@@ -656,8 +757,12 @@ func _studio_and_back() -> void:
 	check(await until(func(): return _scene_is("main_menu.gd"), 600), "the studio returns to the menu")
 	var g: Dictionary = game.player_genome()
 	check(g.get("name", "") == "Wire Test" and g.parts.size() == before_parts + 1, "Play will use the saved genome (%s, %d parts)" % [g.get("name", ""), g.parts.size()])
+	var dev_node = game.get_node_or_null("/root/Dev")
+	var dev_was: bool = dev_node != null and dev_node.enabled
+	if dev_node != null:
+		dev_node.enabled = false       # normal build: the A25 rule
 	_press(current_scene.play_button)
-	check(await until(func(): return _scene_is("island.gd"), 600), "Play opens the stage again")
+	check(await until_ms(func(): return _scene_is("island.gd")), "Play opens the stage again")
 	await frames(5)
 	var host = current_scene.hosts[0]
 	# A25: a new run starts from the saved creature's body but with the starter parts only (pico, pata, ojo)
@@ -665,3 +770,57 @@ func _studio_and_back() -> void:
 	check(host.body.genome.get("name", "") == "Wire Test" and starter_only, "the stage creature is the saved genome with starter parts (%d parts)" % host.body.genome.parts.size())
 	check(host.driver.controller != null and host.driver.problems.is_empty(), "the edited creature is still driven by locomotion")
 	await sim_ticks(20)
+	# brief creature-fixes 5: the built island pieces are kept between scene changes; "Jugar con esta criatura" saves and enters with them
+	check(current_scene.kit_reused and game.kit_hits >= 1, "the island pieces were taken from the kit on re-entry (hits %d)" % game.kit_hits)
+	var terrain_node = current_scene.terrain_chunks
+	game.goto_studio()
+	check(await until(func(): return current_scene != null and "model" in current_scene and current_scene.model != null, 600), "the studio opens again from the island")
+	var studio2 = current_scene
+	check(studio2.play_creature_btn != null and studio2.play_creature_btn.visible, "the studio has the Jugar con esta criatura button")
+	if dev_node != null:
+		dev_node.enabled = dev_was
+	studio2.model.add_part("cuerno", 0.72, 0.8)       # a part that is not a starter part
+	var saved_types := {}
+	for sp in studio2.model.doc.parts:
+		saved_types[str(sp.type)] = true
+	studio2.model.set_name_("Play Button Test")
+	studio2.play_with_creature()
+	check(await until_ms(func(): return _scene_is("island.gd")), "Jugar con esta criatura opens the island")
+	await frames(5)
+	check(current_scene.hosts[0].body.genome.get("name", "") == "Play Button Test", "the island has the creature that was just saved")
+	# A31: in dev builds the creature keeps all its parts and C knows the player owns them (normal builds: the A25 rule above)
+	var kept_types := {}
+	for kp in current_scene.hosts[0].body.genome.parts:
+		kept_types[str(kp.type)] = true
+	check(dev_node != null and dev_was and kept_types.has("cuerno") and kept_types.keys().all(func(k): return saved_types.has(k)) and saved_types.keys().all(func(k): return kept_types.has(k)), "dev build: Jugar con esta criatura keeps all %d part types (%d kept)" % [saved_types.size(), kept_types.size()])
+	await sim_ticks(2)
+	var owned_ids := {}
+	for row in game.stage.cur.parts.discovered:
+		if bool(row.owned):
+			owned_ids[str(row.id)] = true
+	check(kept_types.keys().all(func(k): return owned_ids.has(k) or not preload("res://game/stage/lineage_session.gd").part_ids().has(k) or preload("res://game/stage/lineage_session.gd").part_ids().find(k) >= 46), "and C marks those parts owned (%d owned)" % owned_ids.size())
+	check(current_scene.kit_reused and current_scene.terrain_chunks == terrain_node, "and the same built terrain (not rebuilt: %d ms build)" % int(current_scene.build_ms.get("total", -1)))
+	await sim_ticks(20)
+	# brief creature-fixes 6: resting the pointer on a plant notes it (whisper, journal page, saved with the game)
+	var isl2 = current_scene
+	check(isl2.props.records.size() > 0, "the island has plants (%d records)" % isl2.props.records.size())
+	var rec: Dictionary = isl2.props.records[0]
+	var seen: String = isl2.gaze.pick(isl2.props.records, (rec.p as Vector3) + Vector3(0, float(rec.height) + 10.0, 0), Vector3.DOWN)
+	check(seen != "", "a ray down onto a plant picks a plant (%s)" % seen)
+	isl2.gaze.known.clear()
+	var noted := ""
+	for i in 40:
+		noted = isl2.gaze.tick(0.1, seen)
+		if noted != "":
+			break
+	check(noted == seen, "%.1f s on it notes it" % isl2.gaze.DWELL)
+	isl2.stage_ui.plant_noticed(noted)
+	check(isl2.stage_ui.ui.words.whisper_text.begins_with("New plant") or isl2.stage_ui.ui.words.whisper_text.begins_with("Nueva planta"), "the whisper says it (%s)" % isl2.stage_ui.ui.words.whisper_text)
+	check(isl2.stage_ui._journal_model().plants.size() == 1, "the journal model has the plant")
+	check(isl2.scenario_ctx().plants == [noted], "the save carries the plant list")
+	var built: Dictionary = preload("res://devtools/scenario.gd").build(isl2.stage, isl2.scenario_ctx(), "save", "plants", "", false)
+	check(built.json.plants == [noted], "the scenario file has the plants")
+	isl2.gaze.known.clear()
+	isl2.gaze.from_list(built.json.plants)
+	check(isl2.gaze.known.has(noted), "and loading brings them back")
+	await sim_ticks(5)

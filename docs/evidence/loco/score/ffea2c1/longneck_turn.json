@@ -1,0 +1,89 @@
+{
+  "body": "longneck",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 19.28,
+    "body_pitch_deg": 0.0,
+    "cadence_hz": 2.98,
+    "duty_factor": {
+      "mean": 0.5177,
+      "per_foot": [
+        0.5333,
+        0.5008,
+        0.5431,
+        0.4935
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.13,
+      "p95": 0.0,
+      "stances": 499
+    },
+    "foot_spacing_ratio": 0.7145,
+    "footfall": {
+      "contact": [
+        "11111100001111100000",
+        "00000111110000011111",
+        "10000111111000011111",
+        "11111000001111100000"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 1,
+      "stride_frames": 10
+    },
+    "gait_frac": {
+      "amble": 0.0429,
+      "trot": 0.9206,
+      "walk": 0.0365
+    },
+    "gait_symmetry": 0.998,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -5.74,
+      "p95": -2.72
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 12.2,
+      "p95": 151.64
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8851,
+    "min_turn_radius_m": 0.33,
+    "moving_frac": 0.9762,
+    "pitch_follow": null,
+    "pivot_frac": 0.031,
+    "pivot_frac_of_turns": 0.4333,
+    "roll_plant_lag": 0.137,
+    "shoulder_hip_ratio": 1.5556,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0628,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.657,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 6.34,
+    "torso_bob_frac": 0.0426,
+    "torso_roll_deg": 5.29
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

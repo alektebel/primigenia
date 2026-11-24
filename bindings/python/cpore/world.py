@@ -13,7 +13,7 @@ from .env import lib as _core_lib
 # Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
 # is asked from the library (cp_stage_world_size) when the stage API is bound.
 _WORLD_BYTES = 0
-_SETUP_BYTES = 17748
+_SETUP_BYTES = 17948
 
 CP_STAGE_CONTINUE = 0
 CP_STAGE_WAIT = 1
@@ -54,7 +54,9 @@ class CpCombatProfile(ctypes.Structure):
         ("stamina", c_float),
         ("speed", c_float),
         ("radius_cm", c_uint16),
-        ("_pad2", c_uint16),
+        ("extra", c_uint8 * 8),
+        ("carnivore", c_uint8),
+        ("_pad2", c_uint8),
     ]
 
 
@@ -204,7 +206,7 @@ def input_from_mapping(action: dict) -> CpStageInput:
             "guard": CP_STAGE_GUARD,
             "dodge": CP_STAGE_DODGE,
             "loadout": CP_STAGE_LOADOUT,
-            "inspect": 16, "buy_part": 17, "buy_level": 18, "buy_tier": 19,
+            "inspect": 16, "buy_part": 17, "buy_level": 18, "buy_tier": 19, "dig": 20, "quest": 21,
             "befriend": CP_STAGE_BEFRIEND,
             "gift": CP_STAGE_GIFT,
             "observe": CP_STAGE_OBSERVE,
@@ -241,7 +243,7 @@ def _parse_profile(tokens, idx):
         mouth, charge, spit, tail, guard,
         (c_uint8 * 3)(),
         c_float(hp), c_float(stamina), c_float(speed),
-        c_uint16(radius), c_uint16(0),
+        c_uint16(radius), (c_uint8 * 8)(), c_uint8(0), c_uint8(0),
     )
     return prof, idx + 9
 
@@ -373,6 +375,12 @@ class StageWorld:
         self._lib.cp_stage_apply.argtypes = [c_void_p, c_char_p]
         self._lib.cp_stage_apply.restype = c_int32
         return int(self._lib.cp_stage_apply(self._world, json.dumps(genome).encode()))
+
+    def set_run(self, on: bool) -> None:
+        """Toggle running (1.8 times walk speed); requires at least 150/1000 stamina."""
+        self._lib.cp_stage_set_run.argtypes = [c_void_p, c_int32]
+        self._lib.cp_stage_set_run.restype = None
+        self._lib.cp_stage_set_run(self._world, int(bool(on)))
 
     def set_tiers(self, on: bool) -> None:
         """Tier forms are built but off by default (A25)."""

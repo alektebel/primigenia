@@ -146,7 +146,7 @@
           "en": "Redox Lance"
         },
         "role": "Poke",
-        "effect": "Fires a conductive pulse, dealing 12 shock damage and breaking stealth",
+        "effect": "The creature fires a crackling conductive pulse that shocks nearby enemies and forces cloaked foes to reveal themselves.",
         "numbers": {}
       },
       "weakness": "Loses charge quickly; requires recharging in ion-rich zones",

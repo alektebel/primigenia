@@ -1,0 +1,22 @@
+godot-loco-test
+299 checks, 0 failures, 129.9 s
+
+godot-devtools-test
+devtools tests: 909 checks, 0 failures
+
+godot-test
+SCRIPT ERROR: Invalid access to property or key 'order' on a base object of type 'Dictionary'.
+ERROR: String formatting error: unsupported format character.
+SCRIPT ERROR: Attempted to free a RefCounted object.
+M0 tests: 1138 checks, 0 failures
+
+godot-feel-test
+feel test: 76 checks, 0 failures
+
+godot-actions-test
+actions tests: 383 checks, 0 failures
+
+godot-play-test
+play test: 237 checks, 0 failures
+
+SVG legacy/native contact parity: PASS; check-only controller/gait/score entrypoint/score test: PASS; git diff --check: PASS

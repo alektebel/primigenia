@@ -1,0 +1,87 @@
+{
+  "body": "hero",
+  "fps": 30.0,
+  "frames": 720,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 8.07,
+    "body_pitch_deg": 0.78,
+    "cadence_hz": 1.624,
+    "duty_factor": {
+      "mean": 0.4097,
+      "per_foot": [
+        0.4111,
+        0.4111,
+        0.4083,
+        0.4083
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.27,
+      "p95": 1.23,
+      "stances": 154
+    },
+    "foot_spacing_ratio": 0.8532,
+    "footfall": {
+      "contact": [
+        "111111110000000000011111110000000000",
+        "000000000011111110000000000011111111",
+        "000011111111000000000001111111000000",
+        "110000000000011111111000000000001111"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 10,
+      "stride_frames": 18
+    },
+    "gait_frac": {
+      "amble": 1.0
+    },
+    "gait_symmetry": 0.998,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -3.89,
+      "p95": 0.03
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 14.36,
+      "p95": 26.07
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.845,
+    "min_turn_radius_m": 3.58,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.129,
+    "shoulder_hip_ratio": 1.1973,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.1236,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 3.194,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 23.61,
+    "torso_bob_frac": 0.1295,
+    "torso_roll_deg": 5.22
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "walk",
+  "start_tick": 40,
+  "ticks": 240
+}

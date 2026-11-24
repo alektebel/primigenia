@@ -3,10 +3,11 @@ extends RefCounted
 
 const Genome := preload("genome.gd")
 
-var dir := "user://studio"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+var dir := ""
 
-func _init(base_dir := "user://studio") -> void:
-	dir = base_dir
+func _init(base_dir := "") -> void:
+	dir = base_dir if base_dir != "" else TestIsolation.user("studio")
 	DirAccess.make_dir_recursive_absolute(dir)
 
 static func slug(name: String) -> String:

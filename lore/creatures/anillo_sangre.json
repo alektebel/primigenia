@@ -146,7 +146,7 @@
           "en": "Ring-Gaze"
         },
         "role": "Engage",
-        "effect": "Reveals hidden paths, enemies, or resources through heavy haze, fog, or during the 40-minute eclipse when visual landmarks vanish",
+        "effect": "The creature's sharp vision strongly pierces through thick fog and haze, revealing nearby hidden paths, enemies, and resources. This keen sight remains active even during an eclipse when familiar landmarks vanish.",
         "numbers": {}
       },
       "weakness": "Glare: Intense direct stellar flare or unfiltered starlight washes out polarization contrast, causing temporary blindness",

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art Remains — carcasses &amp; fossils preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: system-ui, sans-serif; }
+  canvas { display: block; }
+  #hud {
+    position: absolute; top: 0; left: 0; width: 100%;
+    pointer-events: none; color: #fff; padding: 12px 16px;
+    font-size: 13px; line-height: 1.5;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.45), transparent 60%);
+  }
+  #hud h1 { font-size: 15px; font-weight: 600; margin-bottom: 4px; letter-spacing: 0.02em; }
+  #hud span { opacity: 0.7; }
+  #tri-counts {
+    position: absolute; bottom: 12px; left: 16px;
+    font-size: 11px; color: #ccc; opacity: 0.8;
+    background: rgba(0,0,0,0.5); padding: 8px 12px;
+    border-radius: 4px; pointer-events: none;
+    line-height: 1.6;
+  }
+  #controls {
+    position: absolute; top: 12px; right: 16px;
+    font-size: 12px; color: #fff; opacity: 0.7;
+    text-align: right; pointer-events: none;
+  }
+  #loader {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: #000; color: #fff; font-size: 18px; z-index: 999;
+    flex-direction: column;
+  }
+  #loader .err { color: #f66; font-size: 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div id="loader">Loading…<div class="err" id="err"></div></div>
+
+<div id="hud">
+  <h1>Art Remains — Carcasses &amp; Fossils</h1>
+  <span>G3 (carcass) · G4 (fossil) · Three.js r128 · SwiftShader preview</span>
+</div>
+<div id="tri-counts"></div>
+<div id="controls">
+  orbit: left-drag · pan: right-drag<br>
+  zoom: scroll
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script type="module">
+import * as REMAINS from './remains.js';
+var T = THREE;
+
+// ---------- renderer / scene / camera ----------
+var scene = new T.Scene();
+scene.background = new T.Color(0x87a5c0);
+scene.fog = new T.Fog(0xc0c8c0, 40, 120);
+
+var camera = new T.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 800);
+camera.position.set(12, 6, 14);
+
+var renderer = new T.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputEncoding = T.sRGBEncoding;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = T.PCFSoftShadowMap;
+renderer.toneMapping = T.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+document.body.appendChild(renderer.domElement);
+
+// ---------- orbit controls ----------
+var controls = new T.OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.5, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 3;
+controls.maxDistance = 60;
+controls.maxPolarAngle = Math.PI * 0.48;
+
+// ---------- golden-hour lighting ----------
+var sun = new T.DirectionalLight(0xffd6a0, 3.2);
+sun.position.set(-15, 6, -10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -20;
+sun.shadow.camera.right = 20;
+sun.shadow.camera.top = 20;
+sun.shadow.camera.bottom = -20;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 50;
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+scene.add(sun.target);
+
+var hemi = new T.HemisphereLight(0xa8ccf8, 0x6a6a5c, 0.5);
+scene.add(hemi);
+
+// ---------- meadow ground ----------
+{
+  var gradTex = new T.DataTexture(
+    new Uint8Array([46, 46, 82, 82, 112, 112]), 6, 1, T.LuminanceFormat);
+  gradTex.minFilter = gradTex.magFilter = T.NearestFilter;
+  gradTex.needsUpdate = true;
+
+  var groundMat = new T.MeshToonMaterial({
+    gradientMap: gradTex,
+    color: new T.Color(0.185, 0.335, 0.075),
+    roughness: 0.9,
+  });
+
+  var groundGeo = new T.PlaneGeometry(100, 100, 1, 1);
+  groundGeo.rotateX(-Math.PI / 2);
+  var ground = new T.Mesh(groundGeo, groundMat);
+  ground.receiveShadow = true;
+  ground.position.y = -0.02;
+  scene.add(ground);
+}
+
+// ---------- scattered rocks ----------
+{
+  var gradTex2 = new T.DataTexture(
+    new Uint8Array([46, 46, 82, 82, 112, 112]), 6, 1, T.LuminanceFormat);
+  gradTex2.minFilter = gradTex2.magFilter = T.NearestFilter;
+  gradTex2.needsUpdate = true;
+
+  var rockMat = new T.MeshToonMaterial({
+    gradientMap: gradTex2,
+    color: new T.Color(0.28, 0.215, 0.14),
+    roughness: 0.9,
+  });
+
+  var positions = [], normals = [], colors = [], indices = [];
+  var vCount = 0;
+  var r = Math.random;
+  for (var i = 0; i < 40; i++) {
+    var x = (r() - 0.5) * 40;
+    var z = (r() - 0.5) * 40;
+    var scale = 0.15 + r() * 0.35;
+    var icoGeo = new T.IcosahedronGeometry(scale, 0);
+    var pos = icoGeo.attributes.position.array;
+    var idx = icoGeo.index.array;
+    for (var j = 0; j < pos.length; j += 3) {
+      positions.push(pos[j] + x, pos[j + 1] - scale * 0.3, pos[j + 2] + z);
+      normals.push(0, 1, 0);
+      var shade = 0.85 + r() * 0.3;
+      colors.push(0.28 * shade, 0.215 * shade, 0.14 * shade);
+    }
+    for (var k = 0; k < idx.length; k++) indices.push(idx[k] + vCount);
+    vCount += pos.length / 3;
+  }
+  var merged = new T.BufferGeometry();
+  merged.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+  merged.setAttribute('normal', new T.Float32BufferAttribute(normals, 3));
+  merged.setAttribute('color', new T.Float32BufferAttribute(colors, 3));
+  merged.setIndex(indices);
+  var rockMesh = new T.Mesh(merged, rockMat);
+  rockMesh.receiveShadow = true;
+  scene.add(rockMesh);
+}
+
+// ---------- count triangles ----------
+var triTotal = 0;
+function countTris(obj) {
+  obj.traverse(function (c) {
+    if (c.isMesh && c.geometry) {
+      var g = c.geometry;
+      if (g.index) triTotal += g.index.count / 3;
+      else triTotal += g.attributes.position.count / 3;
+    }
+  });
+}
+
+// ---------- place carcasses ----------
+console.log('Building carcasses...');
+try {
+  var carcassGroup = REMAINS.buildAllCarcasses(T, 42);
+  console.log('Carcass group:', carcassGroup.name, 'children:', carcassGroup.children.length);
+  carcassGroup.position.set(-4, 0, -2);
+  carcassGroup.rotation.y = 0.4;
+  countTris(carcassGroup);
+  scene.add(carcassGroup);
+  console.log('Carcasses added');
+} catch (e) {
+  document.getElementById('err').textContent = 'Carcass error: ' + e.message + '\n' + e.stack;
+  console.error('Carcass error:', e);
+  throw e;
+}
+
+// ---------- place fossils ----------
+try {
+  var fossilGroup = REMAINS.buildAllFossils(T, 137);
+  fossilGroup.children.forEach(function (biomeGroup, idx) {
+    biomeGroup.position.set(-2 + idx * 3, 0, 3);
+    biomeGroup.rotation.y = -0.3;
+    countTris(biomeGroup);
+  });
+  scene.add(fossilGroup);
+} catch (e) {
+  document.getElementById('err').textContent = 'Fossil error: ' + e.message;
+  throw e;
+}
+
+// ---------- inset close-up cameras ----------
+var insetDefs = [
+  { camPos: [6, 1.5, 2],     target: [-4, 0.3, -2],  label: 'Fresh carcass' },
+  { camPos: [6, 1.5, -0.8],  target: [-4, 0.2, -2.8], label: 'Picked carcass' },
+  { camPos: [6, 1.5, 5.5],   target: [-2, 0.3, 3],   label: 'Skull (meadow)' },
+  { camPos: [6, 1.2, 3.2],   target: [1, 0.25, 3],   label: 'Ribcage (alpine)' },
+  { camPos: [6, 1.5, 1.2],   target: [4, 0.3, 3],    label: 'Spine (beach)' },
+];
+
+var insets = [];
+for (var ii = 0; ii < insetDefs.length; ii++) {
+  var ip = insetDefs[ii];
+  var rtW = 512, rtH = 384;
+  var renderTarget = new T.WebGLRenderTarget(rtW, rtH, {
+    minFilter: T.LinearFilter,
+    magFilter: T.LinearFilter,
+    format: T.RGBAFormat,
+  });
+
+  var insetCamera = new T.PerspectiveCamera(40, rtW / rtH, 0.1, 50);
+  insetCamera.position.set.apply(insetCamera, ip.camPos);
+  insetCamera.lookAt.apply(insetCamera, ip.target);
+
+  var planeGeo = new T.PlaneGeometry(2.2, 1.65);
+  var planeMat = new T.MeshBasicMaterial({ map: renderTarget.texture });
+  var plane = new T.Mesh(planeGeo, planeMat);
+  plane.position.set(9, 1.5, -3);
+  plane.rotation.x = -0.3;
+  plane.rotation.y = -0.25;
+  scene.add(plane);
+
+  var frameGeo = new T.EdgesGeometry(planeGeo);
+  var frameMat = new T.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+  var frame = new T.LineSegments(frameGeo, frameMat);
+  frame.position.copy(plane.position);
+  frame.rotation.copy(plane.rotation);
+  frame.position.z += 0.01;
+  scene.add(frame);
+
+  insets.push({ camera: insetCamera, target: new T.Vector3(...ip.target), renderTarget: renderTarget, label: ip.label });
+}
+
+// ---------- tri count display ----------
+var triEl = document.getElementById('tri-counts');
+var drawCalls = 0;
+scene.traverse(function (c) { if (c.isMesh || c.isLineSegments || c.isLine) drawCalls++; });
+triEl.innerHTML = 'Draw calls: ' + drawCalls + '<br>Total triangles: ~' + Math.round(triTotal);
+
+// ---------- start rendering ----------
+document.getElementById('loader').remove();
+console.log('Scene ready! Draw calls:', drawCalls, 'Triangles:', triTotal);
+
+var clock = new T.Clock();
+function render() {
+  requestAnimationFrame(render);
+  controls.update();
+  for (var i = 0; i < insets.length; i++) {
+    var inc = insets[i];
+    inc.camera.lookAt(inc.target);
+  }
+  for (var i = 0; i < insets.length; i++) {
+    var inc = insets[i];
+    renderer.setRenderTarget(inc.renderTarget);
+    renderer.render(scene, inc.camera);
+  }
+  renderer.setRenderTarget(null);
+  renderer.render(scene, camera);
+}
+render();
+
+// ---------- resize ----------
+window.addEventListener('resize', function () {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

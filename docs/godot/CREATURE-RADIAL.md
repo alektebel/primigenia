@@ -39,17 +39,25 @@ Same interface as `loco_controller` (`reset`, `set_intent`, `step`, `pose`, `foo
 slack-tide collapse). There is no fixed front: the visual `body_yaw` counter-rotates the body against the host yaw, so
 the animal never turns more than pi/fold; it only changes its lead arm.
 
-## The three wild species (S5a: visual only)
+## The three wild species (snapshot v8)
 
 `godot/game/data/{brujula,cuarteta,corona}.json` (cpore.creature/5 with a radial `plan`); `godot/game/island/radial_fauna.gd`
-places them on the island with no C entity (no stats, no combat, no snapshot; every golden is untouched). Placement is
-data (`RadialFauna.plan(terrain, world_seed, nest)`), deterministic like `flora_placement.gd`:
+provides their deterministic habitat planner (`RadialFauna.plan(terrain, world_seed, nest)`). `StageSetup.add_radial` turns
+Brujula and Corona spots into C spawns (zero-based species 6 and 7, legs 5 and 6); `island.gd` builds their normal ActorHosts
+from the existing `plan` genomes. Only Cuarteta is spawned as ambient fauna by `radial_fauna.gd`, so there are no duplicate
+land animals. Both simulated species support the standard social, observe, combat, loot and journal paths.
+
+Brujula is territorial and omnivorous (detritus, mollusks and carrion), roaming at 0.3 m/s and escaping at 2.0 m/s. Corona
+is timid, carnivorous (plankton, benthic invertebrates and carrion), crepuscular, with a 1.4 m/s speed. Tides remain deferred.
+Snapshot v8 migrates the six-species v7 arrays and verifies the original state hash before accepting the save.
+
+Placement is deterministic like `flora_placement.gd`:
 
 | species | where | animals | motion |
 |---|---|---|---|
-| brujula (pentaradial star) | nearest intertidal shelf from the nest: ground .15..1.8 m, normal.y >= .9, within 30 m of the sea | 4, 3..6 m round a pool point | glide, now and then a rowing burst |
+| brujula (pentaradial star) | nearest intertidal shelf from the nest: ground .15..1.8 m, normal.y >= .9, within 30 m of the sea | 4, 3..6 m round a pool point | 0.3 m/s glide; 2.0 m/s rowing when driven off or provoked |
 | cuarteta (4-arm bell, gel .7) | sea cells 1..6 m deep, 15..60 m off the shelf | 5, bell top at y = -0.12 | jet along a seeded loop |
 | corona (6-arm disc) | a level tide-pool flat at the water's edge (ground 0.1..1.6 m, level within 25 cm over a 3 m ring, sea within 10 m), the nearest to the lowest tidal cave mouth, 20 m from the brujula pool; chosen on a 6 m grid, deterministic, logged. Caves are only notches in steep slopes, so the old cave rule (lowest entrance floor that is not `caves[0]`, 3..6 m inside) is now only the fallback when no flat exists | 2, 1.6..3.5 m round the flat | cilia glide, hunkers while waiting |
 
-Culled beyond 80 m. Hooked from `island.gd` in one block (only when wild creatures are on). The lore test checks
+Ambient bells are culled beyond 80 m. Hooked from `island.gd` in one block (only when wild creatures are on). The lore test checks
 `body_plan.arms == plan.fold`. Evidence: `make godot-radial-evidence` (docs/evidence/godot/radial/).

@@ -154,7 +154,7 @@
           "en": "Spiral Assist"
         },
         "role": "Control",
-        "effect": "Uses radiation pressure to gain 0.5 altitude without mass cost. Reduces energy cost of outbound transfers.",
+        "effect": "The creature unfurls a hinged sail to catch light, lifting itself upward effortlessly. This makes departing the area noticeably easier.",
         "numbers": {}
       },
       "weakness": "Sail blocks retro-thrust; cannot burn inward while sail is active.",

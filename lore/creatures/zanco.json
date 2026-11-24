@@ -16,7 +16,9 @@
       "Garfio",
       "Espinodo",
       "Merodeador"
-    ]
+    ],
+    "trophic": "primary_consumer",
+    "role": "grazer"
   },
   "body": "Tall stilt-walker with elongated metapodials that absorb shock and keep the body clear of ground fog and biting insects. Their neck-sway balance display counters the 1.6× wind force on exposed ridges, while their rhythmic stomp-dance doubles as a ground-drum alarm.",
   "chains": [
@@ -99,7 +101,7 @@
           "en": "Stomp Dance"
         },
         "role": "Social",
-        "effect": "+10 befriend base (works best on wet compacted meadow; dry ash halves payout); +4 in open midday sun; +18 if the player matches the 4-beat tap; answering an off-tempo rhythm loses the audition.",
+        "effect": "The creature performs a rhythmic stomp dance that the player can join by matching its footfalls. The creature strongly accepts the player when the rhythm aligns on wet meadows or in open sunlight, while dry ash makes the display difficult and a mismatched beat causes it to turn away.",
         "numbers": {}
       },
       "weakness": "Dry loose ash or wind masking breaks the seismic channel and halves befriend payout; drum the beat off-tempo and any Zanco that answers it turns away after 5 s — farm trust from rivals or sabotage an audition.",

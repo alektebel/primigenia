@@ -89,6 +89,8 @@ static func part_tiles(state: Dictionary, catalogue: Array) -> Array:
 			have[String(p.get("id", ""))] = p
 	var out: Array = []
 	for c in catalogue:
+		if bool(c.get("godot_only", false)):
+			continue        # parts the C world's 46-part catalogue does not have (wing_vane, wing_flap): nothing to find in the world yet
 		var id := String(c.get("id", ""))
 		var h: Dictionary = have.get(id, {})
 		out.append({
@@ -161,6 +163,16 @@ static func recipes(state: Dictionary) -> Array:
 				"parts_have": int(r.get("parts_have", -1)), "parts_need": int(r.get("parts_need", -1)),
 				"diet_ok": r.get("diet_ok", null),
 			})
+		return out
+	if raw is Dictionary and raw.has("bone_spines"):
+		# world-2 recipes: {bone_spines: {state, clues, parts_have, parts_need, diet_ok, ...}, meters, stones}
+		var b: Dictionary = raw.bone_spines
+		var st2 := String(b.get("state", "unknown"))
+		if not (st2 in ["unknown", "hinted", "known", "mastered"]):
+			st2 = "unknown"
+		out.append({"id": "bone_spines", "name": "", "state": st2, "clues_seen": mini(int(b.get("clues", 0)), 3), "clues_total": 3,
+			"clues": [], "note": "", "parts_have": int(b.get("parts_have", -1)), "parts_need": int(b.get("parts_need", -1)),
+			"diet_ok": b.get("diet_ok", null)})
 		return out
 	var parts: Variant = state.get("parts", null)
 	if parts is Dictionary and parts.has("clues"):

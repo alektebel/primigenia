@@ -1,9 +1,11 @@
 shader_type spatial;
-render_mode unshaded, blend_mix, depth_draw_opaque, cull_disabled;
+render_mode ambient_light_disabled, specular_disabled, blend_mix, depth_draw_opaque, cull_disabled;
+#define WORLD_LIT
 // River ribbons (rivers.gd): flowing water along the channel, rapids and white water where the bed drops (waterfalls),
 // soft edges, the same aerial haze as the sea. COLOR.r class/3, COLOR.g bed drop per metre, COLOR.b drainage 0..1.
 #include "res://game/shaders/look.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
+#include "res://game/shaders/world_light.gdshaderinc"
 
 varying vec3 wp;
 varying vec2 st;
@@ -43,7 +45,7 @@ void fragment() {
 	vec3 c = mix(vec3(0.07, 0.30, 0.50), vec3(0.30, 0.64, 0.68), shallow * 0.8 + 0.2 * ripple);
 	float fr = pow(1.0 - max(dot(V, n), 0.0), 4.0);
 	c = mix(c, vec3(0.78, 0.9, 0.97), fr * 0.5);
-	c += vec3(1.0, 0.95, 0.8) * pow(max(dot(n, normalize(V + SUN_DIR)), 0.0), 120.0) * 0.8;
+	c += vec3(1.0, 0.95, 0.8) * pow(max(dot(n, normalize(V + sun_dir)), 0.0), 120.0) * 0.8 * sun_vis;
 	float foam = max(rapid * smoothstep(0.45, 0.8, ripple), fall * 0.9);
 	foam = max(foam, smoothstep(0.78, 1.0, abs(st.y)) * 0.35);
 	c = mix(c, vec3(0.95, 0.98, 1.0), clamp(foam, 0.0, 1.0));

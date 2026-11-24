@@ -10,7 +10,7 @@ var limit := 194.9             # destinations are clamped to +-limit (the island
 var view_yaw := 0.0          # camera yaw, set by the chase camera each frame
 var destination = null       # Vector2 (x, z) or null
 var blocked: Callable = Callable()   # () -> bool, e.g. Game.movement_blocked
-var keys_override: Variant = null    # tests: {forward, back, left, right, sprint}
+var keys_override: Variant = null    # tests: {forward, back, left, right, sprint, run?}
 # Controls (settings controls/strafe_latch and controls/tank, see Game.settings):
 #  strafe_latch (default): the key frame is the camera yaw at the moment the key combination changed, so
 #    holding S or A runs in a straight line instead of circling with the auto-following camera.
@@ -22,7 +22,15 @@ var frame_yaw = null         # latched view yaw (null: nothing held)
 var facing_yaw := 0.0        # the creature's heading, set by the island (tank mode, intent)
 var position := Vector2.INF  # the creature's world x, z, set by the island (intent towards a destination)
 var _last_keys := 0
+var suspended := false       # flight test: the creature flies, C is told to wait (the island teleports it each tick)
 var _tank_yaw = null
+var run_locked := false       # exhausted while Shift was held: Shift must be released before running starts again
+var _was_running := false
+# Jump (Space on the ground, every creature): the key press latches a request for JUMP_BUFFER ticks (a tap between two 10 Hz ticks is
+# not lost, and a press just before landing still jumps); the C world accepts or refuses it (cp_stage_jump) and the latch clears once
+# the player is airborne by a jump.
+const JUMP_BUFFER := 2
+var jump_buf := 0
 const TANK_TURN := 2.2       # rad/s
 const K_FWD := 1
 const K_BACK := 2
@@ -45,8 +53,22 @@ func _read_keys() -> Dictionary:
 	return {
 		"forward": Input.is_action_pressed("move_forward"), "back": Input.is_action_pressed("move_back"),
 		"left": Input.is_action_pressed("move_left"), "right": Input.is_action_pressed("move_right"),
-		"sprint": Input.is_action_pressed("sprint"),
+		"sprint": Input.is_action_pressed("sprint"), "run": Input.is_action_pressed("run"),
 	}
+
+func request_jump() -> void:
+	jump_buf = JUMP_BUFFER
+
+func _jump_want(k: Dictionary, is_blocked: bool) -> int:
+	if bool(k.get("jump", false)):
+		jump_buf = JUMP_BUFFER
+		if keys_override != null:
+			k["jump"] = false              # a test's jump is one press, not a held key
+	if is_blocked or jump_buf <= 0:
+		jump_buf = 0 if is_blocked else jump_buf
+		return 0
+	jump_buf -= 1
+	return 1
 
 func set_destination(p: Vector2) -> void:
 	destination = Vector2(clampf(p.x, -limit, limit), clampf(p.y, -limit, limit))
@@ -80,6 +102,8 @@ func _effective_yaw(mask: int) -> float:
 
 # The world yaw (radians, atan2(x, z) bearing) the player is asking for right now, or null. Pure.
 func intent_yaw() -> Variant:
+	if suspended:
+		return null
 	var k := _read_keys()
 	var is_blocked: bool = blocked.is_valid() and blocked.call()
 	var a := _axes(k, is_blocked)
@@ -96,9 +120,20 @@ func intent_yaw() -> Variant:
 			return atan2(d.x, d.y)
 	return null
 
+# Run intent for this tick: Shift held, not blocked, not locked out by exhaustion. The world latches it (C: cp_stage_set_run).
+func _run_want(k: Dictionary, is_blocked: bool) -> int:
+	var held := bool(k.get("run", false)) and not is_blocked
+	if not held:
+		run_locked = false
+	return 1 if (held and not run_locked) else 0
+
 func sample() -> Dictionary:
+	if suspended:
+		return {"verb": VERB_WAIT}
 	var k := _read_keys()
 	var is_blocked: bool = blocked.is_valid() and blocked.call()
+	var run := _run_want(k, is_blocked)
+	var jump := _jump_want(k, is_blocked)
 	var a := _axes(k, is_blocked)
 	var sprint := 1 if (bool(k.sprint) and not is_blocked) else 0
 	var mask := 0 if is_blocked else _mask(k)
@@ -120,14 +155,26 @@ func sample() -> Dictionary:
 			dir = camera_relative(a.x, a.y, frame_yaw if (strafe_latch and frame_yaw != null) else view_yaw)
 		_last_keys = mask
 		var h := heading(dir)
-		return {"verb": VERB_HEADING, "hx": h.x, "hz": h.y, "sprint": sprint}
+		return _with_jump({"verb": VERB_HEADING, "hx": h.x, "hz": h.y, "sprint": sprint, "run": run}, jump)
 	_last_keys = mask
 	if destination != null:
 		var d: Vector2 = destination
-		return {"verb": VERB_GO, "x": d.x, "z": d.y, "sprint": int(bool(k.sprint))}
-	return {"verb": VERB_WAIT}
+		return _with_jump({"verb": VERB_GO, "x": d.x, "z": d.y, "sprint": int(bool(k.sprint)), "run": run}, jump)
+	return _with_jump({"verb": VERB_WAIT, "run": run}, jump)
+
+# The jump column exists only on the ticks that ask for one, so inputs (and the log) of a game without jumps are unchanged.
+static func _with_jump(o: Dictionary, jump: int) -> Dictionary:
+	if jump != 0:
+		o["jump"] = 1
+	return o
 
 # Web: the destination is cleared once the world's standing order is no longer GO.
 func after_tick(state: Dictionary) -> void:
+	var running := bool(state.get("player", {}).get("running", false))
+	if _was_running and not running and bool(_read_keys().get("run", false)) and int(state.get("player", {}).get("stamina", 1000)) < 150:
+		run_locked = true         # ran out: no stuttering restart while Shift stays down
+	_was_running = running
+	if bool(state.get("player", {}).get("jumping", false)):
+		jump_buf = 0
 	if state.order.verb != VERB_GO:
 		destination = null

@@ -2,6 +2,8 @@ extends RefCounted
 # CporeWorld setup for the island (PLAN-heights H5): terrain 2 = the generated heightfield, read by the C
 # world through CporeWorld.set_field(); ponds and the sea come from the field, the bound is half - 2 cells.
 
+const RadialFauna := preload("res://game/island/radial_fauna.gd")
+
 const Profile := preload("res://game/stage/profile.gd")
 
 const BOUND := 195.0               # the valley the nest and the encounter are searched in
@@ -10,7 +12,7 @@ const CLOCK_START := 4000          # world clock at tick 0: 08:00 (500 ticks an 
 
 # data: TerrainData. player_profile / garfio_profile: CporeWorld profile dictionaries.
 # probe: a CporeWorld with the field attached and reset into terrain 2, so Garfio's path is also checked with the C walk rule.
-static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null, herds: bool = false, secrets: bool = true) -> Dictionary:
+static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null, herds: bool = false, secrets: bool = true, radial_plan_out: Dictionary = {}) -> Dictionary:
 	var setup: Dictionary = CporeWorld.default_setup(seed)
 	setup.terrain = 2
 	var nest := find_nest(data)
@@ -35,6 +37,7 @@ static func build(data, seed: int, player_profile: Dictionary, garfio_profile: D
 		if herds:
 			add_herds(setup, data, nest, probe)
 			add_night_and_slug(setup, data, nest, probe)
+			radial_plan_out.merge(add_radial(setup, data, seed, nest), true)
 	return setup
 
 # C2 (docs/P4.md 2.2): the valley holds more than Garfio so the Q43 loop has something to resolve. Rondo, Zanco and Espinodo
@@ -135,7 +138,11 @@ static func garfio_profile(manifest: Dictionary) -> Dictionary:
 # C2 secrets: the nocturnal Acechalunas (species 4) sleep by day near the hidden cave: their home is on the cave's graded apron,
 # 14 m in front of the entrance. The sixth species, Babosa (species 5), grazes the damp slope of the valley.
 const NIGHT_COUNT := 3
-const SLUG_COUNT := 4
+const SLUG_COUNT := 3 # Three still resolve an ally species; leaves room for six radial animals (24 total).
+# Roster v9 (T9): 32 wild slots in C (CP_STAGE_MAX_WILD); the setup may fill up to CP_STAGE_ROSTER_CAP = 24, and 8 stay free (4 for cousins,
+# 4 for the nest family, family.gd). The roster is kept at 23 for now: a 24th creature (the Brujula the old cap trimmed) shifts the
+# first-quest e2e befriend task past its budget, so adding it is a separate content change.
+const RADIAL_WILD_CAP := 23
 const SLUG_DISTANCE := 125.0
 const SLUG_ARC := 0.86
 
@@ -180,3 +187,19 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 			continue
 		setup.wild.append({"x": p.x, "z": p.y, "home_x": b.x, "home_z": b.y, "species": 5, "bot": -1, "profile": species[5].profile})
 		n += 1
+
+# The same habitat planner used by ambient fauna; only cuarteta remains ambient.
+static func add_radial(setup: Dictionary, data, seed: int, nest: Vector2) -> Dictionary:
+	var placement := RadialFauna.plan(data, seed, nest)
+	var species: Array = CporeWorld.species()
+	for id in ["corona", "brujula"]:   # corona first, so a full roster trims a Brujula before a Corona
+		var sp := 6 if id == "brujula" else 7
+		var spots: Array = placement[id].spots
+		for p: Vector2 in spots:
+			if setup.wild.size() >= RADIAL_WILD_CAP:
+				break
+			# Each animal keeps its coastal microhabitat as its home.
+			setup.wild.append({"x": p.x, "z": p.y, "home_x": p.x, "home_z": p.y,
+				"species": sp, "bot": -1, "legs": 5 if sp == 6 else 6, "profile": species[sp].profile})
+
+	return placement

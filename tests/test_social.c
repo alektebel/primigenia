@@ -299,7 +299,7 @@ static void eating(void){
     kill_n(1);
     for(int i=0;i<150;i++)cp_stage_step(&w,NULL);
     assert(cp_stage_command(&w,"eat #1")==0);
-    for(int i=0;i<25;i++)cp_stage_step(&w,NULL);
+    for(int i=0;i<2*CP_SOC_BITE_TICKS+5;i++)cp_stage_step(&w,NULL);
     assert(cp_stage_social_carcass_meat(&w,0)==CP_SOC_CARCASS_BITES-2);
     assert(cp_stage_command(&w,"wait")==0);
     cp_stage_step(&w,NULL);

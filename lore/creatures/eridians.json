@@ -241,7 +241,7 @@
           "en": "Hydrostatic Skin"
         },
         "role": "Defence",
-        "effect": "Blocks 15 blunt damage; immune to crushing effects.",
+        "effect": "Its thick, fluid-packed hide absorbs strong impacts and completely withstands any crushing pressure. You can watch the creature remain entirely unharmed when heavy strikes land against it.",
         "numbers": {}
       },
       "weakness": "Vulnerable to rapid depressurization attacks which expand internal fluid.",

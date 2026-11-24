@@ -18,6 +18,7 @@ const Course := preload("res://devtools/zoo/zoo_course.gd")
 var morph_ids: Array = []
 var course_name := "all"
 var repeat := true
+var run_speed := 1.0             # > 1: orders carry sprint and the shown motion is run_speed times the C one (StageWorld.vis_speed)
 var auto_build := true           # tests build by hand
 var with_visuals := true         # tests turn the meshes and the rigs off
 var runners: Array = []
@@ -44,6 +45,7 @@ func _ready() -> void:
 	if args.has("course"):
 		course_name = args.course
 	repeat = bool(args.get("repeat", true))
+	run_speed = float(args.get("run", run_speed))
 	build()
 
 # "--zoo=mite,giant --course=uturn" after "--".
@@ -54,6 +56,8 @@ static func parse_args(user_args: PackedStringArray) -> Dictionary:
 			out.morphs = Array(a.substr(6).split(",", false))
 		elif a.begins_with("--course="):
 			out.course = a.substr(9)
+		elif a.begins_with("--run="):
+			out.run = a.substr(6).to_float()
 	return out
 
 func build() -> void:
@@ -95,6 +99,7 @@ func build() -> void:
 			return
 		var r := {"id": id, "sw": sw, "genome": genome, "x0": x0, "legs": int(setup.player_legs), "radius_cm": int(prof.get("radius_cm", 0)),
 			"steps": Course.course(course_name, x0), "si": -1, "t": 0, "laps": 0, "host": null, "label": null, "ground": ground}
+		sw.set_vis_speed(run_speed)
 		sw.after_tick = func(state: Dictionary) -> void: _on_tick(r, state)
 		if with_visuals:
 			var host := ActorHost.new()
@@ -249,9 +254,9 @@ func _advance(r: Dictionary) -> void:
 	var sw = r.sw
 	match st.k:
 		"go":
-			sw.queue_order({"verb": 2, "x": st.x, "z": st.z})
+			sw.queue_order({"verb": 2, "x": st.x, "z": st.z, "sprint": 1 if run_speed > 1.0 else 0})
 		"head":
-			sw.queue_order({"verb": 3, "hx": st.hx, "hz": st.hz})
+			sw.queue_order({"verb": 3, "hx": st.hx, "hz": st.hz, "sprint": 1 if run_speed > 1.0 else 0})
 		"wait":
 			sw.queue_order({"verb": 1})
 		"tp":

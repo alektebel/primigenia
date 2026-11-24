@@ -39,7 +39,7 @@
           "en": "Spore Burst"
         },
         "role": "Basic",
-        "effect": "Releases 3 defensive spores on descent, dealing 12 heat damage and slowing pursuit",
+        "effect": "On its descent, the creature releases a cluster of defensive spores nearby that radiate intense heat and strongly slow anyone chasing it.",
         "numbers": {}
       },
       "weakness": "Completely immobile and vulnerable during the 4-second mitosis phase",

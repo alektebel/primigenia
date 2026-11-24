@@ -76,7 +76,7 @@ func run(t) -> void:
 	t.eq(a.step({"verb": "go"}), "", "step with a wrong type returns empty")
 	t.eq(a.state().tick, tick_before, "rejected steps do not advance")
 	var sp: Array = CporeWorld.species()
-	t.eq(sp.size(), 6, "six species (C2 secrets added Acechalunas and Babosa)")
+	t.eq(sp.size(), 8, "eight species (C2 secrets added Acechalunas and Babosa)")
 	t.eq(sp[3].name, "Garfio", "species 3 is Garfio")
 	t.eq(sp[3].temperament, 2, "Garfio is aggressive")
 	t.eq(CporeWorld.version(), 3, "stage version")

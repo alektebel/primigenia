@@ -1,0 +1,18 @@
+# Art task, round 2: underwater biome (continue on branch art-underwater)
+Read the round-1 brief first: /home/diego/Desarrollo/cpore-wt/_agent/briefs/art-underwater.md (same rules, same scope). Claude reviewed docs/evidence/underwater/{shallow,deep}-render.png and they are NOT acceptable yet:
+1. Shallow: the camera is supposedly underwater but the frame shows a bright cloudy SKY and a horizon: it reads as standing on land. Underwater, the sky must not be visible except through the surface overhead (Snell's window: a bright disc straight up, total internal reflection beyond ~48.6° from vertical, so looking sideways you see water colour, not sky). Background = underwater fog colour (blue-green, darker with depth), never the sky dome.
+2. Shallow: the sea floor is near-black brown. It must be pale sand (warm beige) with visible animated caustics (bright wavy net), sand ripples, scattered pebbles and shells, and dappled light. Exposure must be bright in 2–5 m water.
+3. The "wreck" is a single red blob. Make a recognisable small wreck (hull ribs, broken planks, mast stump, tilted, half-buried, encrusted) or replace it with a meteor shard (dark glassy crystal with faint glow), modelled from several primitives.
+4. Deep: a hard black band separates surface and floor; the floor is a flat unlit blue plane. Use continuous exponential fog/absorption with depth (no band), floor relief with rocks and slopes, kelp forest columns rising toward the light, coral clusters with colour variety (pink, orange, purple, yellow), visible fish schools (at least 3 schools of 20–60 fish, silver/blue/yellow, moving as boids), floating particles (marine snow) and god rays fanning down from the surface.
+5. Kelp is barely visible: thicker translucent olive-green fronds with leaves, swaying, 3–8 m tall, in clumps.
+Reference for the look (do not copy assets, only the visual principles): stylised underwater scenes like Subnautica's shallows and Abzû: saturated cyan-teal water, bright caustic floor, strong depth haze, silhouettes of kelp against the light.
+Iterate at least 5 more times, appending to ITERATIONS.md; regenerate the three evidence images plus a 4th, docs/evidence/underwater/kelp-forest.png. Keep the scope: only web/biome/ and docs/evidence/underwater/. Commit as you go.
+## Rules for this task (read first)
+- Project: "Primigenia" (codename cpore), a Spore-like game + LLM/RL benchmark. Decisions live in docs/DESIGN.md (§9 G1–G62 and §10 W1–W13 are the newest; G and W win over Q). Do not contradict them. P4 spec of record: docs/P4.md.
+- Never modify anything under art/reference/ (byte-identical references).
+- Browser screenshots: headless Chromium with SOFTWARE WebGL only: args ['--use-angle=swiftshader','--enable-unsafe-swiftshader'], executablePath ~/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome. Playwright: NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules . Never use GPU flags. Run every browser/heavy process with `nice -n 10` and always close the browser. Keep renders to the minimum you need (the owner's laptop fans matter).
+- Emscripten: `source ~/emsdk/emsdk_env.sh`.
+- Do not install system packages, do not download SDKs, do not push, do not touch other git worktrees or branches.
+- Commit your work on the current branch in small, clear commits as you go (the session may be killed; uncommitted work is lost). Imperative subject, body says what and why.
+- Report honestly: if something is not done or not verified, say so. Do not fabricate measurements.
+- Finish with a short report: what you built, files changed, commands run and their results, open issues.

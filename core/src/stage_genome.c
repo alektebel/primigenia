@@ -1,5 +1,6 @@
 /* Bounded JSON reader for the nest contract. No host parser or profile is trusted. */
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -128,7 +129,13 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
   f.parts[id]++;const CpStagePartDef *d=&CP_STAGE_PARTS[id];
 #define STAT(k) f.profile.k=(uint8_t)((int)f.profile.k+d->k*(int)lv>5?5:(int)f.profile.k+d->k*(int)lv)
   STAT(mouth);STAT(charge);STAT(spit);STAT(tail);STAT(guard);
+  /* C2 morphology requirements: no actuation rules are inferred. */
+  for(int m=CB_CLAW_SWIPE;m<CB_MOVE_COUNT;m++)if(CP_STAGE_PART_MOVES[id]&(1u<<m)){
+   int k=m-CB_CLAW_SWIPE,v=f.profile.extra[k]+(int)lv;f.profile.extra[k]=v>5?5:v;
+  }
+  if(d->mouth==2)f.profile.carnivore=1;
 #undef STAT
+  if(!strcmp(name,"fire_gland")){int v=(int)f.profile.fire+(int)lv;f.profile.fire=(uint8_t)(v>5?5:v);}   /* the throat organ of the flamethrower */
  }
  int skin=field(j,0,"skin");if(!keys(j,skin,"|pat||cA||cB||cC||wet||scale||cs||ps||pc||ros||act||sk|"))goto done;
  if(!integer(j,field(j,skin,"pat"),0,3)||!num(j,field(j,skin,"wet"),0,1,NULL)||!num(j,field(j,skin,"scale"),3,14,NULL))goto done;
@@ -154,6 +161,8 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
   int warn=field(j,migration,"warnings"),src=field(j,migration,"source");if(warn<0||j->t[warn].kind!='['||src<0||j->t[src].kind!='{')goto done;
   for(int k=warn+1;k<j->t[warn].next;k=j->t[k].next)if(j->t[k].kind!='"')goto done;
  }
+ /* Mixed mouths are omnivorous: a carnivore recipe needs only carnivore mouths. */
+ for(int k=0;k<CP_STAGE_PART_COUNT;k++)if(f.parts[k]&&(CP_STAGE_PARTS[k].mouth==1||CP_STAGE_PARTS[k].spit==2))f.profile.carnivore=0;
  f.profile.hp+=5*f.profile.guard;
  double diameter=maxz-minz>2*maxr?maxz-minz:2*maxr;int cm=(int)(diameter*50+.5);if(cm<40)cm=40;if(cm>400)cm=400;f.profile.radius_cm=cm==60?0:cm;
  if(version==4){
@@ -166,13 +175,14 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
    }
   }f.body[n]=0;
  }else memcpy(f.body,json,strlen(json)+1);
+ cp_stage_grip_project(json,&f.profile);
  *out=f;ok=1;
  done:free(j);return ok?0:-1;
 }
 /* Evolve: the only nest action that spends DNA and starts a generation. Everything the genome adds
  * (new parts, higher levels, tiers when enabled) is priced here and charged atomically with the evolve. */
 int cp_stage_edit(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  if(!w->ancestry.count)return -1;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
@@ -211,20 +221,22 @@ int cp_stage_edit(CpStageWorld *w,const char *genome){
 /* Repaint, rearrange and other cosmetic edits: free, any number of times, never a new generation.
  * Rejected when the combat-relevant form (parts, levels, tiers, derived profile) would change. */
 int cp_stage_apply(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  if(!w->ancestry.count)return -1;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  CpLineageForm *cur=&w->ancestry.forms[w->ancestry.count-1].form;
  const CpCombatProfile *a=&cur->profile,*b=&f.profile;
  uint8_t ta[CB_PART_COUNT],tb[CB_PART_COUNT];cp_stage_genome_tiers(cur->body,ta);cp_stage_genome_tiers(f.body,tb);
- if(memcmp(cur->parts,f.parts,sizeof cur->parts)||memcmp(ta,tb,sizeof ta)||a->mouth!=b->mouth||a->charge!=b->charge||a->spit!=b->spit||a->tail!=b->tail||a->guard!=b->guard||a->hp!=b->hp||a->stamina!=b->stamina||a->speed!=b->speed)return CP_STAGE_ERR_NEEDS_EVOLVE;
+ if(memcmp(a->extra,b->extra,sizeof a->extra)||a->carnivore!=b->carnivore||memcmp(cur->parts,f.parts,sizeof cur->parts)||memcmp(ta,tb,sizeof ta)||a->mouth!=b->mouth||a->charge!=b->charge||a->spit!=b->spit||a->tail!=b->tail||a->guard!=b->guard||a->fire!=b->fire||a->hp!=b->hp||a->stamina!=b->stamina||a->speed!=b->speed)return CP_STAGE_ERR_NEEDS_EVOLVE;
  memcpy(cur->body,f.body,strlen(f.body)+1);memcpy(cur->name,f.name,strlen(f.name)+1);
+ cur->profile.grip_traits=w->player.profile.grip_traits=w->setup.player.grip_traits=b->grip_traits;
+ cur->profile.grip_legs=w->player.profile.grip_legs=w->setup.player.grip_legs=b->grip_legs;
  cur->profile.radius_cm=b->radius_cm;w->player.profile.radius_cm=b->radius_cm;w->setup.player.radius_cm=b->radius_cm;
  w->hash=cp_stage_hash(w);return 0;
 }
 
 int cp_stage_start_genome(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w)||w->ancestry.count)return -1;
+ if(!cp_stage_can_edit(w)||w->ancestry.count)return -1;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  for(int i=0;i<CP_STAGE_PART_COUNT;i++)if(f.parts[i]&&!(w->parts.owned&(1ULL<<i)))return CP_STAGE_ERR_NOT_KNOWN;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
@@ -246,7 +258,56 @@ void cp_stage_genome_tiers(const char *body,uint8_t tiers[CB_PART_COUNT]){
  for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){
   char id[80];if(!text(j,field(j,i,"type"),id,sizeof id))continue;
   int p=cp_stage_part_id(id);double t=0;if(p<0||!num(j,field(j,i,"tier"),0,2,&t))continue;
-  const CpStagePartDef *d=&CP_STAGE_PARTS[p];int has[]={0,d->mouth==2,d->charge,d->spit,d->tail,d->guard};
+  const CpStagePartDef *d=&CP_STAGE_PARTS[p];int has[CB_PART_COUNT]={0,d->mouth==2,d->charge,d->spit,d->tail,d->guard,0};
   for(int k=1;k<CB_PART_COUNT;k++)if(has[k]&&tiers[k]<(int)t)tiers[k]=(uint8_t)t;
  }free(j);
+}
+
+/* The rig uses the two bone lengths k and f-k. Legacy setups have no genome;
+ * their morphology proxy is a leg length of two collision radii. */
+float cp_stage_safe_drop(const CpStageWorld *w){
+ float fallback=3*cp_combat_body_radius(&w->player.profile);
+ if(!w->ancestry.count)return fallback;
+ Json *j=calloc(1,sizeof *j);if(!j)return fallback;
+ j->s=w->ancestry.forms[w->ancestry.count-1].form.body;
+ if(value(j)!=0){free(j);return fallback;}
+ int parts=field(j,0,"parts"),n=0;float sum=0;
+ if(parts>=0)for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){
+  if(!oneof(j,field(j,i,"type"),"|pata||zanca||pezuna||leg_sprinter||leg_sucker||foot_spring||foot_hoof||foot_gecko|"))continue;
+  double k[3]={0,-.7,0},f[3]={0,-1.5,0};
+  int kt=field(j,i,"k"),ft=field(j,i,"f");
+  if(kt>=0&&j->t[kt].count==3)for(int a=0,t=kt+1;a<3;a++,t=j->t[t].next)num(j,t,-20,20,&k[a]);
+  if(ft>=0&&j->t[ft].count==3)for(int a=0,t=ft+1;a<3;a++,t=j->t[t].next)num(j,t,-20,20,&f[a]);
+  float a=0,b=0;for(int d=0;d<3;d++){a+=(float)(k[d]*k[d]);b+=(float)((f[d]-k[d])*(f[d]-k[d]));}
+  sum+=sqrtf(a)+sqrtf(b);n++;
+ }
+ free(j);return n?1.5f*sum/n:fallback;
+}
+
+/* Shared projection for studio previews and accepted genomes. Geometry is read in C. */
+int cp_stage_grip_project(const char *json,CpCombatProfile *p){
+ if(!json||!p||strlen(json)>=CP_LINEAGE_BODY_CAP)return -1;
+ Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=json;
+ if(value(j)!=0){free(j);return -1;}
+ int parts=field(j,0,"parts"),nodes=field(j,0,"nodes");
+ if(parts<0||nodes<0||j->t[parts].kind!='['||j->t[nodes].kind!='['){free(j);return -1;}
+ unsigned traits=0;int legs=0,sprawl=0;double maxr=0,stand=0,miny=1e9,maxy=-1e9;
+ for(int i=nodes+1;i<j->t[nodes].next;i=j->t[i].next){double r=0,y=0;num(j,field(j,i,"r"),0,3,&r);num(j,field(j,i,"y"),-5,20,&y);if(r>maxr)maxr=r;if(y<miny)miny=y;if(y>maxy)maxy=y;}
+ for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){char n[80];if(!text(j,field(j,i,"type"),n,sizeof n))continue;
+  double single=0;num(j,field(j,i,"single"),-1,1,&single);
+  int leg=!strcmp(n,"pata")||!strcmp(n,"zanca")||!strcmp(n,"pezuna")||!strncmp(n,"leg_",4)||!strncmp(n,"foot_",5);
+  if(leg){legs+=single?1:2;int a=field(j,i,"f");if(a>=0&&j->t[a].kind=='['&&j->t[a].count==3){int y=j->t[a+1].next;double fy=0;if(num(j,y,-20,20,&fy)){if(-fy>stand)stand=-fy;double fx=0;num(j,a+1,-20,20,&fx);if(fabs(fx)>=fabs(fy)*.4)sprawl=1;}}}
+  if(!strcmp(n,"excavadora"))traits|=CP_GRIP_CLAW;
+  if(!strcmp(n,"leg_sucker")||!strcmp(n,"foot_gecko"))traits|=CP_GRIP_CLING;
+  if(!strcmp(n,"pezuna")||!strcmp(n,"foot_hoof"))traits|=CP_GRIP_HOOF;
+ }
+ if(legs&&sprawl&&stand>0&&stand<=3*maxr&&maxy-miny<=2*maxr)traits|=CP_GRIP_LOW;
+ for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next)if(eq(j,field(j,i,"type"),"arm_grasper")){
+  double size=1;num(j,field(j,i,"size"),.1,4,&size);
+  if(stand>0&&size*1.5>=stand+maxy-miny)traits|=CP_GRIP_ARM;
+ }
+ int plan=field(j,0,"plan"),arm=field(j,plan,"arm");
+ if(eq(j,field(j,plan,"sym"),"radial")&&(eq(j,field(j,arm,"act"),"tubefeet")||eq(j,field(j,arm,"act"),"hydrostat")))traits|=CP_GRIP_CLING;
+ p->grip_traits=(uint16_t)traits;p->grip_legs=(uint8_t)(legs>255?255:legs);
+ free(j);return 0;
 }
