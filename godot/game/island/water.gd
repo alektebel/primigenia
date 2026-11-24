@@ -123,5 +123,5 @@ func build(data, lakes_in = null) -> void:
 	lakes.mesh = mesh
 	lakes.material_override = material
 	lakes.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	lakes.custom_aabb = AABB(Vector3(-2000, -100, -2000), Vector3(4000, 2000, 4000))
+	lakes.custom_aabb = AABB(Vector3(-data.half, -100, -data.half), Vector3(data.half * 2.0, 2000, data.half * 2.0))   # the whole field (the 8 km Star massif is wider than the old +-2 km)
 	add_child(lakes)

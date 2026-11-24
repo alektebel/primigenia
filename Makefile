@@ -60,6 +60,7 @@ test: island-test climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
 	nice -n 10 ./$(BUILD)/nav_test
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/nav_test --island star $$seed || failed=1; done; test $$failed -eq 0
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
 	sh tests/check_log_v4.sh $(BUILD)/world_cli tests/golden/world-42.log $(BUILD)
@@ -74,6 +75,7 @@ test: island-test climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $
 	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
 	python3 tools/routes/fixtures.py --check
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test $$seed || failed=1; done; test $$failed -eq 0
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test --island star $$seed || failed=1; done; test $$failed -eq 0
 tourney: $(BUILD)/combat_tourney
 	./$(BUILD)/combat_tourney
 bench: $(BUILD)/cpore_bench
@@ -643,11 +645,12 @@ godot-actions-evidence:
 	  --script actions/test/capture.gd -- out=$(CURDIR)/docs/evidence/godot/actions $(ARGS)
 
 # C1-nav: GO pathfinding on the generated island (20 seeded far targets, planner timing, determinism).
-$(BUILD)/nav_test: tests/test_nav.c $(HDRS) $(BUILD)/libcpore.a
+$(BUILD)/nav_test: tests/test_nav.c tests/island_gen.h $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -O2 $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: nav-test
 nav-test: $(BUILD)/nav_test
 	nice -n 10 ./$(BUILD)/nav_test
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/nav_test --island star $$seed || failed=1; done; test $$failed -eq 0
 
 # A21 evidence: the hotbar and the loadout panel (software GL).
 .PHONY: godot-loadout-evidence
@@ -754,12 +757,13 @@ godot-parts-nest-test:
 	$(GODOT) --headless --path godot --check-only --script res://game/tests/parts_nest_test.gd
 	$(GODOT) --headless --path godot --script res://game/tests/parts_nest_test.gd
 # C1 curated round trips, actual steering and deterministic trajectory replay.
-$(BUILD)/routes_test: tests/test_routes.c $(HDRS) $(BUILD)/libcpore.a
+$(BUILD)/routes_test: tests/test_routes.c tests/island_gen.h $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: routes-test
 routes-test: $(BUILD)/routes_test
 	python3 tools/routes/fixtures.py --check
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test $$seed || failed=1; done; test $$failed -eq 0
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test --island star $$seed || failed=1; done; test $$failed -eq 0
 .PHONY: godot-route-events-test
 godot-route-events-test: godot
 	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_route_events.gd
@@ -774,12 +778,13 @@ godot-moves-recipes-test:
 	$(GODOT) --headless --path godot --script res://game/tests/moves_recipes_test.gd
 
 # C2 secrets: meteor shards, hidden cave chamber, day/night, Acechalunas and Babosa (tests/test_secrets.c)
-$(BUILD)/secrets_test: tests/test_secrets.c $(HDRS) $(BUILD)/libcpore.a
+$(BUILD)/secrets_test: tests/test_secrets.c tests/island_gen.h $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: secrets-test
 secrets-test: $(BUILD)/secrets_test
 	nice -n 10 ./$(BUILD)/secrets_test flat
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/secrets_test $$seed || failed=1; done; test $$failed -eq 0
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/secrets_test --island star $$seed || failed=1; done; test $$failed -eq 0
 
 # The field journal (G38, godot/ui/journal_*.gd): every section and spread, ES and EN, plus overflow cases (software GL, JPG).
 # Small laptop: make godot-journal-evidence RES=1024x600 SUFFIX=_1024x600
@@ -899,12 +904,13 @@ godot-entry-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://game/tests/entry_evidence.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading
 # First quest: digging, fossil beds, the fire gland and the flamethrower (tests/test_first_quest.c)
-$(BUILD)/first_quest_test: tests/test_first_quest.c $(HDRS) $(BUILD)/libcpore.a
+$(BUILD)/first_quest_test: tests/test_first_quest.c tests/island_gen.h $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 .PHONY: first-quest-test
 first-quest-test: $(BUILD)/first_quest_test
 	nice -n 10 ./$(BUILD)/first_quest_test flat
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test $$seed || failed=1; done; test $$failed -eq 0
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test --island star $$seed || failed=1; done; test $$failed -eq 0
 
 # First quest: the whole chain played by a bot through the real verbs (kill, befriend, dig, wings, fire gland, flamethrower)
 .PHONY: godot-first-quest-e2e godot-first-quest-evidence

@@ -1,6 +1,6 @@
 {
 	"camera": {},
-	"created": "2026-11-24T18:53:41",
+	"created": "2026-11-24T22:17:39",
 	"engine": {
 		"build": "unknown",
 		"layout": "c1425e625a51a7ea",
@@ -138,10 +138,10 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "ac86460bfa05b692",
+	"hash": "677f778dfe13af6e",
 	"island": {
 		"seed": 1,
-		"terrain_hash": "0d4c80255233622a",
+		"terrain_hash": "21bdd31b1ce706a5",
 		"terrain_version": 5
 	},
 	"kind": "scenario",
@@ -227,18 +227,18 @@
 	"recipe": "water_edge.log",
 	"setup": {
 		"cave": {
-			"fx": -0.615702271461487,
-			"fz": -0.787978887557983,
+			"fx": 0.516542553901672,
+			"fz": 0.856261551380157,
 			"half": 0.0,
 			"length": 0.0,
 			"radius": 0.0,
-			"x": 61.5234375,
-			"z": 620.5078125
+			"x": -361.97900390625,
+			"z": -91.145751953125
 		},
 		"flat_height": 2.0,
 		"nest": [
 			0.0,
-			0.0
+			115.0
 		],
 		"obstacles": [],
 		"player": {

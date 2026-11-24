@@ -35,8 +35,11 @@ const char *const CP_STAGE_SHARD_LINES_ES[CP_STAGE_SHARDS]={
     "La piedra esta fria hacia el crater y tibia al otro lado. La segunda capsula sigue alli."
 };
 
-#define CELL 8.f
 #define GRID_MAX 640
+/* The shard search grid is 8 m cells (the ring island, bound 1.8 km). A bigger field (the Star massif, bound 3.99 km) widens the cell so the
+ * grid still fits GRID_MAX; smaller fields are untouched. Set at the start of place_shards. */
+static float g_cell=8.f;
+#define CELL g_cell
 #define PICKUP_RANGE 2.5f
 static uint8_t g_ok[GRID_MAX*GRID_MAX],g_seen[GRID_MAX*GRID_MAX];
 static int32_t g_queue[GRID_MAX*GRID_MAX];
@@ -173,6 +176,8 @@ static int snap(const CpStageWorld *w,int dim,float tx,float tz,float reach,cons
 static int place_shards(CpStageWorld *w){
     CpStageSecrets *s=&w->secrets;
     const float bound=cp_stage_bound(w);
+    g_cell=8.f;
+    if(2*bound/g_cell>(float)GRID_MAX)g_cell=2*bound/(float)GRID_MAX*1.0001f;
     int dim=(int)(2*bound/CELL);
     if(dim<8||dim>GRID_MAX)return -1;
     for(int j=0;j<dim;j++)for(int i=0;i<dim;i++)g_ok[j*dim+i]=(uint8_t)good_cell(w,centre(w,i),centre(w,j));

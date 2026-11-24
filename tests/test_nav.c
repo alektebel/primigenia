@@ -57,6 +57,7 @@ int main(int argc,char **argv){
     fresh(0,0);
     float nx=0,nz=0;
     int found=dry(0,0)&&gentle(0,0);
+    if(star){island_nest(&world,&nx,&nz);found=1;}
     for(int r=5;r<400&&!found;r+=5)for(int k=0;k<32&&!found;k++){
         float a=k*6.2831853f/32,x=sinf(a)*r,z=cosf(a)*r;
         if(dry(x,z)&&gentle(x,z)){nx=x;nz=z;found=1;}

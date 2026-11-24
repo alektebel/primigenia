@@ -18,15 +18,17 @@ static int checks;
 #define PASS(name) printf("PASS first-quest: %s\n",name)
 static float dist(float x,float z){return sqrtf(x*x+z*z);}
 static int star;
+static float nest_x,nest_z;   /* the origin on the ring island; the dry, gentle, shore-clear cell nearest to it on the star island (island_gen.h) */
 static void generate(unsigned seed){
     CpTerrainParams p;
     island_generate(&t,&ws,&p,seed,star,0);
     f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
+    nest_x=nest_z=0;if(star)island_nest_of(&f,&nest_x,&nest_z);
 }
 static unsigned world_seed=5;
 static void setup(CpStageSetup *s){
     cp_stage_setup_default(s,world_seed);
-    s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=s->nest_z=0;s->player_legs=4;
+    s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=nest_x;s->nest_z=nest_z;s->player_legs=4;
     s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,300,0};
 }
 static void reset(CpStageWorld *world,const CpStageSetup *s){
@@ -144,7 +146,8 @@ static void field_tests(unsigned seed){
     /* 4. ordinary soil: grubs and pebbles at low rates, deterministic; the hash covers the dig block; snapshot and replay agree */
     reset(&w,&su);reset(&w2,&su);
     int grubs=0,pebbles=0,nothing=0,spots=0;
-    for(float x=-60;x<=60&&spots<40;x+=9)for(float z=-60;z<=60&&spots<40;z+=9){
+    const float span=star?150.f:60.f;   /* around the nest; the star valley is half lake, so the search reaches further */
+    for(float x=nest_x-span;x<=nest_x+span&&spots<40;x+=9)for(float z=nest_z-span;z<=nest_z+span&&spots<40;z+=9){
         if(!cp_stage_soft_soil(&w,x,z)||dist(x-bx,z-bz)<6.f)continue;
         tp(&w,x,z);tp(&w2,x,z);w.player.stamina=w2.player.stamina=100;
         const int a=dig_here(&w,NULL),b=dig_here(&w2,NULL);

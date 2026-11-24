@@ -1,7 +1,8 @@
 extends SceneTree
 # Regenerates the curated scenarios in godot/scenarios/creature/ (run after an engine or terrain change):
 #   godot --headless --path godot --script res://devtools/tools/make_scenarios.gd
-# Each is built by a session from reset (setup + debug ops) on the seed-1 island, so it keeps its recipe.
+#   godot --headless --path godot --script res://devtools/tools/make_scenarios.gd -- --only-flight     (flight_cliff, which the full run does not build)
+# Each is built by a session from reset (setup + debug ops) on the seed-1 game island (the frozen Star massif, B1), so it keeps its recipe.
 
 const StageWorld := preload("res://game/stage/stage_world.gd")
 const StageSetup := preload("res://game/stage/stage_setup.gd")
@@ -62,7 +63,7 @@ func _far_meadow_spot(data) -> Variant:
 	return null
 
 func _dry_stand(data, world: CporeWorld, x: float, z: float) -> bool:
-	return StageSetup.dry(data, x, z) and absf(x) < 1700.0 and absf(z) < 1700.0 and data.normal(x, z).y > 0.85 and world.can_walk(x, z, x + 1.0, z, RADIUS)
+	return StageSetup.dry(data, x, z) and absf(x) < 3800.0 and absf(z) < 3800.0 and data.normal(x, z).y > 0.85 and world.can_walk(x, z, x + 1.0, z, RADIUS)
 
 func _try_go_plan(sw, player: Vector2, target: Vector2) -> Dictionary:
 	if _tp(sw, player.x, player.y) != 0:
@@ -178,7 +179,8 @@ func _find_water_edge(data, entry) -> Dictionary:
 
 func _near_garfio(s: Dictionary) -> Vector2:
 	var w: Dictionary = s.sw.cur.entities[1]
-	var toward := (Vector2(0, 0) - Vector2(w.x, w.z)).normalized()
+	var me: Dictionary = s.sw.cur.entities[0]     # the player is at the nest (it is not the origin on the Star massif)
+	var toward := (Vector2(me.x, me.z) - Vector2(w.x, w.z)).normalized()
 	return Vector2(w.x, w.z) + toward * 8.0
 
 func _spawn_ring(sw, species: int, count: int) -> int:
@@ -220,6 +222,8 @@ func _flight_cliff(entry, data) -> bool:
 						best = {"stand": stand, "face": face, "drop": drop}
 					break
 	if best.is_empty():
+		best = _plateau_search(data)
+	if best.is_empty():
 		printerr("flight_cliff: no plateau behind a cliff edge found")
 		return false
 	var f := _session(entry, data, false, "res://game/data/flyer.json")
@@ -238,13 +242,40 @@ func _flight_cliff(entry, data) -> bool:
 	_save(f, "flight_cliff", "The light winged test creature (Planeador) on a plateau %.0f m above the valley, facing the drop. Space takes off, then Space flap, Ctrl dive, W/S pitch, A/D turn; F3 tuning has flight/lift_mul." % best.drop)
 	return true
 
+# B1: on the Star massif the nearest lit/shaded cliff cell has no flat ground within 60 m behind it, so look at every cliff cell of the island (a
+# stride of 6 cells), nearest to the nest first: flat ground (normal.y > 0.93) up to 160 m uphill of the face, a drop of 30 m or more in 40 m.
+func _plateau_search(data) -> Dictionary:
+	var cands: Array = []
+	for j in range(4, data.n - 4, 6):
+		for i in range(4, data.n - 4, 6):
+			var k: int = j * data.n + i
+			if data.material[k] != 1 or data.height[k] <= 4.0:
+				continue
+			var x: float = data.cell_center(i)
+			var z: float = data.cell_center(j)
+			var nrm: Vector3 = data.normal(x, z)
+			var slope := rad_to_deg(acos(clampf(nrm.y, -1.0, 1.0)))
+			if slope < 55.0 or slope > 70.0:
+				continue
+			cands.append([Vector2(x, z).length(), x, z, Vector2(nrm.x, nrm.z).normalized()])
+	cands.sort_custom(func(a, b) -> bool: return a[0] < b[0])
+	for c in cands:
+		var face: Vector2 = c[3]
+		var base := Vector2(c[1], c[2])
+		for back in range(2, 160, 2):
+			var p: Vector2 = base - face * float(back)
+			if data.normal(p.x, p.y).y > 0.93 and data.ground(p.x, p.y) > data.ground(base.x, base.y) + 4.0:
+				var stand: Vector2 = p - face * 4.0
+				var drop: float = data.ground(stand.x, stand.y) - data.ground(stand.x + face.x * 40.0, stand.y + face.y * 40.0)
+				if drop > 30.0 and StageSetup.dry(data, stand.x, stand.y) and data.normal(stand.x, stand.y).y > 0.93:
+					return {"stand": stand, "face": face, "drop": drop}
+				break
+	return {}
+
 func _run() -> void:
 	var entry := TerrainCache.load_entry(TerrainCache.game_params(1))
 	if entry.is_empty():
-		var p: Dictionary = CporeTerrain.defaults()
-		p.seed = 1
-		entry = CporeTerrain.new().generate(p)
-		TerrainData.prepare(entry)
+		entry = TerrainCache.build(TerrainCache.game_params(1), CporeTerrain.new())
 	var data = TerrainData.new()
 	data.setup(entry, false)
 	if "--only-flight" in OS.get_cmdline_user_args():

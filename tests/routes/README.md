@@ -53,3 +53,14 @@ count ticks with a blocked reason. Replans count subsequent `path_found` events.
 invalidates derived nav data using a different valid morphology; warm planning repeats exactly that route
 on its lazily filled cache, not a fully prefilled whole-island grid. Times are wall clock and are not deterministic;
 all simulation outputs and tick hashes are deterministic. A rejected route has zero simulated ticks.
+
+## Star massif fixtures (B1)
+
+`star-seed{1,7,42}.json` / `.txt` are the same graph on the frozen Star massif (`data/islands/star_massif.island.json`, n=1536, terrain hash mixes the desc hash).
+Run with `routes_test --island star <seed>`; export with `godot ... --script res://game/tests/routes_fixture.gd -- <tests/routes dir> star`, then `python3 tools/routes/fixtures.py`.
+
+- **The nest is not the origin.** The nest valley holds a lake (about 100 m radius, up to 2.4 m deep) around the origin, so `StageSetup.find_nest` picks the nearest cell that is dry, gentle (normal.y at least 0.9) and 30 m clear of any pond (seeds 1 and 42: (0,115); seed 7: (101.6,42.1)). Home and herd spots must now be normal.y above 0.9 along the whole line from the nest (it was 0.8: a 38 degree bank put Babosa out of every two-legged body's reach).
+- **Places:** nest, the six homes, the four exits (the second point of each island trail, 300 to 650 m out, snapped to dry gentle ground), the cave mouth apron, five shards, the chamber. No river gap, start valley or lake shore (they belong to the ring island).
+- **The chamber is certified from the mouth** (`hidden-cave-entrance -> cave-chamber`): the nav grid of the 8 km field is 7.8 m, and a GO order from far away into the passage is refused as unreachable.
+- **`min_legs`**: the north and south passes are not certified for two-legged bodies (their grip, 0.5 and 4 m, cannot take the grade of the passes). The fixture lists them in `min_legs`; the test skips a pair when the body has fewer legs than either end asks for.
+- The ring island fixtures (`seed*.json`) are retired in the commit after the one that adds these.

@@ -172,7 +172,8 @@ func _field(t) -> void:
 	for p in points:
 		worst = maxf(worst, absf(w.ground(p.x, p.y) - data.ground(p.x, p.y)))
 	t.eq(points.size(), 10000, "10 000 sample points")
-	t.check(worst <= 0.001, "CporeWorld.ground equals TerrainData.ground at 10 000 points (max |d| = %s m)" % String.num(worst, 8))
+	# 1 cm: the Star massif (B1) has 5.2 m cells and steeper faces than the ring island, so float32 position rounding shows up to about 5 mm at a cliff (it was under 1 mm on the ring island)
+	t.check(worst <= 0.01, "CporeWorld.ground equals TerrainData.ground at 10 000 points (max |d| = %s m)" % String.num(worst, 8))
 	# Water: depth > 0 exactly on sea / pond cells (cell centres, nearest-cell rule).
 	var wrong := 0
 	var wet := 0

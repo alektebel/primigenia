@@ -1,0 +1,42 @@
+terrain 779e5eb90f613394
+places 18
+nest 0 115
+Garfio 0 175
+Rondo 71.7678757 160.545273
+Zanco -86.651619 47.2394257
+Espinodo -136.628342 145.540054
+Acechalunas -382.435638 -150.559036
+Babosa 88.7347717 203.040558
+exit-1-river-valley 454 420
+exit-2-north-pass 250 -330
+exit-3-south-pass -196.938538 267.391022
+exit-4-west-saddle -302.82843 97.1715698
+hidden-cave-entrance -384.669689 -153.87702
+shard-1 81.446 118.852
+shard-2 218.601 206.133
+shard-3 368.225 355.757
+shard-4 492.912 605.131
+shard-5 704.88 817.098
+cave-chamber -401.425 -178.762
+pairs 17
+0 1
+0 2
+0 3
+0 4
+0 5
+0 6
+0 7
+0 8
+0 9
+0 10
+0 11
+0 12
+0 13
+0 14
+0 15
+0 16
+11 17
+min_legs 3
+8 4
+9 4
+10 4

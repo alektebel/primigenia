@@ -57,10 +57,16 @@ int main(int argc,char **argv){
         assert(fscanf(fp,"%d %d",&pairs[i][0],&pairs[i][1])==2);
         assert(pairs[i][0]>=0&&pairs[i][0]<count&&pairs[i][1]>=0&&pairs[i][1]<count);
     }
+    /* optional "min_legs M" then M lines "place legs": a place that bodies with fewer legs are not certified to reach (the Star massif passes) */
+    int minlegs[32]={0},nmin=0;
+    if(fscanf(fp," min_legs %d",&nmin)==1){
+        assert(nmin>=0&&nmin<=count);
+        for(int i=0;i<nmin;i++){int pl,lg;assert(fscanf(fp,"%d %d",&pl,&lg)==2&&pl>=0&&pl<count);minlegs[pl]=lg;}
+    }
     fclose(fp);
     /* The pinned shard and chamber places must be what the C world derives from this field. */
     {
-        CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;s.nest_x=s.nest_z=0;
+        CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;s.nest_x=x[0];s.nest_z=z[0];   /* place 0 is the nest: the origin on the ring island */
         s.secrets=CP_SECRETS_SHARDS|CP_SECRETS_CAVE;
         s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};
         static CpStageWorld probe;
@@ -87,6 +93,7 @@ int main(int argc,char **argv){
     for(int body=0;body<9;body++)for(int pair=0;pair<npairs;pair++)for(int reverse=0;reverse<2;reverse++){
         int legs=body?2+2*((body-1)/2):4,radius=body?((body-1)%2?400:50):300;
         int a=pairs[pair][reverse],b=pairs[pair][1-reverse];
+        if(legs<minlegs[a]||legs<minlegs[b])continue;
         if(only&&!strstr(names[a],only)&&!strstr(names[b],only))continue;   /* ROUTES_ONLY=shard: a development filter, the gate runs everything */
         /* Invalidate only derived nav data through a different valid body signature. */
         reset(x[a],z[a],legs,radius==50?51:50);
