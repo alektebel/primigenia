@@ -3,6 +3,8 @@
  * exact for whole design units and correctly rounded otherwise (the same on every IEEE-754 platform). */
 #include "cpore/island.h"
 
+#include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 #define META_I32 22
@@ -148,30 +150,89 @@ static float f10(int32_t v) { return (float)v / 10.f; }
 static float f100(int32_t v) { return (float)v / 100.f; }
 static float f1000(int32_t v) { return (float)v / 1000.f; }
 
+/* Centripetal Catmull-Rom (alpha 0.5) in Barry-Goldman form, + - * / and sqrtf only. Knot spacing is d^0.5 =
+ * sqrtf(sqrtf(d^2)). Four control points, channels x y hw h; s runs 0..1 over the span P1..P2. */
+static float cr_dt(float ax, float ay, float bx, float by)
+{
+    float dx = bx - ax, dy = by - ay, q = sqrtf(sqrtf(dx * dx + dy * dy));
+    return q < 1.0e-3f ? 1.0e-3f : q;
+}
+static void cr_eval(const float P[4][4], float s, float out[4])
+{
+    float t1 = cr_dt(P[0][0], P[0][1], P[1][0], P[1][1]), t2, t3, u;
+    t2 = t1 + cr_dt(P[1][0], P[1][1], P[2][0], P[2][1]);
+    t3 = t2 + cr_dt(P[2][0], P[2][1], P[3][0], P[3][1]);
+    u = t1 + s * (t2 - t1);
+    for (int c = 0; c < 4; c++) {
+        float a1 = (t1 - u) / t1 * P[0][c] + (u - 0.f) / t1 * P[1][c];
+        float a2 = (t2 - u) / (t2 - t1) * P[1][c] + (u - t1) / (t2 - t1) * P[2][c];
+        float a3 = (t3 - u) / (t3 - t2) * P[2][c] + (u - t2) / (t3 - t2) * P[3][c];
+        float b1 = (t2 - u) / t2 * a1 + (u - 0.f) / t2 * a2;
+        float b2 = (t3 - u) / (t3 - t1) * a2 + (u - t1) / (t3 - t1) * a3;
+        out[c] = (t2 - u) / (t2 - t1) * b1 + (u - t1) / (t2 - t1) * b2;
+    }
+}
+
+static void cp_ctrl(const CpIslandDesc *d, const CpIslandFeature *f, int k, float out[4])
+{
+    const CpIslandPoint *q = &d->pt[f->pt0 + k];
+    out[0] = f10(q->x_dm); out[1] = f10(q->y_dm); out[2] = f10(q->hw_dm); out[3] = f100(q->h_cm);
+}
+
 int cp_island_prepare(CpIslandDesc *d)
 {
-    int ne = 0;
+    int ne = 0, ni = 0;
     if (!d) return CP_TERR_ERR_NULL;
     d->scale = f1000(d->scale_pm);
     d->nest_r = f10(d->nest_r_dm);
     d->reef_x = f1000(d->reef_x_pm); d->reef_y = f1000(d->reef_y_pm);
     d->cliff_x = f1000(d->cliff_x_pm); d->cliff_y = f1000(d->cliff_y_pm);
+    d->neval = 0;
     for (int i = 0; i < d->nfeat; i++) {
         const CpIslandFeature *f = &d->feat[i];
         if (f->kind == CP_ISL_RANGE || f->kind == CP_ISL_CHANNEL) {
-            for (int s = 0; s + 1 < f->npts; s++) {
+            int spans = f->npts - 1, spline = (f->flags & CP_ISL_F_SPLINE) != 0;
+            if (ne + spans * (spline ? CP_ISL_SPLINE_SEG : 1) > CP_ISL_MAX_EVAL) return CP_TERR_ERR_ISL_LIMIT;
+            for (int s = 0; s < spans; s++, ni++) {
                 const CpIslandPoint *a = &d->pt[f->pt0 + s], *b = a + 1;
-                CpIslandEval *e = &d->eval[ne++];
-                e->kind = f->kind;
-                e->x0 = f10(a->x_dm); e->y0 = f10(a->y_dm); e->x1 = f10(b->x_dm); e->y1 = f10(b->y_dm);
-                e->w = f10(a->hw_dm);
-                e->h = f100(a->h_cm); e->h2 = f100(b->h_cm);
-                if (f->kind == CP_ISL_RANGE) { e->w2 = 0.f; e->k = f1000(f->k); }
-                else { e->w2 = f10(f->along_dm); e->k = ((f->flags & CP_ISL_F_SEA) && s + 2 == f->npts) ? 1.f : 0.f; }
+                int last = s + 2 == f->npts, nseg = spline ? CP_ISL_SPLINE_SEG : 1;
+                float P[4][4] = {{0}}, cur[4] = {0}, nxt[4] = {0}, travelled = 0.f;
+                if (spline) {
+                    cp_ctrl(d, f, s, P[1]); cp_ctrl(d, f, s + 1, P[2]);
+                    if (s > 0) cp_ctrl(d, f, s - 1, P[0]);
+                    else { P[0][0] = P[1][0] + (P[1][0] - P[2][0]); P[0][1] = P[1][1] + (P[1][1] - P[2][1]); P[0][2] = P[1][2]; P[0][3] = P[1][3]; }
+                    if (s + 2 < f->npts) cp_ctrl(d, f, s + 2, P[3]);
+                    else { P[3][0] = P[2][0] + (P[2][0] - P[1][0]); P[3][1] = P[2][1] + (P[2][1] - P[1][1]); P[3][2] = P[2][2]; P[3][3] = P[2][3]; }
+                    cur[0] = P[1][0]; cur[1] = P[1][1]; cur[2] = P[1][2]; cur[3] = P[1][3];   /* the control point itself, exact */
+                }
+                for (int g = 0; g < nseg; g++) {
+                    CpIslandEval *e = &d->eval[ne++];
+                    e->kind = f->kind; e->ni = ni; e->a0 = 0.f;
+                    if (spline) {
+                        float dx, dy;
+                        if (g + 1 == nseg) { nxt[0] = P[2][0]; nxt[1] = P[2][1]; nxt[2] = P[2][2]; nxt[3] = P[2][3]; }
+                        else cr_eval((const float (*)[4])P, (float)(g + 1) / (float)CP_ISL_SPLINE_SEG, nxt);
+                        e->x0 = cur[0]; e->y0 = cur[1]; e->x1 = nxt[0]; e->y1 = nxt[1];
+                        e->w = (cur[2] + nxt[2]) * 0.5f; if (e->w < 0.1f) e->w = 0.1f;
+                        e->h = cur[3]; e->h2 = nxt[3];
+                        e->a0 = travelled;
+                        dx = nxt[0] - cur[0]; dy = nxt[1] - cur[1];
+                        travelled += sqrtf(dx * dx + dy * dy);
+                        cur[0] = nxt[0]; cur[1] = nxt[1]; cur[2] = nxt[2]; cur[3] = nxt[3];
+                    } else {
+                        e->x0 = f10(a->x_dm); e->y0 = f10(a->y_dm); e->x1 = f10(b->x_dm); e->y1 = f10(b->y_dm);
+                        e->w = f10(a->hw_dm);
+                        e->h = f100(a->h_cm); e->h2 = f100(b->h_cm);
+                    }
+                    if (f->kind == CP_ISL_RANGE) { e->w2 = 0.f; e->k = f1000(f->k); }
+                    else { e->w2 = f10(f->along_dm); e->k = ((f->flags & CP_ISL_F_SEA) && last && g + 1 == nseg) ? 1.f : 0.f; }
+                }
             }
         } else {
-            CpIslandEval *e = &d->eval[ne++];
-            e->kind = f->kind;
+            CpIslandEval *e;
+            if (ne + 1 > CP_ISL_MAX_EVAL) return CP_TERR_ERR_ISL_LIMIT;
+            e = &d->eval[ne++];
+            e->kind = f->kind; e->ni = ni++; e->a0 = 0.f;
             e->x0 = f10(f->x_dm); e->y0 = f10(f->y_dm); e->x1 = 0.f; e->y1 = 0.f;
             e->w = f10(f->across_dm); e->w2 = f10(f->along_dm);
             e->h = f100(f->h_cm); e->h2 = 0.f; e->k = f1000(f->k);
@@ -184,6 +245,80 @@ int cp_island_prepare(CpIslandDesc *d)
     return CP_TERR_OK;
 }
 
+void cp_island_apply(const CpIslandDesc *d, CpTerrainParams *q)
+{
+    q->size_m = (float)d->size_dm / 10.f;
+    q->island_radius_m = (float)d->island_radius_dm / 10.f;
+    q->valley_radius_m = d->nest_r;
+    q->valley_floor_m = (float)d->nest_floor_cm / 100.f;
+    q->lake_x_m = (float)d->lake_x_dm / 10.f;
+    q->lake_y_m = (float)d->lake_y_dm / 10.f;
+    q->lake_radius_m = (float)d->lake_r_dm / 10.f;
+    q->lake_depth_m = (float)d->lake_depth_cm / 100.f;
+    if (d->stream_iters > 0) q->stream_iters = d->stream_iters;
+    if (d->droplets > 0) q->droplets = d->droplets;
+}
+
+/* Bilinear mask sample. Texel centres at (i + 0.5) / 128 of the side; a + (b - a) t keeps a constant mask exact. */
+float cp_island_mask(const CpIslandDesc *d, int which, float x_m, float y_m)
+{
+    const int R = CP_ISL_MASK_RES;
+    const uint8_t *m;
+    float size, u, v, tx, ty, a, b, c, e, top, bot;
+    int x0, y0, x1, y1;
+    if (!d || which < 0 || which >= d->nmask) return 128.f;
+    m = d->mask[which];
+    size = (float)d->size_dm / 10.f;
+    u = (x_m + size * 0.5f) / size * (float)R - 0.5f;
+    v = (y_m + size * 0.5f) / size * (float)R - 0.5f;
+    if (u < 0.f) u = 0.f;
+    if (v < 0.f) v = 0.f;
+    if (u > (float)(R - 1)) u = (float)(R - 1);
+    if (v > (float)(R - 1)) v = (float)(R - 1);
+    x0 = (int)u; y0 = (int)v;
+    tx = u - (float)x0; ty = v - (float)y0;
+    x1 = x0 + 1 < R ? x0 + 1 : x0; y1 = y0 + 1 < R ? y0 + 1 : y0;
+    a = (float)m[y0 * R + x0]; b = (float)m[y0 * R + x1]; c = (float)m[y1 * R + x0]; e = (float)m[y1 * R + x1];
+    top = a + (b - a) * tx; bot = c + (e - c) * tx;
+    return top + (bot - top) * ty;
+}
+
+/* ---- meta JSON for the design maps (the layout JSON's shape, world metres) -------------------------------------- */
+size_t cp_island_meta_json(const CpIslandDesc *d, char *buf, size_t cap)
+{
+    size_t n = 0;
+    float sc;
+    if (!d || !buf || cap < 2) return 0;
+    buf[0] = 0;
+    sc = d->scale;
+#define EMIT(...) do { if (n < cap) { int w_ = snprintf(buf + n, cap - n, __VA_ARGS__); if (w_ > 0) n += (size_t)w_; } } while (0)
+#define PTS(arr, p0, cnt) do { for (int k_ = 0; k_ < (cnt); k_++) { float ax_ = f10((arr)[(p0) + k_][0]), ay_ = f10((arr)[(p0) + k_][1]); \
+        EMIT("%s[%.0f,%.0f]", k_ ? "," : "", (double)(ax_ * (ax_ == 0.f && ay_ == 0.f ? 1.f : sc)), (double)(ay_ * sc)); } } while (0)
+    EMIT("{\"id\":\"%s\",\"title\":\"%s\",\"nest_r\":%.0f,\"size_m\":%.0f,\"wind\":[0,0],\"params\":{\"layout\":0,\"valley_radius_m\":%.0f,\"size_m\":%.0f,\"island_radius_m\":%.0f,\"n\":%d,\"stream_iters\":%d,\"droplets\":%d},\"regions\":[",
+         d->id, d->id, (double)d->nest_r, (double)f10(d->size_dm), (double)d->nest_r, (double)f10(d->size_dm), (double)f10(d->island_radius_dm), d->n,
+         d->stream_iters ? d->stream_iters : 48, d->droplets ? d->droplets : 80000);
+    for (int i = 0; i < d->nregion; i++) {
+        const CpIslandRegion *r = &d->region[i];
+        EMIT("%s{\"name\":\"%s\",\"kind\":\"%s\",\"biome\":\"%s\",\"gate\":%d,\"w\":%.0f,\"pts\":[", i ? "," : "", r->name, r->kind, r->biome, r->gate, (double)(f10(r->w_dm) * sc));
+        PTS(d->region_pt, r->pt0, r->npts); EMIT("]}");
+    }
+    EMIT("],\"routes\":[");
+    for (int i = 0; i < d->ntrail; i++) {
+        const CpIslandTrail *t = &d->trail[i];
+        EMIT("%s{\"name\":\"%s\",\"kind\":\"%s\",\"pts\":[", i ? "," : "", "trail", t->kind);
+        PTS(d->trail_pt, t->pt0, t->npts); EMIT("]}");
+    }
+    EMIT("],\"marks\":[");
+    for (int i = 0; i < d->nmark; i++) {
+        const CpIslandMark *m = &d->mark[i];
+        EMIT("%s{\"name\":\"%s\",\"kind\":\"%s\",\"x\":%.0f,\"y\":%.0f}", i ? "," : "", m->name, m->kind, (double)(f10(m->x_dm) * sc), (double)(f10(m->y_dm) * sc));
+    }
+    EMIT("]}");
+#undef EMIT
+#undef PTS
+    return n < cap ? n : cap - 1;
+}
+
 static int validate_features(CpIslandDesc *d, Rd *r)
 {
     for (int i = 0; i < d->nfeat; i++) {
@@ -192,7 +327,7 @@ static int validate_features(CpIslandDesc *d, Rd *r)
         if (bad(r, f->kind < CP_ISL_MASSIF || f->kind > CP_ISL_CONE)) return r->err;
         if (bad(r, !in_int(f->x_dm) || !in_int(f->y_dm) || !in_int(f->across_dm) || !in_int(f->along_dm) || !in_int(f->h_cm) || !in_int(f->k))) return r->err;
         if (bad(r, (f->flags & ~(CP_ISL_F_SEA | CP_ISL_F_RIVER | CP_ISL_F_SPLINE)) != 0)) return r->err;
-        if (bad(r, (f->flags & CP_ISL_F_SPLINE) != 0)) return r->err;               /* F1 */
+        if (bad(r, (f->flags & CP_ISL_F_SPLINE) && !poly)) return r->err;            /* splines are for polylines */
         if (bad(r, (f->flags & CP_ISL_F_SEA) && f->kind != CP_ISL_CHANNEL)) return r->err;
         if (poly) {
             if (bad(r, f->npts < 2 || f->pt0 < 0 || f->pt0 > d->npt || f->npts > d->npt - f->pt0)) return r->err;

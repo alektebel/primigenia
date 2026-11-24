@@ -40,8 +40,10 @@ extern "C" {
 #define CP_ISL_MAX_MASK 4
 #define CP_ISL_MASK_RES 128
 #define CP_ISL_NAME 32
-/* Evaluator entries: one per non-polyline feature, one per polyline segment. */
-#define CP_ISL_MAX_EVAL (CP_ISL_MAX_FEAT + CP_ISL_MAX_PT)
+/* Evaluator entries: one per non-polyline feature, one per straight polyline segment, CP_ISL_SPLINE_SEG per span of a
+ * spline polyline. cp_island_prepare (hence parse) refuses a desc that needs more (CP_TERR_ERR_ISL_LIMIT). */
+#define CP_ISL_SPLINE_SEG 16
+#define CP_ISL_MAX_EVAL 4096
 
 /* Feature kinds (the numbers are the old LF_* values of the layout tables). Fields by kind, units in brackets:
  *   MASSIF   x,y centre [dm]; across, along [dm]; k axis angle [mdeg]; h height [cm]
@@ -56,8 +58,26 @@ extern "C" {
  *   CONE     x,y; across = reach [dm]; h height at the centre [cm] */
 enum { CP_ISL_MASSIF = 1, CP_ISL_RANGE, CP_ISL_RING, CP_ISL_PLATEAU, CP_ISL_TERRACE, CP_ISL_BADLANDS, CP_ISL_CHANNEL,
        CP_ISL_ISLET, CP_ISL_CONE };
-/* Feature flags. SPLINE (Catmull-Rom) and the masks arrive in F1; F0 refuses SPLINE rather than ignore it. */
+/* Feature flags. SPLINE (RANGE and CHANNEL only) makes the polyline a centripetal Catmull-Rom curve through its points
+ * (island_desc.c, cp_island_prepare): CP_ISL_SPLINE_SEG straight evaluator segments per span, the end points exact. Width and
+ * height are splined with x and y.
+ *
+ * Noise index. Several terms of the shape evaluator take a per-feature noise offset (the 3.1*i, 11*i, 13*i, 2*i, 3*i of
+ * terrain_layouts.inc). Rule: the index of an evaluator entry is the running count of CONTROL SPANS before it: one per
+ * non-polyline feature, one per control segment of a polyline, in feature order. For straight polylines this is the
+ * evaluator-entry position, which is exactly what the layout tables use (layout-1 parity). A spline span gives all its
+ * 16 sub-segments the same index, so turning a spline on or off, or changing its sampling, never shifts the noise of any
+ * other feature, and inserting a control point shifts only what follows it. */
 enum { CP_ISL_F_SEA = 1, CP_ISL_F_RIVER = 2, CP_ISL_F_SPLINE = 4 };
+
+/* Mask slots (the desc's `mask[]`, 128 x 128 u8 over the whole square, bilinear, 128 = neutral). A blob may carry the first
+ * 1..4; missing masks are neutral.
+ *   CLIMATE_BIAS  precipitation +-50% (part II, not read by the terrain)
+ *   CANOPY        forest allowed (255) or barred (0) (part II)
+ *   EROSION       multiplier on stream-power and droplet erosion: v / 128, clamped to 0..1.5 (0 = untouched ground)
+ *   PROTECT       cells above 128 keep their authored (pre-erosion) height within +-0.5 m at full value (255); the band widens
+ *                 as the value falls: 0.5 m / ((v - 128) / 127), nothing below 129 */
+enum { CP_ISL_MASK_CLIMATE = 0, CP_ISL_MASK_CANOPY, CP_ISL_MASK_EROSION, CP_ISL_MASK_PROTECT };
 
 /* Parse and validation errors, on top of CP_TERR_ERR_*. */
 enum {
@@ -80,7 +100,8 @@ typedef struct CpIslandMark { int32_t x_dm, y_dm; char name[CP_ISL_NAME], kind[1
 
 /* The evaluator's float form of one feature (identical to the layout tables' LFeat): lengths in design metres,
  * heights in metres, k as float. kind and field use are as the layout comment in terrain_layouts.inc. */
-typedef struct CpIslandEval { int kind; float x0, y0, x1, y1, w, w2, h, h2, k; } CpIslandEval;
+typedef struct CpIslandEval { int kind; float x0, y0, x1, y1, w, w2, h, h2, k; int ni; float a0; } CpIslandEval;
+/* ni = noise index (rule above); a0 = design metres already travelled along the polyline's span at x0,y0 (0 for tables). */
 
 typedef struct CpIslandDesc {
     /* integers, as stored */
@@ -116,10 +137,23 @@ uint64_t cp_island_hash(const CpIslandDesc *d);
 /* CRC-32 (IEEE 802.3, reflected, init and final xor 0xFFFFFFFF), exposed for the tools and tests. */
 uint32_t cp_island_crc32(const uint8_t *p, size_t n);
 
+/* The terrain parameters a desc overrides (size, island radius, nest, lake, and stream_iters / droplets when non-zero),
+ * applied to *q. cp_terrain_generate_desc does exactly this to a copy of its p; the tools call it to learn the real size. */
+void cp_island_apply(const CpIslandDesc *d, CpTerrainParams *q);
+/* Bilinear sample of mask `which` (0..255, 128 when the desc has no such mask) at world metres; lerp form a + (b - a) t, so a
+ * constant mask returns its value exactly. Edge texels extend. */
+float cp_island_mask(const CpIslandDesc *d, int which, float x_m, float y_m);
+/* The design maps' meta (id, nest, wind, regions, routes = the trails, marks) as the JSON cp_terrain_layout_json writes for a
+ * layout, in world metres. Returns the bytes written (excluding the NUL), 0 on error. */
+size_t cp_island_meta_json(const CpIslandDesc *d, char *buf, size_t cap);
+
 /* Generates the terrain of a desc. p supplies the seed, n and the erosion tuning; the desc overrides size_m,
  * island_radius_m, the nest (valley_radius_m, valley_floor_m, lake) and, when non-zero, stream_iters and droplets.
- * The result hash is NOT mixed with the desc (the F0 parity gate); cp_island_hash identifies the desc. Desc islands
- * skip the river-gap trail until F1 brings authored trails back. */
+ * The result carries cp_island_hash in out->island_hash, which cp_terrain_hash mixes in (terrain v5); clearing the field
+ * gives the hash of the same arrays as a layout island (the F0 parity gate). The masks EROSION and PROTECT are applied.
+ * Trails of kind "game_trail" or "path" are routed near their hint polyline (a corridor of +-40 m, walkable) and graded
+ * to the 51.6 degree grip rule; other kinds ("exit", ...) are descriptive and not carved. Desc islands skip the
+ * layout-0 river-gap trail. */
 int cp_terrain_generate_desc(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *out,
                              const CpTerrainWorkspace *ws, CpTerrainProgressFn fn, void *user);
 

@@ -22,6 +22,7 @@ $(BUILD)/%.o: %.c $(HDRS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 $(BUILD)/core/src/terrain.o: core/src/terrain_layouts.inc
+$(BUILD)/core/src/climate.o: core/src/climate_biomes.inc
 
 $(BUILD)/libcpore.a: $(CORE_OBJ)
 	ar rcs $@ $^
@@ -52,7 +53,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: island-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
+test: island-test climate-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
 	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
@@ -61,7 +62,7 @@ test: island-test $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
 	sh tests/check_log_v4.sh $(BUILD)/world_cli tests/golden/world-42.log $(BUILD)
-	@sed "s/ 5ef8636377460348/ 5ef8636377460345/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
+	@sed "s/ 0fcec8786a021241/ 0fcec8786a021240/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
@@ -165,6 +166,24 @@ studio-test:
 	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_touch.cjs
 	G48_TEST_OUTPUT=$(BUILD)/studio-tests/g48-tests.json nice -n 10 node tests/studio_procedural_parts.cjs
 
+# M1: moisture climate kernel (plan section 4). Fixtures come from tools/climate/lt_ref.py (plain Python).
+# climate-test runs the C tests, then rebuilds them at -O0 and -O2 (gcc, plus clang when installed) and requires
+# the same hash lines (check (d)). climate-bench enforces the 15 ms gate for the 256^2 linear theory.
+$(BUILD)/climate_test: tests/test_climate.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: climate-test climate-bench
+climate-test: $(BUILD)/climate_test
+	nice -n 10 ./$(BUILD)/climate_test
+	@mkdir -p $(BUILD)/climate; ref=; \
+	for cc in gcc clang; do command -v $$cc >/dev/null 2>&1 || { echo "climate hash: $$cc not installed, skipped"; continue; }; \
+	  for o in -O0 -O2; do \
+	    $$cc $$o -std=c99 -fno-fast-math -ffp-contract=off -Icore/include -D_POSIX_C_SOURCE=200809L tests/test_climate.c core/src/climate.c -o $(BUILD)/climate/t_$$cc$$o -lm || exit 1; \
+	    h=`nice -n 10 ./$(BUILD)/climate/t_$$cc$$o | grep 'hash lt='`; \
+	    echo "climate hash $$cc $$o: $$h"; \
+	    if [ -z "$$ref" ]; then ref="$$h"; elif [ "$$h" != "$$ref" ]; then echo "climate hash differs between builds"; exit 1; fi; \
+	  done; done
+climate-bench: $(BUILD)/climate_test
+	./$(BUILD)/climate_test --bench
 # W11: native smoke remains small; 1024 guarantees and parity are opt-in.
 TERRAIN_SRC := core/src/terrain.c core/src/island_desc.c core/src/rng.c
 $(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
@@ -191,21 +210,29 @@ island-test: $(BUILD)/island_test $(ISLAND_F0)
 island-test-heavy: $(BUILD)/island_test $(ISLAND_F0)
 	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0) --heavy
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
+# F1 gate: the desc made from layout 1 (splines off) maps within 2% of the layout-1 stats the picker shipped (n 1536, about 8 s).
+.PHONY: island-stats
+island-stats: $(BUILD)/terrain_cli $(ISLAND_F0)
+	@mkdir -p $(BUILD)/island/maps-desc
+	nice -n 10 python3 tools/island/maps.py --cli $(BUILD)/terrain_cli --desc $(ISLAND_F0) --out $(BUILD)/island/maps-desc --n 1536 --seed 1 > $(BUILD)/island/maps-desc/log.txt
+	python3 tools/island/compare_stats.py $(BUILD)/island/maps-desc/stats-desc.json web/gaitlab/island/stats.json
+
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
 	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=50331648 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
 .PHONY: terrain-parity
-terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm $(ISLAND_F0)
 	nice -n 10 node tests/test_wasm_terrain.mjs
+	nice -n 10 node tests/test_wasm_island.mjs
 terrain-test: terrain-parity
 wasm-test: terrain-parity
 
 .PHONY: terrain-metrics
 terrain-metrics: $(BUILD)/terrain_cli
 	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42,99,1234,31337 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
-terrain-test: terrain-metrics
+terrain-test: terrain-metrics island-stats
 
 # G56: world simulation (the cell-stage world.c retains its historical name).
 $(BUILD)/libcpore.a $(BUILD)/libcpore.so: $(BUILD)/apps/combat_bots.o

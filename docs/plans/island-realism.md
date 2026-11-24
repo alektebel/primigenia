@@ -179,6 +179,12 @@ The JSON shape below is the contract for F1 and F2:
   - Changing the seed changes the micro relief and the erosion, never the spine, the exits or the regions (Q1).
 - **Erosion masks:** `erosion_mask(d, x, y)` multiplies `erode_scale_at()`. `protect` cells are restored to `max(eroded, authored − 0.5 m)` after `thermal()`, so the nest floor and the ramps survive.
 - **Authored trails** come back for desc islands (today `gap_trail` is skipped for layouts). For each `trails[]` polyline, `trail_walk` on `trail_costs` finds the walkable route near the hint (a corridor of ±40 m), and `trail_carve` flattens it to the 51.6° grip rule (A66). Game trails also set the `cover` map to 0 later (M3).
+- **F1 as built** (details in `core/include/cpore/island.h`):
+  - **Splines:** `spline: 1` on a range or channel makes the polyline a centripetal Catmull–Rom curve through its points (end points exact; phantom end points are reflected), 16 evaluator segments per span; width and height are splined with x and y. `CP_ISL_MAX_EVAL` is 4096 (about 250 spline spans); more is `CP_TERR_ERR_ISL_LIMIT`.
+  - **Noise index:** the per-feature noise offsets use the running count of **control spans** (one per non-polyline feature, one per control segment of a polyline). For straight polylines that is the evaluator-entry position, so layout-1 parity holds. A spline span gives its 16 sub-segments one index, so toggling a spline never moves another feature's noise, and the along-range noise runs on through the sub-segments (`a0`).
+  - **Masks** (slots: climate_bias, canopy, erosion, protect): bilinear, 128 neutral and exact. `erosion` multiplies stream-power and droplet strength by `v/128` (0..1.5); `protect` above 128 holds the cell within `0.5 m / ((v-128)/127)` of its authored height, applied after the cliff bands, again after the rivers and after the trails.
+  - **Trails:** kinds `game_trail` and `path` are routed (±40 m corridor around the hint, waypoints snapped within 20 m) and graded to 0.30 rise over run; other kinds (`exit`) stay descriptive. A trail that cannot be joined inside its corridor is skipped whole. Needs n ≥ 512.
+  - **v5 hash:** `CpTerrain.island_hash` (0 for layouts) is mixed in after the version word. The F0 parity gate is now: the desc terrain with `island_hash` cleared hashes like `--layout 1`.
 - **Version:** `CP_TERRAIN_VERSION 5`. `cp_terrain_hash` adds `cp_island_hash(d)` after the version when `d` is set. The `terrain_cache.gd` key gains the island id and desc hash.
 
 ### 3.3 Compatibility, goldens and how tests move

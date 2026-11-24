@@ -7,7 +7,7 @@ export const LIMITS = { feat: 96, pt: 1024, trail: 32, trailPt: 256, region: 24,
 export const MASK_RES = 128;
 export const MASK_KEYS = ['climate_bias', 'canopy', 'erosion', 'protect'];
 const KIND = { massif: 1, range: 2, ring: 3, plateau: 4, terrace: 5, badlands: 6, channel: 7, islet: 8, cone: 9 };
-const FLAG_SEA = 1, FLAG_RIVER = 2;
+const FLAG_SEA = 1, FLAG_RIVER = 2, FLAG_SPLINE = 4;
 const INT_LIM = 1 << 24;
 
 // JSON key per C field, by kind. Fields not named stay 0.
@@ -87,8 +87,8 @@ export function packIsland(j) {
       }
       if (f.sea) r.flags |= FLAG_SEA;
       if (f.river) r.flags |= FLAG_RIVER;
-      if (f.spline) throw new Error(`${what}: spline arrives in F1`);
-    } else if (f.sea || f.river || f.pts) throw new Error(`${what}: sea, river and pts belong to range and channel features`);
+      if (f.spline) r.flags |= FLAG_SPLINE;   // centripetal Catmull-Rom through the points (core/include/cpore/island.h)
+    } else if (f.sea || f.river || f.spline || f.pts) throw new Error(`${what}: sea, river, spline and pts belong to range and channel features`);
     fr.push(r);
   }
   if (pts.length > LIMITS.pt) throw new Error('too many polyline points');

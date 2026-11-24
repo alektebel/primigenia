@@ -2,7 +2,7 @@
 
 These are acceptance fixtures, including currently failing routes. A red certification is not a waiver.
 
-`seed{1,7,42}.json` pins terrain v4 at n=1024, the terrain hash, the actual initial Merodeador profile,
+`seed{1,7,42}.json` pins terrain v5 at n=1024 (v5 only added the version word and the desc hash to the terrain hash: the arrays are the v4 ones), the terrain hash, the actual initial Merodeador profile,
 StageSetup nest and herd home positions, every generated cave record and the volcano descriptor.
 `route_places` and `required_pairs` define the required graph. Every pair is tested in both directions,
 with all nine bodies: Merodeador (4 legs, radius 3 m), and 2/4/6/8 legs at radii 0.5 and 4 m.
