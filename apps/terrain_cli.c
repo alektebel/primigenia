@@ -396,6 +396,36 @@ static void maps(const CpTerrain *t, const CpTerrainParams *p, const char *prefi
     free(slope); free(rgb); free(shade); free(cls); free(plain); free(climb); free(reach); free(q);
 }
 
+/* L0/L1 look labs: a small square crop of the generated terrain for the browser (web/gaitlab/forest.html).
+ * Layout (little endian): "CPCROP1\0", u32 seed, u32 m (cells per side), f32 cell_m, f32 x0_m, f32 z0_m (world x and z of cell
+ * (0,0) centre, nest at the origin, z south), then height f32[m*m], flow f32[m*m], material u8[m*m], river u8[m*m]. */
+static int write_crop(const char *path, const char *spec, const CpTerrainParams *p, const CpTerrain *t)
+{
+    float cx, cz, size;
+    if (sscanf(spec, "%f,%f,%f", &cx, &cz, &size) != 3 || size < 8.f || size > 4000.f) die("--crop needs X,Z,SIZE_M (world metres)");
+    const float cell = p->size_m / (float)p->n, half = p->size_m * 0.5f;
+    int i0 = (int)floorf((cx - size * 0.5f + half) / cell), j0 = (int)floorf((cz - size * 0.5f + half) / cell);
+    int m = (int)ceilf(size / cell);
+    if (i0 < 0 || j0 < 0 || i0 + m > p->n || j0 + m > p->n) die("crop outside the terrain");
+    FILE *f = fopen(path, "wb");
+    if (!f) { perror(path); return 2; }
+    const char magic[8] = {'C', 'P', 'C', 'R', 'O', 'P', '1', '\0'};
+    uint32_t seed = p->seed, mm = (uint32_t)m;
+    float hdr[3] = {cell, ((float)i0 + 0.5f) * cell - half, ((float)j0 + 0.5f) * cell - half};
+    int bad = fwrite(magic, 1, 8, f) != 8 || fwrite(&seed, 4, 1, f) != 1 || fwrite(&mm, 4, 1, f) != 1 || fwrite(hdr, 4, 3, f) != 3;
+    for (int pass = 0; pass < 4 && !bad; pass++)
+        for (int j = 0; j < m && !bad; j++) {
+            size_t row = (size_t)(j0 + j) * (size_t)p->n + (size_t)i0;
+            if (pass == 0) bad = fwrite(t->height + row, 4, (size_t)m, f) != (size_t)m;
+            else if (pass == 1) bad = fwrite(t->flow + row, 4, (size_t)m, f) != (size_t)m;
+            else if (pass == 2) bad = fwrite(t->material + row, 1, (size_t)m, f) != (size_t)m;
+            else bad = fwrite(t->river ? t->river + row : t->material + row, 1, (size_t)m, f) != (size_t)m;
+        }
+    if (fclose(f) || bad) { fprintf(stderr, "short write %s\n", path); return 2; }
+    printf("crop %d cells of %.4f m, x0 %.3f z0 %.3f\n", m, (double)cell, (double)hdr[1], (double)hdr[2]);
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     CpTerrainParams p;
@@ -501,6 +531,11 @@ int main(int argc, char **argv)
         if (!path) die("dump needs --out");
         printf("seconds %.4f hash %016" PRIx64 "\n", sec, cp_terrain_hash(&t));
         return write_dump(path, &p, &t, &ws);
+    }
+    if (!strcmp(cmd, "crop")) {
+        const char *path = arg_s(argc, argv, "--out"), *spec = arg_s(argc, argv, "--crop");
+        if (!path || !spec) die("crop needs --crop X,Z,SIZE and --out");
+        return write_crop(path, spec, &p, &t);
     }
     die("unknown command");
     return 2;
