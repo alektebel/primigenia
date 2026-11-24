@@ -29,6 +29,8 @@ var sui
 var ui
 var fq
 var seed_n := 1
+var duel_only := false     # `duel`: boot, fight Garfio once at full hp, print the result, quit (make godot-loop-duel)
+var wall_limit_s := 780.0  # a hang (the sim paused in an editor, a wait on ticks that never come) fails the run instead of waiting for the make timeout
 var evidence_dir := ""
 var verbose := OS.get_environment("E2E_VERBOSE") != ""
 var shots := 0
@@ -86,6 +88,13 @@ func _initialize() -> void:
 			TIMESCALE = float(a.substr(6))
 		elif a.begins_with("evidence="):
 			evidence_dir = a.substr(9)
+		elif a == "duel":
+			duel_only = true
+	var t_boot := Time.get_ticks_msec()
+	process_frame.connect(func():     # wall clock, not engine time: --fixed-fps runs many engine seconds per wall second
+		if float(Time.get_ticks_msec() - t_boot) / 1000.0 > wall_limit_s:
+			printerr("FAIL: wall-clock guard: the bot did not finish in %.0f s (tick %d)" % [wall_limit_s, tick() if game != null and game.stage != null else -1])
+			quit(1))
 	_run.call_deferred()
 
 func _finish() -> void:
@@ -144,10 +153,16 @@ func _run() -> void:
 	var t_start := tick()
 	# A39: bodies walk at Fr 0.24 and prey runs at Fr 1.5 when it flees, so the bot sprints between fights
 	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": true, "run": true}
+	if duel_only:
+		await _duel()
+		return
 	await _hunt()
 	await _friend()
 	await _dig()
+	await _explore()
 	await _wings()
+	if not task_ticks.has("wings"):
+		return _finish()
 	island.player_input.keys_override = null
 	await _fire()
 	check(fq.quest.finished(), "all five tasks are done")
@@ -185,6 +200,11 @@ func walk_to(p: Vector2, radius: float, budget: int, stop: Callable = Callable()
 			return true
 		if stop.is_valid() and stop.call():
 			return true
+		if int(state().active) >= 0:
+			island.player_input.clear_destination()
+			await _fight_out(tick())        # something met the player on the way (Garfio's home is next to the nest): fight it out, flee under 25 hp
+			next_send = -1
+			continue
 		if here.distance_to(still_pos) > 1.0:
 			still_pos = here
 			still_from = tick()
@@ -401,6 +421,58 @@ func _dig() -> void:
 	check(int(state().dig.dug) >= 1 and state().dig.holes.size() >= 1, "C holds the hole (%d dug)" % int(state().dig.dug))
 	check(tick() - t0 <= BUDGET.dig, "within the budget of %d ticks (%d)" % [BUDGET.dig, tick() - t0])
 	await _shot("task3_dig")
+
+# --- loop tuning 1: explore and the Garfio duel (bot only, no balance) -------------------------------------------------------------
+
+## A player looks around the valley: walk until each reachable day species has been seen (the C world counts a species once the player
+## is within 30 m), Espinodo and Babosa first (Garfio is the duel's job; the nocturnal Acechalunas sleep; the radial ones are 1.3 km away).
+func _explore() -> void:
+	print("== 3b. explore: look at the other herds of the valley")
+	var t0 := tick()
+	for sp in [2, 5]:
+		var id := nearest_alive(sp)
+		if id < 0 or bool(state().species[sp].get("seen", false)):
+			continue
+		var home := Vector2(float(ent(id).x), float(ent(id).z))
+		say("explore: species %d at %.0f,%.0f, %.0f m" % [sp, home.x, home.y, dist_to(id)])
+		await walk_to(home, 22.0, 3000, func(): return bool(state().species[sp].get("seen", false)) or int(state().active) >= 0)
+		if int(state().active) >= 0:
+			await _fight_out(tick())
+	check(tick() - t0 < 6000, "explored the valley within 6000 ticks (%d)" % (tick() - t0))
+
+## One deliberate Garfio duel at full hp. The policy is what a player does: lock him with F, then press, each beat, the first equipped
+## move that is usable and reaches (stamina permitting); no flee, so the result is a clean win or death.
+func _pick_slot() -> int:
+	for m in state().attack_moves:
+		if bool(m.get("equipped", false)) and bool(m.get("usable", false)) and m.get("target_in_range", null) == true:
+			return int(m.slot) - 1
+	return -1
+
+func _duel() -> void:
+	print("== duel: Garfio at full hp (seed %d)" % seed_n)
+	var target := nearest_alive(3)
+	if not check(target > 0, "Garfio lives in the valley"):
+		return _finish()
+	var hp0 := float(me().hp)
+	_key(KEY_F)
+	sui.lock_target(target)
+	var p0 := tick()
+	await until(func(): return int(state().active) >= 0 or tick() - p0 > 2500 or bool(ent(target).dead), 40000)
+	var f0 := tick()
+	while tick() - f0 < 1200 and (int(state().active) >= 0 or tick() - f0 < 20):
+		if int(state().active) >= 0:
+			if sui.selected_id != int(state().active) + 1:
+				sui.select_id(int(state().active) + 1)
+			if ui.mode != &"attack":
+				ui.set_mode(&"attack")
+			var slot := _pick_slot()
+			if slot >= 0:
+				ui._press(slot)
+		await frames(6)
+	var won := bool(ent(target).dead)
+	print("duel seed=%d result=%s hp_start=%.0f hp_end=%.0f garfio_hp=%.0f ticks=%d" % [seed_n, "win" if won else "loss", hp0, float(me().hp), float(ent(target).hp), tick() - f0])
+	check(true, "the duel ended")
+	_finish()
 
 func _wings() -> void:
 	print("== 4. wings: the cracked bed")

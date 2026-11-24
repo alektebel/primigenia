@@ -63,3 +63,13 @@ Most baseline failures are gone: befriend, fire and cousin now pass, load is 6-8
 3. Explore loop and seen radius 45 (2), then judge placement from the owner's log.
 
 Not covered: owner sessions, GPU load time (the RTX log stays the reference), and anything past 12 min of play.
+
+## Implementation result (A33, same branch)
+
+Implemented: the 40 m home leash (`CP_STAGE_FLEE_LEASH`, `core/src/stage_world.c`, derived from the existing home position, no new state, no snapshot bump); bot changes in `godot/game/tests/first_quest_e2e.gd` (wall-clock guard, fight handling inside `walk_to`, explore step for Espinodo and Babosa, `duel` mode, stop after a failed wings step); `make godot-loop-duel` (Makefile). Garfio's numbers untouched.
+
+Loop score, 3 seeds (`docs/evidence/loop/score/2026-11-24-tune1/`, with `compare-vs-baseline.md` and `compare-vs-2026-11-24.md`): friend 220-265 s, wings 446-484 s, fire 497-540 s, cousin seen 447-491 s, longest stretch 41-43 s, dead share 0, novelty gap <= 2.2 min, species in 10 min 4 / 5 / 4 (all pass). Seed 42 no longer hangs. Still failing: species by 30 min (the bot finishes at 8-9 min with 4-5 species; the target needs the T10/T11 species), and on seed 42 one death before evolve and 3 fights per kill. The seed 42 death is real world layout: its wing bed is at (17, 47), 8 m from Garfio's home at (23, 55), and the bot arrives with 22 hp. The "regressions" listed by compare.py against the first run are load times measured under a machine load of 25-40 (cold load 23-35 s against 6-8 s before) and distance walked, not game changes.
+
+Garfio duel (`make godot-loop-duel`, `docs/evidence/loop/score/duel-tune1/`): the starter wins 8 of 8 duels at full hp (100 hp, ends with 34-48 hp left, 64 ticks) when it presses the first equipped usable move that reaches. That is 100%, above the 35-80% band, and overturns my earlier reading in section 3: Garfio is beatable at full hp; the earlier deaths were an old bite-spam policy and low hp (22 hp after the Rondo fight; there is no out-of-combat regen). The number to look at is therefore Garfio at partial hp, not his stats. Not changed here, per the instruction. Candidate for the next pass: Garfio hp 90 -> 110-120, or a smaller change such as his move cooldowns, measured with the duel target at 100% / 60% hp.
+
+Suites (log `/home/diego/Desarrollo/cpore-wt/_agent/loop-tune-tests.log`): `make test` exit 0 (goldens unchanged: the leash is not in the golden scenarios), godot-test, godot-play-test, godot-devtools-test, godot-camera-test exit 0, first-quest e2e seed 1: 31 checks, 0 failures. No golden or scenario regenerated.

@@ -847,6 +847,7 @@ static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float
  * checked by the owner's play: 1.5 felt slow; a gallop with a long flight phase; Alexander & Jayes 1983 put the walk-run change near Fr 0.5).
  * Mass still slows acceleration and turning through steer.c (A29). Plain float maths (sqrtf is exactly rounded), so it is
  * reproducible like the rest of the stage. */
+#define CP_STAGE_FLEE_LEASH 40.f   /* m from home: a timid creature stops fleeing beyond it */
 #define CP_STAGE_HIP_PER_RADIUS .56f
 #define CP_STAGE_FR_WALK .24f   /* default of motion.walk_fr */
 #define CP_STAGE_WILD_RUN_FR 1.5f /* wild chase / flee Froude number, fixed (A54): the player's run Fr (motion.sprint_k) went 1.5 -> 2.2, but prey and hunters keep
@@ -1417,6 +1418,10 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->goal_x;
             tz=e->goal_z;
         }
+        /* Loop tuning 1: a timid creature flees only while it is within CP_STAGE_FLEE_LEASH of its home. Without the leash a Zanco ran 394 m with
+         * the player trailing at 9 m for 330 s (the sprint lasts 10 s, then the jog cannot close the gap): measured dead stretch 326 s; with it, 35-44 s.
+         * Stateless (the home position is already in the snapshot), so no snapshot bump. Starting value, checked by `make godot-loop-score`. */
+        const int timid_flee=s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f&&length(e->x-e->home_x,e->z-e->home_z)<CP_STAGE_FLEE_LEASH;
         int hostile=cp_stage_social_hostile(w,i);   /* the temperament rule, minus what the social layer pacifies */
         if(e->returning){
             tx=e->home_x;
@@ -1430,7 +1435,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
-        else if(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f){
+        else if(timid_flee){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
@@ -1439,7 +1444,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         const float k=w->motion.wild_k*w->motion.jog_k;
         float jog=by_size?gait_speed(&e->profile,w->motion.walk_fr)*k:e->profile.speed,espeed=jog;
         /* chasing or fleeing is a run; roaming, returning home and hunkering are walks */
-        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,CP_STAGE_WILD_RUN_FR)*k;
+        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||timid_flee))espeed=gait_speed(&e->profile,CP_STAGE_WILD_RUN_FR)*k;
         /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
         if(e->species==6&&!hostile&&!e->returning&&!cp_stage_social_leaving(w,i))espeed=.3f;
         if(length(tx-e->x,tz-e->z)<.4f||(cp_stage_creature_hunkered(w,i)&&!hostile))espeed=0;   /* hunkered: curled up in the noon light */
