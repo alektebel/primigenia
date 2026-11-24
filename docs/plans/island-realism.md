@@ -95,6 +95,15 @@ Coordinates are world metres. The nest is at the origin; x is east; z is the map
 | OG8 | nest valley at chase height (0, 2.5 AGL, 40) | the north pass (390, 60, −515) | the start view, grass to 250 m, ground tiling | P0 |
 | OG9 | creature close-up at the nest (existing `creature_dist`) | creature | creature readability against the new ground | P0 |
 
+**Built (P0, 2026-11-24):**
+- `make godot-island-path [LABEL=<name>] [PATH_TIER=low|medium|low,medium] [LAYOUT=1|0] [ISLAND=<params.json>] [SHOTS=OG2,OG5] [TODS=dawn,night] [PATH_OUT=<dir>]`. The tier variable is `PATH_TIER`, not `TIER`, because `TIER` already drives `godot-terrain-bench`.
+- `LAYOUT=1` (default) is the Star massif lab island; `LAYOUT=0` is the game's own island; `ISLAND` points at a terrain params JSON (the `params` object of `terrain_cli layout-json`, or a whole island file later), so F4, B1 and later steps reuse the same path.
+- Script `godot/game/tests/island_path_shots.gd` (the shot table is at the top); sheet `tools/island/path_sheet.py` (rows = times of day, columns = OG0..OG9).
+- Output per tier: `<tier>_<tod>_OGn.jpg`, `times_<tier>.json`, `path_<tier>.json` (the exact camera of each frame), `sheet_<tier>.jpg`. Default folder `docs/evidence/island/path/<date>-<hash>`; pass `PATH_OUT` for a folder outside the repo.
+- No wildlife (`wild = false`), frozen clouds, `--fixed-fps 30`, fixed hours, so runs repeat.
+- **OG0 and OG1 are stand-ins** until O1 (no planet or orbit sky exists yet): OG0 is a 20 km oblique view, OG1 is 12 km straight down. They are marked `stand_in` in `path_<tier>.json`.
+- OG8's look-at height 60 is read as metres above ground. OG7 looks 40 m ahead along Exit 2.
+
 **P0 acceptance:**
 - two runs at the same label are pixel-identical (same convention as `godot-look-score`);
 - runs on the current layout-1 lab island;
