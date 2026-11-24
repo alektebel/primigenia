@@ -69,7 +69,7 @@ static func add_herds(setup: Dictionary, data, nest: Vector2, probe = null) -> v
 			setup.wild.append({"x": p.x, "z": p.y, "home_x": b.x, "home_z": b.y, "species": s, "bot": -1, "profile": species[s].profile})
 			placed += 1
 
-static func find_spot(data, nest: Vector2, distance: float, arc: float, probe, taken: Array):
+static func find_spot(data, nest: Vector2, distance: float, arc: float, probe, taken: Array, join := true):
 	for j in 64:
 		var a := (arc + j / 64.0) * TAU
 		var target := nest + Vector2(sin(a), cos(a)) * distance
@@ -79,7 +79,7 @@ static func find_spot(data, nest: Vector2, distance: float, arc: float, probe, t
 		for t in taken:
 			if (t as Vector2).distance_to(target) < 45.0:
 				near = true
-		if near:
+		if near or (join and not joined_to(data, target, taken)):
 			continue
 		var ok := true
 		for s in 21:
@@ -116,6 +116,40 @@ const SPOT_GENTLE_RING := 0.8
 # big body cannot stand on, and the lake bank is close to several spots.
 static func shore_ok(data, p: Vector2) -> bool:
 	return not data.has_climate() or shore_clear(data, p.x, p.y, 8.0)
+
+# Garfio's home must be seen from the nest (the low chase camera, 1.5 m up at the nest, 0.8 m up at the target; checked every 2 m): on the Star massif the first home
+# at 60 m sat 6 m down behind the lip of the nest terrace, so the first creature the player meets was hidden and could not be clicked.
+static func in_sight(data, nest: Vector2, target: Vector2) -> bool:
+	if not data.has_climate():
+		return true
+	var eye: float = data.ground(nest.x, nest.y) + 1.5
+	var tip: float = data.ground(target.x, target.y) + 0.8
+	var steps := int(nest.distance_to(target) / 2.0)
+	for i in range(1, steps):
+		var t := float(i) / steps
+		var p := nest.lerp(target, t)
+		if data.ground(p.x, p.y) > lerpf(eye, tip, t) - 0.2:
+			return false
+	return true
+
+# The straight line a-b is dry (no pond or sea sample every 3 m). Herds on the Star massif must be joined to each other and to Garfio's home by dry
+# straight lines: the bot (and a player holding a lock) approaches in a straight line, and the lake of the nest valley otherwise leaves a herd across the water
+# (seed 42: the first befriend target was 170 m away across the lake and the approach stalled at the shore).
+static func line_dry(data, a: Vector2, b: Vector2) -> bool:
+	var steps := int(a.distance_to(b) / 3.0) + 1
+	for i in range(steps + 1):
+		var p := a.lerp(b, float(i) / steps)
+		if data.is_pond_at(p.x, p.y) or data.ground(p.x, p.y) <= 1.0:
+			return false
+	return true
+
+static func joined_to(data, target: Vector2, taken: Array) -> bool:
+	if not data.has_climate():
+		return true
+	for t in taken:
+		if not line_dry(data, t, target):
+			return false
+	return true
 
 static func spot_gentle(data) -> float:
 	return SPOT_GENTLE if data.has_climate() else SPOT_GENTLE_RING
@@ -159,7 +193,7 @@ static func find_home(data, nest: Vector2, probe = null):
 			if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= spot_gentle(data):
 				ok = false
 				break
-		if ok and shore_ok(data, target) and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
+		if ok and shore_ok(data, target) and in_sight(data, nest, target) and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
 			return target
 	return null
 
@@ -210,6 +244,8 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 	for w in setup.wild:
 		taken.append(Vector2(w.home_x, w.home_z))
 	var spot = find_spot(data, nest, SLUG_DISTANCE, SLUG_ARC, probe, taken)
+	if spot == null:
+		spot = find_spot(data, nest, SLUG_DISTANCE, SLUG_ARC, probe, taken, false)   # the damp slope may lie across the lake: the sixth species is kept anyway
 	if spot == null:
 		return
 	var b: Vector2 = spot

@@ -490,6 +490,9 @@ func _wings() -> void:
 	var tries := 0
 	while not task_ticks.has("wings") and tick() - t0 < BUDGET.wings and tries < 6:
 		tries += 1
+		# B1: the bed on the Star massif can be a long sprint from where the explore ended, and C refuses a dig under CP_DIG_STAMINA (12): rest first, as a player would
+		while float(me().stamina) < 14.0 and tick() - t0 < BUDGET.wings:
+			await ticks(10)
 		await dig_here()
 		await ticks(5)
 	check(await wait_task("wings", 40), "task 4 done: the fossil bed gave wing_vane (tick %d)" % int(task_ticks.get("wings", -1)))
