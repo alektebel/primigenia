@@ -20,7 +20,7 @@ const A=[
  M('blood_squirt','Blood squirt','horned lizard','head crest + armour','defence / signature','Squirts blood from the eyes: scares predators off.','land',2.0,{cx:1.0,ty:.5,h:2.2},1.3,.9,0),
  M('quill_storm','Quill storm','porcupine','back spines','defence / signature','Thorns: attackers who strike in melee are hurt.','land',2.3,{cx:1.3,ty:.5,h:2.3},1.3,.9,.08),
  M('ground_pound','Ground-pound shockwave','elephant-scale stomp, exaggerated','heavy legs','control / signature','Rear up and slam: knockdown ring around you.','land',2.7,{cx:1.5,ty:.95,h:3.8},1.42,.95,.09),
- M('death_roll','Death roll','crocodile','jaws + heavy tail','control / signature','Grab and spin: big damage over time while holding.','water',2.45,{cx:1.35,ty:.45,h:2.7},1.2,.85,.07),
+ M('death_roll','Death roll','crocodile','jaws + heavy tail','control / signature','Grab and spin: big damage over time while holding.','water',2.45,{cx:1.15,ty:.45,h:2.9},1.2,.85,.07),
  M('ink_cloud','Ink cloud','octopus and squid','ink sac (water)','defence / escape / signature','Blinds the pursuer and lets you jet away.','water',2.6,{cx:1.1,ty:.55,h:3.0},1.35,.95,0),
  M('hind_kick','Hind kick','donkey','strong legs','control / defence','Knockback to whatever is behind you.','land',2.25,{cx:1.5,ty:.58,h:2.6},1.12,.85,.085),
  M('tail_club','Tail club','ankylosaur-style armour (ankylosaur, glyptodont)','tail + bone club','control / signature','Sweeping knockdown with a stun; breaks the target\'s guard.','land',2.4,{cx:1.5,ty:.5,h:2.6},1.18,.85,.085)];

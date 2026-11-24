@@ -182,29 +182,62 @@ SIGB.blinding_spit=function(sc,def){
     if(b>0&&b<.45){for(let i=0;i<2;i++){const e=d.eyeW[i].getWorldPosition(V(0,0,0));fx.p(e,.08+.2*b,.9*(1-b/.45),'#e8f598',TX.soft,true);for(let k=0;k<4;k++){const az=k*1.7+i;fx.p(e.clone().add(V(-.08*eo(b/.45)*Math.cos(az),.08*Math.sin(az)*eo(b/.45)+.04,.1*Math.sin(az+i)*eo(b/.45))),.03,.9*(1-b/.45),'#f2ffb0',TX.drop,true);}}}
     return .25*Math.exp(-Math.pow((s-T0)/.05,2));}};
 };
-// 5 ------------------------------------------------------------------------------------------- smash punch
+// 5 ------------------------------------------------------------------------------------------- smash punch (mantis shrimp smasher, Odontodactylus; Patek et al. 2004, Nature 428)
+// Not a punch: the two raptorial appendages are folded under the head like pocket knives. The merus flexes back and loads the saddle spring (small tremble, latch holds),
+// then the latch lets go and the propodus + club swing about the elbow in a hammer arc from below-back, out and up, hitting with the club heel in ~3 ms (stretched to 50 ms here
+// so it reads). A cavitation bubble forms behind the club and collapses a moment later with a flash: a second shock. Three rapid strikes, arms alternating, then fold back.
 SIGB.smash_punch=function(sc,def){
-  const L=1.3,c=Shrimp(sc,{L,col:'#2f9a82',belly:'#e8d27a',band:'#d85a2a',claw:'#d8552e',arm:[.42,.42],ar:.045,eyeR:.07,eyeCol:'#7ae0a0'}),d=Pip(sc,2.15,{shield:true}),T0=def.ti,club=lam('#ff8a3a');
-  c.hand.scale.setScalar(1.6);const cb=ell(c.hand,club,.13,.09,.09);cb.position.set(.07,0,0);const sp=spike(c.hand,lam('#ffd27a'),.035,.09,.17,0,0,0,-Math.PI/2);for(const z of [-1,1])spike(c.hand,lam('#ffd27a'),.02,.07,.08,.07,z*.05,z*.5,0);
-  const bm=Beams(sc),ghosts=[0,1,2,3].map(()=>{const m=ell(sc,new T.MeshBasicMaterial({color:'#ffb070',transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending}),.16,.1,.1);m.visible=false;return m;});
-  const bx=.45;
+  const L=1.3,c=Shrimp(sc,{L,col:'#2f9a82',belly:'#e8d27a',band:'#d85a2a',claw:'#d8552e',arm:[.13,.2],ar:.045,eyeR:.07,eyeCol:'#7ae0a0'}),d=Pip(sc,2.15,{shield:true}),H=[1.1,1.38,1.66],SA=[H[0],H[2]],SB=[H[1]];
+  [c.a1,c.a2,c.elb,c.hand].forEach(m=>{m.visible=false;});
+  const rm=lam('#e0502a'),rm2=lam('#ee6a38'),pale=lam('#ffe6b8'),club=lam('#ff5a2e'),spot=lam('#fff0d0');
+  const mkArm=zs=>{const a={zs,mer:limb(sc,rm,.07*L,.055*L),prp:limb(sc,rm2,.048*L,.04*L),car:ell(sc,rm,.062*L,.062*L,.062*L),g:new T.Group()};sc.add(a.g);
+    ell(a.g,club,.15,.1,.095).position.set(.05,0,0);ell(a.g,pale,.045,.085,.085).position.set(.17,0,0);for(const q of [[.02,.07,.05],[.07,.07,-.05],[.12,.06,.06],[.0,-.04,-.08]])ell(a.g,spot,.018,.018,.018).position.set(...q);
+    spike(a.g,pale,.022,.2,.1,-.075,0,0,Math.PI/2);return a;};
+  const arms=[mkArm(.075),mkArm(-.075)],bm=Beams(sc),pa=A=>A;
+  const T0c=new T.Color('#f4f8f8'),REST1=.15,REST2=3.38,COCK1=-.12,COCK2=3.05,IMP1=.32,IMP2=6.5;
+  // appendage state at time t for the strike list S (arm-local angles): a1 merus, a2 absolute propodus angle (rest 3.38 rad = folded back under the thorax, 6.5 = out front)
+  const track=(t,S)=>{let i=-1;for(let k=0;k<S.length;k++)if(t>=S[k]-.3)i=k;if(i<0)return {a1:REST1,a2:REST2,cock:0};
+    const t0=S[i],cock=s2(t,t0-.3,t0-.1),stk=Math.pow(clamp((t-(t0-.05))/.05,0,1),1.8),ret=eo(rp(t,t0+.05,t0+.31)),trem=cock*(1-stk)*.018*Math.sin(t*95);
+    let a1=REST1+(COCK1-REST1)*cock,a2=REST2+(COCK2-REST2)*cock+trem;
+    if(t>=t0-.05){a1=COCK1+(IMP1-COCK1)*stk;a2=COCK2+(IMP2-COCK2)*stk;}
+    if(t>t0){const reb=Math.exp(-(t-t0)*40)*.1*Math.sin((t-t0)*70);a1=IMP1+(REST1-IMP1)*ret;a2=IMP2+(REST2-IMP2)*ret+reb;}
+    return {a1,a2,cock};};
+  const local=(t,S,zs)=>{const k=track(t,S),sh=V(.33*L,-.06*L,zs*L),el=sh.clone().add(V(Math.cos(k.a1)*.13*L,Math.sin(k.a1)*.13*L,0)),wr=el.clone().add(V(Math.cos(k.a2)*.2*L,Math.sin(k.a2)*.2*L,0)),tip=wr.clone().add(V(Math.cos(k.a2)*.2,Math.sin(k.a2)*.2,0));return {sh,el,wr,tip,a2:k.a2,cock:k.cock};};
+  const shMat=d.shield.material,shC0=shMat.color.clone();
+  const legPh=[0,Math.PI,Math.PI,0,0,Math.PI];
   return {pose(s,fx){
-    // arm angles in body plane: folded back (a1 up-back, a2 folds) -> cocked, trembling -> strike (arm swings forward-down in 50 ms) -> hold -> recover
-    const co=kf(s,[[.25,0],[.75,1],[1.0,1],[1.03,.4],[1.06,0]]),strike=s2(s,1.0,1.06),fold=1-strike,back=kf(s,[[1.06,0],[1.14,.18],[1.5,.1],[2.2,0]]);
-    const a1=kf(s,[[.25,-.9],[.75,-2.4],[1.0,-2.5],[1.03,-1.1],[1.06,.5],[1.5,.45],[2.2,-.5],[2.8,-.9]]),a2=kf(s,[[.25,1.2],[.75,2.6],[1.0,2.65],[1.03,1.4],[1.06,-.05],[1.5,-.05],[2.2,.8],[2.8,1.2]]);
-    const trem=win(s,.6,1.0,.1)*.012;c.pose({x:bx+.1*strike*(1-s2(s,1.4,2.2))-.04*co,y:.1*L+.03*co+trem*Math.sin(s*80),pitch:.12*co-.1*strike*(1-s2(s,1.3,2.0)),curl:.45*co,sp:s*3,wig:1,a1,a2,a3:0,shX:.34,shY:-.04,legF:.0,eyeUp:co,eyeOut:co,arch:.15*co,fanO:.2*strike});
-    const cpos=c.hand.localToWorld(V(.1,0,0)),T1=V(1.82,.62,.12);
-    // blur: ghost clubs along the swing
-    bm.begin();for(let k=0;k<4;k++){const g=ghosts[k],ts=1.06-.012*(k+1);if(s>1.0&&s<1.1){const aa=kf(ts,[[1.0,-2.5],[1.03,-1.1],[1.06,.5]]),bb=kf(ts,[[1.0,2.65],[1.03,1.4],[1.06,-.05]]);const sh=V(.34*L,-.04*L,.09*L),el=sh.clone().add(V(Math.cos(aa)*.42*L,Math.sin(aa)*.42*L,0)),wr=el.clone().add(V(Math.cos(aa+bb)*.42*L,Math.sin(aa+bb)*.42*L,0));g.visible=true;g.position.copy(c.W(wr));g.material.opacity=.4*(1-k/4);g.scale.set(.2,.1,.1);}else g.visible=false;}bm.end();
+    const appr=s2(s,.12,.82),cockA=track(s,SA).cock,cockB=track(s,SB).cock,co=Math.max(cockA,cockB),moving=appr*(1-s2(s,.7,.85)),rise=s2(s,.85,1.0)*(1-s2(s,1.95,2.5));
+    const bx=.13+.4*appr-.015*Math.exp(-Math.pow((s-H[0])/.05,2));
+    c.pose({x:bx,y:(.17+.05*rise)*L+.012*Math.sin(s*3),pitch:.1*co+.03*rise,curl:.25*rise,sp:s*3,wig:1,a1:0,a2:0,eyeUp:co,eyeOut:co*.8,arch:.12*co,fanO:.25*rise,antU:1-.3*co,follow:1});
+    // legs: custom stepping while it closes in, then braced and planted
+    c.legs.forEach((l,i)=>{const side=i%2?1:-1,k=i>>1,hip=c.W(V((.22-.09*k)*L,-.04*L,side*.05*L)),ph=s*9+legPh[i],st=.045*moving,ft=V(bx+(.18-.14*k)*L+st*Math.sin(ph),.01+.04*moving*Math.max(0,Math.cos(ph)),side*(.17+.03*rise)*L);
+      const r=ik(hip,ft,.14*L,.16*L,V(0,1,0).addScaledVector(V(0,0,side),.6));place(l.up,hip,r.knee);place(l.lo,r.knee,r.foot);});
+    // raptorial appendages
+    const P=[local(s,SA,.075),local(s,SB,-.075)];
+    arms.forEach((a,i)=>{const p=P[i],shW=c.W(p.sh),elW=c.W(p.el),wrW=c.W(p.wr);place(a.mer,shW,elW);place(a.prp,elW,wrW);a.car.position.copy(elW);a.g.position.copy(wrW);a.g.quaternion.copy(c.Q);a.g.rotateZ(p.a2);});
+    // target first (its shield is the contact point), then the effects that touch it
+    const hp=d.chest.localToWorld(V(.3,.0,0)),n1=s>=H[0],n2=s>=H[1],a3=s-H[2];
+    const jolt=H.reduce((m,h)=>s>=h?Math.max(m,Math.exp(-(s-h)*9)):m,0),sw=H.map((h,i)=>.045*s2(s,h,h+.05)*(i<2?1:0)),step=sw[0]+sw[1];
+    const fly=a3>0?eo(rp(a3,0,.6)):0,fl3=s2(s,H[2],H[2]+.55)*(1-s2(s,2.5,2.9)),lim=Math.max(s2(s,H[2]+.1,H[2]+.5)*(1-s2(s,2.4,2.8)),.5*s2(s,H[1],H[1]+.3)*(1-s2(s,H[2],H[2]+.1)));
+    d.set(s,{dx:(step+.55*fly)*(1-s2(s,2.6,3.3)),dy:a3>0?.35*Math.sin(Math.PI*rp(a3,0,.7))*(a3<.7?1:0):0,roll:a3>0?-(Math.PI*1.5)*fl3:0,pitch:.3*jolt+(a3>0?.6*Math.exp(-a3*5):0),na:-.45*jolt,jaw:.3*(jolt>.2?1:0),ear:.9*s2(s,H[0],H[0]+.05)*(1-s2(s,2.7,3.1)),nosh:s>H[1],stars:s2(s,H[2]+.5,H[2]+.7)*(1-s2(s,2.4,2.8)),flash:.7*Math.exp(-Math.min(...H.map(h=>Math.abs(s-h)+(s<h?9:0)))*9)*(s>H[0]?1:0),sq:.12*jolt,limp:lim,lt:s});
+    // shield: cracks after the first hit, burst on the second
+    shMat.color.copy(shC0).lerp(T0c,.3*(n1?1:0));d.shield.rotation.y=.12*Math.sin((s-H[0])*40)*Math.exp(-(s-H[0])*8)*(n1?1:0);
+    const lie=s2(s,H[2]+.5,H[2]+.7)*(1-s2(s,2.3,2.9));if(lie>0)d.root.position.y=Math.max(.14,d.root.position.y*(1-lie)+.14*lie);
+    // blur streak along the club arc during each swing, and the swing's tip flare
+    bm.begin();const all=[[SA,P[0],0],[SB,P[1],1]];
+    for(const [S,pp,ai] of all)for(const t0 of S){if(s<t0-.056||s>t0+.012)continue;let prev=null;for(let k=0;k<9;k++){const t=Math.min(s,t0)-.0055*k,q=c.W(local(t,S,pp.sh.z/L).tip);if(prev)bm.seg(prev,q,.1*(1-k/10),k%2?'#ffe0b0':'#ffc080',.9*(1-k/9));fx.p(q,.5*(1-k/10)+.1,.95*(1-k/9),'#ffd090',TX.soft,true);prev=q;}
+      fx.p(c.W(pp.tip),.5,.5*(1-Math.abs(s-t0+.02)/.04>0?1:0),'#ffe0b0',TX.soft,true);}
+    // impacts: flash, cavitation bubble blooms behind the club and collapses ~35 ms later with a second flash and shock ring
+    H.forEach((h,i)=>{const a=s-h,big=i===2,cp=hp.clone().add(V(.04,i===1?.05:-.02,i===1?-.04:.03));
+      if(a>0&&a<.5)fx.hit(cp,a,{n:big?9:6,r:big?.75:.5,sz:.09,c:'#fff0b8',c2:'#ff9a40'});
+      if(a>-.004&&a<.036){const u=clamp((a+.004)/.04,0,1);fx.p(cp.clone().add(V(-.09*u,0,0)),.1+.34*Math.sin(Math.PI*u*.5),.9,'#d8f4ff',TX.bubble,true);}
+      if(a>.036&&a<.2){const u=(a-.036)/.164;fx.p(cp.clone().add(V(-.1,0,0)),1.1*(1-u)+.15,1-u,'#ffffff',TX.star,true,.5+i);fx.p(cp.clone().add(V(-.1,0,0)),.35+.9*u,.4*(1-u),'#9fe0ff',TX.soft,true);bm.vring(cp.clone().add(V(-.1,0,0)),.2+.7*eo(u),.7*(1-u),'#bff2ff');}
+    });bm.end();
+    // shell fragments of the shield (burst at the second hit, a few more at the third)
+    const sa=s-H[1];d.shards.forEach((m,k)=>{if(sa<0){m.visible=false;return;}m.visible=sa<1.1;const v=V(.6+.5*rnd(k),.9+rnd(k+3)*1.2,(rnd(k+7)-.5)*1.6);m.position.set(hp.x+.1+v.x*sa,Math.max(.03,hp.y+v.y*sa-4.5*sa*sa),hp.z+v.z*sa);m.rotation.set(sa*9+k,sa*7,sa*5);m.scale.setScalar(Math.max(.01,1-sa*.5));if(m.position.y<=.031)m.rotation.set(0,0,0);});
+    if(a3>0&&a3<1.0)for(let k=0;k<4;k++){const v=V(.8+.5*rnd(k+20),.8+rnd(k+23),(rnd(k+27)-.5)*1.4);fx.p(V(hp.x+.1+v.x*a3,Math.max(.04,hp.y+v.y*a3-4.5*a3*a3),hp.z+v.z*a3),.05,.8*(1-a3),'#bfe0e4',TX.drop,false);}
     bubbles(fx,s,0,2.5,0,6);
-    const a=s-T0,club2=c.hand.localToWorld(V(.14,0,0));
-    if(a>0&&a<.5)fx.hit(V(1.78,.62,.1),a,{n:9,r:.7,sz:.09,c:'#fff0b8',c2:'#ff9a40'});
-    if(a>-.02&&a<.3){const u=a/.3;fx.p(V(1.78,.62,.1),.4+.5*u,.5*(1-u),'#bff2ff',TX.bubble,true);}
-    const sh=d.shards;sh.forEach((m,k)=>{if(a<0){m.visible=false;return;}m.visible=a<1.1;const az=k*1.05+.3,v=V(.8+.3*rnd(k),.9+rnd(k+3)*1.2,(rnd(k+7)-.5)*1.6);m.position.set(1.8+v.x*a,Math.max(.03,.6+v.y*a-4.5*a*a),.1+v.z*a);m.rotation.set(a*9+k,a*7,a*5);m.scale.setScalar(Math.max(.01,1-a*.5));if(m.position.y<=.031)m.rotation.set(0,0,0);});
-    const fly=a>0?eo(rp(a,0,.6)):0;
-    d.set(s,{dx:.5*fly*(1-s2(s,2.6,3.3)),dy:a>0?.35*Math.sin(Math.PI*rp(a,0,.7))*(a<.7?1:0):0,roll:a>0?-(Math.PI*1.5)*s2(s,T0,T0+.55)*(1-s2(s,2.5,2.9)):0,pitch:a>0?.6*Math.exp(-a*5)-.5*s2(s,T0,T0+.4)*(1-s2(s,2.5,2.9))*0:0,na:a>0?-.5*Math.exp(-a*5):0,jaw:.3*(a>0&&a<.8?1:0),ear:.9*s2(s,T0,T0+.05)*(1-s2(s,2.7,3.1)),nosh:a>0,stars:s2(s,T0+.5,T0+.7)*(1-s2(s,2.4,2.8)),flash:.8*Math.exp(-Math.max(0,a)*9)*(a>0?1:0),sq:.15*Math.exp(-Math.max(0,a)*10)*(a>0?1:0),limp:s2(s,T0+.1,T0+.5)*(1-s2(s,2.4,2.8)),lt:s});
-    const lie=s2(s,T0+.5,T0+.7)*(1-s2(s,2.3,2.9));if(lie>0)d.root.position.y=Math.max(.14,d.root.position.y*(1-lie)+.14*lie);
-    return .8*Math.exp(-Math.pow((s-T0)/.05,2));}};
+    return .8*Math.max(...H.map(h=>Math.exp(-Math.pow((s-h)/.05,2))));}};
 };
 // 6 ------------------------------------------------------------------------------------------- electric discharge
 SIGB.electric_discharge=function(sc,def){
@@ -228,30 +261,66 @@ SIGB.electric_discharge=function(sc,def){
       if(fall>.9)t.root.position.y=Math.max(.14,t.root.position.y);t.tint('#a8c8ff',.3*on);}
     return .35*flash*(.5+.5*Math.sin(s*60));}};
 };
-// 7 ------------------------------------------------------------------------------------------- tongue snatch
+// 7 ------------------------------------------------------------------------------------------- tongue snatch (chameleon; de Groot & van Leeuwen 2004 Proc R Soc B 271; Anderson 2016 J Exp Biol 219)
+// Sequence of the real strike: the eyes swivel independently, then both converge on the prey; the body freezes; the mouth opens slowly and the sticky, cupped tongue pad is pushed just
+// past the lips; then the elastic-loaded tongue (collagen sheath around the entoglossal bone, latch-and-spring like the mantis) is released and shoots out ~1.2 body lengths in ~20 ms
+// (stretched here to 50 ms); the pad grips the insect (viscous adhesion + suction) and the hyoglossus reels it back over ~0.4 s, the tongue bunching up, into a gulp.
 SIGB.tongue_snatch=function(sc,def){
   const c=Quad(sc,{col:'#6aa84f',belly:'#cfe39a',dark:'#3f7a34',x0:.1,sl:.36,pr:[.16,.21,.1],cr:[.17,.22,.1],legU:.17,legL:.2,lr:.032,sprawl:.9,fw:1.1,nl:.12,ns:4,nr0:.1,nr1:.07,na0:.7,nc0:-.5,hl:.12,hh:.09,hw:.075,sn:.05,snh:.05,snw:.05,tl:.7,ts:14,tr0:.06,tr1:.016,ta0:-.2,eye:.06,eyeY:.7,toeL:.045,
-    skin:(i,a,out,part,top)=>{if(part==='tail'&&i%3===0){out[0]*=.6;out[1]*=.8;}}}),T0=def.ti,bm=Beams(sc);
-  const dm=lam('#3f7a34');spike(c.head,dm,.03,.16,-.1,.05,0,0,.9);for(let k=0;k<7;k++)spike(c.pel,dm,.012,.05,k*.08-.1,.19,0,0,.1);
-  c.eyeW.forEach(e=>{e.scale.multiplyScalar(1.1);e.material=lam('#d6e07a');});const rim=lam('#7fc85f');c.eyeW.forEach((e,i)=>{const r=ell(c.head,rim,.07,.07,.055);r.position.copy(e.position).add(V(-.015,0,0));});
-  const st=new T.Mesh(new T.CylinderGeometry(.1,.14,.3,10),lam('#7a5a38'));st.position.set(1.5,.15,0);sc.add(st);const fruit=ell(sc,lam('#d8402e'),.075,.075,.075),leaf=ell(sc,lam('#4a8a3a'),.055,.012,.035),tong=new BB.Tube(12,6),club=ell(sc,lam('#e87a8a'),.045,.04,.04),tm=new T.MeshLambertMaterial({color:'#e07080',side:T.DoubleSide});tong.mesh.material=tm;sc.add(tong.mesh);
+    skin:(i,a,out,part,top)=>{if(part==='tail'&&i%3===0){out[0]*=.6;out[1]*=.8;}if(part==='neck'&&Math.cos(a)<-.1){out[0]=.9;out[1]=.9;out[2]=.55;}}}),T0=def.ti,bm=Beams(sc);
+  const dm=lam('#3f7a34'),skin=lam('#6aa84f'),rimM=lam('#7fc85f');
+  // casque (helmet crest), brow ridges and dorsal spines
+  const cas=ell(c.head,dm,.1,.07,.03);cas.position.set(-.085,.075,0);cas.rotation.z=.5;for(let k=0;k<7;k++)spike(c.pel,dm,.012,.05,k*.08-.1,.19,0,0,.1);
+  // turret eyes: a ball in a scaly cone (lid cap with a small opening), whole eye swivels independently
+  c.eyeW.forEach(e=>{e.visible=false;});c.eyeP.forEach(e=>{e.visible=false;});c.blind.forEach(e=>{e.visible=false;});
+  const ER=.062,eyes=[-1,1].map(z=>{const g=new T.Group();g.position.set(c.o.hl*.55,c.o.hh*.7,z*c.o.hw*.95);c.head.add(g);
+    ell(g,lam('#d6e07a'),ER,ER,ER);const pu=ell(g,lam('#101010'),ER*.42,ER*.42,ER*.3);pu.position.x=ER*.8;pu.scale.multiplyScalar(1.25);
+    const lg=new T.SphereGeometry(ER*1.18,12,8,0,Math.PI*2,0,2.0);lg.rotateZ(Math.PI/2);const lid=new T.Mesh(lg,rimM);g.add(lid);return {g,z};});
+  // the branch the chameleon grips, a twig with leaves behind, and the prey (a fly)
+  const br=new T.Mesh(new T.CylinderGeometry(.085,.1,2.4,10),lam('#7a5a38'));br.rotation.z=Math.PI/2;br.position.set(.5,.085,0);sc.add(br);
+  const tw=new T.Mesh(new T.CylinderGeometry(.015,.02,.9,6),lam('#7a5a38'));tw.position.set(1.65,.45,-.3);tw.rotation.z=.25;sc.add(tw);const lf=lam('#4a8a3a');for(let k=0;k<5;k++){const l=ell(sc,lf,.1,.012,.05);l.position.set(1.62+.08*k-.1,.2+.18*k,-.3+.05*(k%2));l.rotation.set(0,k,.5-.2*k);}
+  const fly=new T.Group();sc.add(fly);ell(fly,lam('#27384a'),.032,.022,.022);ell(fly,lam('#3a2a2a'),.014,.016,.016).position.x=.034;const wm=new T.MeshBasicMaterial({color:'#e8f4ff',transparent:true,opacity:.55,depthWrite:false,side:T.DoubleSide}),wings=[-1,1].map(z=>{const w=ell(fly,wm,.03,.003,.016);w.position.set(-.005,.018,z*.018);return {w,z};});
+  const wing2=ell(sc,wm,.06,.005,.03);
+  const tong=new BB.Tube(22,6),tm=new T.MeshLambertMaterial({vertexColors:true,side:T.DoubleSide});tong.mesh.material=tm;sc.add(tong.mesh);
+  const pad=ell(sc,lam('#f08a98'),.05,.042,.042),cup=ell(sc,lam('#a8344a'),.02,.032,.032);
+  const eul=new T.Quaternion(),X=V(1,0,0),TF=1.07,TC=T0,TR0=1.2,TR1=1.62,FLY0=V(1.45,.74,0);
+  const gv=(a,b)=>V(Math.cos(a)*Math.cos(b),Math.sin(b),Math.sin(a)*Math.cos(b));
   return {pose(s,fx){
-    const lock=s2(s,.55,.95)*(1-s2(s,1.6,2.1)),sway=Math.sin(s*2.6)*(1-s2(s,.5,.9)),ext=s2(s,.99,1.1)*(1-s2(s,1.16,1.62)),eat=s2(s,1.5,1.62)*(1-s2(s,1.8,1.95)),gulp=Math.exp(-Math.pow((s-1.82)/.1,2))+Math.exp(-Math.pow((s-2.15)/.1,2));
-    const sp=Math.exp(-Math.pow((s-1.0)/.1,2));
-    c.pose({x:.1+.04*sway*.5-.05*sp,y:c.h-.05*lock,pitch:.04*sway-.07*lock+.05*sp,bend:-.08*lock,br:.02*Math.sin(s*2)+.12*gulp,na:.18*lock-.1*sp+.04*sway,hp:-.2*lock+.1*sp,hy:.0,jaw:kf(s,[[.7,0],[.95,.25],[1.0,.95],[1.14,.95],[1.45,.5],[1.56,0],[1.8,.1],[1.9,0],[2.1,.12],[2.2,0]]),ta:.25*lock,tc:kf(s,[[.3,2.2],[.9,3.4],[1.1,3.4],[1.7,3.0],[2.6,2.3]]),tx:u=>[0,.15*Math.sin(s*1.5-u*3)],
-      foot:[[0,0,0],[0,0,0],[0,0,0],[0,0,0]],hr:.03*sway});
-    // turret eyes: independent sweep, then both lock on the fruit
-    const look=s2(s,.5,.85)*(1-s2(s,1.9,2.4));c.eyeP.forEach((p,i)=>{p.position.y=c.o.hh*c.o.eyeY+.012*(1-look)*Math.sin(s*3+i*2.2);p.position.x=c.o.hl*.62+c.o.eye*.55+.01*look;});
-    const m=c.mouth(.97).add(V(.0,.02,0)),fp=V(1.46,.37,0),tipT=lerpV(m,fp,eo(ext));
-    const pulled=s2(s,1.16,1.62),fpos=lerpV(fp,m.clone().add(V(-.04,-.03,0)),pulled),gone=s>1.6&&s<2.9;
-    fruit.visible=leaf.visible=!gone;fruit.position.copy(fpos);leaf.position.copy(fpos).add(V(0,.075,0));const sq=1-.2*Math.exp(-Math.max(0,s-T0)*14)*(s>T0?1:0)*(1-pulled);fruit.scale.set(.075*(1+.25*(1-sq)),.075*sq,.075);fruit.scale.multiplyScalar(1-.55*pulled);
-    // tongue: tube from mouth to the club, a bit of overshoot ripple while it flies
-    const ts=[];for(let i=0;i<12;i++){const u=i/11,p=lerpV(m,tipT,u);p.y+=-.05*Math.sin(Math.PI*u)*(.4+.6*ext)*(1-pulled*.5)+.015*Math.sin(u*9-s*60)*ext*(1-u);ts.push(p);}
-    const tl=ext>.01||(s>1.0&&s<1.62);tong.mesh.visible=tl;club.visible=tl;if(tl){tong.update(ts,ts.map((p,i)=>.012+.01*(i/11)),(i,a,o)=>{o[0]=.88;o[1]=.45;o[2]=.5;},Y);club.position.copy(tipT);club.scale.set(.04,.034,.034).multiplyScalar(1+.6*(i0=>i0)(0));}
-    // contact: stick splat, and a little sparkle as the tongue snaps back
-    const a=s-T0;if(a>-.02&&a<.3)fx.p(fp.clone().add(V(-.05,.0,0)),.2*(1-a/.3)+.05,.8*(1-a/.3),'#fff0e0',TX.star,true,s*10);
-    if(gulp>.3)for(let k=0;k<3;k++)fx.p(c.neckPts[1].clone().add(V(0,-.07,.1+.01*k)),.05,.7*gulp,'#fff',TX.star,true,k);
-    return .12*Math.exp(-Math.pow((s-T0)/.05,2));}};
+    const lock=s2(s,.55,.95)*(1-s2(s,1.78,2.1)),sway=Math.sin(s*2.6)*(1-s2(s,.5,.9)),jawO=kf(s,[[.8,0],[.98,.55],[1.07,.95],[1.62,.9],[1.72,.4],[1.78,0],[1.9,.12],[2.0,0],[2.15,.12],[2.25,0]]),
+      ext=kf(s,[[.88,0],[1.0,.05],[1.06,.1],[1.07,.1],[1.12,1],[1.2,1],[1.62,0]]),sp=Math.exp(-Math.pow((s-1.1)/.06,2)),gulp1=Math.exp(-Math.pow((s-1.82)/.07,2)),gulp2=Math.exp(-Math.pow((s-2.12)/.07,2)),creep=s2(s,.9,1.06)*(1-s2(s,1.15,1.4));
+    const flyG=FLY0.clone();const stuck=s>=TC&&s<1.7;
+    const base={x:.1+.04*sway*.5-.05*sp+.03*creep,y:c.h+.14-.02*lock,pitch:.04*sway-.04*lock+.06*sp-.07*creep,bend:-.08*lock,br:.02*Math.sin(s*2)+.1*(gulp1+gulp2),na:.18*lock-.1*sp+.04*sway,hp:-.1*lock+.12*sp,hy:0,jaw:jawO,ta:.25*lock,tc:kf(s,[[.3,2.2],[.9,3.6],[1.1,3.6],[1.7,3.1],[2.6,2.3]]),tx:u=>[0,.15*Math.sin(s*1.5-u*3)],hr:.02*sway,
+      nrf:u=>1+.55*(gulp1*Math.exp(-Math.pow((u-.25)/.3,2))+gulp2*Math.exp(-Math.pow((u-.7)/.3,2)))+.35*s2(s,.9,1.07)*(1-s2(s,1.15,1.6))*Math.exp(-Math.pow((u-.8)/.3,2)),
+      foot:[[0,.09,-.02],[0,.09,.02],[0,.09,-.02],[0,.09,.02]],follow:1};
+    // fly: hovers in a little figure of eight, jerks when the tongue lands, is carried in on the pad, arrives anew at the end
+    const hov=V(.04*Math.sin(s*5),.03*Math.sin(s*10)+.02*Math.sin(s*3),.04*Math.cos(s*5));
+    // aim: the head points at the fly (iterate once)
+    c.pose(base);let hd=V(1,0,0).applyQuaternion(c.head.quaternion),mp=c.mouth(.97);const want=Math.atan2(FLY0.y-mp.y,FLY0.x-mp.x),cur=Math.atan2(hd.y,hd.x);base.hp+=(want-cur)*lock*.95;c.pose(base);mp=c.mouth(.97);hd=V(1,0,0).applyQuaternion(c.head.quaternion);
+    // eyes: independent sweeps, then converge on the prey
+    const flyNow=FLY0.clone().add(hov);
+    eyes.forEach((e,i)=>{const ew=c.head.localToWorld(e.g.position.clone()),to=c.head.worldToLocal(flyNow.clone()).sub(e.g.position).normalize(),scan=gv(.9*Math.sin(s*1.9+i*2.3)+(i?.3:-.3),.5*Math.sin(s*1.3+i*1.7)),conv=s2(s,.5+.12*i,.9+.08*i)*(1-s2(s,1.9,2.4));const g=scan.clone().lerp(to,conv).normalize();e.g.quaternion.setFromUnitVectors(X,g);});
+    // the tongue: aimed along the mouth->fly line, flies ballistically, reels in bunched
+    const dir=FLY0.clone().sub(mp),Lfull=dir.length()-.02;dir.normalize();const len=Lfull*ext,reel=s>TR0?clamp((s-TR0)/(TR1-TR0),0,1):0,pt=mp.clone().addScaledVector(dir,len),root=c.head.localToWorld(V(c.tipX*.55,-c.o.hh*.25,0));
+    const vis=ext>.001,n=22,pts=[],rad=[],bunch=reel>0&&reel<1?Math.sin(reel*Math.PI)*.0:0;
+    for(let i=0;i<n;i++){const u=i/(n-1),p=root.clone().lerp(pt,u);p.y+=-.035*Math.sin(Math.PI*u)*Math.min(1,len/Lfull)*(1-.5*reel)+.012*Math.sin(u*10-s*70)*(s>1.06&&s<1.14?1:0);
+      // bunching: while reeling, the shaft is a wavy accordion
+      const wob=reel>0&&reel<1?.045*Math.sin(u*14)*Math.sin(Math.PI*Math.min(1,reel*1.6))*(1-.3*u):0;p.y+=wob;p.z+=wob*.6;pts.push(p);
+      const thick=1+(reel>0&&reel<1?.9*Math.sin(u*18+1)*.5*Math.sin(Math.PI*Math.min(1,reel*1.4)):0);rad.push((.014+.002*u+(u>.88?.03*(u-.88)/.12:0))*thick);}
+    tong.mesh.visible=vis;pad.visible=cup.visible=vis;
+    if(vis){tong.update(pts,rad,(i,a,o)=>{o[0]=.93;o[1]=.42;o[2]=.5;},Y);pad.position.copy(pt);const ori=dir.clone();pad.quaternion.setFromUnitVectors(X,ori);cup.position.copy(pt).addScaledVector(ori,.035);cup.quaternion.copy(pad.quaternion);
+      const sq=s>=TC&&s<1.25?.8:1;pad.scale.set(.05*sq*.8,.042,.042);cup.scale.set(.02,.032,.032);}
+    // fly position
+    let fp=flyNow;if(stuck){const ft=Math.min(1,Math.max(0,(s-TC)/.06));fp=lerpV(flyNow,pt.clone().addScaledVector(dir,.05),ft);}else if(s>=1.7&&s<2.8)fp=null;
+    const arrive=s2(s,2.75,3.25),away=1-arrive;if(s>=2.75)fp=FLY0.clone().add(hov).add(V(.7*away,.25*away*Math.sin(s*9),0));
+    fly.visible=!!fp&&!(s<=TF&&false);if(fp){fly.position.copy(fp);fly.rotation.set(.3*Math.sin(s*4),stuck?2.8:Math.PI+.4*Math.sin(s*3),.15);const fl=Math.sin(s*(stuck?190:140));wings.forEach(w=>{w.w.rotation.x=w.z*(.5+.5*fl);});if(stuck){fly.scale.setScalar(2.2*(1-.45*s2(s,TR0+.2,TR1)));}else fly.scale.setScalar(2.2);}
+    // contact flash, a stuck-and-tugged shiver, a wing left drifting down after the swallow
+    const a=s-TC;if(a>-.01&&a<.3)fx.p(pt.clone().add(V(.02,0,0)),.14*(1-a/.3)+.05,.8*(1-a/.3),'#fff0e0',TX.star,true,s*10);
+    if(a>0&&a<.22){const u=a/.22;for(let k=0;k<5;k++)fx.p(pt.clone().add(V(.04*Math.cos(k*1.3)*u,.04*Math.sin(k*2.1)*u,.04*Math.sin(k*1.1)*u)),.03,.8*(1-u),'#fff2f2',TX.drop,false);}
+    // mucus strands between the pad and the mouth while the tongue is out (thin additive threads)
+    bm.begin();if(ext>.3&&reel<.9)for(let k=0;k<2;k++){const q=pts[n-4-k*3];bm.seg(q,q.clone().add(V(0,-.03-.01*k,.02*(k?1:-1))),.0025,'#ffe8f0',.5);}bm.end();
+    const wt=s-1.8;wing2.visible=wt>0&&wt<.9;if(wt>0&&wt<.9){wing2.position.set(mp.x+.05*Math.sin(wt*9),Math.max(.17,mp.y-.5*wt*wt*1.2-.25*wt),mp.z+.03*Math.cos(wt*7));wing2.rotation.set(wt*6,wt*5,wt*4);}
+    if(gulp1>.3||gulp2>.3)for(let k=0;k<2;k++)fx.p(c.neckPts[1].clone().add(V(0,-.07,.1+.01*k)),.05,.6*Math.max(gulp1,gulp2),'#fff',TX.star,true,k);
+    return .12*Math.exp(-Math.pow((s-TC)/.05,2));}};
 };
 // 8 ------------------------------------------------------------------------------------------- water jet
 SIGB.water_jet=function(sc,def){
