@@ -11,7 +11,7 @@ func run(t) -> void:
 		t.eq(d[k], 0.0, "W20 default " + k)
 	for k in ["cliff_bands", "sea_cliffs", "hard_rock", "caves"]:
 		t.eq(d[k], 1.0, "W20 default " + k)
-	t.eq(CporeTerrain.version(), 4, "terrain version")
+	t.eq(CporeTerrain.version(), 5, "terrain version")
 	t.eq(CporeTerrain.validate(d), 0, "defaults validate")
 	run_relief(t)
 	run_sun(t)

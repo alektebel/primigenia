@@ -1,4 +1,4 @@
-terrain f615011cb3a6bf8d
+terrain 207fd96642aa17b8
 places 17
 nest 0 5
 Garfio 11.7054195 63.8471146
@@ -11,11 +11,11 @@ start-valley 30 20
 lake-shore-water -75 70
 river-gap 796.289062 138.867188
 hidden-cave-entrance -575.852424 309.179477
-shard-1 35.031 35.031
-shard-2 51.031 123.031
-shard-3 99.031 243.031
-shard-4 3.031 403.031
-shard-5 11.031 491.031
+shard-1 -28.969 35.031
+shard-2 -100.969 19.031
+shard-3 -236.969 99.031
+shard-4 -396.969 -4.969
+shard-5 -484.969 -4.969
 cave-chamber -588.192 336.524
 pairs 16
 0 1

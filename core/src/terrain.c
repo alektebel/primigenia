@@ -610,7 +610,7 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
 /* The shape of a desc island before erosion: the same evaluator as the layout tables, fed from the desc's float cache. */
 static float island_height(const CpTerrainParams *p, const CpIslandDesc *d, float x, float y)
 {
-    return shape_height(p, d->nest_r, d->scale, d->reef_x, d->reef_y, d->cliff_x, d->cliff_y, d->neval, d->eval, x, y);
+    return shape_height(p, d->nest_r, d->scale, d->reef_x, d->reef_y, d->cliff_x, d->cliff_y, d->neval, d->eval, 1, x, y);
 }
 
 static void fill_base(const CpTerrainParams *p, const CpIslandDesc *d, int n, float *height, Shape *shape)
@@ -711,6 +711,16 @@ static float erode_scale_at(const CpTerrainParams *p, float cell, int x, int y)
     float lake = 1.f - smoothstep(lr0 * lr0, lr1 * lr1, lx * lx + ly * ly);
     float hold = valley > lake ? valley : lake;
     return 1.f - hold;
+}
+
+/* The island's EROSION mask as a strength multiplier (island.h): exactly 1 without the mask, v / 128 clamped to 0..1.5. */
+static float erosion_factor(const CpIslandDesc *d, float cell, int x, int y)
+{
+    float half, v;
+    if (!d || d->nmask <= CP_ISL_MASK_EROSION) return 1.f;
+    half = (float)d->size_dm / 20.f;
+    v = cp_island_mask(d, CP_ISL_MASK_EROSION, ((float)x + 0.5f) * cell - half, ((float)y + 0.5f) * cell - half);
+    return clampf(v * (1.f / 128.f), 0.f, 1.5f);
 }
 
 /* ---- thermal ------------------------------------------------------------- */
@@ -919,7 +929,7 @@ static void flow_accum(const float *height, int n, float size_m, uint32_t seed,
  * silt up into flat floors instead of staying as noise holes. The start
  * floor and the lake bowl are exempt from both. A talus sweep follows each
  * step so walls undercut by incision fall back and ridges stay sharp. */
-static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
+static void stream_power(const CpTerrainParams *p, const CpIslandDesc *isl, int n, float *h, float *sed,
                          float *flow, float *level, const CpTerrainWorkspace *ws,
                          int iters, Shape *shape)
 {
@@ -936,6 +946,7 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
             float hi, hr, f, scale, pond, sa;
             if (r < 0) continue;
             scale = erode_scale_at(p, cell, i % n, i / n);
+            if (isl && scale > 0.f) scale *= erosion_factor(isl, cell, i % n, i / n);
             if (!(scale > 0.f)) continue;
             hi = h[i];
             float wx=((float)(i%n)+.5f)*cell-p->size_m*.5f;
@@ -1079,7 +1090,7 @@ static void deposit_brush(float *h, float *sed, int n, int cx, int cy, float amo
  * gullies too small for it, and drop their load where the slope eases, at
  * slope feet and valley mouths. A droplet that reaches the sea stops and
  * leaves its load at the shore. `guard` is the protection map, built once. */
-static void hydraulic(const CpTerrainParams *p, float *height, float *sed, float *guard,
+static void hydraulic(const CpTerrainParams *p, const CpIslandDesc *isl, float *height, float *sed, float *guard,
                       CpTerrainProgressFn fn, void *user)
 {
     const int n = p->n;
@@ -1096,6 +1107,7 @@ static void hydraulic(const CpTerrainParams *p, float *height, float *sed, float
         for (int x = 0; x < n; x++) {
             float wx=((float)x+.5f)*cell-p->size_m*.5f,wy=((float)y+.5f)*cell-p->size_m*.5f;
             guard[y * n + x] = erode_scale_at(p, cell, x, y)*rock_scale(p,&ctx,wx,wy,height[y*n+x]);
+            if (isl && guard[y * n + x] > 0.f) guard[y * n + x] *= erosion_factor(isl, cell, x, y);
         }
 
     for (int d = 0; d < p->droplets; d++) {
@@ -1225,6 +1237,7 @@ static void cliff_bands(const CpTerrainParams *p, float *height, float *slope)
 #define ACCESS_COST_UNIT 20000.f
 static void trail_costs(const CpTerrainParams *p, const CpTerrain *t, int32_t *cost);
 static void trail_sweep(int n, const int32_t *cost, int32_t *dist);
+static void trail_sweep_box(int n, const int32_t *cost, int32_t *dist, int bx0, int by0, int bx1, int by1);
 static int trail_walk(int n, const int32_t *cost, const int32_t *dist, int from, int32_t *out, int cap, int *src);
 static void trail_carve(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws, const int32_t *path, int count,
                         int pin, float fx, float fy);
@@ -1488,20 +1501,20 @@ static int trail_step(const int32_t *cost, int a, int b, int diag)
 }
 
 /* Cost-to-network by raster sweeps (no heap: the workspace is all there is). dist is 0 on sources, TR_INF elsewhere. */
-static void trail_sweep(int n, const int32_t *cost, int32_t *dist)
+static void trail_sweep_box(int n, const int32_t *cost, int32_t *dist, int bx0, int by0, int bx1, int by1)
 {
     for (int pass = 0; pass < 600; pass++) {
         int changed = 0;
         for (int s = 0; s < 4; s++) {
-            int y0 = s & 1 ? n - 1 : 0, y1 = s & 1 ? -1 : n, dy = s & 1 ? -1 : 1;
-            int x0 = s & 2 ? n - 1 : 0, x1 = s & 2 ? -1 : n, dx = s & 2 ? -1 : 1;
+            int y0 = s & 1 ? by1 : by0, y1 = s & 1 ? by0 - 1 : by1 + 1, dy = s & 1 ? -1 : 1;
+            int x0 = s & 2 ? bx1 : bx0, x1 = s & 2 ? bx0 - 1 : bx1 + 1, dx = s & 2 ? -1 : 1;
             for (int y = y0; y != y1; y += dy) for (int x = x0; x != x1; x += dx) {
                 int i = y * n + x, best = dist[i];
                 if (cost[i] >= 100000) continue;   /* the sea is a wall */
                 static const int NB[4][3] = { {-1, 0, 0}, {-1, -1, 1}, {0, -1, 0}, {1, -1, 1} };
                 for (int k = 0; k < 4; k++) {
                     int nx = x + NB[k][0] * dx, ny = y + NB[k][1] * dy, j;
-                    if ((unsigned)nx >= (unsigned)n || (unsigned)ny >= (unsigned)n) continue;
+                    if (nx < bx0 || nx > bx1 || ny < by0 || ny > by1) continue;
                     j = ny * n + nx;
                     if (dist[j] >= TR_INF) continue;
                     int v = dist[j] + trail_step(cost, i, j, NB[k][2]);
@@ -1513,6 +1526,7 @@ static void trail_sweep(int n, const int32_t *cost, int32_t *dist)
         if (!changed) break;
     }
 }
+static void trail_sweep(int n, const int32_t *cost, int32_t *dist) { trail_sweep_box(n, cost, dist, 0, 0, n - 1, n - 1); }
 
 /* Follows strictly falling distance from a cell to a source. Writes cells to out (when not NULL), returns the count
  * (-1 when it cannot reach a source) and the source cell. */
@@ -1699,6 +1713,101 @@ static void gap_trail(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWor
     }
 }
 
+/* ---- island descs: authored trails and the protect mask (island.h, part I of the realism plan) --------------------------- */
+
+#define DESC_TRAIL_CORRIDOR_M 40.f
+
+/* Distance from a cell centre (cell units) to the hint segment, squared, in metres squared. */
+static float hint_dist2(float px, float py, float ax, float ay, float bx, float by)
+{
+    float sx = bx - ax, sy = by - ay, l2 = sx * sx + sy * sy, u = 0.f, dx, dy;
+    if (l2 > 0.f) u = clampf(((px - ax) * sx + (py - ay) * sy) / l2, 0.f, 1.f);
+    dx = px - (ax + u * sx); dy = py - (ay + u * sy);
+    return dx * dx + dy * dy;
+}
+
+/* Walls (cost + 200000) every cell of the box farther than the corridor from the segment, or takes them off again. */
+static void corridor_walls(int n, int32_t *cost, int bx0, int by0, int bx1, int by1, float cell, float half,
+                           float ax, float ay, float bx, float by, int on)
+{
+    const float lim2 = DESC_TRAIL_CORRIDOR_M * DESC_TRAIL_CORRIDOR_M;
+    for (int y = by0; y <= by1; y++) for (int x = bx0; x <= bx1; x++) {
+        float px = ((float)x + 0.5f) * cell - half, py = ((float)y + 0.5f) * cell - half;
+        if (hint_dist2(px, py, ax, ay, bx, by) > lim2) cost[y * n + x] += on ? 200000 : -200000;
+    }
+}
+
+/* The authored trails of a desc: for each trail of kind game_trail or path, a route through its waypoints that stays within
+ * DESC_TRAIL_CORRIDOR_M of the hint polyline, found with the same costs as the river-gap trail (steep ground dear, deep
+ * river and sea closed), then graded to TRAIL_SLOPE (16.7 degrees, far below the 51.6 degree grip rule, A66) by trail_carve.
+ * A trail whose waypoints cannot be joined inside the corridor is skipped whole. Returns the number carved. */
+static int desc_trails(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrain *t, const CpTerrainWorkspace *ws)
+{
+    int n = p->n, nn = n * n, done = 0, have_costs = 0;
+    float cell = p->size_m / (float)n, half = p->size_m * .5f;
+    int32_t *cost = ws->queue, *dist = ws->ups, *path = ws->recv;
+    const int rc = (int)(DESC_TRAIL_CORRIDOR_M / cell) + 3, snap = (int)(20.f / cell) < 1 ? 1 : (int)(20.f / cell);   /* a waypoint snaps to dry ground within 20 m, inside the corridor */
+    if (!trail_ok(p)) return 0;
+    for (int ti = 0; ti < d->ntrail; ti++) {
+        const CpIslandTrail *tr = &d->trail[ti];
+        int wp[CP_ISL_MAX_TRAIL_PT], nw = 0, total = 0, ok = 1;
+        float wxm[CP_ISL_MAX_TRAIL_PT], wym[CP_ISL_MAX_TRAIL_PT];
+        if (strcmp(tr->kind, "game_trail") != 0 && strcmp(tr->kind, "path") != 0) continue;
+        if (!have_costs) { trail_costs(p, t, cost); have_costs = 1; }
+        for (int k = 0; k < tr->npts && nw < CP_ISL_MAX_TRAIL_PT; k++) {
+            float wx = ((float)d->trail_pt[tr->pt0 + k][0] / 10.f) * d->scale, wy = ((float)d->trail_pt[tr->pt0 + k][1] / 10.f) * d->scale;
+            int cx = (int)((wx + half) / cell), cy = (int)((wy + half) / cell), best = -1, bd = 0x7fffffff;
+            for (int dy = -snap; dy <= snap; dy++) for (int dx = -snap; dx <= snap; dx++) {
+                int x = cx + dx, y = cy + dy;
+                if (x < 1 || y < 1 || x >= n - 1 || y >= n - 1) continue;
+                if (cost[y * n + x] >= 100000 || (float)(dx * dx + dy * dy) * cell * cell > 400.f) continue;
+                if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = y * n + x; }
+            }
+            if (best < 0) { ok = 0; break; }
+            wp[nw] = best; wxm[nw] = wx; wym[nw] = wy; nw++;
+        }
+        if (!ok || nw < 2) continue;
+        for (int leg = 0; leg + 1 < nw && ok; leg++) {
+            int a = wp[leg], b = wp[leg + 1], len;
+            int bx0 = (a % n < b % n ? a % n : b % n) - rc, bx1 = (a % n > b % n ? a % n : b % n) + rc;
+            int by0 = (a / n < b / n ? a / n : b / n) - rc, by1 = (a / n > b / n ? a / n : b / n) + rc;
+            if (bx0 < 0) bx0 = 0;
+            if (by0 < 0) by0 = 0;
+            if (bx1 > n - 1) bx1 = n - 1;
+            if (by1 > n - 1) by1 = n - 1;
+            /* the corridor follows the hint between the two waypoints, widened by the snap distance so a snapped end stays inside */
+            corridor_walls(n, cost, bx0, by0, bx1, by1, cell, half, wxm[leg], wym[leg], wxm[leg + 1], wym[leg + 1], 1);
+            for (int y = by0; y <= by1; y++) for (int x = bx0; x <= bx1; x++) dist[y * n + x] = TR_INF;
+            dist[b] = 0;
+            trail_sweep_box(n, cost, dist, bx0, by0, bx1, by1);
+            len = trail_walk(n, cost, dist, a, path + (total ? total - 1 : 0), nn - (total ? total - 1 : 0), NULL);
+            corridor_walls(n, cost, bx0, by0, bx1, by1, cell, half, wxm[leg], wym[leg], wxm[leg + 1], wym[leg + 1], 0);
+            if (len < 1) ok = 0; else total += total ? len - 1 : len;
+        }
+        if (ok && total > 1) { trail_carve(p, t, ws, path, total, -1, 0.f, 0.f); done++; }
+    }
+    return done;
+}
+
+/* The PROTECT mask: every cell it marks is held within its band of the authored (pre-erosion) height. */
+static void apply_protect(const CpTerrainParams *p, const CpIslandDesc *d, float *height)
+{
+    int n = p->n;
+    float cell = p->size_m / (float)n, half = p->size_m * .5f;
+    if (d->nmask <= CP_ISL_MASK_PROTECT) return;
+    for (int y = 0; y < n; y++) for (int x = 0; x < n; x++) {
+        float wx = ((float)x + 0.5f) * cell - half, wy = ((float)y + 0.5f) * cell - half, v = cp_island_mask(d, CP_ISL_MASK_PROTECT, wx, wy), w, band, a, h;
+        if (!(v > 128.f)) continue;
+        w = (v - 128.f) / 127.f;
+        if (w > 1.f) w = 1.f;
+        if (w < 1.f / 64.f) continue;
+        band = 0.5f / w;
+        a = island_height(p, d, wx, wy);
+        h = height[y * n + x];
+        height[y * n + x] = clampf(h, a - band, a + band);
+    }
+}
+
 /* ---- hash ---------------------------------------------------------------- */
 
 static void fnv_byte(uint64_t *h, uint8_t b)
@@ -1726,6 +1835,7 @@ uint64_t cp_terrain_hash(const CpTerrain *t)
     if (!t || !t->height || !t->flow || !t->sediment || !t->material || t->cave_count<0 || t->cave_count>CP_TERRAIN_CAVES_MAX || t->n < 1 || t->n > CP_TERRAIN_N_MAX) return 0;
     nn = t->n * t->n;
     fnv_u32(&h, (uint32_t)CP_TERRAIN_VERSION);
+    if (t->island_hash) { fnv_u32(&h, (uint32_t)t->island_hash); fnv_u32(&h, (uint32_t)(t->island_hash >> 32)); }
     fnv_u32(&h, (uint32_t)t->n);
     fnv_f(&h, t->size_m);
     for (int i = 0; i < nn; i++) fnv_f(&h, t->height[i]);
@@ -1783,6 +1893,7 @@ static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerr
     use2 = p->stream_iters > 0 && n2 >= 16;
     out->n = n;
     out->size_m = p->size_m;
+    out->island_hash = d ? cp_island_hash(d) : 0;
     shape.fn = fn;
     shape.user = user;
     shape.stage = CP_TERR_STAGE_BASE;
@@ -1799,7 +1910,7 @@ static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerr
         float *h = out->flow, *fl = h + a, *lv = fl + a, *sd = lv + a, *base = sd + a;
         fill_base(p, d, n2, base, &shape);
         for (int i = 0; i < a; i++) { h[i] = base[i]; sd[i] = 0.f; }
-        stream_power(p, n2, h, sd, fl, lv, ws, level_iters(p, 2), &shape);
+        stream_power(p, d, n2, h, sd, fl, lv, ws, level_iters(p, 2), &shape);
         for (int i = 0; i < a; i++) base[i] = h[i] - base[i];
         prev_delta = base;
         prev_sed = sd;
@@ -1814,7 +1925,7 @@ static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerr
             h[k] = base[k] + (prev_n ? upsample(prev_delta, prev_n, n1, i, j) : 0.f);
             sd[k] = prev_n ? upsample(prev_sed, prev_n, n1, i, j) : 0.f;
         }
-        stream_power(p, n1, h, sd, fl, lv, ws, level_iters(p, 1), &shape);
+        stream_power(p, d, n1, h, sd, fl, lv, ws, level_iters(p, 1), &shape);
         for (int i = 0; i < b; i++) {
             out->flow[i] = h[i] - base[i];
             out->flow[b + i] = sd[i];
@@ -1838,22 +1949,29 @@ static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerr
     /* Droplets go before the fine stream pass, not after: they leave dams
      * of dumped load in the valleys, and the rivers have to cut them. */
     if (p->droplets > 0)
-        hydraulic(p, out->height, out->sediment, ws->scratch, fn, user);
-    stream_power(p, n, out->height, out->sediment, out->flow, ws->scratch, ws,
+        hydraulic(p, d, out->height, out->sediment, ws->scratch, fn, user);
+    stream_power(p, d, n, out->height, out->sediment, out->flow, ws->scratch, ws,
                  level_iters(p, 0), &settle);
     thermal(p, out->height, out->sediment, &settle);
     for(int i=0;i<nn;i++)out->height[i]=gentle_height(p,out->height[i]);
     cliff_bands(p, out->height, ws->scratch);
+    if (d) apply_protect(p, d, out->height);
     flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                ws->recv, ws->ups, ws->queue, fn, user);
     if (p->rivers > 0.f && n >= 64) {
         carve_rivers(p, out, ws);
+        if (d) apply_protect(p, d, out->height);   /* a river does not cut an authored surface */
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
     }
     memset(out->material, 0, (size_t)nn);
     if (p->rivers > 0.f && trail_ok(p) && !d && !(p->layout >= 1.f)) {
         gap_trail(p, out, ws);
+        flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
+                   ws->recv, ws->ups, ws->queue, NULL, NULL);
+    }
+    if (d && d->ntrail > 0 && desc_trails(p, d, out, ws)) {
+        apply_protect(p, d, out->height);
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
     }
@@ -1888,15 +2006,6 @@ int cp_terrain_generate_desc(const CpTerrainParams *p, const CpIslandDesc *d, Cp
     if (!p || !d) return CP_TERR_ERR_NULL;
     if (d->neval < 0 || d->neval > CP_ISL_MAX_EVAL || !(d->scale > 0.f)) return CP_TERR_ERR_ISL_FIELD;   /* not prepared */
     q = *p;
-    q.size_m = (float)d->size_dm / 10.f;
-    q.island_radius_m = (float)d->island_radius_dm / 10.f;
-    q.valley_radius_m = d->nest_r;
-    q.valley_floor_m = (float)d->nest_floor_cm / 100.f;
-    q.lake_x_m = (float)d->lake_x_dm / 10.f;
-    q.lake_y_m = (float)d->lake_y_dm / 10.f;
-    q.lake_radius_m = (float)d->lake_r_dm / 10.f;
-    q.lake_depth_m = (float)d->lake_depth_cm / 100.f;
-    if (d->stream_iters > 0) q.stream_iters = d->stream_iters;
-    if (d->droplets > 0) q.droplets = d->droplets;
+    cp_island_apply(d, &q);
     return generate_impl(&q, d, out, ws, fn, user);
 }

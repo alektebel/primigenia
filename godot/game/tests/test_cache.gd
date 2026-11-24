@@ -59,6 +59,13 @@ func run(t) -> void:
 	t.check(TerrainCache.load_entry(p, DIR).is_empty() and TerrainCache.get_or_build(p, DIR).hit == false, "stale-stamp file is ignored and the island is rebuilt")
 	t.check(TerrainCache.cache_path(_params({"erosion": 0.2}), DIR) != path, "changed erosion gives a different path")
 	t.eq(TerrainCache.cache_path({"n": 128, "seed": 21}, DIR), path, "partial params resolve to the same key")
+	# An authored island (island.h): its id and desc hash are in the key; another desc hash is another file; none keeps the seed key.
+	var isl := _params({"island": "star-massif", "island_hash": "a6f97d7b1f09367e"})
+	var isl_path := TerrainCache.cache_path(isl, DIR)
+	t.check(isl_path != path and isl_path.contains("-istar-massif-da6f97d7b1f09367e-"), "island id and desc hash are in the key: " + isl_path)
+	t.check(TerrainCache.cache_path(_params({"island": "star-massif", "island_hash": "0000000000000001"}), DIR) != isl_path, "another desc hash is another file")
+	t.eq(TerrainCache.island_tag({}), "", "no island, no tag")
+	t.check(path.contains("-t%d-" % CporeTerrain.version()) and CporeTerrain.version() == 5, "terrain version 5 is in the key")
 
 	# Truncated file.
 	var size := FileAccess.get_file_as_bytes(path).size()
