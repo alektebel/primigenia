@@ -13,13 +13,13 @@ class View{
   constructor(id){
     this.id=id;this.V=F.VERSIONS[id];this.st=new F.Stand(id,S.ground);this.scene=new T.Scene();this.built=false;this.im={};this.proto={};this.lastInst=null;this.counts={};this.stats={};
     const L=this.V.light,FG=this.V.fog;
-    this.U={uFogColor:{value:col3(FG.col)},uFogDen:{value:FG.den},uFogK:{value:FG.k},uFogBase:{value:FG.base},uFogFar:{value:FG.far||0},uSunDir:{value:new T.Vector3()},uSunCol:{value:col3(L.sunCol)},uMask:{value:0},uAO:{value:1}};
+    this.U={uFogColor:{value:col3(FG.col)},uFogDen:{value:FG.den},uFogK:{value:FG.k},uFogBase:{value:FG.base},uFogFar:{value:FG.far||0},uSunDir:{value:new T.Vector3()},uSunCol:{value:col3(L.sunCol)},uMask:{value:0},uAO:{value:1},uAOk:{value:this.V.aoK||1.45}};
     const az=L.sunAz,el=L.sunEl;this.sunDir=new T.Vector3(Math.cos(el)*Math.cos(az),Math.sin(el),Math.cos(el)*Math.sin(az)).normalize();this.U.uSunDir.value.copy(this.sunDir);
   }
   async build(progress){
     const step=async(msg)=>{if(progress)progress(msg);await new Promise(r=>setTimeout(r,0));};
     const st=this.st,V=this.V;F.sharedTextures();
-    await step('trail and clearings');st.makeClearings();st.buildTrail();
+    await step('trail and clearings');st.makeClearings();st.makeGaps();st.buildTrail();
     await step('stand');st.buildTrees();
     await step('canopy light');st.buildSky();
     await step('materials');this.makeMaterials();
@@ -33,9 +33,10 @@ class View{
     m.bark=P(new T.MeshStandardMaterial({map:SH.bark,bumpMap:SH.bark,bumpScale:1.6,vertexColors:true,roughness:.96,metalness:0}),U,{mask:[0,0,1]});
     m.leaf={};m.blob={};
     for(const k of['laurel','cloud','broad','small']){
-      m.leaf[k]=P(new T.MeshStandardMaterial({map:SH.leaf[k],alphaTest:.42,side:T.DoubleSide,vertexColors:true,roughness:.9,metalness:0}),U,{mask:[0,0,1],faceFix:true});
+      m.leaf[k]=P(new T.MeshStandardMaterial({map:SH.leaf[k],alphaTest:.4,side:T.DoubleSide,vertexColors:true,roughness:.9,metalness:0}),U,{mask:[0,0,1],faceFix:true});
       m.blob[k]=P(new T.MeshStandardMaterial({map:SH.blob[k],vertexColors:true,roughness:.85,metalness:0}),U,{mask:[0,0,1],faceFix:true});
     }
+    m.shrub=P(new T.MeshStandardMaterial({map:SH.leaf.laurel,alphaTest:.4,side:T.DoubleSide,vertexColors:true,roughness:.9,metalness:0}),U,{mask:[0,0,1],faceFix:true});
     m.moss=P(new T.MeshStandardMaterial({map:SH.moss,alphaTest:.3,side:T.DoubleSide,vertexColors:true,roughness:1}),U,{mask:[0,0,1],faceFix:true});
     m.fern=P(new T.MeshStandardMaterial({map:SH.fern,alphaTest:.3,side:T.DoubleSide,vertexColors:true,roughness:.7}),U,{mask:[0,0,1],faceFix:true});
     m.fernB=P(new T.MeshStandardMaterial({map:SH.fernB,alphaTest:.3,side:T.DoubleSide,vertexColors:true,roughness:.7}),U,{mask:[0,0,1],faceFix:true});
@@ -53,6 +54,7 @@ class View{
       const cls=key.slice(0,-1),vi=+key.slice(-1),P=pp[key],lods=[];
       const c0=st.l0Cache&&st.l0Cache[key];
       if(cls==='tfern'){for(let l=0;l<3;l++)lods.push(l===1&&c0?c0:FT.treeFernParts(vi*5+3,P,Math.min(l,1)));}
+      else if(P.src)for(let l=0;l<3;l++)lods.push(l===0&&c0?c0:FT.skeletonParts(F.ASSETS.glb,P.m,P,l,vi*53+cls.charCodeAt(0)+this.id.charCodeAt(0)*7));
       else for(let l=0;l<3;l++)lods.push(l===0&&c0?c0:FT.treeParts(vi*53+cls.charCodeAt(0)+this.id.charCodeAt(0)*7,P,l));
       out[key]={cls,P,lods};
     }
@@ -61,8 +63,8 @@ class View{
     this.ug={};
     const mk=(type,v,gen)=>{const lods=[0,1].map(l=>gen(l));lods.forEach(x=>{const g=x.g||x.leaf;x.n=norm(g);});this.ug[type+v]=lods;};
     for(let v=0;v<3;v++){
-      mk('fern',v,l=>FT.fernParts(v*11+1,{n:16,len:1,el0:.35,el1:1.05,wr:.3,droop:.35,shade:1},l));
-      mk('fernL',v,l=>FT.fernParts(v*11+41,{n:16,len:1,el0:.5,el1:1.15,wr:.26,droop:.25,shade:1},l));
+      mk('fern',v,l=>FT.fernParts(v*11+1,{n:12,len:1,el0:.5,el1:1.2,wr:.34,droop:.5,shade:1},l));
+      mk('fernL',v,l=>FT.fernParts(v*11+41,{n:11,len:1,el0:.6,el1:1.25,wr:.3,droop:.4,shade:1},l));
       mk('shrub',v,l=>{const r=FT.shrubParts(v*7+2,{n:6,r:.5,h:1,cr:.42,cs:.5,tint:[.9,1,.85]},l);return r;});
     }
     this.grassP=[0,1].map(l=>FT.grassParts(5,l));this.grassP.forEach(x=>{x.n=norm(x.g);});
@@ -104,13 +106,13 @@ class View{
     {const tr=st.trail,pos=[],nor=[],aT=[],uv=[],aS=[],z0=[],idx=[],n=tr.pts.length,w=tr.w*.5+.32,nn=new T.Vector3();let k=0;
       for(let i=0;i<n;i++){const p=tr.pts[i],q=tr.pts[Math.min(i+1,n-1)],r=tr.pts[Math.max(i-1,0)];let tx=q.x-r.x,tz=q.z-r.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;
         const wob=1+.22*Math.sin(i*.37)+.12*Math.sin(i*1.31);
-        for(const sd of[-1,0,1]){const x=p.x-tz*sd*w*wob,zz=p.z+tx*sd*w*wob,y=g.at(x,zz)+.05+(sd===0?.015:0);g.normal(x,zz,nn);
-          pos.push(x,y,zz);nor.push(nn.x,nn.y,nn.z);aT.push(sd===0?1:.0);uv.push(x*.31,zz*.31);aS.push(st.skyAt(x,zz));}
+        for(const sd of[-1,0,1]){const x=p.x-tz*sd*w*wob,zz=p.z+tx*sd*w*wob,y=g.at(x,zz)+.1+(sd===0?.02:0);g.normal(x,zz,nn);
+          pos.push(x,y,zz);nor.push(nn.x,nn.y,nn.z);aT.push(sd===0?1:.0);uv.push(sd*.5+.5,p.s/3);aS.push(st.skyAt(x,zz));}
         if(i<n-1){const a=i*3;idx.push(a,a+3,a+1,a+1,a+3,a+4,a+1,a+4,a+2,a+2,a+4,a+5);}}
       const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setAttribute('normal',new T.Float32BufferAttribute(nor,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
       const zero=new Array(n*3).fill(0);geo.setAttribute('aTrail',new T.Float32BufferAttribute(aT,1));geo.setAttribute('aMoss',new T.Float32BufferAttribute(zero,1));geo.setAttribute('aSky',new T.Float32BufferAttribute(aS,1));
       geo.setAttribute('aMead',new T.Float32BufferAttribute(zero,1));geo.setAttribute('aRock',new T.Float32BufferAttribute(zero,1));geo.setIndex(idx);
-      const rm=F.patchMat(new T.MeshStandardMaterial({color:0xffffff,roughness:.97,metalness:0,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3,bumpMap:F.SHARED.floor.dirt.height,bumpScale:.18}),this.U,{terrain:true,ribbon:true,mask:[1,1,0],meadCol:new T.Color(0,0,0),mossK:0});
+      const rm=F.patchMat(new T.MeshStandardMaterial({color:0xffffff,roughness:.97,metalness:0,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3,bumpMap:F.SHARED.trail.height,bumpScale:.16}),this.U,{terrain:true,ribbon:true,mask:[1,1,0],meadCol:new T.Color(0,0,0),mossK:0});
       const rib=new T.Mesh(geo,rm);rib.receiveShadow=true;rib.renderOrder=2;this.scene.add(rib);this.ribbon=rib;this.terrTris+=idx.length/3;}
     inner.receiveShadow=true;outer.receiveShadow=true;this.scene.add(inner,outer);this.terrain=[inner,outer];this.terrTris=TRI(inner.geometry)+TRI(outer.geometry);
   }
@@ -146,21 +148,13 @@ class View{
   }
   /* ---- the creature ---- */
   buildCreature(){
-    const gb=new FT.GB(),V3_=FT.V3;
-    const path=[[-.5,.15],[-.38,.19],[-.24,.24],[-.08,.26],[.1,.265],[.24,.27],[.33,.31],[.41,.335],[.49,.325],[.56,.305]].map(p=>V3_(p[0],p[1],0));
-    const rad=[.01,.02,.055,.09,.1,.095,.055,.045,.042,.016];
-    const body=(t,th,y)=>{const i=Math.min(rad.length-2,Math.floor(t*(rad.length-1))),f=t*(rad.length-1)-i;return lerp(rad[i],rad[i+1],f);};
-    const colf=(t,th)=>{const back=Math.max(0,-Math.sin(th)*.5+.5);const stripe=(t<.34&&Math.floor(t*38)%2===0)?.5:(t>.35&&t<.7&&Math.floor(t*30)%3===0?.75:1);
-      const a=[.2,.085,.03],b=[.5,.38,.22],k=[lerp(b[0],a[0],back)*stripe,lerp(b[1],a[1],back)*stripe,lerp(b[2],a[2],back)*stripe];return k;};
-    FT.tube(gb,path,body,8,{col:colf});
-    for(const[sx,sz] of[[.2,.06],[.2,-.06],[-.17,.07],[-.17,-.07]]){
-      const knee=V3_(sx+.03,.13,sz*2.1),foot=V3_(sx+(sx>0?.07:.03),.012,sz*2.6);
-      FT.tube(gb,[V3_(sx,.23,sz*.9),knee,foot],t=>.03-.013*t,5,{col:()=>[.2,.1,.04]});}
-    FT.ico(gb,V3_(.5,.355,.032),.013,0,()=>[.02,.02,.02]);FT.ico(gb,V3_(.5,.355,-.032),.013,0,()=>[.02,.02,.02]);
-    const mesh=new T.Mesh(gb.geo(),this.mats.creature);mesh.castShadow=true;mesh.receiveShadow=true;this.creature=mesh;this.scene.add(mesh);this.creatureTris=gb.tris;
+    /* Pip, the lab's little herbivore (sig_rig.js), so the scale reads the same as in the attack labs */
+    const grp=new T.Group(),pip=BB.sig.Pip(grp,0,{col:'#5c3417',belly:'#cdb07c'});pip.set(1.2,{});
+    grp.traverse(o=>{if(o.isMesh&&o.material&&!o.material.isSpriteMaterial){o.material=o.material.clone();o.material.color.convertSRGBToLinear();F.patchMat(o.material,this.U,{mask:[0,1,0],nofog:true});o.castShadow=true;o.receiveShadow=true;}});
+    const holder=new T.Group();holder.add(grp);grp.rotation.y=Math.PI;grp.scale.setScalar(1.25);this.creature=holder;this.pip=pip;this.scene.add(holder);this.creatureTris=2500;
   }
   placeCreature(x,z,tx,tz){
-    const y=S.ground.at(x,z);this.creature.position.set(x,y+.0,z);this.creature.rotation.set(0,Math.atan2(-tz,tx),0);
+    const y=S.ground.at(x,z);this.creature.position.set(x,y+.0,z);
     const n=S.ground.normal(x,z,new T.Vector3());const q=new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),n.lerp(new T.Vector3(0,1,0),.5).normalize());
     const yawQ=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),Math.atan2(-tz,tx));this.creature.quaternion.copy(q).multiply(yawQ);
   }
@@ -169,12 +163,12 @@ class View{
     this.beams=new T.Group();this.scene.add(this.beams);this.beamsOn=this.V.shafts;
     const mat=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide,fog:false,
       uniforms:{uCol:{value:col3(this.V.light.sunCol)},uAxis:{value:this.sunDir},uTime:{value:0},uI:{value:this.V.shafts?1.6:0}},
-      vertexShader:`uniform vec3 uAxis;varying vec2 vUv;varying float vH;void main(){vUv=uv;vec3 base=(modelMatrix*vec4(0.,0.,0.,1.)).xyz;float L=${'40.0'};
+      vertexShader:`uniform vec3 uAxis;varying vec2 vUv;varying float vH;void main(){vUv=uv;vec3 base=(modelMatrix*vec4(0.,0.,0.,1.)).xyz;float L=${'26.0'};
         float w=length((modelMatrix*vec4(1.,0.,0.,0.)).xyz);vec3 toCam=cameraPosition-base;vec3 side=normalize(cross(uAxis,toCam));
         vec3 p=base+uAxis*(position.y+0.5)*L+side*position.x*w;vH=position.y+0.5;gl_Position=projectionMatrix*viewMatrix*vec4(p,1.);}`,
       fragmentShader:`uniform vec3 uCol;uniform float uI;varying vec2 vUv;varying float vH;
         void main(){float across=1.0-abs(vUv.x*2.0-1.0);across=smoothstep(0.0,1.0,across);across*=across;
-          float along=smoothstep(0.0,0.08,vH)*(1.0-smoothstep(0.55,1.0,vH));
+          float along=smoothstep(0.0,0.1,vH)*(1.0-smoothstep(0.25,0.95,vH));
           float n=0.75+0.25*sin(vUv.y*17.0+vUv.x*5.0);float a=across*along*n*uI*0.2;gl_FragColor=vec4(uCol,a);}`});
     this.beamMat=mat;this.beamsBuilt=false;
   }
@@ -223,6 +217,7 @@ class View{
       if(part.bark){const m=this.imesh(key+'b',part.bark,M.bark,this.cap[t.key],{cast:true,recv:true});put(m,t.x,t.y,t.z,s,s,s,t.yaw,[1,1,1]);}
       if(part.leaf){const mat=lod===2?M.blob[pr.P.leaf]:M.leaf[pr.P.leaf];const m=this.imesh(key+'l',part.leaf,mat,this.cap[t.key],{cast:true,recv:lod<2});put(m,t.x,t.y,t.z,s,s,s,t.yaw,tintLeaf);}
       if(lod===0&&part.moss){const m=this.imesh(key+'m',part.moss,M.moss,this.cap[t.key],{});put(m,t.x,t.y,t.z,s,s,s,t.yaw,[1,1,1]);}
+      if(lod===0&&part.vines){const m=this.imesh(key+'v',part.vines,M.plain,this.cap[t.key],{});put(m,t.x,t.y,t.z,s,s,s,t.yaw,[1,1,1]);}
       if(lod===0&&part.epi){const m=this.imesh(key+'e',part.epi,M.fernB,this.cap[t.key],{});put(m,t.x,t.y,t.z,s,s,s,t.yaw,[.85,.95,.8]);}
       if(lod===0&&part.fruit){const m=this.imesh(key+'f',part.fruit,M.plain,this.cap[t.key],{cast:true});put(m,t.x,t.y,t.z,s,s,s,t.yaw,[1,1,1]);}
     }
@@ -239,7 +234,7 @@ class View{
         const dx=it.x-px,dz=it.z-pz,d2=dx*dx+dz*dz;if(d2>opt.ug*opt.ug)continue;const lod=d2<30*30?0:1,p=this.ug[it.type+it.v][lod],nrm=p.n;
         const sx=it.r/nrm.reach,sy=it.h/nrm.height,sh=.3+.7*Math.min(1,st.skyAt(it.x,it.z)*3.5),tint=[it.c*sh*.95,it.c*sh,it.c*sh*.8];
         if(it.type==='shrub'){const mb=p.bark&&this.imesh('shrubB'+it.v+lod,p.bark,M.bark,4000,{});if(mb)put(mb,it.x,it.y,it.z,sx,sy,sx,it.yaw,tint);
-          const ml=this.imesh('shrubL'+it.v+lod,p.leaf,M.leaf.laurel,4000,{cast:false});put(ml,it.x,it.y,it.z,sx,sy,sx,it.yaw,tint);}
+          const ml=this.imesh('shrubL'+it.v+lod,p.leaf,M.shrub,4000,{cast:false});put(ml,it.x,it.y,it.z,sx,sy,sx,it.yaw,tint);}
         else{const m=this.imesh(it.type+it.v+lod,p.g,(it.v&1)?M.fernB:M.fern,4000,{});put(m,it.x,it.y,it.z,sx,sy,sx,it.yaw,tint);}
         nInst++;}
       /* meadow grass tufts */
@@ -247,6 +242,12 @@ class View{
         for(let b=-gr;b<=gr;b++)for(let a=-gr;a<=gr;a++){const ix=gc+a,iz=Math.floor(pz/gs)+b,rr=FT.rng32(Math.imul(ix+9000,73856093)^Math.imul(iz+9000,19349663));
           const cx=(ix+.5)*gs,cz=(iz+.5)*gs;if((cx-px)**2+(cz-pz)**2>R2)continue;const M0=this.softMask(cx,cz);let w=(1-sstep(.15,.7,M0));for(const c of st.clearings){w=Math.max(w,.6*(1-sstep(c.r*.7,c.r,Math.hypot(cx-c.x,cz-c.z))));}
           if(w<.05||st.trailQ(cx,cz).d<.6)continue;const n=Math.round(w*22*(.6+.8*rr()));
+          /* bracken patches and big ochre tussocks make the meadow uneven */
+          const pc=FT.hash2(Math.floor(cx/9),Math.floor(cz/9),77);
+          if(w>.4&&pc<.16&&st.trailQ(cx,cz).d>1.5){const nf=3+Math.floor(rr()*4);for(let q=0;q<nf;q++){const x=cx+(rr()-.5)*gs,z=cz+(rr()-.5)*gs,r=.7+rr()*.5,v=Math.floor(rr()*3),pr=this.ug['fernL'+v][0],m=this.imesh('fernL'+v+'0',pr.g,M.fern,4000,{});
+            put(m,x,S.ground.at(x,z),z,r/pr.n.reach,(.9+rr()*.5)/pr.n.height,r/pr.n.reach,rr()*6.28,[.95,.95,.7]);nInst++;}}
+          if(w>.3&&FT.hash2(Math.floor(cx/5),Math.floor(cz/5),91)<.22&&st.trailQ(cx,cz).d>1.2){const x=cx+(rr()-.5)*gs,z=cz+(rr()-.5)*gs,gp=this.grassP[0],m=this.imesh('grass',gp.g,M.grass,16000,{});
+            for(let k=0;k<3;k++)if(m.count<16000){put(m,x+(rr()-.5)*.6,S.ground.at(x,z),z+(rr()-.5)*.6,1.7+rr()*.5,1.1/gp.n.height*(.8+rr()*.5),1.7+rr()*.5,rr()*6.28,[.95,.8,.45]);nInst++;}}
           for(let q=0;q<n;q++){const x=cx+(rr()-.5)*gs,z=cz+(rr()-.5)*gs;if(st.trailQ(x,z).d<st.trail.w*.5+.1)continue;const gp=this.grassP[0],h=.5+rr()*.6,sc=.8+rr()*.6;
             const m=this.imesh('grass',gp.g,M.grass,16000,{});if(m.count<16000){put(m,x,S.ground.at(x,z),z,sc,h/gp.n.height,sc,rr()*6.28,[.9+rr()*.2,.95+rr()*.1,.8]);nInst++;}}}}
     }
@@ -265,14 +266,14 @@ function slotCamera(view,id){
   else if(id==='OG7'){const sOG7=st.trailSAt(F.OG7_L[0],F.OG7_L[1])+(S.sOff||0),q=st.trailAt(sOG7),x=q.x,z=q.z,y=g.at(x,z)+1.8;p=V3(x,y,z);const q2=st.trailAt(sOG7+22);look=V3(q2.x,g.at(q2.x,q2.z)+1.5,q2.z);fov=70;opt={l0:38,l1:100,rmax:700,ug:view.V.ugR||85,grass:0,shadow:80,creatureS:sOG7+4.2};}
   else{ /* clearing: stand on the trail 0.9 r before the clearing centre, look across it and up */
     const cl=st.clearings.slice().sort((a,b)=>b.r-a.r)[0],sc=st.trailSAt(cl.x,cl.z),sp=Math.max(10,sc-cl.r*.95-3),q=st.trailAt(sp),x=q.x,z=q.z,y=g.at(x,z)+1.7;p=V3(x,y,z);
-    look=V3(cl.x+(cl.x-x)*.6,y+Math.max(2,cl.r*.28),cl.z+(cl.z-z)*.6);fov=68;opt={l0:40,l1:100,rmax:700,ug:view.V.ugR||85,grass:50,shadow:70,creatureS:sp+6};}
+    look=V3(cl.x+(cl.x-x)*.6,y+Math.max(2,cl.r*.28),cl.z+(cl.z-z)*.6);fov=68;opt={l0:40,l1:100,rmax:700,ug:view.V.ugR||85,grass:50,shadow:70,creatureS:sp+4.5};}
   return{pos:p,look,fov,opt};
 }
 function applySlot(view,id){
   const c=slotCamera(view,id),cam=S.cam;cam.position.copy(c.pos);cam.fov=c.fov;cam.updateProjectionMatrix();cam.lookAt(c.look);
   const e=new T.Euler().setFromQuaternion(cam.quaternion,'YXZ');S.yaw=e.y;S.pitch=e.x;S.curOpt=c.opt;S.slot=id;
   /* the creature stands on the trail ahead of the camera, inside the view cone */
-  if(c.opt.creatureS!==undefined){let sc=c.opt.creatureS;if(id==='CLR'){const f=c.look.clone().sub(c.pos);f.y=0;f.normalize();let best=1e9;for(let ds=3;ds<=20;ds+=.5){const q=view.st.trailAt(c.opt.creatureS-6+ds),dx=q.x-c.pos.x,dz=q.z-c.pos.z,d=Math.hypot(dx,dz),ang=Math.acos(clamp((dx*f.x+dz*f.z)/d,-1,1)),score=ang*10+Math.abs(d-6);if(d>3&&score<best){best=score;sc=c.opt.creatureS-6+ds;}}}
+  if(c.opt.creatureS!==undefined){let sc=c.opt.creatureS;if(id==='CLR'){const f=c.look.clone().sub(c.pos);f.y=0;f.normalize();let best=1e9;for(let ds=2;ds<=16;ds+=.5){const q=view.st.trailAt(c.opt.creatureS-4.5+ds),dx=q.x-c.pos.x,dz=q.z-c.pos.z,d=Math.hypot(dx,dz),ang=Math.acos(clamp((dx*f.x+dz*f.z)/d,-1,1)),score=ang*10+Math.abs(d-4.5);if(d>2.5&&score<best){best=score;sc=c.opt.creatureS-4.5+ds;}}}
     const q=view.st.trailAt(sc);view.placeCreature(q.x,q.z,q.tx,q.tz);view.creature.visible=true;}
   else if(id==='OG6'){const q=view.st.trailAt(view.st.trailSAt(F.E0[0],F.E0[1])-6);view.placeCreature(q.x,q.z,q.tx,q.tz);view.creature.visible=true;}
   else{ /* flyover: show it on the trail below the camera */
@@ -383,6 +384,8 @@ async function setVersion(id,progress){S.ver=id;const v=await ensure(id,progress
 async function init(canvas,tileBuf,progress){
   S.canvas=canvas;const r=S.renderer=new T.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true,powerPreference:'low-power'});
   r.outputEncoding=T.sRGBEncoding;r.toneMapping=T.ACESFilmicToneMapping;r.shadowMap.enabled=true;r.shadowMap.type=T.PCFSoftShadowMap;r.setClearColor(0x000000);
+  const [gb,jb]=await Promise.all([fetch('forest_assets/trees.glb').then(r=>r.arrayBuffer()),fetch('forest_assets/trees.json').then(r=>r.json())]);
+  F.setAssets({glb:FT.parseGLB(gb),meta:jb,bytes:gb.byteLength});
   S.tile=F.parseTile(tileBuf);S.ground=new F.Ground(S.tile);S.ready=true;
   await setVersion(S.ver,progress);
 }

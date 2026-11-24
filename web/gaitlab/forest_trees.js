@@ -79,18 +79,20 @@ function blobTexFrom(leafTexture,base){ /* opaque canopy surface: the leaf spray
   const src=leafTexture.image,cv=cvs(src.width,src.height),g=cv.getContext('2d');g.fillStyle=base||'#1f2e16';g.fillRect(0,0,cv.width,cv.height);
   for(let i=0;i<2;i++){g.globalAlpha=.55+.45*i;g.drawImage(src,0,0);}
   const t=tex(cv);t.repeat.set(3,3);return t;}
-function fernTex(seed,lush){
+function fernTex(seed,lush){ /* bipinnate frond: rachis, ~24 pinnae a side, each a midrib with small alternate pinnules (Woodwardia / Dryopteris / bracken look) */
   const W=256,H=512,cv=cvs(W,H),g=cv.getContext('2d'),R=rng32(seed);g.lineCap='round';
-  g.strokeStyle='#2f4120';g.lineWidth=3.5;g.beginPath();g.moveTo(W/2,H-2);g.quadraticCurveTo(W/2+8,H*.5,W/2,10);g.stroke();
-  const NP=34;
+  g.strokeStyle='#33461f';g.lineWidth=3.2;g.beginPath();g.moveTo(W/2,H-2);g.quadraticCurveTo(W/2+6,H*.5,W/2,8);g.stroke();
+  const NP=19;
   for(let i=0;i<NP;i++){
-    const t=i/(NP-1),y=H-12-(H-26)*t,len=(W*.49)*Math.pow(Math.sin(Math.PI*(.1+.9*(1-t))),.75)*(1-.45*t*t)+8;
+    const t=i/(NP-1),y=H-14-(H-30)*t,lp=(W*.47)*Math.pow(Math.sin(Math.PI*(.1+.9*(1-t))),.7)*(1-.35*t*t)+6;
     for(const side of[-1,1]){
-      g.save();g.translate(W/2+Math.sin(t*3)*3,y);g.scale(side,1);g.rotate(-1.2+t*.45);
-      const hue=lerp(78,100,R()),lig=lerp(26,38,R())+(lush?4:0)+(t>.6?5:0);
-      g.fillStyle=`hsl(${hue},${lerp(30,44,R())}%,${lig}%)`;g.beginPath();g.moveTo(0,0);
-      g.bezierCurveTo(len*.2,-len*.075,len*.7,-len*.07,len,-len*.015);g.bezierCurveTo(len*.7,len*.045,len*.2,len*.045,0,1.8);g.fill();
-      g.strokeStyle=`hsla(${hue},34%,${lig-8}%,.9)`;g.lineWidth=1.1;g.beginPath();g.moveTo(0,0);g.lineTo(len*.97,-len*.02);g.stroke();
+      g.save();g.translate(W/2+Math.sin(t*3)*2,y);g.scale(side,1);g.rotate(-1.15+t*.4+(R()-.5)*.08);
+      const hue=lerp(80,102,R()),lig0=lerp(19,28,R())+(lush?4:0)+(t>.65?5:0);
+      g.strokeStyle=`hsl(${hue},32%,${lig0-8}%)`;g.lineWidth=1.3;g.beginPath();g.moveTo(0,0);g.lineTo(lp,-lp*.03);g.stroke();
+      const m=Math.max(3,Math.round(lp/17));
+      for(let q=1;q<=m;q++){const u=q/(m+.5),px=lp*u,py=-lp*.03*u,pl=lp*.22*(1-u*.7)+3,pw=pl*.34;
+        for(const sd of[-1,1]){g.save();g.translate(px,py);g.rotate(sd*(.9-.35*u));g.fillStyle=`hsl(${hue+R()*8},${lerp(30,44,R())}%,${lig0+R()*5}%)`;
+          g.beginPath();g.ellipse(pl*.5,0,pl*.5,pw*.5,0,0,6.3);g.fill();g.restore();}}
       g.restore();
     }
   }
@@ -146,14 +148,32 @@ function floorTex(kind,seed){
   const lin=v=>Math.pow(v/255,2.2);return{map:tex(cv),height:tex(hb),mean:[lin(md[0]),lin(md[1]),lin(md[2])]};
 }
 
+/* pale packed-earth trail strip (u across, v along, tiles along): fine grain, a few dry leaves, roots crossing it, pebbles; edge moss comes from the shader */
+function trailTex(seed){
+  const N=512,R=rng32(seed),cv=cvs(N,N),g=cv.getContext('2d'),hc=cvs(N,N),hg=hc.getContext('2d');
+  const wrap=(x,y,r,fn)=>{for(const dy of[-N,0,N])for(const dx of[-N,0,N]){const X=x+dx,Y=y+dy;if(X<-r||Y<-r||X>N+r||Y>N+r)continue;fn(X,Y);}};
+  g.fillStyle='#9d8468';g.fillRect(0,0,N,N);hg.fillStyle='#707070';hg.fillRect(0,0,N,N);
+  const im=g.getImageData(0,0,N,N),D=im.data;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const u=x/N,v=y/N,m=pfbm(u*4,v*4,4,4,4,seed)-.5,f=pfbm(u*40,v*40,40,40,2,seed+3)-.5,i=(y*N+x)*4,k=1+m*.5+f*.28;D[i]*=k;D[i+1]*=k*.99;D[i+2]*=k*.97;}
+  g.putImageData(im,0,0);
+  for(let i=0;i<500;i++){const x=R()*N,y=R()*N,r=1+R()*2.4,hh=Math.round(100+R()*120),c=`hsl(${24+R()*12},${12+R()*14}%,${40+R()*26}%)`;wrap(x,y,r,(X,Y)=>{g.fillStyle=c;g.beginPath();g.arc(X,Y,r,0,6.3);g.fill();hg.fillStyle=`rgb(${hh},${hh},${hh})`;hg.beginPath();hg.arc(X,Y,r,0,6.3);hg.fill();});}
+  for(let i=0;i<12;i++){const x=R()*N,y=R()*N,a=R()*6.28,L=12+R()*18,W=L*.4,c=`hsl(${22+R()*16},${34+R()*16}%,${24+R()*16}%)`;
+    wrap(x,y,L,(X,Y)=>{g.save();g.translate(X,Y);g.rotate(a);g.fillStyle=c;g.beginPath();g.moveTo(0,0);g.bezierCurveTo(L*.2,-W*.7,L*.7,-W*.6,L,0);g.bezierCurveTo(L*.7,W*.6,L*.2,W*.7,0,0);g.fill();g.restore();});}
+  g.lineCap='round';for(let i=0;i<3;i++){const y0=R()*N,sl=(R()-.5)*160,w=9+R()*9;
+    for(const[c,col,lw]of[[g,'#4a3926',w],[g,'#6b543a',w*.45],[hg,'#d8d8d8',w]]){c.strokeStyle=col;c.lineWidth=lw;for(const dy of[-N,0,N]){c.beginPath();c.moveTo(-10,y0-sl*.5+dy);c.bezierCurveTo(N*.3,y0-sl*.2+dy+12,N*.6,y0+sl*.2+dy-10,N+10,y0+sl*.5+dy);c.stroke();}}}
+  const hb=cvs(N,N),hbg=hb.getContext('2d');hbg.filter='blur(1.4px)';hbg.drawImage(hc,0,0);
+  return{map:tex(cv),height:tex(hb)};
+}
+
 /* ---------------- geometry builder ---------------- */
 class GB{
-  constructor(){this.p=[];this.n=[];this.uv=[];this.c=[];this.i=[];}
+  constructor(){this.p=[];this.n=[];this.uv=[];this.c=[];this.i=[];this.cen=[];this.off=[];}
   v(x,y,z,nx,ny,nz,u,v,r,g,b){this.p.push(x,y,z);this.n.push(nx,ny,nz);this.uv.push(u,v);this.c.push(r,g,b);return this.p.length/3-1;}
   tri(a,b,c){this.i.push(a,b,c);}
   get tris(){return this.i.length/3;}
   geo(){const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(this.p,3));g.setAttribute('normal',new T.Float32BufferAttribute(this.n,3));
-    g.setAttribute('uv',new T.Float32BufferAttribute(this.uv,2));g.setAttribute('color',new T.Float32BufferAttribute(this.c,3));g.setIndex(this.i);g.computeBoundingSphere();g.computeBoundingBox();return g;}
+    g.setAttribute('uv',new T.Float32BufferAttribute(this.uv,2));g.setAttribute('color',new T.Float32BufferAttribute(this.c,3));
+    if(this.cen.length===this.p.length){g.setAttribute('aCen',new T.Float32BufferAttribute(this.cen,3));g.setAttribute('aOff',new T.Float32BufferAttribute(this.off,2));}g.setIndex(this.i);g.computeBoundingSphere();g.computeBoundingBox();return g;}
 }
 const V3=(x,y,z)=>new T.Vector3(x,y,z);
 /* tube along pts. rad(t,theta)->radius, col(t,theta,y)->[r,g,b]; ring vertices are shared across a seam so UVs wrap cleanly. */
@@ -188,7 +208,7 @@ function card(gb,c,right,up,w,h,nrm,col,uv0,uv1,bend,anchorBottom){
     const [sx,sy]=corners[k];const bw=(sy-y0)/(y1-y0);
     const p=c.clone().addScaledVector(right,sx).addScaledVector(up,sy);
     if(b)p.y-=b*bw*bw*h*.5;
-    const n=nrm(p.x,p.y,p.z);ids.push(gb.v(p.x,p.y,p.z,n[0],n[1],n[2],uvs[k][0],uvs[k][1],col[0],col[1],col[2]));
+    const n=nrm(p.x,p.y,p.z);gb.cen.push(c.x,c.y,c.z);gb.off.push(sx,sy);ids.push(gb.v(p.x,p.y,p.z,n[0],n[1],n[2],uvs[k][0],uvs[k][1],col[0],col[1],col[2]));
   }
   gb.tri(ids[0],ids[1],ids[2]);gb.tri(ids[0],ids[2],ids[3]);
 }
@@ -320,9 +340,82 @@ function treeParts(seed,P,lod){
           triParts:[bark.tris,leaf.tris,moss.tris],crownR:P.crownR,lean:[lx,lz]}};
 }
 
+/* ---------------- Blender skeletons (tools/forest/grow_trees.py -> forest_assets/trees.glb + trees.json) ---------------- */
+function parseGLB(buf){
+  const dv=new DataView(buf),jl=dv.getUint32(12,true),js=JSON.parse(new TextDecoder().decode(new Uint8Array(buf,20,jl)));
+  const bo=20+jl+8,bin=new Uint8Array(buf,bo),get=(ai,Ctor,comps)=>{const a=js.accessors[ai],bv=js.bufferViews[a.bufferView],off=(bv.byteOffset||0)+(a.byteOffset||0),n=a.count*comps,
+    ctor=a.componentType===5126?Float32Array:a.componentType===5123?Uint16Array:Uint32Array;const out=new ctor(bin.buffer.slice(bin.byteOffset+off,bin.byteOffset+off+n*ctor.BYTES_PER_ELEMENT));
+    if(a.normalized){const f=new Float32Array(n);const m=a.componentType===5123?65535:255;for(let i=0;i<n;i++)f[i]=out[i]/m;return f;}return out;};
+  const res={};for(const nd of js.nodes){const pr=js.meshes[nd.mesh].primitives[0],at=pr.attributes;
+    res[nd.name]={pos:get(at.POSITION,0,3),nor:get(at.NORMAL,0,3),uv:get(at.TEXCOORD_0,0,2),col:get(at.COLOR_0,0,4),idx:get(pr.indices,0,1)};}
+  return res;
+}
+/* wood geometry with the moss mask (colour alpha) turned into moss for this version */
+function woodGeo(sk,moss,mossCol,H){
+  const g=new T.BufferGeometry(),n=sk.pos.length/3,col=new Float32Array(n*3);
+  for(let i=0;i<n;i++){const y=sk.pos[i*3+1],m=clamp(sk.col[i*4+3]*moss*1.35,0,1),sh=lerp(.62,1,sstep(0,H*.5,y));
+    for(let k=0;k<3;k++)col[i*3+k]=lerp(sk.col[i*4+k]*2.1,mossCol[k],m)*sh;}
+  g.setAttribute('position',new T.BufferAttribute(sk.pos,3));g.setAttribute('normal',new T.BufferAttribute(sk.nor,3));g.setAttribute('uv',new T.BufferAttribute(sk.uv,2));
+  g.setAttribute('color',new T.BufferAttribute(col,3));g.setIndex(new T.BufferAttribute(sk.idx,1));g.computeBoundingSphere();return g;
+}
+/* a tree from a Blender skeleton: wood from the glb, leaf cards on the exported clump anchors (many small clumps along the limbs), hanging moss,
+   epiphyte ferns, fruit and vines on the limb points. Same output shape as treeParts. lod 0/1 use the glb LODs, lod 2 a bare 4-sided trunk and blobs. */
+function skeletonParts(woods,m,P,lod,seed){
+  const R=rng32(seed*7727+3),leaf=new GB(),moss=new GB(),fruit=new GB(),epi=new GB(),bark=new GB(),tint=P.tint||[1,1,1],H=m.H,cs0=P.cardSize;
+  const mossCol=[.95,1.35,.42];let wood=null;
+  const clumps=m.clumps.map(c=>({x:c[0],y:c[1],z:c[2],r:c[3]*(P.clumpScale||1)}));
+  const alpha=P.alpha||.5;
+  for(const c of clumps){const csz=cs0,nc0=Math.max(3,Math.round(34*Math.pow(c.r/2.4,2)*Math.pow(1.5/csz,2)*(P.leafDensity||1)*1.15));c.nc0=nc0;c.lai=nc0*csz*csz*alpha/(Math.PI*c.r*c.r);c.k=.5*c.lai/(4*c.r/3);}
+  if(lod<2){wood=woodGeo(woods[m.name+'_L'+lod],P.moss,mossCol,H);}
+  else{const r0=m.dbh*.5;tube(bark,[V3(0,0,0),V3(0,H*.4,0),V3(0,H*.8,0)],t=>r0*(1-.7*t),4,{uvScale:.4,uvU:2,col:()=>[.3,.28,.22]});}
+  if(lod===2){ /* blobs: a flattened ellipsoid over the clump cloud plus a cap */
+    let cx=0,cy=0,cz=0,top=0,lo=1e9;for(const c of clumps){cx+=c.x;cy+=c.y;cz+=c.z;top=Math.max(top,c.y+c.r);lo=Math.min(lo,c.y-c.r*.6);}cx/=clumps.length;cy/=clumps.length;cz/=clumps.length;
+    let rh=0;for(const c of clumps)rh=Math.max(rh,Math.hypot(c.x-cx,c.z-cz)+c.r*.8);const hh=(top-lo)*.5;
+    const colf=(d,sh)=>[.16*tint[0]*sh*1.55,.25*tint[1]*sh*1.55,.1*tint[2]*sh*1.55];
+    ico(leaf,V3(cx,(top+lo)*.5,cz),rh*.9,1,colf,R,Math.max(.3,hh/(rh*.9)));ico(leaf,V3(cx,top-rh*.25,cz),rh*.48,0,colf,R,.75);
+  }else{
+    for(const c of clumps){
+      const nc=lod===0?Math.ceil(c.nc0*.6):Math.max(2,Math.round(c.nc0*.25)),cs=cs0*(lod===0?1:1.55),ctr=V3(c.x,c.y,c.z);
+      const nw=R()<(P.newLeaf==null?.2:P.newLeaf),cv=.82+R()*.34,ct=nw?[1.45,1.4,.7]:[1,1,1];   /* pale new growth on some clumps */
+      for(let j=0;j<nc;j++){
+        const d=V3(R()-.5,(R()-.5)*.9+.12,R()-.5).normalize(),rd=.5+.5*Math.sqrt(R()),p=ctr.clone().addScaledVector(d,c.r*rd*(d.y<-.3?.65:1));
+        const ref=Math.abs(d.y)>.9?V3(1,0,0):V3(0,1,0),rt=new T.Vector3().crossVectors(d,ref).normalize(),upv=new T.Vector3().crossVectors(rt,d).normalize();
+        const shade=(.5+.5*rd)*(.72+.38*sstep(-.5,.9,d.y))*(.9+.2*R())*cv,w=cs*(.8+R()*.45);
+        const col=[tint[0]*shade*1.2*ct[0],tint[1]*shade*1.2*ct[1],tint[2]*shade*1.2*ct[2]];
+        const nf=(x,y,z)=>{const q=V3(x-c.x,y-c.y,z-c.z).normalize();q.lerp(V3(0,1,0),.18).normalize();return[q.x,q.y,q.z];};
+        /* crossed pair: the second card stands perpendicular to the first, so a cluster is never seen edge-on */
+        card(leaf,p,rt,upv,w,w,nf,col,[R()<.5?0:1,0],[R()<.5?1:0,1],0,false);card(leaf,p,d,upv,w*.85,w*.85,nf,col,[R()<.5?0:1,0],[R()<.5?1:0,1],0,false);
+      }
+      if(P.fruit&&lod===0&&R()<P.fruit){for(let f=0;f<3;f++){const d=V3(R()-.5,-.2-R()*.4,R()-.5).normalize(),p=ctr.clone().addScaledVector(d,c.r*.7);ico(fruit,p,.13+R()*.05,1,(dd,sh)=>[.9*sh+.12,.28*sh,.07],null,1);}}
+    }
+  }
+  let vineReach=99;
+  if(lod===0){
+    const lp=m.limb.map(a=>V3(a[0],a[1],a[2]));
+    if(lp.length){
+      const nm=Math.round(P.hang*lp.length*.5);
+      for(let j=0;j<nm;j++){const p=lp[Math.floor(R()*lp.length)],h=1.2+R()*2.6,w=.5+R()*.4;
+        card(moss,p.clone().add(V3(0,-.1,0)),V3(Math.cos(R()*6.28),0,Math.sin(R()*6.28)),V3(0,1,0),w,h,()=>[0,1,0],[.4,.5,.3].map(v=>v*(.55+P.moss*.4)),[0,1],[1,0],0,false);}
+      const ne=Math.round(P.epi*lp.length*.25);
+      for(let j=0;j<ne;j++){const p=lp[Math.floor(R()*lp.length)].clone().add(V3(0,.12,0)),nf=6+Math.floor(R()*4);
+        for(let q=0;q<nf;q++){const ang=q/nf*6.28+R()*.4,e=.4+R()*.55,len=.8+R()*.8,dir=V3(Math.cos(ang)*Math.cos(e*.9),Math.sin(e),Math.sin(ang)*Math.cos(e*.9)),side=new T.Vector3().crossVectors(dir,V3(0,1,0)).normalize();
+          card(epi,p,side,dir,len*.35,len,()=>[0,1,0],[.8,.9,.7],[0,0],[1,1],.35,true);}}
+      for(let v=0;v<P.vines;v++){const a=lp[Math.floor(R()*lp.length)].clone();if(a.y<4)continue;
+        const down=R()<.55?R()*3:a.y*(.2+R()*.6),pp=[],drift=V3((R()-.5)*1.6,0,(R()-.5)*1.6),n=7;
+        for(let i=0;i<=n;i++){const s=i/n;pp.push(V3(a.x+drift.x*s+Math.sin(s*5+v)*.25,a.y-(a.y-down)*s,a.z+drift.z*s+Math.cos(s*4+v)*.25));}
+        if(pp[n].y<vineReach)vineReach=pp[n].y;const th=.035+R()*.03;tube(bark,pp,s=>th*(1+.5*(1-s)),4,{uvScale:1,col:()=>[.2*(1-P.vineMoss*.4)+.02,.2+.1*P.vineMoss,.12]});
+        if(P.vineMoss>.2)for(let i=1;i<n;i+=2)card(moss,pp[i],V3(1,0,0),V3(0,1,0),.5,.7,()=>[0,1,0],[.7,.9,.6],[0,.2],[.5,.8],0,false);}
+    }
+  }
+  const barkGeo=wood||(bark.tris?bark.geo():null);
+  /* lod 0/1 vines live in the bark builder when lod 0: merge them as a second geometry */
+  return{bark:barkGeo,vines:(lod===0&&bark.tris)?bark.geo():null,leaf:leaf.tris?leaf.geo():null,moss:moss.tris?moss.geo():null,fruit:fruit.tris?fruit.geo():null,epi:epi.tris?epi.geo():null,
+    meta:{H,dbh:m.dbh,firstBr:m.firstBr,clumps,vineReach,trunkR:m.dbh*.5,Ht:H*.95,tris:0}};
+}
+
 /* ---------------- undergrowth ---------------- */
 function fernParts(seed,o,lod){ /* rosette of arching fronds; o: n, len, w, up (elevation) */
-  const R=rng32(seed*31+7),gb=new GB(),n=lod===0?o.n:Math.max(5,Math.round(o.n*.55)),seg=lod===0?3:2;
+  const R=rng32(seed*31+7),gb=new GB(),n=lod===0?o.n:Math.max(5,Math.round(o.n*.6)),seg=lod===0?5:3;
   for(let i=0;i<n;i++){
     const ang=i/n*6.28+(R()-.5)*.4,el=lerp(o.el0,o.el1,R()),L=o.len*(.7+R()*.5),w=L*(o.wr||.34);
     const dir=V3(Math.cos(ang),0,Math.sin(ang)),side=V3(-Math.sin(ang),0,Math.cos(ang));
@@ -383,7 +476,7 @@ function rockParts(seed,o,lod){
   return{g:gb.geo(),tris:gb.tris,meta:{r:o.r}};
 }
 
-return{rng32,hash2,vnoise,fbm,pnoise,pfbm,lerp,clamp,sstep,srgb,GB,tube,card,ico,V3,blobTexFrom,
-  barkTex,leafTex,fernTex,mossHangTex,grassTex,floorTex,
+return{parseGLB,skeletonParts,woodGeo,rng32,hash2,vnoise,fbm,pnoise,pfbm,lerp,clamp,sstep,srgb,GB,tube,card,ico,V3,blobTexFrom,
+  trailTex,barkTex,leafTex,fernTex,mossHangTex,grassTex,floorTex,
   treeParts,fernParts,shrubParts,grassParts,treeFernParts,logParts,rockParts};
 })();
