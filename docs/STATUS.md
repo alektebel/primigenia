@@ -26,7 +26,7 @@ Resume each from its worktree in `/home/diego/Desarrollo/cpore-wt/<name>`; all h
 
 Merged today into main: jump (snapshot 16), camera T4, sing notes (A80), mood card (A81), befriend port plan (A82, `docs/plans/befriend-port.md`), signature attacks lab v2, engulf lab (A84), loop evidence.
 **Owner picks waiting in labs:** `signature.html`, `engulf.html`, `social_duel.html` (feel and numbers), `befriend_bodies.html`.
-**Design queue (one study at a time, A60):** ice → oil vomit + flamethrower (A89/A90) → rolling (A90) → v1 giant (A88) → lasing crystal (A87). New DESIGN entries today: A80–A92.
+**Design queue (one study at a time, A60):** ice → oil vomit + flamethrower (A89/A90) → rolling (A90) → v1 giant (A88) → lasing crystal (A87) → three-worlds feel lab (A93). Soarer + squid launch go with the real C flier species. New DESIGN entries today: A80–A93.
 
 ## Design state (all in `docs/DESIGN.md`)
 - **Movement picks:** A42–A53 for B, bipeds, radial, trilateral, two-headed, snake, worm, inchworm, slug, eel, octopus (A55).
