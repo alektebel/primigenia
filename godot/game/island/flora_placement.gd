@@ -4,6 +4,45 @@ const RECIPES := "res://game/data/flora.json"
 const SPACING := 20.0
 const MAX_GRADE := 1.26
 
+# Island climate (island-realism plan part II, M4). Biome ids are core/include/cpore/climate.h CP_BIOME_*; veg channels are the RGBA8 of
+# CpTerrain.veg. Only terrain with climate maps (d.has_climate(), an authored island) takes this path: layout 0 keeps the rules above.
+const B_SEA := 0
+const B_REEF := 1
+const B_BEACH := 2
+const B_MEADOW := 3
+const B_JUNGLE := 4          # cloud forest (A99 (5))
+const B_DRY_FOREST := 5
+const B_SCRUB := 6
+const B_DESERT := 7
+const B_BADLANDS := 8
+const B_ALPINE := 9
+const B_TUNDRA := 10
+const B_SNOW := 11
+const B_CLIFF := 12
+const BIOME_NAMES := ["sea", "reef", "beach", "meadow", "jungle", "dry_forest", "scrub", "desert", "badlands", "alpine", "tundra", "snow", "cliff"]
+const V_CANOPY := 0
+const V_UNDER := 1
+const V_GRASS := 2
+
+# Lattice of candidate sites per biome ("sp" metres, replacing the global 20 m SPACING) and the share of them that is used ("accept",
+# times the tier density). Starting values, checked by counts per biome in tests/flora_climate_test.gd and by the OG3 view.
+const PROFILE := {
+	B_SEA: {"sp": 20.0, "accept": 1.0},
+	B_REEF: {"sp": 20.0, "accept": 1.0},
+	B_BEACH: {"sp": 20.0, "accept": 1.0},
+	B_MEADOW: {"sp": 20.0, "accept": 1.0},
+	B_JUNGLE: {"sp": 8.0, "accept": 1.0},
+	B_DRY_FOREST: {"sp": 8.0, "accept": 0.7},
+	B_SCRUB: {"sp": 20.0, "accept": 0.5},
+	B_DESERT: {"sp": 40.0, "accept": 0.45},
+	B_BADLANDS: {"sp": 40.0, "accept": 0.6},
+	B_ALPINE: {"sp": 14.0, "accept": 0.8},
+	B_TUNDRA: {"sp": 14.0, "accept": 0.6},
+	B_SNOW: {"sp": 40.0, "accept": 0.5},
+	B_CLIFF: {"sp": 20.0, "accept": 1.0},
+}
+const CLIMATE_SPACINGS := [8.0, 14.0, 20.0, 40.0]
+
 static func recipes() -> Array:
 	return JSON.parse_string(FileAccess.get_file_as_string(RECIPES))
 
@@ -127,6 +166,9 @@ static func habitats(d, s: Dictionary, noise: FastNoiseLite, impact: Vector2, re
 		if p.distance_squared_to(Vector2(cp.x, cp.z)) < 28 * 28:
 			zones.append_array(["cave","shade","litter"])
 			break
+	if d.has_climate():
+		climate_zones(d, s, pocket, near_bank, reserved, zones)
+		return zones
 	if p.x < -110 and mat in [0, 1, 3] and (mat != 3 or (wet > 0.45 and pocket > 0.2)) and pocket > -0.28 and h >= 80 and h <= 950:
 		zones.append_array(["forest","litter","shade"])
 	elif mat == 0 and h < 300:
@@ -148,10 +190,89 @@ static func habitats(d, s: Dictionary, noise: FastNoiseLite, impact: Vector2, re
 		zones.append("shade")
 	return zones
 
+# Zones of a land site from its biome and vegetation (climate maps). Weighted by repetition: the generator picks one zone per site.
+static func climate_zones(d, s: Dictionary, pocket: float, near_bank: bool, reserved: Array, zones: Array) -> void:
+	var b: int = d.biome[s.k]
+	var p: Vector2 = s.p
+	var h: float = s.h
+	var canopy: float = d.veg_at(s.k, V_CANOPY)
+	var bare_biome := b == B_DESERT or b == B_BADLANDS
+	if bare_biome and near_bank:
+		# rivers cross the desert; the dry banks carry no riparian planting (a few xerophytes only)
+		zones.erase("bank")
+	match b:
+		B_JUNGLE:
+			zones.append_array(["forest", "forest", "forest", "litter", "shade"])
+		B_DRY_FOREST:
+			zones.append_array(["forest", "forest", "valley_edge", "litter"])
+		B_MEADOW:
+			zones.append("meadow")
+		B_SCRUB:
+			zones.append_array(["meadow", "disturbed", "valley_edge"])
+		B_DESERT, B_BADLANDS:
+			zones.append_array(["lava_crack", "bare_lava"])
+		B_ALPINE:
+			zones.append_array(["lava_crack", "lava_crack", "bare_lava", "bare_lava", "snowline"])
+		B_TUNDRA:
+			zones.append_array(["bare_lava", "bare_lava", "lava_crack", "snowline"])
+		B_SNOW:
+			zones.append("snowline")
+	# Start-valley habitats: on soil, in the biomes that can carry them (the old rules were "east of the western fog forest").
+	if d.material[s.k] == 0 and (b == B_MEADOW or b == B_SCRUB or b == B_DRY_FOREST):
+		if h >= 15 and h <= 400 and s.up.y > 0.94 and pocket > 0.0:
+			zones.append("hollow")
+		if near_bank and h >= 15 and h <= 350:
+			zones.append("wet_fringe")
+		if b == B_MEADOW and h >= 30 and h <= 550 and s.up.y > 0.8 and s.up.y < 0.96 and pocket > 0.18 and p.length() > 60:
+			zones.append("valley_edge")
+		for i in reserved.size():
+			var dist: float = p.distance_to(reserved[i])
+			if dist > 10 and dist < 80 and h >= 15 and h <= 450 and pocket > -0.2:
+				zones.append("disturbed")
+				break
+	if near_bank and not bare_biome:
+		zones.append("shade")
+
+# Does the climate allow recipe r at site s? The recipe's "climate" block (p_mm, t_c, canopy ranges, an optional altitude that replaces
+# the lore altitude on this island) is checked against the maps; without a block the lore altitude is the only limit.
+static func climate_ok(d, r: Dictionary, s: Dictionary, zone: String) -> bool:
+	var c: Dictionary = r.get("climate", {})
+	var alt: Array = c.get("altitude", r.altitude)
+	if zone != "snowline" and (s.h < alt[0] or s.h > alt[1]):
+		return false
+	if c.has("p_mm") or c.has("t_c"):
+		var cl: Vector4 = d.climate_at(s.p.x, s.p.y)
+		if c.has("p_mm") and (cl.x < c.p_mm[0] or cl.x > c.p_mm[1]):
+			return false
+		if c.has("t_c") and (cl.y < c.t_c[0] or cl.y > c.t_c[1]):
+			return false
+	if c.has("canopy"):
+		var cv: float = d.veg_at(s.k, V_CANOPY)
+		if cv < c.canopy[0] or cv > c.canopy[1]:
+			return false
+	return true
+
+# Chance multiplier of a zone from the vegetation maps: trees follow the canopy, understory the undergrowth, meadow the grass.
+static func veg_weight(d, k: int, zone: String) -> float:
+	match zone:
+		"forest":
+			return clampf(d.veg_at(k, V_CANOPY) * 1.25, 0.0, 1.0)
+		"litter", "shade":
+			return clampf(0.25 + d.veg_at(k, V_UNDER), 0.0, 1.0)
+		"meadow":
+			return clampf(0.2 + d.veg_at(k, V_GRASS), 0.0, 1.0)
+	return 1.0
+
 static func record(r: Dictionary, s: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	var h := rng.randf_range(r.height[0], r.height[1])
 	var p: Vector2 = s.p
 	return {"id":r.id,"p":Vector3(p.x, s.h, p.y),"height":h,"yaw":rng.randf() * TAU,"variant":rng.randi() % 2,"up":s.up}
+
+# The spring giant needs reliable water: never desert, badlands, snow or cliff cells (always true without climate maps).
+static func spring_biome_ok(d, s: Dictionary) -> bool:
+	if not d.has_climate():
+		return true
+	return d.biome[s.k] in [B_MEADOW, B_JUNGLE, B_DRY_FOREST, B_SCRUB]
 
 # In the absence of a named dyke, choose the nearest eligible freshwater margin east of the start.
 static func spring_site(d, reserved: Array, r: Dictionary, blocked: PackedByteArray) -> Dictionary:
@@ -161,7 +282,7 @@ static func spring_site(d, reserved: Array, r: Dictionary, blocked: PackedByteAr
 			if absf(p.x) >= d.half or absf(p.y) >= d.half:
 				continue
 			var s := site(d, p, reserved, blocked)
-			if not s.is_empty() and s.h >= r.altitude[0] and s.h <= r.altitude[1] and bank(d, p):
+			if not s.is_empty() and s.h >= r.altitude[0] and s.h <= r.altitude[1] and bank(d, p) and spring_biome_ok(d, s):
 				return s
 	return {}
 
@@ -188,54 +309,101 @@ static func generate(d, setup: Dictionary, world_seed: int, density: float, rows
 		if not s.is_empty():
 			append_plant(out, r, s, rng, by_zone)
 			reserved.append(s.p)
+	var ctx := {"world_seed": world_seed, "density": density, "reserved": reserved, "camps": camps, "by_zone": by_zone, "noise": noise,
+		"impact": impact, "blocked": blocked}
+	if d.has_climate():
+		# One lattice pass per spacing; a site is visited by the pass of its own biome only (PROFILE).
+		for pass_i in CLIMATE_SPACINGS.size():
+			var sp: float = CLIMATE_SPACINGS[pass_i]
+			var side := ceili(d.size_m / sp)
+			for z in side:
+				for x in side:
+					var c := Vector2((x + 0.5) * sp - d.half, (z + 0.5) * sp - d.half)
+					var prof: Dictionary = PROFILE[d.biome[d.cell_index(c.x, c.y)]]
+					if prof.sp != sp:
+						continue
+					rng.seed = hash(Vector3i(world_seed + pass_i * 7919, x, z))
+					place_cell(d, ctx, rng, out, sp, x, z)
+		return out
 	var side := ceili(d.size_m / SPACING)
 	for z in side:
 		for x in side:
 			rng.seed = hash(Vector3i(world_seed, x, z))
-			if rng.randf() >= density:
-				continue
-			var p: Vector2 = (Vector2(x + rng.randf(), z + rng.randf()) * SPACING) - Vector2.ONE * d.half
-			if p.x >= d.half or p.y >= d.half:
-				continue
-			var s := site(d, p, reserved, blocked)
-			if s.is_empty():
-				continue
-			var zones := habitats(d, s, noise, impact, camps)
-			var mat: int = d.material[s.k]
-			if not s.sea and mat in [1, 2, 3] and rng.randf() < 0.32:
-				var kind := "scree" if mat == 2 else ("outcrop" if s.up.y < 0.81 else "boulder")
-				var sizes := [0.18, 0.72] if kind == "scree" else ([1.7, 5.6] if kind == "outcrop" else [0.55, 2.5])
-				out.append(record({"id":kind,"height":sizes}, s, rng))
-			if zones.is_empty():
-				continue
-			var zone: String = zones[rng.randi() % zones.size()]
-			var choices: Array = by_zone.get(zone, [])
-			if choices.is_empty():
-				continue
-			var r: Dictionary = choices[rng.randi() % choices.size()]
-			# The render terrain compresses the alpine belt; its snow material tracks that belt.
-			if zone != "snowline" and (s.h < r.altitude[0] or s.h > r.altitude[1]):
-				continue
-			if rng.randf() > float(r.chance):
-				continue
-			append_plant(out, r, s, rng, by_zone)
-			for member in range(1, int(r.get("patch_count", 1))):
-				var q := p + Vector2.RIGHT.rotated(rng.randf() * TAU) * rng.randf_range(0.25, 1.0) * float(r.patch_radius)
-				var other := site(d, q, reserved, blocked)
-				if other.is_empty() or other.h < r.altitude[0] or other.h > r.altitude[1]:
-					continue
-				if zone in habitats(d, other, noise, impact, camps):
-					append_plant(out, r, other, rng, by_zone)
+			place_cell(d, ctx, rng, out, SPACING, x, z)
 	return out
 
-static func append_plant(out: Array, r: Dictionary, s: Dictionary, rng: RandomNumberGenerator, by_zone: Dictionary) -> void:
+# One lattice cell. With climate maps (d.has_climate()) the biome sets the acceptance, the vegetation maps weight the zone and the
+# recipe's climate block gates it; without them this is the original rule set draw for draw.
+static func place_cell(d, ctx: Dictionary, rng: RandomNumberGenerator, out: Array, sp: float, x: int, z: int) -> void:
+	var climate: bool = d.has_climate()
+	var reserved: Array = ctx.reserved
+	var blocked: PackedByteArray = ctx.blocked
+	var by_zone: Dictionary = ctx.by_zone
+	var density: float = ctx.density
+	var cell_density := density
+	if rng.randf() >= density:
+		return
+	var p: Vector2 = (Vector2(x + rng.randf(), z + rng.randf()) * sp) - Vector2.ONE * d.half
+	if p.x >= d.half or p.y >= d.half:
+		return
+	var s := site(d, p, reserved, blocked)
+	if s.is_empty():
+		return
+	var rock_chance := 0.32
+	if climate:
+		var prof: Dictionary = PROFILE[d.biome[s.k]]
+		if prof.sp != sp or rng.randf() >= float(prof.accept):
+			return
+		rock_chance = minf(0.85, 0.32 * sp * sp / (SPACING * SPACING))
+	var zones := habitats(d, s, ctx.noise, ctx.impact, ctx.camps)
+	var mat: int = d.material[s.k]
+	if not s.sea and mat in [1, 2, 3] and rng.randf() < rock_chance:
+		var kind := "scree" if mat == 2 else ("outcrop" if s.up.y < 0.81 else "boulder")
+		var sizes := [0.18, 0.72] if kind == "scree" else ([1.7, 5.6] if kind == "outcrop" else [0.55, 2.5])
+		out.append(record({"id":kind,"height":sizes}, s, rng))
+	if zones.is_empty():
+		return
+	var zone: String = zones[rng.randi() % zones.size()]
+	var choices: Array = by_zone.get(zone, [])
+	if choices.is_empty():
+		return
+	var r: Dictionary = choices[rng.randi() % choices.size()]
+	if climate:
+		if not climate_ok(d, r, s, zone):
+			return
+	# The render terrain compresses the alpine belt; its snow material tracks that belt.
+	elif zone != "snowline" and (s.h < r.altitude[0] or s.h > r.altitude[1]):
+		return
+	if rng.randf() > float(r.chance) * (veg_weight(d, s.k, zone) if climate else 1.0):
+		return
+	var members := int(r.get("patch_count", 1))
+	var host_scale := 1.0
+	if climate and sp < 14.0:
+		# the 8 m forest lattice is already dense: no extra clumps of trunks, small patches of understory, half the vines
+		members = 1 if r.form == "tree" else mini(members, 2)
+		host_scale = 0.5
+	append_plant(out, r, s, rng, by_zone, host_scale)
+	for member in range(1, members):
+		var q := p + Vector2.RIGHT.rotated(rng.randf() * TAU) * rng.randf_range(0.25, 1.0) * float(r.patch_radius)
+		var other := site(d, q, reserved, blocked)
+		if other.is_empty():
+			continue
+		if climate:
+			if not climate_ok(d, r, other, zone):
+				continue
+		elif other.h < r.altitude[0] or other.h > r.altitude[1]:
+			continue
+		if zone in habitats(d, other, ctx.noise, ctx.impact, ctx.camps):
+			append_plant(out, r, other, rng, by_zone)
+
+static func append_plant(out: Array, r: Dictionary, s: Dictionary, rng: RandomNumberGenerator, by_zone: Dictionary, host_scale: float = 1.0) -> void:
 	var plant := record(r, s, rng)
 	if r.has("sheltered_colour"):
 		plant.variant = 1 if s.up.x < -0.1 else 0
 	out.append(plant)
 	if r.form == "tree":
 		for vine in by_zone.get("host", []):
-			if rng.randf() < float(vine.chance):
+			if rng.randf() < float(vine.chance) * host_scale:
 				var v := record(vine, s, rng)
 				v.height = clampf(plant.height * 0.72, vine.height[0], vine.height[1])
 				out.append(v)

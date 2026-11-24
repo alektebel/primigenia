@@ -11,6 +11,9 @@ uniform vec2 nest_center = vec2(-10000.0);
 uniform vec3 center = vec3(0.0);
 uniform sampler2D relief_tex : filter_linear, repeat_disable;   // A: baked sun visibility (PLAN-rock step 9)
 uniform float rock_shadows = 0.0;                               // 0 off (the default), 1 on
+// Island climate (island-realism M4): veg.B is the grass density (0 in desert and under closed canopy). use_veg 0 = a seed island: every blade stays.
+uniform sampler2D veg_tex : filter_linear, repeat_disable;
+uniform float use_veg = 0.0;
 
 varying vec3 v_base;     // x, ground y, z of the blade root
 varying float v_h;       // 0 root .. 1 tip
@@ -30,7 +33,9 @@ void vertex() {
 	float clump = COLOR.r;
 	float rolling = 0.65 + 0.55 * sin(base.x * 0.033 + sin(base.y * 0.027)) * 0.5 + tone(base) * 0.4;
 	float mask = surface_bilinear(base).g * smoothstep(2.4, 3.2, length((base - nest_center) * vec2(1.0, 1.22)));
-	float hg = mix(0.48 + 0.75 * clump, 0.3 + 0.4 * clump, lod) * rolling * mask * fade;
+	float vg = mix(1.0, texture(veg_tex, (base + MAP_HALF) / (MAP_CELL * float(MAP_N))).b, use_veg);
+	float keep = step(cu.z * 0.85, vg);          // density: a blade stays when its own random number is under the grass map
+	float hg = mix(0.48 + 0.75 * clump, 0.3 + 0.4 * clump, lod) * rolling * mask * fade * keep * mix(0.6, 1.0, vg);
 	float ground = vground_tri(base) - 0.025;
 	vec3 gn = ground_normal(base);
 	float light = max(dot(gn, sun_dir), 0.0);

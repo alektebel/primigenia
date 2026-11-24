@@ -12,6 +12,16 @@
     ],
     "habitat": "litter",
     "chance": 0.3,
+    "climate": {
+      "p_mm": [
+        900,
+        5000
+      ],
+      "altitude": [
+        10,
+        950
+      ]
+    },
     "colour": "b5a888",
     "spread": 0.5,
     "angle": 0,
@@ -39,6 +49,20 @@
     ],
     "habitat": "valley_edge",
     "chance": 0.3,
+    "climate": {
+      "p_mm": [
+        450,
+        1800
+      ],
+      "t_c": [
+        7,
+        30
+      ],
+      "altitude": [
+        10,
+        550
+      ]
+    },
     "colour": "628c4d",
     "spread": 0.5,
     "angle": 55,
@@ -413,6 +437,24 @@
     ],
     "habitat": "forest",
     "chance": 1,
+    "climate": {
+      "p_mm": [
+        900,
+        5000
+      ],
+      "t_c": [
+        7,
+        30
+      ],
+      "canopy": [
+        0.3,
+        1.0
+      ],
+      "altitude": [
+        10,
+        950
+      ]
+    },
     "colour": "527a50",
     "spread": 0.45,
     "angle": 55,
@@ -443,6 +485,16 @@
     ],
     "habitat": "meadow",
     "chance": 0.88,
+    "climate": {
+      "p_mm": [
+        250,
+        1400
+      ],
+      "canopy": [
+        0.0,
+        0.45
+      ]
+    },
     "colour": "909554",
     "spread": 0.7,
     "angle": 18,
@@ -472,6 +524,12 @@
     ],
     "habitat": "litter",
     "chance": 0.22,
+    "climate": {
+      "p_mm": [
+        700,
+        5000
+      ]
+    },
     "colour": "cfbfa2",
     "spread": 0.55,
     "angle": 60,
@@ -530,6 +588,16 @@
     ],
     "habitat": "shade",
     "chance": 0.6,
+    "climate": {
+      "p_mm": [
+        900,
+        5000
+      ],
+      "altitude": [
+        0,
+        1250
+      ]
+    },
     "colour": "638752",
     "spread": 0.9,
     "angle": 45,
@@ -586,6 +654,16 @@
     ],
     "habitat": "snowline",
     "chance": 0.8,
+    "climate": {
+      "t_c": [
+        -10,
+        7.5
+      ],
+      "altitude": [
+        0,
+        900
+      ]
+    },
     "colour": "697f68",
     "spread": 0.7,
     "angle": 0,
