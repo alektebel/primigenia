@@ -251,6 +251,12 @@ Page: `web/gaitlab/island_editor.html` + `island_editor.js` + `island/pack.js`. 
   - `expected.json` holds the native hashes of the committed island (seed 1: shape 256, eroded 512, bake 1024 and 1536); the page says "matches native build" only for that island at those levels, and prints the `terrain_cli` command for an edited one.
   - Validation numbers come from `analysis.js` (a port of `terrain_cli maps` and the `maps.py` region and route code); the check holds them to `maps.py` within 1 point (areas 1 to 2%).
 
+- **F4 as built (A101, the owner froze Star massif as it is; F3 skipped):**
+  - Source `data/islands/star_massif.island.json` (the editor's export format, moved from `web/gaitlab/island/`). `make island-pack` (`tools/island/freeze.mjs`) packs it twice (must match) and writes `godot/game/data/islands/star_massif.isl`, `core/src/islands/star_massif.inc` (compiled into libcpore; `cp_island_star_massif(&len)` in `island.h`) and the editor's byte copy `web/gaitlab/island/star_massif.island.json`. `make island-pack-check` (part of `island-test`) fails on a stale copy.
+  - Blob 4,504 bytes, crc32 `4741cef1`, desc hash `eab02da256cfeae6`. Masks are not authored (the climate calibration block is).
+  - Goldens `tests/golden/island-star-<seed>.hash`, lines `n terrain-hash climate-hash`: seeds 1, 7, 42 at n 512; seed 1 also n 1536 (`island-test-heavy`). `tests/test_island_star.c` checks them and that the compiled-in blob equals the `.isl`; `tests/test_wasm_island.mjs` checks the n 512 lines in WASM. Regenerate on purpose: `./build/island_star_test --heavy --write-golden`.
+  - `maps.py --names <island.json>` names the routes (the blob keeps no trail names). The maps were regenerated from the frozen blob; `stats.json` came out the same as before (v5 == layout-1 stats), and `star-massif-{precip,biome,veg,cloud}.jpg` plus `star-massif-climate-gates.json` were added.
+
 ### 3.5 Steps F0–F5
 | # | Step | Files | Tests | Gate |
 |---|---|---|---|---|

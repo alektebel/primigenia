@@ -23,6 +23,7 @@ $(BUILD)/%.o: %.c $(HDRS)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 $(BUILD)/core/src/terrain.o: core/src/terrain_layouts.inc
 $(BUILD)/core/src/climate.o: core/src/climate_biomes.inc
+$(BUILD)/core/src/island_desc.o: core/src/islands/star_massif.inc
 
 $(BUILD)/libcpore.a: $(CORE_OBJ)
 	ar rcs $@ $^
@@ -209,12 +210,26 @@ $(BUILD)/island_test: tests/test_island.c $(HDRS) $(BUILD)/libcpore.a
 # (regenerate on purpose with `./build/terrain_climate_test build/island/star_f0.isl --heavy --write-golden`), wind convention, calibration.
 $(BUILD)/terrain_climate_test: tests/test_terrain_climate.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
-island-test: $(BUILD)/island_test $(BUILD)/terrain_climate_test $(ISLAND_F0)
+island-test: $(BUILD)/island_test $(BUILD)/terrain_climate_test $(BUILD)/island_star_test $(ISLAND_F0) island-pack-check
+	nice -n 10 ./$(BUILD)/island_star_test
 	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0)
 	nice -n 10 ./$(BUILD)/terrain_climate_test $(ISLAND_F0)
-island-test-heavy: $(BUILD)/island_test $(BUILD)/terrain_climate_test $(ISLAND_F0)
+island-test-heavy: $(BUILD)/island_test $(BUILD)/terrain_climate_test $(BUILD)/island_star_test $(ISLAND_F0) island-pack-check
+	nice -n 10 ./$(BUILD)/island_star_test --heavy
 	nice -n 10 ./$(BUILD)/island_test $(ISLAND_F0) --heavy
 	nice -n 10 ./$(BUILD)/terrain_climate_test $(ISLAND_F0) --heavy
+
+# F4 (A101): the Star massif frozen. data/islands/star_massif.island.json is the source; `make island-pack` writes its derived copies
+# (the .isl for Godot, the .inc compiled into libcpore, the editor's copy) and `island-pack-check` fails on a stale one. The test compares
+# the compiled-in blob with the .isl and the goldens tests/golden/island-star-<seed>.hash (regenerate on purpose:
+# `./build/island_star_test --heavy --write-golden`).
+.PHONY: island-pack island-pack-check
+island-pack:
+	node tools/island/freeze.mjs
+island-pack-check:
+	node tools/island/freeze.mjs --check
+$(BUILD)/island_star_test: tests/test_island_star.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
 # F1 gate: the desc made from layout 1 (splines off) maps within 2% of the layout-1 stats the picker shipped (n 1536, about 8 s).
 .PHONY: island-stats
@@ -225,7 +240,7 @@ island-stats: $(BUILD)/terrain_cli $(ISLAND_F0)
 
 TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size,_ct_desc_buf,_ct_desc_buf_size,_ct_desc_set,_ct_desc_hash,_ct_desc_n,_ct_generate_desc,_ct_shape_desc,_ct_climate_run,_ct_climate,_ct_climate_n,_ct_climate_hash]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
-$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc apps/terrain_wasm_api.c $(HDRS) Makefile
+$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) core/src/terrain_layouts.inc core/src/islands/star_massif.inc apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
 	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=104857600 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o $(BUILD)/wasm/cpore_terrain.mjs
 .PHONY: terrain-parity

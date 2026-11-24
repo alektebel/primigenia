@@ -73,3 +73,15 @@ const seedHash = execFileSync('build/terrain_cli', ['hash', '--seed', '1', '--n'
 const again = engine.generate({ seed: 1, n: 256 });
 assert.equal(again.hash, seedHash); assert.equal(again.size, 3600); assert.ok(!again.desc);
 console.log('island WASM: native == WASM for 3 seeds x 2 descs (splines, masks, protect, a trail) and for their climate maps; no leakage into seed generation');
+// F4 (A101): the shipped Star massif (godot/game/data/islands/star_massif.isl) in WASM reproduces the committed goldens
+// tests/golden/island-star-<seed>.hash (lines "n terrain climate"); n = 1536 is the native heavy test's.
+{
+  const star = new Uint8Array(readFileSync('godot/game/data/islands/star_massif.isl'));
+  for (const seed of [1, 7, 42]) {
+    const gold = Object.fromEntries(readFileSync(`tests/golden/island-star-${seed}.hash`, 'utf8').trim().split('\n').map((l) => l.split(/\s+/)).map(([n, t, c]) => [n, { t, c }]));
+    const t = engine.generate({ seed, n: 512, desc: star });
+    assert.equal(t.hash, gold[512].t, `island-star seed ${seed} n=512 terrain golden (WASM)`);
+    assert.equal(t.climateHash, gold[512].c, `island-star seed ${seed} n=512 climate golden (WASM)`);
+    console.log(`island-star seed ${seed} n=512: WASM == golden ${t.hash}`);
+  }
+}

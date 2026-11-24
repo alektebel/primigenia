@@ -5,7 +5,7 @@
 //   3. the page's WASM engine (the same island/engine.js the Worker runs) gives the NATIVE terrain hash for the committed island and for an edited
 //      one (moved points, splines, painted masks): shape 256, eroded 512, two seeds, and the 1536 bake
 //   4. the validation numbers (island/analysis.js) equal tools/island/maps.py within 1% (and `terrain_cli stats` for the flat nest)
-//   node tools/island/editor_check.cjs [--write-expected]     (--write-expected also rewrites island/star_massif.island.json and island/expected.json)
+//   node tools/island/editor_check.cjs [--write-expected]     (--write-expected also rewrites island/expected.json and copies the island json)
 //   EDITOR_FAST=1 skips the 1536 bake in WASM (about 20 s).
 'use strict';
 const fs = require('fs'), path = require('path'), assert = require('assert'), cp = require('child_process');
@@ -26,10 +26,12 @@ const log = (...a) => console.log(...a);
   log('shared files: pack.js == pack.mjs; wasm/ == build/wasm');
 
   // 2. JSON round trip
-  const layout = JSON.parse(sh('node', ['tools/island/from_layout.mjs']));
+  // F4 (A101): the source of truth is data/islands/star_massif.island.json; the page's copy is byte for byte that file (make island-pack)
+  const srcText = fs.readFileSync(path.join(ROOT, 'data/islands/star_massif.island.json'), 'utf8'), layout = JSON.parse(srcText);
   const base = M.importJSON(layout), text = M.exportJSON(base);
-  if (write) fs.writeFileSync(path.join(WEB, 'star_massif.island.json'), text);
-  assert.strictEqual(fs.readFileSync(path.join(WEB, 'star_massif.island.json'), 'utf8'), text, 'island/star_massif.island.json is stale (make island-editor-check regenerates it)');
+  assert.strictEqual(text, srcText, 'data/islands/star_massif.island.json is not in the editor export format (re-save it from the editor, or fix the key order)');
+  if (write) fs.writeFileSync(path.join(WEB, 'star_massif.island.json'), srcText);
+  assert.strictEqual(fs.readFileSync(path.join(WEB, 'star_massif.island.json'), 'utf8'), srcText, 'island/star_massif.island.json is stale (make island-pack)');
   const again = M.importJSON(text);
   assert.strictEqual(M.exportJSON(again), text, 'export(import(export(s))) differs');
   assert(Buffer.from(M.packState(base)).equals(Buffer.from(pack.packIsland(layout))), 'the editor blob differs from the packer CLI blob');

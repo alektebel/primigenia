@@ -465,6 +465,7 @@ def main():
     ap.add_argument("--climate", action="store_true", help="with --desc: also the climate maps (precipitation, biome, vegetation, cloud) and the M2 region gates")
     ap.add_argument("--height", default=None, help="with --climate: reuse a -height.f32 from an earlier run (climate pass only, 0.1 s)")
     ap.add_argument("--cal", action="append", default=[], help="with --climate: SLOT=VALUE climate calibration override (island.h CP_ISL_CAL_*), repeatable")
+    ap.add_argument("--names", default=None, help="with --desc: the island JSON; its trails name the routes (the ISL1 blob keeps no trail names, so they would all be 'trail')")
     ap.add_argument("--suffix", default=None, help="file name tag for the climate images")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -476,6 +477,10 @@ def main():
             gen = json.loads(run(a.cli, ["maps"] + sel + ["--seed", str(a.seed), "--n", str(a.n), "--out", pre] + (["--climate"] if a.climate and a.desc else []) +
                                 (["--height", a.height] if a.height and a.desc else []) + [x for c in a.cal for x in ("--cal", c)]))
             meta = json.loads(run(a.cli, ["layout-json"] + sel + ["--n", "64", "--droplets", "0", "--stream", "0", "--thermal", "0"]))
+            if a.names and a.desc:
+                tn = [t["name"] for t in json.load(open(a.names)).get("trails", [])]
+                for r, nm in zip(meta["routes"], tn):
+                    r["name"] = nm
             relief = Image.open(pre + "-relief.ppm").convert("RGB").resize((a.px, a.px), Image.LANCZOS)
             cls = Image.open(pre + "-cls.pgm").resize((a.px, a.px), Image.NEAREST)
             shade = Image.open(pre + "-shade.pgm").resize((a.px, a.px), Image.BILINEAR)
