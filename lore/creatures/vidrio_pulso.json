@@ -37,7 +37,7 @@
           "en": "Silica Hull"
         },
         "role": "Defence",
-        "effect": "Absorbs kinetic impact by redistributing stress through crystal lattice; reduces damage by 40% but fractures under rapid cooling.",
+        "effect": "Its towering shell absorbs heavy blows and stands firm, but sudden chills cause it to crack and shatter, leaving the creature exposed.",
         "numbers": {}
       },
       "weakness": "Rapid cooling below 130°C causes vitrification and catastrophic fracturing of the carapace (F11, F17).",

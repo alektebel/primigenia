@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Subglacial ocean near cryovolcanic vents on the inner moon",
+    "habitat": "Subglacial ocean near cryovolcanic vents on the inner moon. Also, in the council's sketch (no such creature in this world yet): Rock-scourer, sifonera drifts over grazer tracks to catch biomass and detritus knocked loose from ice walls",
     "diet": "Chemosynthetic biomass, dissolved H2/H2S, organic detritus",
     "active": "Continuous",
     "predators": []
@@ -33,7 +33,7 @@
           "en": "Filter-Cycle"
         },
         "role": "Basic",
-        "effect": "Cycles fronds to clear clogs and restore efficiency by 40%",
+        "effect": "The creature rhythmically shifts its ruffled fronds to clear blockages and strengthen its filtering action. This steady motion keeps its feeding passages open and working at full strength.",
         "numbers": {}
       },
       "weakness": "Fronds tangle in dense debris flows from icequakes",
@@ -212,7 +212,7 @@
           "en": "Float-Hold"
         },
         "role": "Control",
-        "effect": "Lock body density to hover motionless in currents for 20s",
+        "effect": "The creature adjusts its internal density to anchor itself against the flow. It remains perfectly still in the water, defying the current for a short while.",
         "numbers": {}
       },
       "weakness": "Body ruptures under mechanical stress or rapid pressure changes",
@@ -251,13 +251,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Rock-scourer",
-      "kind": "cousin",
-      "note": "(council kind 'Opportunist') Sifonera drifts over grazer tracks to catch biomass and detritus knocked loose from ice walls"
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

@@ -47,7 +47,7 @@
           "en": "Mucus Coat"
         },
         "role": "Passive",
-        "effect": "+30% UV and heat resistance; -20% speed; leaves a slick trail.",
+        "effect": "The creature moves with a heavy, deliberate pace while its thick coating shields it from harsh sunlight and heat. It leaves behind a glistening, slippery trail that makes the ground difficult to traverse.",
         "numbers": {}
       },
       "weakness": "Sea salt strips the coating; a salt line forces retreat.",
@@ -103,7 +103,7 @@
           "en": "Scent Read"
         },
         "role": "Engage",
-        "effect": "Reveals creature path within 60 m for 30 s; marks targets for allies.",
+        "effect": "Its sensory tentacles catch chemical traces, leaving a visible trail that shows where it has recently traveled. The creature becomes clearly marked to nearby allies, making its movements easy to follow.",
         "numbers": {}
       },
       "weakness": "Heavy rain washes gradients; crossing running water breaks the link.",
@@ -159,7 +159,7 @@
           "en": "Hunker"
         },
         "role": "Defence",
-        "effect": "-40% damage taken for 10 s; cannot move or attack.",
+        "effect": "The creature contracts its body into a tightly coiled sphere of bitter mucus, becoming nearly impervious to harm. While in this defensive posture, it remains completely still and unable to strike.",
         "numbers": {}
       },
       "weakness": "Flipping it exposes a soft ventral patch for 3 s before it can re-coil.",
@@ -214,7 +214,7 @@
           "en": "Mucus Slide"
         },
         "role": "Basic",
-        "effect": "+40% movement speed for 5 s; leaves a slippery trail that slows pursuers.",
+        "effect": "The creature propels itself forward with a swift, gliding motion across the ground. It leaves behind a slick residue that causes anyone following closely to stumble and lose their footing.",
         "numbers": {}
       },
       "weakness": "Direct fire or concentrated salt burns the ventral foot.",

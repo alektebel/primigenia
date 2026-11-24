@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| bello_pico.c1 | Broad wings for low-speed maneuvering | Dense air (1.6 bar) increases drag, making sustained flight costly. ← Herds move constantly across meadows and shores. ← High drag favors short bursts and hovering over gliding. ← Broad wings provide high lift at low speeds for quick maneuvers. | **F4** Dense air: 1.6 bar | Hover (`bello_pico.hover`) | Engage | Hold position over a target; +5 Charm. | Cannot fly against wind gusts (D19). |
-| bello_pico.c2 | Zygodactyl feet with locking claws | Herbivore herds carry ectoparasites (D29). ← Cleaner must cling to moving, shaggy hosts. ← Gravity (1.05 g) requires strong grip. ← Zygodactyl feet offer four-point contact and secure locking. | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Cling (`bello_pico.cling`) | Defence | Lock onto host; immune to knockdown; +5 Befriend. | Stranded if host dies. |
-| bello_pico.c3 | Curved bill with mechanoreceptive tip | Parasites hide deep in fur. ← Bill must probe without harming host. ← Dense air dampens high-frequency sound, favoring tactile cues. ← Bill tip detects host hair movement and parasite thrashing. | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Probe (`bello_pico.probe`) | Poke | Remove parasites; heals host 5 HP, yields 2 DNA. | Bill breaks on bone if host moves too fast. |
-| bello_pico.c4 | Iridescent wing patches and red throat | Hosts must recognize cleaner as beneficial. ← Visual signaling required in daylight. ← High UV (F1) selects for UV-reflective feathers. ← Bright signals advertise health and parasite-free status. | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Shine (`bello_pico.shine`) | Social | Flash wings at host; +10 Befriend, reveals parasites. | Iridescence attracts predators. |
+| bello_pico.c1 | Broad wings for low-speed maneuvering | Dense air (1.6 bar) increases drag, making sustained flight costly. ← Herds move constantly across meadows and shores. ← High drag favors short bursts and hovering over gliding. ← Broad wings provide high lift at low speeds for quick maneuvers. | **F4** Dense air: 1.6 bar | Hover (`bello_pico.hover`) | Engage | The bird hovers steadily above a nearby target, making it easy to approach and interact. It remains suspended in the air for a short while, allowing anyone close by to calmly engage with it. | Cannot fly against wind gusts (D19). |
+| bello_pico.c2 | Zygodactyl feet with locking claws | Herbivore herds carry ectoparasites (D29). ← Cleaner must cling to moving, shaggy hosts. ← Gravity (1.05 g) requires strong grip. ← Zygodactyl feet offer four-point contact and secure locking. | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Cling (`bello_pico.cling`) | Defence | The bird clamps its locking claws onto a nearby host, making it impossible to dislodge. It stays firmly attached, strongly encouraging trust and affection. | Stranded if host dies. |
+| bello_pico.c3 | Curved bill with mechanoreceptive tip | Parasites hide deep in fur. ← Bill must probe without harming host. ← Dense air dampens high-frequency sound, favoring tactile cues. ← Bill tip detects host hair movement and parasite thrashing. | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Probe (`bello_pico.probe`) | Poke | The bird carefully probes the host with its curved bill, picking away parasites to strongly restore the creature's health. It consumes the pests to nourish itself and thrive. | Bill breaks on bone if host moves too fast. |
+| bello_pico.c4 | Iridescent wing patches and red throat | Hosts must recognize cleaner as beneficial. ← Visual signaling required in daylight. ← High UV (F1) selects for UV-reflective feathers. ← Bright signals advertise health and parasite-free status. | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Shine (`bello_pico.shine`) | Social | The bird flashes its iridescent wings and bright red throat toward a nearby host, strongly building trust. The sudden display also exposes any hidden parasites clinging to the target. | Iridescence attracts predators. |
 
 ### bello_pico.c1: Broad wings for low-speed maneuvering
 
 Trait ← Dense air (1.6 bar) increases drag, making sustained flight costly. ← Herds move constantly across meadows and shores. ← High drag favors short bursts and hovering over gliding. ← Broad wings provide high lift at low speeds for quick maneuvers. ← F4
 
-- **Skill:** Hover (Engage): Hold position over a target; +5 Charm.
+- **Skill:** Hover (Engage): The bird hovers steadily above a nearby target, making it easy to approach and interact. It remains suspended in the air for a short while, allowing anyone close by to calmly engage with it.
 - **Weakness:** Cannot fly against wind gusts (D19).
 - **Observe:**
   1. Watch it hover over a fleeing Rondo.
@@ -50,7 +50,7 @@ Trait ← Dense air (1.6 bar) increases drag, making sustained flight costly. �
 
 Trait ← Herbivore herds carry ectoparasites (D29). ← Cleaner must cling to moving, shaggy hosts. ← Gravity (1.05 g) requires strong grip. ← Zygodactyl feet offer four-point contact and secure locking. ← F24, F8
 
-- **Skill:** Cling (Defence): Lock onto host; immune to knockdown; +5 Befriend.
+- **Skill:** Cling (Defence): The bird clamps its locking claws onto a nearby host, making it impossible to dislodge. It stays firmly attached, strongly encouraging trust and affection.
 - **Weakness:** Stranded if host dies.
 - **Observe:**
   1. See feet gripping Rondo flank.
@@ -69,7 +69,7 @@ Trait ← Herbivore herds carry ectoparasites (D29). ← Cleaner must cling to m
 
 Trait ← Parasites hide deep in fur. ← Bill must probe without harming host. ← Dense air dampens high-frequency sound, favoring tactile cues. ← Bill tip detects host hair movement and parasite thrashing. ← F27
 
-- **Skill:** Probe (Poke): Remove parasites; heals host 5 HP, yields 2 DNA.
+- **Skill:** Probe (Poke): The bird carefully probes the host with its curved bill, picking away parasites to strongly restore the creature's health. It consumes the pests to nourish itself and thrive.
 - **Weakness:** Bill breaks on bone if host moves too fast.
 - **Observe:**
   1. Watch bill probe into fur.
@@ -88,7 +88,7 @@ Trait ← Parasites hide deep in fur. ← Bill must probe without harming host. 
 
 Trait ← Hosts must recognize cleaner as beneficial. ← Visual signaling required in daylight. ← High UV (F1) selects for UV-reflective feathers. ← Bright signals advertise health and parasite-free status. ← F1, F25
 
-- **Skill:** Shine (Social): Flash wings at host; +10 Befriend, reveals parasites.
+- **Skill:** Shine (Social): The bird flashes its iridescent wings and bright red throat toward a nearby host, strongly building trust. The sudden display also exposes any hidden parasites clinging to the target.
 - **Weakness:** Iridescence attracts predators.
 - **Observe:**
   1. See wing flash.

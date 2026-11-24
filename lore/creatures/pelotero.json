@@ -41,7 +41,7 @@
           "en": "Wind-Anchor"
         },
         "role": "Defence",
-        "effect": "Hitches to grass stems, +40% survival in gales during the 26 h day/night cycle",
+        "effect": "It clings tightly to grass stems and remains firmly anchored during strong winds.",
         "numbers": {}
       },
       "weakness": "Stationary for 3 seconds, vulnerable to bite attacks",
@@ -96,7 +96,7 @@
           "en": "Rapid Breakdown"
         },
         "role": "Basic",
-        "effect": "Consumes detritus, converts to +15% local plant growth over 2 days",
+        "effect": "It devours decaying matter and leaves behind rich nutrients that strongly encourage nearby plants to flourish.",
         "numbers": {}
       },
       "weakness": "Excretes nutrient-rich pellets that attract scavengers and mid-predators",
@@ -151,7 +151,7 @@
           "en": "O2-Burst"
         },
         "role": "Engage",
-        "effect": "Sprints 8m in 1.5s using stored tracheal pressure, +20% chase speed",
+        "effect": "It releases stored air pressure to launch into a sudden, rapid dash that swiftly pursues fleeing prey.",
         "numbers": {}
       },
       "weakness": "Valves seal in fog; loses burst capability and moves sluggishly in dense air/moisture",
@@ -215,7 +215,7 @@
           "en": "Sun-Plated"
         },
         "role": "Defence",
-        "effect": "-30% radiation damage during midday, +10% camouflage on dark soil",
+        "effect": "Its dark, sun-resistant shell allows it to blend seamlessly into dark soil while withstanding harsh sunlight.",
         "numbers": {}
       },
       "weakness": "Absorbs heat; overheats during peak sun, forces midday shelter-seeking",

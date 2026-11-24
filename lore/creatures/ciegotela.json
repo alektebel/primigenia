@@ -43,7 +43,7 @@
           "en": "Grip & Tremor Sense"
         },
         "role": "Passive",
-        "effect": "Stays on walls, detects prey 2m away via vibration",
+        "effect": "The spider clings firmly to vertical stone surfaces and senses nearby movement through the ground. You can hear its subtle vibrations before it strikes.",
         "numbers": {}
       },
       "weakness": "Disoriented by loud, sudden roars that mask tremors",
@@ -98,7 +98,7 @@
           "en": "Silk Snare"
         },
         "role": "Control",
-        "effect": "Pins prey, +30% catch rate, prevents escape",
+        "effect": "It weaves a thick silk trap across narrow passages to strongly pin struggling creatures. You must quickly sever the strands before the catch takes hold.",
         "numbers": {}
       },
       "weakness": "Flammable; wind or fire breaks the web",
@@ -155,7 +155,7 @@
           "en": "Crepuscular Ambush"
         },
         "role": "Basic",
-        "effect": "+40% first strike chance at dawn/dusk",
+        "effect": "The creature lies in wait during twilight hours and strikes swiftly from the shadows. You must watch carefully for its sudden lunge as light fades or breaks.",
         "numbers": {}
       },
       "weakness": "Hides or freezes in bright midday light",
@@ -210,7 +210,7 @@
           "en": "Desiccation Resistance"
         },
         "role": "Defence",
-        "effect": "-20% stamina drain in dry zones, regenerates shell faster",
+        "effect": "Its dark shell holds moisture tightly, allowing it to endure arid conditions without tiring. The carapace quickly repairs itself after being struck.",
         "numbers": {}
       },
       "weakness": "Overheats if exposed to direct sun or vents",

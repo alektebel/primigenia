@@ -33,7 +33,7 @@
           "en": "Gravity Crawl"
         },
         "role": "Basic",
-        "effect": "Moves across steep terrain without falling and grants +3 carry weight",
+        "effect": "It scrambles up steep inclines without ever losing its footing. You can secure extra supplies onto its back for the journey.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden weight loss or low-gravity zones",
@@ -98,7 +98,7 @@
           "en": "Dorsal Scan"
         },
         "role": "Poke",
-        "effect": "Gains +2 perception against overhead threats within 40m",
+        "effect": "The creature constantly tilts its face upward, keeping a sharp watch on the sky. This keen awareness lets it easily spot any threat drawing near from overhead.",
         "numbers": {}
       },
       "weakness": "Cannot track fast-moving prey at ground level without turning",

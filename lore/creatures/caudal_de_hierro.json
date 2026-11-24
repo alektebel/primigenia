@@ -1,0 +1,279 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "caudal_de_hierro",
+  "name": {
+    "en": "Caudal de Hierro"
+  },
+  "world": "deepinterior",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Liquid outer core boundary layer (approx. 2,900 km depth)",
+    "diet": "Magnetic shear and convective entropy gradients",
+    "active": "Continuous (phase-locked to tidal cycle)",
+    "predators": []
+  },
+  "body": "Highly speculative fantasy: gossamer helical filaments of self-organizing iron-sulfur plasma; 10-50 km in length; no fixed mass, just persistent pattern. No carbon chemistry or solvent exists here.",
+  "chains": [
+    {
+      "id": "caudal_de_hierro.c1",
+      "trait": "Gossamer helical filament structure",
+      "links": [
+        "Rides helical magnetic field lines",
+        "Dynamo field is inherently helical",
+        "Sulfur-rich liquid core sustains dynamo"
+      ],
+      "roots": [
+        "F6",
+        "F3"
+      ],
+      "skill": {
+        "id": "caudal_de_hierro.magnetic_ride",
+        "name": {
+          "en": "Magnetic Ride"
+        },
+        "role": "Control",
+        "effect": "The creature rides invisible magnetic currents, moving strongly and swiftly while completely ignoring any magnetic interference, allowing it to navigate freely.",
+        "numbers": {}
+      },
+      "weakness": "Magnetic shear tears it apart if the field reverses abruptly.",
+      "observe": [
+        "Helical filamentous shape",
+        "Aligned with local magnetic north",
+        "Moves along field lines"
+      ],
+      "journal": {
+        "en": "A ghost woven from iron and thought."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Either file it explicitly as a non-living dynamo pattern (F23 fantasy tier) that the player observes or avoids as a hazard, never commands, or move the grazer into the fracture aquifer (0.9-4 km, F12, F20): rebuild it as a colony of magnetotactic iron-sulfur microbes with encoded magnetosomes, rooted in F6 plus F15 redox below 118 C. Keep the fun as 'Magnetic Ride' (Control): a field-aligned glide that gathers the colony and steadies its compass. Weakness: an abrupt field reversal scrambles the magnetosomes.",
+        "fixes": [
+          "Either file it explicitly as a non-living dynamo pattern (F23 fantasy tier) that the player observes or avoids as a hazard, never commands, or move the grazer into the fracture aquifer (0.9-4 km, F12, F20): rebuild it as a colony of magnetotactic iron-sulfur microbes with encoded magnetosomes, rooted in F6 plus F15 redox below 118 C. Keep the fun as 'Magnetic Ride' (Control): a field-aligned glide that gathers the colony and steadies its compass. Weakness: an abrupt field reversal scrambles the magnetosomes."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (e.g., Magnetospirillum) orient in Earth's field using intracellular magnetite magnetosomes — a real solution, but it requires a cell, water and metabolism; nothing analogous survives core conditions.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "moffatt_1978_magnetic"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "moffatt_1978_magnetic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "caudal_de_hierro.c2",
+      "trait": "Consumes convective entropy gradients",
+      "links": [
+        "Harvests work from fluid velocity shear",
+        "No chemical bonds or solvent for metabolism",
+        "Core is above 300 GPa and 5000 K"
+      ],
+      "roots": [
+        "F17",
+        "F6"
+      ],
+      "skill": {
+        "id": "caudal_de_hierro.entropy_siphon",
+        "name": {
+          "en": "Entropy Siphon"
+        },
+        "role": "Poke",
+        "effect": "The creature draws warmth from the surrounding currents, sapping strength from nearby targets while restoring its own vitality, leaving a visible trail of condensed heat.",
+        "numbers": {}
+      },
+      "weakness": "Starves in laminar flow regions; cannot persist without shear.",
+      "observe": [
+        "Glows faintly where flow is turbulent",
+        "Shape changes with flow speed",
+        "No intake orifice, dissolves into flow"
+      ],
+      "journal": {
+        "en": "It eats the wind of the world's heart."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Re-root it as a chemosynthetic grazer at a redox interface in the aquifer (F15, F19, F20, at or below 118 C): it harvests H2 / Fe(II)-sulfate disequilibrium, with Darcy flow (F12) and calcite sealing (F16) deciding where the interface sits. Keep the luminous, shape-shifting look as filaments brightest where mixing is fastest. 'Entropy Siphon' (Poke): a single burst of stored radiolytic oxygen (F22) spent on one feeding strike. Weakness: in stagnant brine the redux front is sealed by calcite and it starves. If it stays in the core, call it a pattern, not a feeder — drop consume/heal verbs entirely.",
+        "fixes": [
+          "Re-root it as a chemosynthetic grazer at a redox interface in the aquifer (F15, F19, F20, at or below 118 C): it harvests H2 / Fe(II)-sulfate disequilibrium, with Darcy flow (F12) and calcite sealing (F16) deciding where the interface sits. Keep the luminous, shape-shifting look as filaments brightest where mixing is fastest. 'Entropy Siphon' (Poke): a single burst of stored radiolytic oxygen (F22) spent on one feeding strike. Weakness: in stagnant brine the redux front is sealed by calcite and it starves. If it stays in the core, call it a pattern, not a feeder — drop consume/heal verbs entirely."
+        ],
+        "analogues": [
+          {
+            "organism": "No organism metabolises entropy or shear. Vent chemoautotrophs (e.g., the symbionts of Riftia pachyptila) exploit chemical disequilibrium, and bacteria sense flow through mechanosensitive channels, but both are aqueous, low-temperature chemistry — the opposite of core matter.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "caudal_de_hierro.c3",
+      "trait": "Synchronizes oscillation to the 56-hour tidal month",
+      "links": [
+        "Tidal strain modulates core convection velocity",
+        "Creature locks phase to maximize shear harvest",
+        "Moon creates cyclic strain of 5e-7"
+      ],
+      "roots": [
+        "F4",
+        "F10"
+      ],
+      "skill": {
+        "id": "caudal_de_hierro.tidal_pulse",
+        "name": {
+          "en": "Tidal Pulse"
+        },
+        "role": "Basic",
+        "effect": "The creature strikes strongly with amplified force whenever it senses the player entering a specific rhythm, making its attacks noticeably more powerful.",
+        "numbers": {}
+      },
+      "weakness": "Disoriented during the 'slack' tide; attack chance -50%.",
+      "observe": [
+        "Rhythmic pulsing of filament width",
+        "Seismic hum matches 56-hour period",
+        "Brightens at peak tide"
+      ],
+      "journal": {
+        "en": "The planet's heartbeat is its clock."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-24",
+        "scores": {
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "caudal_de_hierro.c4",
+      "trait": "Emits low-frequency seismic hums",
+      "links": [
+        "Uses sound to phase-lock with distant herds",
+        "Sound travels 3,000-6,000 m/s in rock/core",
+        "Prevents destructive interference between individuals"
+      ],
+      "roots": [
+        "F10",
+        "F6"
+      ],
+      "skill": {
+        "id": "caudal_de_hierro.seismic_chord",
+        "name": {
+          "en": "Seismic Chord"
+        },
+        "role": "Social",
+        "effect": "The creature harmonizes with nearby allies, strengthening their joint efforts and spreading effects among them.",
+        "numbers": {}
+      },
+      "weakness": "Loud sound attracts 'Dynamo grazers' that disrupt flow; stealth is impossible.",
+      "observe": [
+        "Constant low hum recorded by seismometers",
+        "Directional emission pattern",
+        "Harmonics change with group size"
+      ],
+      "journal": {
+        "en": "A choir of iron singing in the dark."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-24",
+        "scores": {
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "Emergent MHD instability at the liquid-solid boundary"
+  },
+  "temperament": "Aloof, rhythmic, indifferent to solid matter",
+  "secrets": [
+    "It leaves isotopic fractionation in mantle plumes.",
+    "Its 'song' can be used to stabilize unstable fractures."
+  ],
+  "moments": [
+    "A ripple in the seismic data resolves into a massive, slow-turning helix, its 'heartbeat' perfectly matching the tidal clock."
+  ],
+  "journal": [
+    {
+      "en": "Highly speculative fantasy: a self-organizing MHD pattern with no copying mechanism, yet it dances."
+    },
+    {
+      "en": "We measure its mass in joules and its age in magnetic cycles."
+    }
+  ]
+}

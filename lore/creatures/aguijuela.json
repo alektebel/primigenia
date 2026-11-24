@@ -42,7 +42,7 @@
           "en": "Moon-sting"
         },
         "role": "Signature",
-        "effect": "Deal 20% more damage under full moon; stuns host for 3s.",
+        "effect": "Bathed in moonlight, the creature strikes with heightened ferocity, momentarily paralyzing its host.",
         "numbers": {}
       },
       "weakness": "Inactive at new moon; cannot hunt without moonlight.",
@@ -154,7 +154,7 @@
           "en": "Lunge"
         },
         "role": "Basic",
-        "effect": "Quick strike to latch onto host; grants +5 movement for 5s.",
+        "effect": "The creature launches a swift strike to firmly attach itself to its host, briefly propelling them forward.",
         "numbers": {}
       },
       "weakness": "Suffocates rapidly if removed from water.",
@@ -217,7 +217,7 @@
           "en": "Grip"
         },
         "role": "Engage",
-        "effect": "Latch onto host; immune to shake/detach effects for 10s.",
+        "effect": "The creature clamps tightly onto its host, holding on firmly and resisting any attempts to dislodge it.",
         "numbers": {}
       },
       "weakness": "Vulnerable to shellfish claws and cleaning behaviors.",

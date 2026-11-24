@@ -33,7 +33,7 @@
           "en": "Tide-Snare"
         },
         "role": "Engage",
-        "effect": "Extends digit hooks to pin aquatic prey within 3m, dealing 15% damage and rooting target for 1 turn.",
+        "effect": "It extends its flexible hooked digits to snatch nearby aquatic prey, strongly clamping them in place for a short while.",
         "numbers": {}
       },
       "weakness": "Digits snap if caught in sudden tidal surges or river floods.",
@@ -98,7 +98,7 @@
           "en": "Polar-Gaze"
         },
         "role": "Passive",
-        "effect": "+20% detection of submerged prey in shallow water; ignores surface glare.",
+        "effect": "Its refractive eyes and sensitive side lines let it strongly detect prey hiding beneath shallow waters, completely ignoring bright surface glare.",
         "numbers": {}
       },
       "weakness": "Disoriented in turbid floodwaters or heavy rain.",

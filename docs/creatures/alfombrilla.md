@@ -21,16 +21,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| alfombrilla.c1 | Micro-wings beat at high frequency. | Dense air (1.6 bar, D8) increases drag and lift at small scales. ← High metabolic turnover requires efficient aerial dispersal between food patches. ← Dawn cooling (D9) increases air density further, boosting wing loading and flight stability. ← F4, F3 | **F4** Dense air: 1.6 bar; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | Drift Glide (`alfombrilla.drift_glide`) | Basic | Move 30m with 1 stamina; silent in fog. | Stamina drains fast in dry midday air. |
-| alfombrilla.c2 | Broad-spectrum compound eyes track dim movement. | Morning fog scatters yellow-white sunlight (F17, F8). ← Dense air dampens high-frequency sounds, shifting communication to visuals. ← Low-light conditions select for rhodopsin-rich retinas and reduced photoreceptor density. ← F3, F8, F4 | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F4** Dense air: 1.6 bar | Fog Vision (`alfombrilla.fog_vision`) | Passive | See prey and threats through fog at +20% range. | Blinded by direct sun glare or sudden flares (F10). |
-| alfombrilla.c3 | Mass feeding synchronizes leaf consumption. | High pO2 accelerates plant alkaloid production (F5, F25). ← Concentrated feeding overwhelms plant chemical defenses via throughput. ← Swarm saturation reduces individual predation risk via predator gape limits (D25). ← F26, D25 | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Leaf Swarm (`alfombrilla.leaf_swarm`) | Engage | Consume a plant object rapidly; gain +5 mass, attract nearby predators. | Leaves a chewed trail that alerts ground carnivores. |
-| alfombrilla.c4 | Woven egg sacs anchor to plant axils. | Dense air slows moisture diffusion, but egg membranes still desiccate without micro-forest cover. ← Forest understory maintains stable humidity near stems (F28). ← Anchoring prevents swarm dispersal during night convection storms (F8). ← F16, D9 | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Silk Bind (`alfombrilla.silk_bind`) | Defence | Secure a cluster of eggs to a stem; +3 defense against wind. | Stationary target for aerial predators like alula. |
+| alfombrilla.c1 | Micro-wings beat at high frequency. | Dense air (1.6 bar, D8) increases drag and lift at small scales. ← High metabolic turnover requires efficient aerial dispersal between food patches. ← Dawn cooling (D9) increases air density further, boosting wing loading and flight stability. ← F4, F3 | **F4** Dense air: 1.6 bar; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | Drift Glide (`alfombrilla.drift_glide`) | Basic | The creature glides smoothly across the ground, its micro-wings beating in a steady rhythm. You can guide it to travel a moderate distance while remaining completely unheard in the mist. | Stamina drains fast in dry midday air. |
+| alfombrilla.c2 | Broad-spectrum compound eyes track dim movement. | Morning fog scatters yellow-white sunlight (F17, F8). ← Dense air dampens high-frequency sounds, shifting communication to visuals. ← Low-light conditions select for rhodopsin-rich retinas and reduced photoreceptor density. ← F3, F8, F4 | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F4** Dense air: 1.6 bar | Fog Vision (`alfombrilla.fog_vision`) | Passive | Its compound eyes pierce through the mist, strongly tracking faint movements that would otherwise remain hidden. You can clearly spot nearby prey and approaching threats through the heavy fog. | Blinded by direct sun glare or sudden flares (F10). |
+| alfombrilla.c3 | Mass feeding synchronizes leaf consumption. | High pO2 accelerates plant alkaloid production (F5, F25). ← Concentrated feeding overwhelms plant chemical defenses via throughput. ← Swarm saturation reduces individual predation risk via predator gape limits (D25). ← F26, D25 | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Leaf Swarm (`alfombrilla.leaf_swarm`) | Engage | The creature devours nearby foliage in a frenzy, swelling noticeably as it feeds. This sudden feast strongly attracts the attention of hunters from the surrounding area. | Leaves a chewed trail that alerts ground carnivores. |
+| alfombrilla.c4 | Woven egg sacs anchor to plant axils. | Dense air slows moisture diffusion, but egg membranes still desiccate without micro-forest cover. ← Forest understory maintains stable humidity near stems (F28). ← Anchoring prevents swarm dispersal during night convection storms (F8). ← F16, D9 | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Silk Bind (`alfombrilla.silk_bind`) | Defence | The creature weaves protective silk to anchor its eggs firmly to a branch. This woven shield strongly resists the pull of heavy winds. | Stationary target for aerial predators like alula. |
 
 ### alfombrilla.c1: Micro-wings beat at high frequency.
 
 Trait ← Dense air (1.6 bar, D8) increases drag and lift at small scales. ← High metabolic turnover requires efficient aerial dispersal between food patches. ← Dawn cooling (D9) increases air density further, boosting wing loading and flight stability. ← F4, F3 ← F4, F3
 
-- **Skill:** Drift Glide (Basic): Move 30m with 1 stamina; silent in fog.
+- **Skill:** Drift Glide (Basic): The creature glides smoothly across the ground, its micro-wings beating in a steady rhythm. You can guide it to travel a moderate distance while remaining completely unheard in the mist.
 - **Weakness:** Stamina drains fast in dry midday air.
 - **Observe:**
   1. Wings blurring in dawn light
@@ -49,7 +49,7 @@ Trait ← Dense air (1.6 bar, D8) increases drag and lift at small scales. ← H
 
 Trait ← Morning fog scatters yellow-white sunlight (F17, F8). ← Dense air dampens high-frequency sounds, shifting communication to visuals. ← Low-light conditions select for rhodopsin-rich retinas and reduced photoreceptor density. ← F3, F8, F4 ← F3, F8, F4
 
-- **Skill:** Fog Vision (Passive): See prey and threats through fog at +20% range.
+- **Skill:** Fog Vision (Passive): Its compound eyes pierce through the mist, strongly tracking faint movements that would otherwise remain hidden. You can clearly spot nearby prey and approaching threats through the heavy fog.
 - **Weakness:** Blinded by direct sun glare or sudden flares (F10).
 - **Observe:**
   1. Eyes reflecting low dawn light
@@ -67,7 +67,7 @@ Trait ← Morning fog scatters yellow-white sunlight (F17, F8). ← Dense air da
 
 Trait ← High pO2 accelerates plant alkaloid production (F5, F25). ← Concentrated feeding overwhelms plant chemical defenses via throughput. ← Swarm saturation reduces individual predation risk via predator gape limits (D25). ← F26, D25 ← F5, F25
 
-- **Skill:** Leaf Swarm (Engage): Consume a plant object rapidly; gain +5 mass, attract nearby predators.
+- **Skill:** Leaf Swarm (Engage): The creature devours nearby foliage in a frenzy, swelling noticeably as it feeds. This sudden feast strongly attracts the attention of hunters from the surrounding area.
 - **Weakness:** Leaves a chewed trail that alerts ground carnivores.
 - **Observe:**
   1. Hundreds converging on a single leaf
@@ -86,7 +86,7 @@ Trait ← High pO2 accelerates plant alkaloid production (F5, F25). ← Concentr
 
 Trait ← Dense air slows moisture diffusion, but egg membranes still desiccate without micro-forest cover. ← Forest understory maintains stable humidity near stems (F28). ← Anchoring prevents swarm dispersal during night convection storms (F8). ← F16, D9 ← F16
 
-- **Skill:** Silk Bind (Defence): Secure a cluster of eggs to a stem; +3 defense against wind.
+- **Skill:** Silk Bind (Defence): The creature weaves protective silk to anchor its eggs firmly to a branch. This woven shield strongly resists the pull of heavy winds.
 - **Weakness:** Stationary target for aerial predators like alula.
 - **Observe:**
   1. Fine silk threads stitching leaf axils

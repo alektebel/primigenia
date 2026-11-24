@@ -21,16 +21,16 @@ Armored carapace, drill-like rostrum, pressure-resistant shell
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cortezon.c1 | Rostrum vibrates to fracture ice | Precise acoustic resonance breaks brittle ice ← Fast sound transmission amplifies vibration ← Dense hydrogen atmosphere transmits efficiently | **F10** Low molecular weight H₂ and high pressure transmit acoustic waves at ~1,200 m/s.; **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F20** Ocean floor pressure reaches ~250 MPa, driving benthic megafauna physiology and membrane adaptation. | Ice Shatter (`cortezon.ice_shatter`) | Poke | Deals 25 impact damage to walls and armor, breaks ice barriers | Vibration exposes their position to predators |
-| cortezon.c2 | Cuticle incorporates antifreeze glycoproteins | Prevents intracellular ice nucleation ← Cold-adapted proteins retain flexibility ← Geothermal baseline hovers near freezing | **F16** Low-temperature adapted enzyme kinetics and antifreeze glycoproteins maintain catalytic efficiency at ~275 K.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.; **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling. | Cold Resilience (`cortezon.cold_resilience`) | Defence | Reduces frostbite and cold damage by 60% | Thermal insulation traps metabolic heat in warm zones |
-| cortezon.c3 | Spiracles draw H2-rich vent vapors | Hydrogenotrophic metabolism requires H2 ← Serpentinization releases abundant hydrogen ← Radiogenic decay powers vent chemistry | **F14** High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.; **F13** Focused hydrothermal vent flux of 0.38 W/m² creates redox-rich plumes with steep chemical gradients. | Gas Digest (`cortezon.gas_digest`) | Engage | Converts atmospheric H2 into 30 energy, fuels burst sprints | Cannot metabolize oxygen or nitrate efficiently |
-| cortezon.c4 | Radial arms anchor to uneven ice | High gravity demands low center of mass ← 1.53g pulls tissue downward constantly ← Planetary mass compresses interior and surface | **F4** Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding.; **F3** 3.0 M⊕ mass with ~1.40 R⊕ radius provides sufficient gravity to retain a thick primordial hydrogen atmosphere.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Grip Anchor (`cortezon.grip_anchor`) | Control | Immobilizes target for 8 seconds, prevents knockback | Requires solid surface to plant arms; fails in water |
+| cortezon.c1 | Rostrum vibrates to fracture ice | Precise acoustic resonance breaks brittle ice ← Fast sound transmission amplifies vibration ← Dense hydrogen atmosphere transmits efficiently | **F10** Low molecular weight H₂ and high pressure transmit acoustic waves at ~1,200 m/s.; **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F20** Ocean floor pressure reaches ~250 MPa, driving benthic megafauna physiology and membrane adaptation. | Ice Shatter (`cortezon.ice_shatter`) | Poke | The creature vibrates its beak to shatter nearby ice and armor plating, leaving cracked surfaces that can be easily cleared. | Vibration exposes their position to predators |
+| cortezon.c2 | Cuticle incorporates antifreeze glycoproteins | Prevents intracellular ice nucleation ← Cold-adapted proteins retain flexibility ← Geothermal baseline hovers near freezing | **F16** Low-temperature adapted enzyme kinetics and antifreeze glycoproteins maintain catalytic efficiency at ~275 K.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.; **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling. | Cold Resilience (`cortezon.cold_resilience`) | Defence | The creature's frost-resistant hide glistens as it moves through freezing conditions without slowing or stumbling. | Thermal insulation traps metabolic heat in warm zones |
+| cortezon.c3 | Spiracles draw H2-rich vent vapors | Hydrogenotrophic metabolism requires H2 ← Serpentinization releases abundant hydrogen ← Radiogenic decay powers vent chemistry | **F14** High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.; **F13** Focused hydrothermal vent flux of 0.38 W/m² creates redox-rich plumes with steep chemical gradients. | Gas Digest (`cortezon.gas_digest`) | Engage | The creature draws in vent vapors through its spiracles, converting the gases into a sudden burst of speed that carries it swiftly for a short while. | Cannot metabolize oxygen or nitrate efficiently |
+| cortezon.c4 | Radial arms anchor to uneven ice | High gravity demands low center of mass ← 1.53g pulls tissue downward constantly ← Planetary mass compresses interior and surface | **F4** Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding.; **F3** 3.0 M⊕ mass with ~1.40 R⊕ radius provides sufficient gravity to retain a thick primordial hydrogen atmosphere.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Grip Anchor (`cortezon.grip_anchor`) | Control | The creature's radial arms anchor deeply into the ice, locking it firmly in place so it cannot be pushed or dragged away. | Requires solid surface to plant arms; fails in water |
 
 ### cortezon.c1: Rostrum vibrates to fracture ice
 
 Trait ← Precise acoustic resonance breaks brittle ice ← Fast sound transmission amplifies vibration ← Dense hydrogen atmosphere transmits efficiently ← F10, F7, F20
 
-- **Skill:** Ice Shatter (Poke): Deals 25 impact damage to walls and armor, breaks ice barriers
+- **Skill:** Ice Shatter (Poke): The creature vibrates its beak to shatter nearby ice and armor plating, leaving cracked surfaces that can be easily cleared.
 - **Weakness:** Vibration exposes their position to predators
 - **Observe:**
   1. Chitinous head twitching
@@ -48,7 +48,7 @@ Trait ← Precise acoustic resonance breaks brittle ice ← Fast sound transmiss
 
 Trait ← Prevents intracellular ice nucleation ← Cold-adapted proteins retain flexibility ← Geothermal baseline hovers near freezing ← F16, F1, F11
 
-- **Skill:** Cold Resilience (Defence): Reduces frostbite and cold damage by 60%
+- **Skill:** Cold Resilience (Defence): The creature's frost-resistant hide glistens as it moves through freezing conditions without slowing or stumbling.
 - **Weakness:** Thermal insulation traps metabolic heat in warm zones
 - **Observe:**
   1. Icy sheen on carapace
@@ -66,7 +66,7 @@ Trait ← Prevents intracellular ice nucleation ← Cold-adapted proteins retain
 
 Trait ← Hydrogenotrophic metabolism requires H2 ← Serpentinization releases abundant hydrogen ← Radiogenic decay powers vent chemistry ← F14, F1, F13
 
-- **Skill:** Gas Digest (Engage): Converts atmospheric H2 into 30 energy, fuels burst sprints
+- **Skill:** Gas Digest (Engage): The creature draws in vent vapors through its spiracles, converting the gases into a sudden burst of speed that carries it swiftly for a short while.
 - **Weakness:** Cannot metabolize oxygen or nitrate efficiently
 - **Observe:**
   1. Spiracles pulsing rhythmically
@@ -84,7 +84,7 @@ Trait ← Hydrogenotrophic metabolism requires H2 ← Serpentinization releases 
 
 Trait ← High gravity demands low center of mass ← 1.53g pulls tissue downward constantly ← Planetary mass compresses interior and surface ← F4, F3, F1
 
-- **Skill:** Grip Anchor (Control): Immobilizes target for 8 seconds, prevents knockback
+- **Skill:** Grip Anchor (Control): The creature's radial arms anchor deeply into the ice, locking it firmly in place so it cannot be pushed or dragged away.
 - **Weakness:** Requires solid surface to plant arms; fails in water
 - **Observe:**
   1. Multi-jointed appendages splayed
@@ -97,12 +97,6 @@ Trait ← High gravity demands low center of mass ← 1.53g pulls tissue downwar
   - Analogue: Sea-star tube feet on irregular hard substrata (adhesion plus muscle tone), inverted for ceiling attachment as in some cave or ice-associated benthos.: as named by the judge; no mechanism or reference recorded
   - Fix: 1.53 g (F4) favors low center of mass and adhesive anchoring on solid substrata; ice ceiling/Fissure-wall gripping at the interface is a credible opposite solution to mid-water Velaescura. Fails in open water is consistent.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| none | cousin |  | (council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers. |
 
 ## Journal
 

@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Subglacial ocean near cryovolcanic vents on the inner moon
+- **Habitat:** Subglacial ocean near cryovolcanic vents on the inner moon. Also, in the council's sketch (no such creature in this world yet): Rock-scourer, sifonera drifts over grazer tracks to catch biomass and detritus knocked loose from ice walls
 - **Diet:** Chemosynthetic biomass, dissolved H2/H2S, organic detritus
 - **Active:** Continuous
 - **Predators:** none
@@ -21,16 +21,16 @@ Translucent gelatinous medusa-analogue with six ruffled filter-fronds, ventral c
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sifonera_de_pluma.c1 | Ruffled filter-fronds maximize surface area | Ruffled fronds maximize surface area ← High flux of particulate organics from vent plumes ← Tidal heating drives cryovolcanic eruptions and plumes | **F18** The inner moon receives about 0.3 W/m2 of tidal heating, sustained by a 2:1 eccentricity resonance with the outer moon, keeping a subsurface ocean under an ice shell. | Filter-Cycle (`sifonera_de_pluma.filter_cycle`) | Basic | Cycles fronds to clear clogs and restore efficiency by 40% | Fronds tangle in dense debris flows from icequakes |
+| sifonera_de_pluma.c1 | Ruffled filter-fronds maximize surface area | Ruffled fronds maximize surface area ← High flux of particulate organics from vent plumes ← Tidal heating drives cryovolcanic eruptions and plumes | **F18** The inner moon receives about 0.3 W/m2 of tidal heating, sustained by a 2:1 eccentricity resonance with the outer moon, keeping a subsurface ocean under an ice shell. | Filter-Cycle (`sifonera_de_pluma.filter_cycle`) | Basic | The creature rhythmically shifts its ruffled fronds to clear blockages and strengthen its filtering action. This steady motion keeps its feeding passages open and working at full strength. | Fronds tangle in dense debris flows from icequakes |
 | sifonera_de_pluma.c2 | Ventral chemoreceptor pores detect gradients | Ventral pores detect chemical/electric gradients ← Hydrothermal vents create steep redox and charge gradients ← Tidal heating fuels vent chemistry and plume structure | **F18** The inner moon receives about 0.3 W/m2 of tidal heating, sustained by a 2:1 eccentricity resonance with the outer moon, keeping a subsurface ocean under an ice shell.; **F19** Vent reactions yield 50–120 kJ/mol from H2S/SO4(2-) and H2/CO2 couples, enough to run chemosynthesis in the dark. | Scent-Track (`sifonera_de_pluma.scent_track`) | Engage | Reveal direction and distance to nearest active vent plume | Overwhelmed by strong chemical noise or sudden pH shifts |
 | sifonera_de_pluma.c3 | Dorsal bioluminescent lure deters grazers | Dorsal lure deters benthic grazers or signals safety ← Subglacial ocean is perpetually dark with no ambient light ← Tidal heating sustains the moon's ice shell and darkness | **F18** The inner moon receives about 0.3 W/m2 of tidal heating, sustained by a 2:1 eccentricity resonance with the outer moon, keeping a subsurface ocean under an ice shell.; **F23** Bioluminescence is blue-green (470–520 nm) and used mainly at dusk and night, when ochre haze scatter is weakest and the blue-green window is open. | Lure-Shine (`sifonera_de_pluma.lure_shine`) | Social | Flash blue-green bioluminescence to attract prey or calm nearby allies | Lure reveals position to larger predators and competitors |
-| sifonera_de_pluma.c4 | Gelatinous, gas-veined body relies on buoyancy | Gelatinous body relies on buoyancy over skeletal support ← Low structural load allows soft tissue in water ← Small moon mass yields low surface gravity and weak tidal stress on body | **F16** The planet's total surface heat flow is about 0.09 W/m2, of which tidal dissipation contributes less than 0.001 W/m2; essentially all of it is radiogenic. | Float-Hold (`sifonera_de_pluma.float_hold`) | Control | Lock body density to hover motionless in currents for 20s | Body ruptures under mechanical stress or rapid pressure changes |
+| sifonera_de_pluma.c4 | Gelatinous, gas-veined body relies on buoyancy | Gelatinous body relies on buoyancy over skeletal support ← Low structural load allows soft tissue in water ← Small moon mass yields low surface gravity and weak tidal stress on body | **F16** The planet's total surface heat flow is about 0.09 W/m2, of which tidal dissipation contributes less than 0.001 W/m2; essentially all of it is radiogenic. | Float-Hold (`sifonera_de_pluma.float_hold`) | Control | The creature adjusts its internal density to anchor itself against the flow. It remains perfectly still in the water, defying the current for a short while. | Body ruptures under mechanical stress or rapid pressure changes |
 
 ### sifonera_de_pluma.c1: Ruffled filter-fronds maximize surface area
 
 Trait ← Ruffled fronds maximize surface area ← High flux of particulate organics from vent plumes ← Tidal heating drives cryovolcanic eruptions and plumes ← F18
 
-- **Skill:** Filter-Cycle (Basic): Cycles fronds to clear clogs and restore efficiency by 40%
+- **Skill:** Filter-Cycle (Basic): The creature rhythmically shifts its ruffled fronds to clear blockages and strengthen its filtering action. This steady motion keeps its feeding passages open and working at full strength.
 - **Weakness:** Fronds tangle in dense debris flows from icequakes
 - **Observe:**
   1. Six fronds pulsing rhythmically to draw water inward
@@ -87,7 +87,7 @@ Trait ← Dorsal lure deters benthic grazers or signals safety ← Subglacial oc
 
 Trait ← Gelatinous body relies on buoyancy over skeletal support ← Low structural load allows soft tissue in water ← Small moon mass yields low surface gravity and weak tidal stress on body ← F16
 
-- **Skill:** Float-Hold (Control): Lock body density to hover motionless in currents for 20s
+- **Skill:** Float-Hold (Control): The creature adjusts its internal density to anchor itself against the flow. It remains perfectly still in the water, defying the current for a short while.
 - **Weakness:** Body ruptures under mechanical stress or rapid pressure changes
 - **Observe:**
   1. Translucent gelatinous bell distending with gas vesicles
@@ -100,12 +100,6 @@ Trait ← Gelatinous body relies on buoyancy over skeletal support ← Low struc
   - Analogue: Deep-sea medusae and ctenophores (mesoglea, no gas bladders); cyanobacteria gas vesicles (only viable at low hydrostatic pressure—micro-scale analogue only).: as named by the judge; no mechanism or reference recorded
   - Fix: Root trait in moon low g + hydrostatic support, not F16. Replace gas veins with lipid-rich mesoglea or ammonium-ion jelly for near-neutral buoyancy; add weakness to rapid pressure swings from cryovolcanic paroxysms. Treat gel-stored thermal energy from plumes (secret) as highly speculative—prefer high vent tolerance and slow metabolism unless you model explicit heat-storage polymers like some desert seeds, which has no strong vent-animal analogue.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Rock-scourer | cousin |  | (council kind 'Opportunist') Sifonera drifts over grazer tracks to catch biomass and detritus knocked loose from ice walls |
 
 ## Journal
 

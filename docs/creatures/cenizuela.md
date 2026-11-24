@@ -21,16 +21,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cenizuela.c1 | Six jointed legs with a low, sprawled stance | Trait: six jointed legs with a low, sprawled stance ← Why: stable on shifting debris requires low center of gravity ← Why: forest floor accumulates deep, unstable litter ← Why: 1.6 bar atmosphere traps heat & holds water vapor (F4, F18) | **F4** Dense air: 1.6 bar; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring | Low crawl (`cenizuela.low_crawl`) | Basic | Moves 1.5× faster through root mats and leaf litter without sinking or alerting surface predators. | Exposed on open ground; dense air makes running costly (F4, D16). |
-| cenizuela.c2 | Broad, translucent forewings for silent gliding | Trait: broad, translucent forewings for silent gliding ← Why: minimizes energy expenditure on a caloric-poor diet ← Why: relies on aerodynamic lift rather than power flapping ← Why: air is 1.6 times denser than Earth's (D11, F4) | **F4** Dense air: 1.6 bar | Silent glide (`cenizuela.silent_glide`) | Control | Drifts 30 m downwind on thermal updrafts, landing softly on canopy or forest floor. | Heavy rain or strong gusts knock it from the air (F19, D17). |
+| cenizuela.c1 | Six jointed legs with a low, sprawled stance | Trait: six jointed legs with a low, sprawled stance ← Why: stable on shifting debris requires low center of gravity ← Why: forest floor accumulates deep, unstable litter ← Why: 1.6 bar atmosphere traps heat & holds water vapor (F4, F18) | **F4** Dense air: 1.6 bar; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring | Low crawl (`cenizuela.low_crawl`) | Basic | It scurries swiftly through tangled roots and fallen leaves, staying low enough to avoid sinking while remaining completely hidden from watching predators above. | Exposed on open ground; dense air makes running costly (F4, D16). |
+| cenizuela.c2 | Broad, translucent forewings for silent gliding | Trait: broad, translucent forewings for silent gliding ← Why: minimizes energy expenditure on a caloric-poor diet ← Why: relies on aerodynamic lift rather than power flapping ← Why: air is 1.6 times denser than Earth's (D11, F4) | **F4** Dense air: 1.6 bar | Silent glide (`cenizuela.silent_glide`) | Control | It rides gentle air currents to drift silently across the woods, coming to a quiet rest on broad leaves or the soft earth below. | Heavy rain or strong gusts knock it from the air (F19, D17). |
 | cenizuela.c3 | Chitinous mouthparts coated in alkaloid-neutralizing enzymes | Trait: chitinous mouthparts coated in alkaloid-neutralizing enzymes ← Why: breaks down defensive red-veined compounds & tough cellulose ← Why: high-altitude plants wash downhill with runoff ← Why: strong UV at 2,000 m forces red-purple UV screens (D25, F25, F1) | **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's | Acid digest (`cenizuela.acid_digest`) | Engage | Dissolves tough litter and extracts nutrients, bypassing chewing; bypasses plant alkaloids. | Ineffective on fresh meat or salt licks; gut pH crashes on non-alkaloid foods. |
-| cenizuela.c4 | Antennae packed with chemosensory pores; active only after dusk | Trait: antennae packed with chemosensory pores; active only after dusk ← Why: tracks food by molecular plumes in still air ← Why: scent diffusion slows as air cools & stabilizes ← Why: 26 h day & thick air cause cool nocturnal pooling (D18, F3, F4) | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F4** Dense air: 1.6 bar | Scent track (`cenizuela.scent_track`) | Poke | Locks onto litter plumes within 40 m, ignoring visual decoys and surface noise. | Blinded by bright daylight; antennae clog in wet spray. |
+| cenizuela.c4 | Antennae packed with chemosensory pores; active only after dusk | Trait: antennae packed with chemosensory pores; active only after dusk ← Why: tracks food by molecular plumes in still air ← Why: scent diffusion slows as air cools & stabilizes ← Why: 26 h day & thick air cause cool nocturnal pooling (D18, F3, F4) | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F4** Dense air: 1.6 bar | Scent track (`cenizuela.scent_track`) | Poke | It follows strong earthy trails through the undergrowth, paying no mind to fake scents or ground sounds while tracking its target. | Blinded by bright daylight; antennae clog in wet spray. |
 
 ### cenizuela.c1: Six jointed legs with a low, sprawled stance
 
 Trait ← Trait: six jointed legs with a low, sprawled stance ← Why: stable on shifting debris requires low center of gravity ← Why: forest floor accumulates deep, unstable litter ← Why: 1.6 bar atmosphere traps heat & holds water vapor (F4, F18) ← F4, F18
 
-- **Skill:** Low crawl (Basic): Moves 1.5× faster through root mats and leaf litter without sinking or alerting surface predators.
+- **Skill:** Low crawl (Basic): It scurries swiftly through tangled roots and fallen leaves, staying low enough to avoid sinking while remaining completely hidden from watching predators above.
 - **Weakness:** Exposed on open ground; dense air makes running costly (F4, D16).
 - **Observe:**
   1. watching it step over roots
@@ -48,7 +48,7 @@ Trait ← Trait: six jointed legs with a low, sprawled stance ← Why: stable on
 
 Trait ← Trait: broad, translucent forewings for silent gliding ← Why: minimizes energy expenditure on a caloric-poor diet ← Why: relies on aerodynamic lift rather than power flapping ← Why: air is 1.6 times denser than Earth's (D11, F4) ← F4
 
-- **Skill:** Silent glide (Control): Drifts 30 m downwind on thermal updrafts, landing softly on canopy or forest floor.
+- **Skill:** Silent glide (Control): It rides gentle air currents to drift silently across the woods, coming to a quiet rest on broad leaves or the soft earth below.
 - **Weakness:** Heavy rain or strong gusts knock it from the air (F19, D17).
 - **Observe:**
   1. sudden glide from branch
@@ -84,7 +84,7 @@ Trait ← Trait: chitinous mouthparts coated in alkaloid-neutralizing enzymes �
 
 Trait ← Trait: antennae packed with chemosensory pores; active only after dusk ← Why: tracks food by molecular plumes in still air ← Why: scent diffusion slows as air cools & stabilizes ← Why: 26 h day & thick air cause cool nocturnal pooling (D18, F3, F4) ← F3, F4
 
-- **Skill:** Scent track (Poke): Locks onto litter plumes within 40 m, ignoring visual decoys and surface noise.
+- **Skill:** Scent track (Poke): It follows strong earthy trails through the undergrowth, paying no mind to fake scents or ground sounds while tracking its target.
 - **Weakness:** Blinded by bright daylight; antennae clog in wet spray.
 - **Observe:**
   1. antennae twitching

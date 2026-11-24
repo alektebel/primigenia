@@ -45,7 +45,7 @@
           "en": "Photon Siphon"
         },
         "role": "Basic",
-        "effect": "Converts ~0.5% of incident line-resonant flux to charge/mass per second; scaling bonus in high-opacity spectral lines. Charge-to-mass ratio directly affects mobility and health regeneration.",
+        "effect": "The creature absorbs ambient energy from its surroundings, converting it into internal charge that strongly enhances its movement and steadily restores its vitality. It grows more agile and resilient when navigating dense energy fields.",
         "numbers": {}
       },
       "weakness": "Spectral blindness: Cannot harvest in continuum-rich zones or if shielded by dense plasma clouds; charge decay causes slow drift.",
@@ -115,7 +115,7 @@
           "en": "Flux Hull"
         },
         "role": "Passive",
-        "effect": "Anchored to closed flux tubes; reduces granulation shear damage by 60% and grants +15% drift resistance. Moves at base speed along tube walls.",
+        "effect": "The creature clings tightly to magnetic pathways, resisting turbulent forces that would otherwise tear it apart. It glides smoothly along these channels, maintaining steady progress without being swept away.",
         "numbers": {}
       },
       "weakness": "Demagnetization: Reconnection events or field reversals shatter the shield, dropping the organism to the lethal granulation floor (thermal hazard zone); vulnerable during field flicker telegraphs.",
@@ -181,7 +181,7 @@
           "en": "Spicule Surf"
         },
         "role": "Control",
-        "effect": "Hitch spicule for 3–5 seconds at 20–30 km/s vertical boost; aim to target height. Costs 15% charge. Requires precise phase alignment with granule pumping.",
+        "effect": "The creature launches itself upward on a towering jet of plasma, aiming to reach a chosen height. It times this ascent carefully to match the rhythmic pulsing of the surface below.",
         "numbers": {}
       },
       "weakness": "Resonance mismatch: Misalignment causes shear damage; timing window is short (2 minutes); visible sac fraying warns of mismatch.",
@@ -248,7 +248,7 @@
           "en": "Flux Glide"
         },
         "role": "Engage",
-        "effect": "Surfs a closed flux tube to intercept prey or allies within tube-length range (~500m). Locks movement to field lines for 3 turns.",
+        "effect": "The creature rides a magnetic tube to swiftly intercept nearby allies or targets. It remains locked to the field line, following its curve for a short while.",
         "numbers": {}
       },
       "weakness": "Magnetic reconnection severs the tube, causing disorientation and minor damage; range limited by tube length, not arbitrary distance.",
@@ -318,7 +318,7 @@
           "en": "Flare Skip"
         },
         "role": "Signature",
-        "effect": "Ride reconnection surge to instantly jump to high corona or escape trajectory. Fixed 90s cooldown tied to visible flare-cycle UI. No offensive damage; purely evasive/transit.",
+        "effect": "The creature catches a sudden surge of energy to instantly leap to a higher position or escape danger. It uses this burst solely for rapid transit, avoiding direct confrontation.",
         "numbers": {}
       },
       "weakness": "Charge drain: Stripping currents prevents jump; vulnerable to induced currents during quiet phases; cooldown resets only after flare cadence.",

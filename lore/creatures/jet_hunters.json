@@ -41,7 +41,7 @@
           "en": "Ram Strike"
         },
         "role": "Engage",
-        "effect": "Deals 22 damage in a 50 m radius with a 0.5 s wind-up",
+        "effect": "The creature winds up briefly before launching a powerful ram that strikes nearby targets with great force.",
         "numbers": {}
       },
       "weakness": "Leaves a brief jet-wake vortex that alerts prey and breaks stealth",
@@ -109,7 +109,7 @@
           "en": "Ballistic Drop"
         },
         "role": "Poke",
-        "effect": "Instantly drop 500 m, delivering a wake shock that stuns targets for 2 s. Builds a pressure meter; full meter requires 10 s of ascent to reset.",
+        "effect": "The creature plummets from high above, creating a powerful shockwave that stuns nearby targets. Afterward, it must slowly rise back up to recharge its pressure system before diving again.",
         "numbers": {}
       },
       "weakness": "Rapid venting in thin upper air causes decompression bubbles, slowing movement by 40% for 5 s.",
@@ -164,7 +164,7 @@
           "en": "Depth Sense"
         },
         "role": "Basic",
-        "effect": "Reveals stealthed floaters within 80 m and grants 10% accuracy",
+        "effect": "The creature listens closely to the water, revealing hidden enemies nearby and striking its targets with greater precision.",
         "numbers": {}
       },
       "weakness": "Blind to high-frequency alarm whistles used by some prey",
@@ -221,7 +221,7 @@
           "en": "Thermal Track"
         },
         "role": "Basic",
-        "effect": "Detect heat signatures through ammonia haze, increasing first-strike accuracy by 30%",
+        "effect": "The creature pierces through thick haze to spot heat signatures, ensuring its initial strikes land with remarkable accuracy.",
         "numbers": {}
       },
       "weakness": "Flash-blind when struck by direct lightning discharge in water clouds",
@@ -281,7 +281,7 @@
           "en": "Shear Glide"
         },
         "role": "Defence",
-        "effect": "Ride a jet stream at 90 m/s, reducing incoming damage by 25% and repositioning 30 m forward. Requires active jet bursts to maintain dynamic pressure.",
+        "effect": "The creature surfs a fast current to glide forward swiftly while deflecting incoming attacks. It must keep its jets active to maintain its momentum.",
         "numbers": {}
       },
       "weakness": "Stalls completely in localized turbulence dead zones, leaving it drifting and defenseless for 3 s.",

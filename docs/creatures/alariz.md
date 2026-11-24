@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| alariz.c1 | Broad, high-aspect-ratio wings | Dense 1.6 bar air increases lift per wing area ← Sun-warmed volcanic rock generates daily thermal updrafts ← Sparse highland carrion requires wide foraging ranges | **F4** Dense air: 1.6 bar; **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base | Thermal Soar (`alariz.thermal_soar`) | Control | Gain 20m altitude by following wind columns, costs no stamina | Ground-bound in thick fog or windless dawn when thermals fail |
-| alariz.c2 | Large eyes with UV-absorbing screens | High-altitude UV radiation reaches 1.4× sea level values ← Diurnal hunting demands high contrast vision ← Eyes evolved large corneas and tapetum for ground detection | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | Carion Sight (`alariz.carion_sight`) | Poke | Reveal hidden carcasses within 250m and mark bone deposits | Blinded by sudden glare or dense morning fog |
-| alariz.c3 | Pneumatized, hollow bone structure | Surface gravity is 1.05× Earth standard ← Dense atmosphere lowers terminal velocity and reduces fall impact ← Bones fused, hollowed, and air-sac connected to lungs | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Light Frame (`alariz.light_frame`) | Defence | Take 30% less fall damage and move silently in air | Vulnerable to direct blunt strikes and heavy impact |
-| alariz.c4 | Muscular gizzard with basalt grit | Highland diet consists of tough hides and dry bones ← 1.6× oxygen supports rapid aerobic digestion ← Ingests volcanic grit from mineral seeps to macerate food | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Grit Mill (`alariz.grit_mill`) | Basic | Chew bone and tough flesh, recover 15 stamina per meal | Requires regular access to volcanic grit or suffers indigestion |
+| alariz.c1 | Broad, high-aspect-ratio wings | Dense 1.6 bar air increases lift per wing area ← Sun-warmed volcanic rock generates daily thermal updrafts ← Sparse highland carrion requires wide foraging ranges | **F4** Dense air: 1.6 bar; **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base | Thermal Soar (`alariz.thermal_soar`) | Control | The creature rides rising air currents to climb steadily without tiring. You can watch it soar effortlessly upward on invisible thermal columns. | Ground-bound in thick fog or windless dawn when thermals fail |
+| alariz.c2 | Large eyes with UV-absorbing screens | High-altitude UV radiation reaches 1.4× sea level values ← Diurnal hunting demands high contrast vision ← Eyes evolved large corneas and tapetum for ground detection | **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | Carion Sight (`alariz.carion_sight`) | Poke | The creature scans the horizon with its specialized eyes to locate hidden remains. You can see it identify distant carcasses and mark bone deposits that were previously concealed. | Blinded by sudden glare or dense morning fog |
+| alariz.c3 | Pneumatized, hollow bone structure | Surface gravity is 1.05× Earth standard ← Dense atmosphere lowers terminal velocity and reduces fall impact ← Bones fused, hollowed, and air-sac connected to lungs | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Light Frame (`alariz.light_frame`) | Defence | The creature's hollow bones cushion its landings, allowing it to touch down without injury. You can watch it drift through the air with complete silence. | Vulnerable to direct blunt strikes and heavy impact |
+| alariz.c4 | Muscular gizzard with basalt grit | Highland diet consists of tough hides and dry bones ← 1.6× oxygen supports rapid aerobic digestion ← Ingests volcanic grit from mineral seeps to macerate food | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Grit Mill (`alariz.grit_mill`) | Basic | It grinds bones and tough flesh with its gritty gizzard, steadily restoring its own energy with each meal. | Requires regular access to volcanic grit or suffers indigestion |
 
 ### alariz.c1: Broad, high-aspect-ratio wings
 
 Trait ← Dense 1.6 bar air increases lift per wing area ← Sun-warmed volcanic rock generates daily thermal updrafts ← Sparse highland carrion requires wide foraging ranges ← F4, F7
 
-- **Skill:** Thermal Soar (Control): Gain 20m altitude by following wind columns, costs no stamina
+- **Skill:** Thermal Soar (Control): The creature rides rising air currents to climb steadily without tiring. You can watch it soar effortlessly upward on invisible thermal columns.
 - **Weakness:** Ground-bound in thick fog or windless dawn when thermals fail
 - **Observe:**
   1. Wind ripples shimmering over dark basalt ridges
@@ -50,7 +50,7 @@ Trait ← Dense 1.6 bar air increases lift per wing area ← Sun-warmed volcanic
 
 Trait ← High-altitude UV radiation reaches 1.4× sea level values ← Diurnal hunting demands high contrast vision ← Eyes evolved large corneas and tapetum for ground detection ← F14, F1, F11
 
-- **Skill:** Carion Sight (Poke): Reveal hidden carcasses within 250m and mark bone deposits
+- **Skill:** Carion Sight (Poke): The creature scans the horizon with its specialized eyes to locate hidden remains. You can see it identify distant carcasses and mark bone deposits that were previously concealed.
 - **Weakness:** Blinded by sudden glare or dense morning fog
 - **Observe:**
   1. Nictitating membrane sweeping across a glossy pupil
@@ -68,7 +68,7 @@ Trait ← High-altitude UV radiation reaches 1.4× sea level values ← Diurnal 
 
 Trait ← Surface gravity is 1.05× Earth standard ← Dense atmosphere lowers terminal velocity and reduces fall impact ← Bones fused, hollowed, and air-sac connected to lungs ← F2
 
-- **Skill:** Light Frame (Defence): Take 30% less fall damage and move silently in air
+- **Skill:** Light Frame (Defence): The creature's hollow bones cushion its landings, allowing it to touch down without injury. You can watch it drift through the air with complete silence.
 - **Weakness:** Vulnerable to direct blunt strikes and heavy impact
 - **Observe:**
   1. Feathering gaps that hum softly in wind
@@ -86,7 +86,7 @@ Trait ← Surface gravity is 1.05× Earth standard ← Dense atmosphere lowers t
 
 Trait ← Highland diet consists of tough hides and dry bones ← 1.6× oxygen supports rapid aerobic digestion ← Ingests volcanic grit from mineral seeps to macerate food ← F27
 
-- **Skill:** Grit Mill (Basic): Chew bone and tough flesh, recover 15 stamina per meal
+- **Skill:** Grit Mill (Basic): It grinds bones and tough flesh with its gritty gizzard, steadily restoring its own energy with each meal.
 - **Weakness:** Requires regular access to volcanic grit or suffers indigestion
 - **Observe:**
   1. Pecking at basalt outcrops and licking salt seeps

@@ -35,7 +35,7 @@
           "en": "Aero-Thrust"
         },
         "role": "Engage",
-        "effect": "leap 30m upward, gain height advantage, -20% defense next turn",
+        "effect": "The creature launches itself high into the sky, gaining a commanding view of the battlefield. While soaring above, its exposed form leaves it strongly vulnerable to nearby strikes.",
         "numbers": {}
       },
       "weakness": "Cardiac strain from prolonged flight; ends turn with exhaustion",
@@ -94,7 +94,7 @@
           "en": "Aerodynamic Frame"
         },
         "role": "Defence",
-        "effect": "Reduce incoming kinetic damage by 20% when airborne",
+        "effect": "Its hollow, air-filled bones allow it to glide effortlessly through the sky. When struck while airborne, the creature's lightweight frame absorbs the impact with remarkable resilience.",
         "numbers": {}
       },
       "weakness": "Bones fracture easily if caught in high-wind shear zones",

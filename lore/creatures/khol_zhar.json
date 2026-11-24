@@ -9,10 +9,12 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Anticyclone fog-canyons, persistent low-altitude aerosol bands",
+    "habitat": "Anticyclone fog-canyons, persistent low-altitude aerosol bands. Also, in the council's sketch (no such creature in this world yet): Fog-Weaver, fog-Weaver eats dead zooids that fall out; Zharra provides nutrients to Weaver's web.",
     "diet": "Suspended organic aerosols, dissolved CO₂, NIR photons",
     "active": "Continuous",
-    "predators": []
+    "predators": [
+      "Gale-Strider"
+    ]
   },
   "body": "A spherical colony of ~4,000 bilateral zooids spaced 15 cm apart in a rigid lattice, bound by a standing sound wave. Each zooid is a fist-sized gelatinous sac with copper-rich hemolymph, NIR-absorbing chromatophores, and a vocal sac. No central brain; intelligence is distributed in the phase-locking of the hum.",
   "chains": [
@@ -33,7 +35,7 @@
           "en": "Phase Disrupt"
         },
         "role": "Poke",
-        "effect": "Emits counter-wave. Scatters colony for 6 seconds.",
+        "effect": "The creature emits a sharp counter-wave that breaks its rigid formation and scatters the floating zooids across the area for a short while.",
         "numbers": {}
       },
       "weakness": "Vulnerable to frequency jamming; scattered zooids cannot fly or filter food and lose cohesion immediately.",
@@ -93,7 +95,7 @@
           "en": "Resonant Harvest"
         },
         "role": "Basic",
-        "effect": "Mimic the hum. Attract food particles to player or creature for 4s. +20% filter efficiency.",
+        "effect": "The creature mimics a steady hum that strongly draws nearby food particles toward itself or the player, temporarily improving its filtration.",
         "numbers": {}
       },
       "weakness": "Attracts predators that hunt by sound.",
@@ -153,7 +155,7 @@
           "en": "Harmonic Resonance"
         },
         "role": "Social",
-        "effect": "Match pitch perfectly. Merge one zooid as a passive helper. Duration: 30s.",
+        "effect": "The creature perfectly matches a low-frequency hum to merge with a nearby zooid, creating a passive helper that stays by its side for a short while.",
         "numbers": {}
       },
       "weakness": "Requires precise pitch matching; failure causes rejection and stress.",
@@ -208,7 +210,7 @@
           "en": "Copper Lash"
         },
         "role": "Engage",
-        "effect": "Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12.",
+        "effect": "The creature hurls a splash of blue fluid that coats nearby mechanical targets, causing them to lock up or slowly decay into rust.",
         "numbers": {}
       },
       "weakness": "Copper blood is less efficient in low-O2 pockets.",
@@ -251,18 +253,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Gale-Strider",
-      "kind": "cousin",
-      "note": "(council kind 'Predator') Gale-Strider hunts by detecting the Khol-zhar hum; the Zharra evolves erratic phase-shifts to confuse it."
-    },
-    {
-      "with": "Fog-Weaver",
-      "kind": "cousin",
-      "note": "(council kind 'Mutualist') Fog-Weaver eats dead zooids that fall out; Zharra provides nutrients to Weaver's web."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

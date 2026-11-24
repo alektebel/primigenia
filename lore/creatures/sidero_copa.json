@@ -1,0 +1,288 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sidero_copa",
+  "name": {
+    "en": "Sidero-copa"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Acid basins, thorium hotspots, volcanic vents.",
+    "diet": "Autotroph; red-shifted photoautotrophy.",
+    "active": "Diurnal; blooms under low-contrast orange light.",
+    "predators": []
+  },
+  "body": "Plant-like, vascular stems, radial leaves, vacuolar metal crystals, metallothionein proteins, red-shifted pigments.",
+  "chains": [
+    {
+      "id": "sidero_copa.c1",
+      "trait": "Vacuoles store copper/zinc as crystals.",
+      "links": [
+        "Crystals sequester free ions",
+        "Prevents protein denaturation",
+        "High free Cu/Zn toxicity"
+      ],
+      "roots": [
+        "F24"
+      ],
+      "skill": {
+        "id": "sidero_copa.metal_shield",
+        "name": {
+          "en": "Metal Shield"
+        },
+        "role": "Passive",
+        "effect": "The creature's crystalline shell strongly deflects heavy metal attacks, leaving it completely unaffected by metal toxins.",
+        "numbers": {}
+      },
+      "weakness": "Growth tax: Slow growth rate due to metal sequestration cost.",
+      "observe": [
+        "Leaves contain glittering crystals",
+        "Thrives in toxic soil",
+        "Slow leaf growth compared to others"
+      ],
+      "journal": {
+        "en": "It drinks poison and turns it into jewels."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Say metal-organic complexes and crystalline deposits in vacuoles, keep the growth cost, and use highly tolerant rather than immune.",
+        "fixes": [
+          "Say metal-organic complexes and crystalline deposits in vacuoles, keep the growth cost, and use highly tolerant rather than immune."
+        ],
+        "analogues": [
+          {
+            "organism": "Noccaea or Thlaspi caerulescens for Zn/Cd and Alyssum for Ni; metallothionein and phytochelatin chelation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_copa.c2",
+      "trait": "Leaves hoard nickel above 1000 µg/g.",
+      "links": [
+        "Hoarding exceeds herbivore tolerance",
+        "Deters grazing and chewing",
+        "Metal-rich soil and herbivore pressure"
+      ],
+      "roots": [
+        "F28"
+      ],
+      "skill": {
+        "id": "sidero_copa.toxic_bloom",
+        "name": {
+          "en": "Toxic Bloom"
+        },
+        "role": "Defence",
+        "effect": "When struck, the creature releases a sharp metallic backlash that harms nearby attackers and coats them in lingering metal toxins.",
+        "numbers": {}
+      },
+      "weakness": "Nutrient lock: Cannot release metals easily; poor fertilizer for others.",
+      "observe": [
+        "Leaves heavy with nickel",
+        "Herbivores avoid the plant",
+        "Soil around roots enriched with metals"
+      ],
+      "journal": {
+        "en": "A garden of needles; nothing eats the sidero-copa but the patient."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Flip the observation: available metal is depleted near roots and returned in metal-rich litter. Keep the grazing deterrent.",
+        "fixes": [
+          "Flip the observation: available metal is depleted near roots and returned in metal-rich litter. Keep the grazing deterrent."
+        ],
+        "analogues": [
+          {
+            "organism": "Hyperaccumulator plants such as Alyssum and Noccaea; elemental defence against herbivores in hyperaccumulators.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_copa.c3",
+      "trait": "Metallothioneins bind free metals.",
+      "links": [
+        "Proteins chelate toxic ions",
+        "Survives in high metal environments",
+        "Metal toxicity in soil and water"
+      ],
+      "roots": [
+        "F24"
+      ],
+      "skill": {
+        "id": "sidero_copa.chelation",
+        "name": {
+          "en": "Chelation"
+        },
+        "role": "Social",
+        "effect": "Can befrend metal-sensitive creatures; grants antidote effect to allies.",
+        "numbers": {}
+      },
+      "weakness": "Metabolic cost: High energy required for chelation; weak in low nutrient areas.",
+      "observe": [
+        "Stems pulse with chelation activity",
+        "Attracts metal-sensitive symbionts",
+        "Sweats metal-rich dew"
+      ],
+      "journal": {
+        "en": "It binds the poison in its heart and shares the cure."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Frame the Social move as sap that binds dietary metals so animals feeding near it take up less, make the dew a metal-poor chelating solution, and keep the metabolic-cost weakness.",
+        "fixes": [
+          "Frame the Social move as sap that binds dietary metals so animals feeding near it take up less, make the dew a metal-poor chelating solution, and keep the metabolic-cost weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Plant metallothioneins and phytochelatins; mammalian metallothionein binding Cd/Zn; root exudate chelation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_copa.c4",
+      "trait": "Pigments absorb red/orange light.",
+      "links": [
+        "Red-shifted absorption matches star",
+        "Efficient photosynthesis under K-star",
+        "K-dwarf spectrum and starlight"
+      ],
+      "roots": [
+        "F1"
+      ],
+      "skill": {
+        "id": "sidero_copa.red_shift",
+        "name": {
+          "en": "Red Shift"
+        },
+        "role": "Basic",
+        "effect": "The organism thrives in dim environments, drawing nourishment strongly from any orange or red light that washes over it.",
+        "numbers": {}
+      },
+      "weakness": "Blue blind: Inefficient under blue light; reduced growth in high blue environments.",
+      "observe": [
+        "Leaves are deep red/black",
+        "Thrives under orange sky",
+        "Droops in bright blue light"
+      ],
+      "journal": {
+        "en": "It drinks the orange sun and spits out iron."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "No change needed; optionally root the trait in F22 as well as F1 and keep the atmospheric speculation flagged.",
+        "fixes": [
+          "No change needed; optionally root the trait in F22 as well as F1 and keep the atmospheric speculation flagged."
+        ],
+        "analogues": [
+          {
+            "organism": "Red algae with phycobilins; cyanobacteria using chlorophyll d or f for far-red light; purple bacteria using bacteriochlorophylls.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "siderogon",
+      "kind": "cousin",
+      "note": "(council kind 'mutualist') Siderogons may graze non-toxic roots or use sidero-copa for shelter."
+    },
+    {
+      "with": "sidero_chisp",
+      "kind": "cousin",
+      "note": "(council kind 'exploit') Sidero-chisp may use sidero-copa shade to ambush, but avoids toxic dew."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "origin": "Metal-accumulating vascular lineage."
+  },
+  "temperament": "Passive, toxic, resilient.",
+  "secrets": [
+    "Harvest chelation proteins: Sidero-copa sap can be used to craft antidotes.",
+    "Thorium hotspot: Plants near thorium hotspots have radiation-hardened seeds.",
+    "Nectar is toxic but potent: Can be used as a trap or weapon."
+  ],
+  "moments": [
+    "In the acid pools, sidero-copas sway like glass chimes, their leaves heavy with nickel and copper, singing a silent song of survival against the poison soil."
+  ]
+}

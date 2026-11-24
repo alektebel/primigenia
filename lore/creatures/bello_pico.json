@@ -42,7 +42,7 @@
           "en": "Hover"
         },
         "role": "Engage",
-        "effect": "Hold position over a target; +5 Charm.",
+        "effect": "The bird hovers steadily above a nearby target, making it easy to approach and interact. It remains suspended in the air for a short while, allowing anyone close by to calmly engage with it.",
         "numbers": {}
       },
       "weakness": "Cannot fly against wind gusts (D19).",
@@ -103,7 +103,7 @@
           "en": "Cling"
         },
         "role": "Defence",
-        "effect": "Lock onto host; immune to knockdown; +5 Befriend.",
+        "effect": "The bird clamps its locking claws onto a nearby host, making it impossible to dislodge. It stays firmly attached, strongly encouraging trust and affection.",
         "numbers": {}
       },
       "weakness": "Stranded if host dies.",
@@ -166,7 +166,7 @@
           "en": "Probe"
         },
         "role": "Poke",
-        "effect": "Remove parasites; heals host 5 HP, yields 2 DNA.",
+        "effect": "The bird carefully probes the host with its curved bill, picking away parasites to strongly restore the creature's health. It consumes the pests to nourish itself and thrive.",
         "numbers": {}
       },
       "weakness": "Bill breaks on bone if host moves too fast.",
@@ -230,7 +230,7 @@
           "en": "Shine"
         },
         "role": "Social",
-        "effect": "Flash wings at host; +10 Befriend, reveals parasites.",
+        "effect": "The bird flashes its iridescent wings and bright red throat toward a nearby host, strongly building trust. The sudden display also exposes any hidden parasites clinging to the target.",
         "numbers": {}
       },
       "weakness": "Iridescence attracts predators.",

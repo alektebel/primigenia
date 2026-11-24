@@ -37,7 +37,7 @@
           "en": "Substrate Sense"
         },
         "role": "Basic",
-        "effect": "Detects safe tunneling paths through dense soil and avoids Qu nanite hotspots (50m cone).",
+        "effect": "The creature navigates through thick soil by sensing safe tunneling routes and actively steers clear of dangerous nanite zones nearby.",
         "numbers": {}
       },
       "weakness": "Disoriented by sudden bright light or sharp high-frequency vibrations.",
@@ -97,7 +97,7 @@
           "en": "Subterranean Echo Tracking"
         },
         "role": "Control",
-        "effect": "Detects worm burrows via ground-coupled infrasound in dense air, silencing targets for 2 turns.",
+        "effect": "It listens to vibrations in the ground to locate hidden burrows and muffles the sounds of nearby targets for a short while.",
         "numbers": {}
       },
       "weakness": "Blind to surface light, panics when exposed to direct stellar radiation.",

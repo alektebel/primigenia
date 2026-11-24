@@ -43,7 +43,7 @@
           "en": "Symbiotic Weave"
         },
         "role": "Engage",
-        "effect": "Splices subject genomes to purify toxins or heal allies, drawing on stored reserves to restore 8 health points and grant temporary resistance to environmental hazards.",
+        "effect": "The creature spins living threads to draw out toxins from nearby allies and mend their injuries. It draws upon its own reserves to strongly protect them from environmental hazards for a short while.",
         "numbers": {}
       },
       "weakness": "High metabolic cost during rapid niche-switching leaves them vulnerable to starvation, imposing disadvantage on strength checks until they consume nutrients.",
@@ -95,7 +95,7 @@
           "en": "Biomass Reshape"
         },
         "role": "Engage",
-        "effect": "Converts 1.2kg of local biomass into a support structure or gas-filtering sponge, restoring 5 HP to adjacent allies",
+        "effect": "The creature draws in surrounding biomass to form a sturdy support structure or porous gas-filtering sponge. Nearby allies have their vitality restored as the transformed tissue releases soothing vapors.",
         "numbers": {}
       },
       "weakness": "Rapid phenotypic shifting drains glucose reserves, causing temporary metabolic collapse if not fed",

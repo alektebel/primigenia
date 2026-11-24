@@ -22,16 +22,16 @@ Belly-low prowler with silent, padded feet that dampen sound in the dense atmosp
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| merodeador.c1 | Belly-low prowling profile | It keeps its belly at grass height, where eyes lose it ← Dawn fog blinds prey most mornings, so hiding low always works ← Gales shove with 1.6x Earth's force, so only low builds stayed to hunt | **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Low stalk (`merodeador.low_stalk`) | Basic | -50% detection beyond 8 m while prone; speed 3 m/s. | Flattened grass marks its bed; beat the bush and it bolts. |
-| merodeador.c2 | Silent padded feet | Dense air carries every footfall to prey's ears ← Soft pads and placed steps kill the thump ← Silence costs speed, so it walks and saves the burst | **F4** Dense air: 1.6 bar | Mute step (`merodeador.mute_step`) | Passive | No footstep sound at a walk; running is audible at 30 m. | Listen for the burst; it cannot chase quietly. |
-| merodeador.c3 | Leeward ambush pounce | Westerlies drag scent east across the meadows ← It beds on the lee side, its smell blowing away from prey ← Thick air punishes a missed pounce, so it strikes once, from close | **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F4** Dense air: 1.6 bar | Lee pounce (`merodeador.lee_pounce`) | Engage | +50% damage if unseen; 15 m range; 8 s cooldown. | Circle upwind: it scents you at 30 m and aborts. |
-| merodeador.c4 | Freezes in lulls, moves with gusts | Gale wind roars and grass whips, drowning eyes and ears ← A low, heavy build leans into wind that staggers taller hunters ← It moves with the gusts and locks still in the lulls | **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Prowl (`merodeador.prowl`) | Defence | In gales above 12 m/s, detection of it drops 60% and gusts cannot knock it back. | Calm air strips the mask: track it at clear midday, when eyes win. |
+| merodeador.c1 | Belly-low prowling profile | It keeps its belly at grass height, where eyes lose it ← Dawn fog blinds prey most mornings, so hiding low always works ← Gales shove with 1.6x Earth's force, so only low builds stayed to hunt | **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Low stalk (`merodeador.low_stalk`) | Basic | When lying flat, the creature blends into the terrain and moves with deliberate slowness, making it nearly impossible to spot from a distance. | Flattened grass marks its bed; beat the bush and it bolts. |
+| merodeador.c2 | Silent padded feet | Dense air carries every footfall to prey's ears ← Soft pads and placed steps kill the thump ← Silence costs speed, so it walks and saves the burst | **F4** Dense air: 1.6 bar | Mute step (`merodeador.mute_step`) | Passive | It moves completely silently when walking, but its heavy footsteps echo loudly whenever it breaks into a run. | Listen for the burst; it cannot chase quietly. |
+| merodeador.c3 | Leeward ambush pounce | Westerlies drag scent east across the meadows ← It beds on the lee side, its smell blowing away from prey ← Thick air punishes a missed pounce, so it strikes once, from close | **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F4** Dense air: 1.6 bar | Lee pounce (`merodeador.lee_pounce`) | Engage | When it ambushes from the shadows, the creature launches a powerful strike that catches its target completely off guard, though it must rest briefly before attempting another. | Circle upwind: it scents you at 30 m and aborts. |
+| merodeador.c4 | Freezes in lulls, moves with gusts | Gale wind roars and grass whips, drowning eyes and ears ← A low, heavy build leans into wind that staggers taller hunters ← It moves with the gusts and locks still in the lulls | **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Prowl (`merodeador.prowl`) | Defence | During fierce windstorms, the creature crouches low and becomes nearly invisible, firmly planting its feet so the howling gusts cannot budge it. | Calm air strips the mask: track it at clear midday, when eyes win. |
 
 ### merodeador.c1: Belly-low prowling profile
 
 Trait ← It keeps its belly at grass height, where eyes lose it ← Dawn fog blinds prey most mornings, so hiding low always works ← Gales shove with 1.6x Earth's force, so only low builds stayed to hunt ← F8, F19
 
-- **Skill:** Low stalk (Basic): -50% detection beyond 8 m while prone; speed 3 m/s.
+- **Skill:** Low stalk (Basic): When lying flat, the creature blends into the terrain and moves with deliberate slowness, making it nearly impossible to spot from a distance.
 - **Weakness:** Flattened grass marks its bed; beat the bush and it bolts.
 - **Observe:**
   1. belly drag marks
@@ -49,7 +49,7 @@ Trait ← It keeps its belly at grass height, where eyes lose it ← Dawn fog bl
 
 Trait ← Dense air carries every footfall to prey's ears ← Soft pads and placed steps kill the thump ← Silence costs speed, so it walks and saves the burst ← F4
 
-- **Skill:** Mute step (Passive): No footstep sound at a walk; running is audible at 30 m.
+- **Skill:** Mute step (Passive): It moves completely silently when walking, but its heavy footsteps echo loudly whenever it breaks into a run.
 - **Weakness:** Listen for the burst; it cannot chase quietly.
 - **Observe:**
   1. no sound on gravel
@@ -65,7 +65,7 @@ Trait ← Dense air carries every footfall to prey's ears ← Soft pads and plac
 
 Trait ← Westerlies drag scent east across the meadows ← It beds on the lee side, its smell blowing away from prey ← Thick air punishes a missed pounce, so it strikes once, from close ← F18, F16, F4
 
-- **Skill:** Lee pounce (Engage): +50% damage if unseen; 15 m range; 8 s cooldown.
+- **Skill:** Lee pounce (Engage): When it ambushes from the shadows, the creature launches a powerful strike that catches its target completely off guard, though it must rest briefly before attempting another.
 - **Weakness:** Circle upwind: it scents you at 30 m and aborts.
 - **Observe:**
   1. crouch on the downwind side
@@ -81,7 +81,7 @@ Trait ← Westerlies drag scent east across the meadows ← It beds on the lee s
 
 Trait ← Gale wind roars and grass whips, drowning eyes and ears ← A low, heavy build leans into wind that staggers taller hunters ← It moves with the gusts and locks still in the lulls ← F19
 
-- **Skill:** Prowl (Defence): In gales above 12 m/s, detection of it drops 60% and gusts cannot knock it back.
+- **Skill:** Prowl (Defence): During fierce windstorms, the creature crouches low and becomes nearly invisible, firmly planting its feet so the howling gusts cannot budge it.
 - **Weakness:** Calm air strips the mask: track it at clear midday, when eyes win.
 - **Observe:**
   1. moves only as gusts shake the grass

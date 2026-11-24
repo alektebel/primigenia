@@ -6,10 +6,10 @@
 
 ## Niche
 
-- **Habitat:** Volcanic scree slopes, fog belts, shallow shelf edges
+- **Habitat:** Volcanic scree slopes, fog belts, shallow shelf edges. Also, in the council's sketch (no such creature in this world yet): Vent-vents, both scavenge volcanic shelves; Carapaz dominates scree, Vents dominate vents.
 - **Diet:** Opportunistic omnivore; crushes calcified fungi, catches falling fruit, scavenges carrion
 - **Active:** Crepuscular
-- **Predators:** none
+- **Predators:** Kite-rays
 
 ## Body
 
@@ -21,16 +21,16 @@ Bivalve-convergent lineage. Fused, flattened carapace of chitin-mineral composit
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| carapaz.c1 | Flattened, reinforced carapace | Flattened profile minimizes drag in dense air and lowers center of mass under high gravity ← High density increases drag force; high gravity increases toppling torque ← F8: 10 bar atmosphere, ~12.5 kg/m³ density ← F4: 1.85g surface gravity | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F4** Surface gravity of 1.85 g. | Anchor Plate (`carapaz.anchor_plate`) | Defence | Locks claws into substrate, reducing incoming damage by 30% and preventing displacement. | Slow to right itself if overturned. |
-| carapaz.c2 | Lateral leg joints and sideways gait | Sideways gait maximizes stability on steep volcanic scree and allows air-rudder thrust ← Lateral movement avoids leg crossing on shifting scree; dense air provides lateral lift/drag ← F18: Steep volcanic slopes, loose scree ← F8: 10 bar density | **F18** Max relief ~3 km with hotspot-driven effusive volcanism.; **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Scuttle Dash (`carapaz.scuttle_dash`) | Basic | Move 3 meters sideways instantly, ignoring terrain penalties. Dodges frontal attacks. | Cannot retreat quickly in forward direction. |
-| carapaz.c3 | Massive asymmetrical crushing claws | Heavy claws function as ballast, anchors, and instant traps for gravity-accelerated prey ← High drag air demands grip; high gravity increases prey fall velocity ← F8: 10 bar atmosphere ← F4: 1.85g surface gravity | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F4** Surface gravity of 1.85 g. | Crush Grip (`carapaz.crush_grip`) | Engage | Pins target, dealing 12 damage and reducing target movement by 40% for 2 turns. | Claws are heavy; slow recovery time. |
+| carapaz.c1 | Flattened, reinforced carapace | Flattened profile minimizes drag in dense air and lowers center of mass under high gravity ← High density increases drag force; high gravity increases toppling torque ← F8: 10 bar atmosphere, ~12.5 kg/m³ density ← F4: 1.85g surface gravity | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F4** Surface gravity of 1.85 g. | Anchor Plate (`carapaz.anchor_plate`) | Defence | The creature digs its claws deep into the ground and braces strongly, becoming heavily anchored and much harder to push or knock back. It stands firm against attacks, absorbing blows with its reinforced shell. | Slow to right itself if overturned. |
+| carapaz.c2 | Lateral leg joints and sideways gait | Sideways gait maximizes stability on steep volcanic scree and allows air-rudder thrust ← Lateral movement avoids leg crossing on shifting scree; dense air provides lateral lift/drag ← F18: Steep volcanic slopes, loose scree ← F8: 10 bar density | **F18** Max relief ~3 km with hotspot-driven effusive volcanism.; **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Scuttle Dash (`carapaz.scuttle_dash`) | Basic | The creature swiftly scuttles sideways in a quick burst, slipping past obstacles and avoiding attacks aimed directly at it. It darts laterally with a sudden, jerky motion that leaves attackers striking empty air. | Cannot retreat quickly in forward direction. |
+| carapaz.c3 | Massive asymmetrical crushing claws | Heavy claws function as ballast, anchors, and instant traps for gravity-accelerated prey ← High drag air demands grip; high gravity increases prey fall velocity ← F8: 10 bar atmosphere ← F4: 1.85g surface gravity | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F4** Surface gravity of 1.85 g. | Crush Grip (`carapaz.crush_grip`) | Engage | The creature clamps its massive claws onto a target, pinning it firmly and restricting its movement for a short while. The trapped foe struggles against the heavy grip as the creature holds it fast. | Claws are heavy; slow recovery time. |
 | carapaz.c4 | Visceral mass retracts completely under shield | Tucked abdomen shields delicate gills from abrasive volcanic ash and conserves heat in fog ← Volcanic activity suspends abrasive particulates; fog reduces temperature and increases humidity ← F18: Effusive volcanism ← F12: Persistent low-altitude fog | **F18** Max relief ~3 km with hotspot-driven effusive volcanism.; **F12** Sluggish convection, massive anticyclones, and persistent low-altitude fog. | Shell Curl (`carapaz.shell_curl`) | Passive | Hides from detection. Regenerates health slowly. Vulnerable to high-pitch sound. | Cannot breathe fully when curled; slow to emerge. |
 
 ### carapaz.c1: Flattened, reinforced carapace
 
 Trait ← Flattened profile minimizes drag in dense air and lowers center of mass under high gravity ← High density increases drag force; high gravity increases toppling torque ← F8: 10 bar atmosphere, ~12.5 kg/m³ density ← F4: 1.85g surface gravity ← F8, F4
 
-- **Skill:** Anchor Plate (Defence): Locks claws into substrate, reducing incoming damage by 30% and preventing displacement.
+- **Skill:** Anchor Plate (Defence): The creature digs its claws deep into the ground and braces strongly, becoming heavily anchored and much harder to push or knock back. It stands firm against attacks, absorbing blows with its reinforced shell.
 - **Weakness:** Slow to right itself if overturned.
 - **Observe:**
   1. Carapaz flattens against rock during gusts.
@@ -49,7 +49,7 @@ Trait ← Flattened profile minimizes drag in dense air and lowers center of mas
 
 Trait ← Sideways gait maximizes stability on steep volcanic scree and allows air-rudder thrust ← Lateral movement avoids leg crossing on shifting scree; dense air provides lateral lift/drag ← F18: Steep volcanic slopes, loose scree ← F8: 10 bar density ← F18, F8
 
-- **Skill:** Scuttle Dash (Basic): Move 3 meters sideways instantly, ignoring terrain penalties. Dodges frontal attacks.
+- **Skill:** Scuttle Dash (Basic): The creature swiftly scuttles sideways in a quick burst, slipping past obstacles and avoiding attacks aimed directly at it. It darts laterally with a sudden, jerky motion that leaves attackers striking empty air.
 - **Weakness:** Cannot retreat quickly in forward direction.
 - **Observe:**
   1. Legs never cross the midline while moving.
@@ -67,7 +67,7 @@ Trait ← Sideways gait maximizes stability on steep volcanic scree and allows a
 
 Trait ← Heavy claws function as ballast, anchors, and instant traps for gravity-accelerated prey ← High drag air demands grip; high gravity increases prey fall velocity ← F8: 10 bar atmosphere ← F4: 1.85g surface gravity ← F8, F4
 
-- **Skill:** Crush Grip (Engage): Pins target, dealing 12 damage and reducing target movement by 40% for 2 turns.
+- **Skill:** Crush Grip (Engage): The creature clamps its massive claws onto a target, pinning it firmly and restricting its movement for a short while. The trapped foe struggles against the heavy grip as the creature holds it fast.
 - **Weakness:** Claws are heavy; slow recovery time.
 - **Observe:**
   1. Claws catch a falling fruit mid-air.
@@ -104,12 +104,12 @@ Trait ← Tucked abdomen shields delicate gills from abrasive volcanic ash and c
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Kite-rays | cousin |  | (council kind 'Predator') High-altitude gliders dive for Carapaz in fog gaps. |
-| Vent-vents | cousin |  | (council kind 'Competitor') Both scavenge volcanic shelves; Carapaz dominates scree, Vents dominate vents. |
 | carmesa | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | laja_tres | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | salcaran | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | lombardo | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| crang_lira | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| ferrisca | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -136,3 +136,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 - 2026-11-19 autoloop: carcinisation links to 3 creature(s)
 - 2026-11-19 autoloop: removed rejected references from analogues
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)

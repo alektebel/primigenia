@@ -47,7 +47,7 @@
           "en": "Shade Dash"
         },
         "role": "Defence",
-        "effect": "Flee to nearest shadow; gain 20% evasion for 5s.",
+        "effect": "The creature quickly darts into the nearest shade and moves with a fleeting, hard-to-hit grace for a short while.",
         "numbers": {}
       },
       "weakness": "Sunlight deals damage over time; cannot fight in open.",
@@ -100,7 +100,7 @@
           "en": "Glint Sight"
         },
         "role": "Poke",
-        "effect": "Reveal hidden metallic parts or water sources; +15% accuracy on glinting targets.",
+        "effect": "Its large eyes lock onto shimmering surfaces, clearly highlighting hidden metal or water while its strikes land with remarkable precision.",
         "numbers": {}
       },
       "weakness": "Blind to slow, dark prey; misses camouflaged foes.",
@@ -217,7 +217,7 @@
           "en": "Thermal Surge"
         },
         "role": "Basic",
-        "effect": "Sprint for 2s after brief sun exposure; gains 20% speed but loses heat fast in fog/shade.",
+        "effect": "After basking briefly in the sun, the creature sprints forward with burst-like speed, though it quickly cools and slows when entering fog or shade.",
         "numbers": {}
       },
       "weakness": "Sluggish in fog/shade (F8); speed fades if not in direct light.",
@@ -273,7 +273,7 @@
           "en": "Desperate Bleat"
         },
         "role": "Control",
-        "effect": "Summons nearby herd members to aggro; costs 30% health.",
+        "effect": "The creature lets out a loud, desperate cry that draws nearby herd members to attack, while its own vitality visibly fades during the call.",
         "numbers": {}
       },
       "weakness": "Isolation makes him weak; if herd dies, he flees or dies.",

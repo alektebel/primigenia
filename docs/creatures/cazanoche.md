@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cazanoche.c1 | Large corneas with tapetum lucidum and UV-sensitive cones | Enhanced photon capture <- Long twilight and bright moonlit nights (F3, F6) <- Dense air scatters photons, extending visible light (D8) <- 1.6 bar atmosphere (D8) | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Moonlit Focus (`cazanoche.moonlit_focus`) | Engage | Reveals hidden trails and weak points in low light (30m radius) | Dazzled by sudden bright flashes or auroral pulses (F10) |
-| cazanoche.c2 | Elaborate vomeronasal organ and moisture-retaining nasal turbinates | Prolonged odor trail persistence <- Slow molecular diffusion in still air (F16) <- High pressure reduces diffusion coefficient (D18) <- 1.6 bar atmosphere (D8) | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Path (`cazanoche.scent_path`) | Control | Locks onto hidden movement trails; calms prey by mimicking pheromones (50m) | Useless during gales; wind strips scent marks instantly (F16) |
-| cazanoche.c3 | Low-slung frame, reinforced shoulder girdle, and flexible lumbar spine | Ambush grappling and ground-crawling <- High drag makes sustained sprinting costly (F4) <- Air density 1.6x Earth raises mechanical work (D11) <- 1.6 bar atmosphere (D8) | **F4** Dense air: 1.6 bar | Ground Crawl (`cazanoche.ground_crawl`) | Basic | Moves silently at low profile; reduces wind noise by 40% (stealth) | Trips on slick basalt and shallow water; slow acceleration |
-| cazanoche.c4 | Inflatable laryngeal sac and reinforced hyoid apparatus | Infrasonic territorial calls <- Low frequencies propagate farther in dense, foggy air (F4) <- High molar mass and pressure boost acoustic coupling (D8, D12) <- 1.6 bar atmosphere (D8) | **F4** Dense air: 1.6 bar | Deep Hum (`cazanoche.deep_hum`) | Social | Emits a subsonic pulse that paralyzes fear in prey and deters rivals (60m radius) | Attracts scavengers and rival apexes to the caller's position (F27) |
+| cazanoche.c1 | Large corneas with tapetum lucidum and UV-sensitive cones | Enhanced photon capture <- Long twilight and bright moonlit nights (F3, F6) <- Dense air scatters photons, extending visible light (D8) <- 1.6 bar atmosphere (D8) | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Moonlit Focus (`cazanoche.moonlit_focus`) | Engage | The creature's sharp night vision clearly reveals hidden paths and vulnerable spots in dim areas. You can easily spot these concealed routes and weak points when the light is low. | Dazzled by sudden bright flashes or auroral pulses (F10) |
+| cazanoche.c2 | Elaborate vomeronasal organ and moisture-retaining nasal turbinates | Prolonged odor trail persistence <- Slow molecular diffusion in still air (F16) <- High pressure reduces diffusion coefficient (D18) <- 1.6 bar atmosphere (D8) | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Path (`cazanoche.scent_path`) | Control | The creature tracks invisible movement paths and releases calming scents that soothe nearby animals. You can follow its trail and notice the frightened creatures settling down around it. | Useless during gales; wind strips scent marks instantly (F16) |
+| cazanoche.c3 | Low-slung frame, reinforced shoulder girdle, and flexible lumbar spine | Ambush grappling and ground-crawling <- High drag makes sustained sprinting costly (F4) <- Air density 1.6x Earth raises mechanical work (D11) <- 1.6 bar atmosphere (D8) | **F4** Dense air: 1.6 bar | Ground Crawl (`cazanoche.ground_crawl`) | Basic | The creature glides along the ground at a low stance without making a sound. You can approach unseen as it moves quietly through the wind. | Trips on slick basalt and shallow water; slow acceleration |
+| cazanoche.c4 | Inflatable laryngeal sac and reinforced hyoid apparatus | Infrasonic territorial calls <- Low frequencies propagate farther in dense, foggy air (F4) <- High molar mass and pressure boost acoustic coupling (D8, D12) <- 1.6 bar atmosphere (D8) | **F4** Dense air: 1.6 bar | Deep Hum (`cazanoche.deep_hum`) | Social | The creature projects a deep vibration that freezes nearby animals with sudden fear and drives off competitors. You can watch the startled creatures stand still while the area falls under its control. | Attracts scavengers and rival apexes to the caller's position (F27) |
 
 ### cazanoche.c1: Large corneas with tapetum lucidum and UV-sensitive cones
 
 Trait ← Enhanced photon capture <- Long twilight and bright moonlit nights (F3, F6) <- Dense air scatters photons, extending visible light (D8) <- 1.6 bar atmosphere (D8) ← F3, F6
 
-- **Skill:** Moonlit Focus (Engage): Reveals hidden trails and weak points in low light (30m radius)
+- **Skill:** Moonlit Focus (Engage): The creature's sharp night vision clearly reveals hidden paths and vulnerable spots in dim areas. You can easily spot these concealed routes and weak points when the light is low.
 - **Weakness:** Dazzled by sudden bright flashes or auroral pulses (F10)
 - **Observe:**
   1. Eyes gleam in torchlight
@@ -49,7 +49,7 @@ Trait ← Enhanced photon capture <- Long twilight and bright moonlit nights (F3
 
 Trait ← Prolonged odor trail persistence <- Slow molecular diffusion in still air (F16) <- High pressure reduces diffusion coefficient (D18) <- 1.6 bar atmosphere (D8) ← F16
 
-- **Skill:** Scent Path (Control): Locks onto hidden movement trails; calms prey by mimicking pheromones (50m)
+- **Skill:** Scent Path (Control): The creature tracks invisible movement paths and releases calming scents that soothe nearby animals. You can follow its trail and notice the frightened creatures settling down around it.
 - **Weakness:** Useless during gales; wind strips scent marks instantly (F16)
 - **Observe:**
   1. Twitches nose in calm air
@@ -67,7 +67,7 @@ Trait ← Prolonged odor trail persistence <- Slow molecular diffusion in still 
 
 Trait ← Ambush grappling and ground-crawling <- High drag makes sustained sprinting costly (F4) <- Air density 1.6x Earth raises mechanical work (D11) <- 1.6 bar atmosphere (D8) ← F4
 
-- **Skill:** Ground Crawl (Basic): Moves silently at low profile; reduces wind noise by 40% (stealth)
+- **Skill:** Ground Crawl (Basic): The creature glides along the ground at a low stance without making a sound. You can approach unseen as it moves quietly through the wind.
 - **Weakness:** Trips on slick basalt and shallow water; slow acceleration
 - **Observe:**
   1. Shoulders roll like a predator stalking
@@ -85,7 +85,7 @@ Trait ← Ambush grappling and ground-crawling <- High drag makes sustained spri
 
 Trait ← Infrasonic territorial calls <- Low frequencies propagate farther in dense, foggy air (F4) <- High molar mass and pressure boost acoustic coupling (D8, D12) <- 1.6 bar atmosphere (D8) ← F4
 
-- **Skill:** Deep Hum (Social): Emits a subsonic pulse that paralyzes fear in prey and deters rivals (60m radius)
+- **Skill:** Deep Hum (Social): The creature projects a deep vibration that freezes nearby animals with sudden fear and drives off competitors. You can watch the startled creatures stand still while the area falls under its control.
 - **Weakness:** Attracts scavengers and rival apexes to the caller's position (F27)
 - **Observe:**
   1. Throat vibrates below hearing range

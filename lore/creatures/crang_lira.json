@@ -1,0 +1,333 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "crang_lira",
+  "name": {
+    "en": "Crang-lira"
+  },
+  "world": "orbital",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Dust-dense lanes of the Verrin ring, mid-shear zones",
+    "diet": "Ice grains, peroxide frost, clathrate scraps, micro-organisms",
+    "active": "Continuous grazer; enters clathrate tun during eclipses and cascade alarms",
+    "predators": []
+  },
+  "body": "Flattened silicate-ice carapace, lateral claws, tucked brood-chamber, reaction-mass siphons",
+  "chains": [
+    {
+      "id": "crang_lira.c1",
+      "trait": "Flattened silicate-ice carapace shields internal organs",
+      "links": [
+        "Armor absorbs micrometeoroid kinetic energy",
+        "Prevents sterilizing radiation and impact vaporization",
+        "Driven by constant hypervelocity debris flux"
+      ],
+      "roots": [
+        "F19",
+        "F13"
+      ],
+      "skill": {
+        "id": "crang_lira.shell_lock",
+        "name": {
+          "en": "Shell Lock"
+        },
+        "role": "Defence",
+        "effect": "The creature braces its hardened carapace to strongly deflect incoming attacks for a short while, though it must shed a small portion of its mass to maintain the stance.",
+        "numbers": {}
+      },
+      "weakness": "Immobile while locked, heavy mass drains delta-v.",
+      "observe": [
+        "Glittering carapace",
+        "Impact craters filled with regrowth ice",
+        "Hides abdomen when flares hit"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Rebuild the trait as a flattened Whipple shell: thin silicate-ice bumper, dust-filled standoff gap, water-ice-rich inner hull of roughly 10 cm water-equivalent. It stops micron-to-mm fragments, not boulders; the animal survives the fine rain of a cascade and hides in shadow or a tun when large fragments fly. Replace flares with belt-dose or torus-plasma spikes. Skill Shell Lock (Defence): tuck limbs under the bumper and hold still, immobile and with costly radial station-keeping because of the ballast; delete the 80%, 2 laps and 5% mass figures. Change deflects a Kessler cascade to survives the fragment rain.",
+        "fixes": [
+          "Rebuild the trait as a flattened Whipple shell: thin silicate-ice bumper, dust-filled standoff gap, water-ice-rich inner hull of roughly 10 cm water-equivalent. It stops micron-to-mm fragments, not boulders; the animal survives the fine rain of a cascade and hides in shadow or a tun when large fragments fly. Replace flares with belt-dose or torus-plasma spikes. Skill Shell Lock (Defence): tuck limbs under the bumper and hold still, immobile and with costly radial station-keeping because of the ballast; delete the 80%, 2 laps and 5% mass figures. Change deflects a Kessler cascade to survives the fragment rain."
+        ],
+        "analogues": [
+          {
+            "organism": "Whipple bumper shield in spacecraft engineering; biological analogues are diatom silica frustules and the cryptobiotic cuticle of tardigrade tuns; low-slung armoured chitons for the low-profile solution",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crang_lira.c2",
+      "trait": "Sideways skittering gait conserves orbital energy",
+      "links": [
+        "Lateral movement avoids costly radial orbital changes",
+        "Low profile minimizes cross-section to vertical impacts",
+        "Claws optimized for rowing through dust shear"
+      ],
+      "roots": [
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "crang_lira.skitter",
+        "name": {
+          "en": "Skitter"
+        },
+        "role": "Basic",
+        "effect": "The creature glides swiftly sideways along the surface in complete silence, maintaining a steady and balanced posture.",
+        "numbers": {}
+      },
+      "weakness": "Cannot move radially quickly, easy target for phasing.",
+      "observe": [
+        "Legs move laterally",
+        "Body aligns with ring plane",
+        "Leaves no trail in vacuum"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Reframe as shear-surfing: the animal hooks grains on adjacent orbits and trades angular momentum with the ring, drifting at cm/s to m/s relative to its neighbours; that exchange is highly speculative but honest. Any faster dash must be paid for with sublimated ice under F9. Say low collision cross-section instead of conserves orbital energy. Skill Skitter (Basic): a low lateral scuttle aligned with the ring plane, fast relative to neighbours but unable to change radius quickly; delete the 15 m/s figure. Keep silent as a joke about F11, but replace leaves no trail with a brief spatters of ice dust.",
+        "fixes": [
+          "Reframe as shear-surfing: the animal hooks grains on adjacent orbits and trades angular momentum with the ring, drifting at cm/s to m/s relative to its neighbours; that exchange is highly speculative but honest. Any faster dash must be paid for with sublimated ice under F9. Say low collision cross-section instead of conserves orbital energy. Skill Skitter (Basic): a low lateral scuttle aligned with the ring plane, fast relative to neighbours but unable to change radius quickly; delete the 15 m/s figure. Keep silent as a joke about F11, but replace leaves no trail with a brief spatters of ice dust."
+        ],
+        "analogues": [
+          {
+            "organism": "Sidewinding rattlesnake reducing slip on granular sand; ice skater pushing against an edge; orbital momentum-exchange tether as an engineering analogue, highly speculative as biology",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crang_lira.c3",
+      "trait": "Crushing claws fracture ice for sublimation propulsion",
+      "links": [
+        "Sublimation provides reaction mass for orbit keeping",
+        "Cracks ice and harvests peroxide fuel",
+        "Requires high force to break ring grains"
+      ],
+      "roots": [
+        "F9",
+        "F22"
+      ],
+      "skill": {
+        "id": "crang_lira.ice_crack",
+        "name": {
+          "en": "Ice Crack"
+        },
+        "role": "Engage",
+        "effect": "The creature shatters the surrounding ice with its claws to launch itself forward, absorbing the released vapor to restore its strength.",
+        "numbers": {}
+      },
+      "weakness": "Cracking requires proximity, risks exposure to plasma.",
+      "observe": [
+        "Claws churning ice",
+        "Vapor jet flickers",
+        "Peroxide frost glows magenta on mouthparts"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Brace a claw against a grain, crack it to expose fresh ice, heat that ice and vent it through the reaction-mass siphons; the grazer loses mass as it moves, and the recoil can help the stroke. Skill Ice Crack (Engage): fracture a grain and jet its vapour to reposition, requiring contact and therefore exposing the animal to peroxide frost and impact plasma; keep the peroxide-sequestering mouthparts from F22. Delete +10 delta-v and heals 5% mass.",
+        "fixes": [
+          "Brace a claw against a grain, crack it to expose fresh ice, heat that ice and vent it through the reaction-mass siphons; the grazer loses mass as it moves, and the recoil can help the stroke. Skill Ice Crack (Engage): fracture a grain and jet its vapour to reposition, requiring contact and therefore exposing the animal to peroxide frost and impact plasma; keep the peroxide-sequestering mouthparts from F22. Delete +10 delta-v and heals 5% mass."
+        ],
+        "analogues": [
+          {
+            "organism": "Squid and octopus jet propulsion, the same momentum conservation with a different working fluid; a steam or cold-gas thruster in engineering",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crang_lira.c4",
+      "trait": "Tucked abdomen seals brood during radiation spikes",
+      "links": [
+        "Clathrate cap protects spores from kilogray doses",
+        "Tucked mass stabilizes rotational inertia for maneuvers",
+        "Brood uses parent's reaction mass for launch"
+      ],
+      "roots": [
+        "F23",
+        "F20"
+      ],
+      "skill": {
+        "id": "crang_lira.brood_seal",
+        "name": {
+          "en": "Brood Seal"
+        },
+        "role": "Control",
+        "effect": "The creature tucks its abdomen over its young to shield them from harsh radiation, though this protective posture makes it move much slower.",
+        "numbers": {}
+      },
+      "weakness": "Sealed brood emits no heat, invisible to radar, but slow to escape.",
+      "observe": [
+        "Abdomen vanishes under carapace",
+        "Cap glows with clathrate crystal",
+        "Offspring vibrate inside shell"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the clathrate-capped brood small and water-shielded, and add passive or magnetic attitude damping to handle the spin-up under F4. Skill Brood Seal (Control): withdraw the abdomen under the cap and spend stored ice to launch spores aimed by orbital phasing, slowed and thermally quiet in the infrared but still visible to radar. Delete protects 3 offspring for 20 laps and keep only the plain behaviour.",
+        "fixes": [
+          "Keep the clathrate-capped brood small and water-shielded, and add passive or magnetic attitude damping to handle the spin-up under F4. Skill Brood Seal (Control): withdraw the abdomen under the cap and spend stored ice to launch spores aimed by orbital phasing, slowed and thermally quiet in the infrared but still visible to radar. Delete protects 3 offspring for 20 laps and keep only the plain behaviour."
+        ],
+        "analogues": [
+          {
+            "organism": "Tardigrade tun cryptobiosis; brooding parents that shield eggs; explosive ballistospore discharge in fungi for the spring-loaded launch",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 5 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 10,
+    "origin": "Modified annulated spore-worm"
+  },
+  "temperament": "Cautious, herd-bound, defensive",
+  "secrets": [
+    "During a Kessler cascade, crabs release clathrate spores that drift outward, escaping the debris zone.",
+    "The carapace silicate can be harvested to craft shield upgrades.",
+    "Crang-lira herds can coordinate magnetic braking by linking claws."
+  ],
+  "moments": [
+    "A swarm of crang-lira suddenly skitters sideways, tucking their abdomens to form a shimmering wall of armor that deflects a Kessler cascade, drifting unharmed while the ring burns around them."
+  ],
+  "journal": [
+    {
+      "en": "Carcinisation is just nature's way of building a tank out of a worm."
+    },
+    {
+      "en": "Again."
+    }
+  ],
+  "relations": [
+    {
+      "with": "carapaz",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "lombardo",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "salcaran",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "ferrisca",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ]
+}

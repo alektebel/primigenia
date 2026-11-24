@@ -21,16 +21,16 @@ Kite-like membrane, long tail, gas bladder, near-infrared crest sensors.
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| altanuela.c1 | Enormous aspect-ratio wings | Wings generate lift in 50-60 m/s flow ← Upper return circulation flows day-to-night ← Weak Coriolis pins large wind systems | **F12** There are two winds: surface air flows night-to-day at 12–18 m/s (katabatic off the cold side) while the upper return near 8–12 km flows day-to-night at 50–60 m/s and carries the clouds.; **F14** The 15.5-day spin makes Coriolis 15× weaker than Earth's, so the rain-bearing convergence is pinned in place at continent scale and classic mid-latitude cyclones are suppressed. | Thermal Glide (`altanuela.thermal_glide`) | Basic | Move 10m without action; gain altitude in wind currents. | Wing shear in turbulence; player can use 'Storm' skill to damage flight. |
-| altanuela.c2 | NOx-absorbing skin patches | Skin fixes atmospheric nitrogen from NOx ← Flares supply pulsed oxidized nitrogen ← Nitrate rains out after flare events | **F22** Primary energy comes from 850 nm photons, H₂S at fumaroles and Fe²⁺ in anoxic brine, while flares supply pulsed oxidized nitrogen (nitrate/nitrite) that rains out as fixed nitrogen. | Nitrogen Drip (`altanuela.nitrogen_drip`) | Social | Fertilize a 5m radius, boosting plant growth by +3 P over 3 turns. | Starves during quiescent periods; player can use 'Calm Star' skill to reduce growth. |
-| altanuela.c3 | Near-infrared crest sensors | Crest detects 0.9 µm star peak ← M-dwarf spectrum peaks in NIR ← Visible light is scarce | **F2** About 89% of Vessa's light is near-infrared (0.7–1.4 µm), 10% visible (0.4–0.7 µm) and 0.4% ultraviolet (<0.4 µm), peaking near 0.9 µm. | NIR Sight (`altanuela.nir_sight`) | Basic | Reveal stealth and IR signatures in 15m radius; ignore visible light camouflage. | Blinded by visible light; player can use 'Flash' or 'Bright Light' to stun. |
-| altanuela.c4 | Gas bladder buoyancy control | Bladder adjusts density for neutral buoyancy ← Dense air reduces lift requirement ← 2.05 kg/m³ density aids floatation | **F10** Air density is 2.05 kg/m³ at 285 K with a 7 km scale height, and sound travels at 341 m/s — set by temperature and mean molecular weight, not pressure — so low-frequency calls carry up to 2–3× farther near the humid surface while treble still decays in tens of metres. | Buoyancy Shift (`altanuela.buoyancy_shift`) | Defence | Gain 'Drift' status; take 50% less wind damage, but movement speed halved. | Rapid depressurization; player can use 'Puncture' to deflate bladder. |
+| altanuela.c1 | Enormous aspect-ratio wings | Wings generate lift in 50-60 m/s flow ← Upper return circulation flows day-to-night ← Weak Coriolis pins large wind systems | **F12** There are two winds: surface air flows night-to-day at 12–18 m/s (katabatic off the cold side) while the upper return near 8–12 km flows day-to-night at 50–60 m/s and carries the clouds.; **F14** The 15.5-day spin makes Coriolis 15× weaker than Earth's, so the rain-bearing convergence is pinned in place at continent scale and classic mid-latitude cyclones are suppressed. | Thermal Glide (`altanuela.thermal_glide`) | Basic | The creature glides effortlessly across the landscape for a short while, riding rising air currents to climb higher into the sky. | Wing shear in turbulence; player can use 'Storm' skill to damage flight. |
+| altanuela.c2 | NOx-absorbing skin patches | Skin fixes atmospheric nitrogen from NOx ← Flares supply pulsed oxidized nitrogen ← Nitrate rains out after flare events | **F22** Primary energy comes from 850 nm photons, H₂S at fumaroles and Fe²⁺ in anoxic brine, while flares supply pulsed oxidized nitrogen (nitrate/nitrite) that rains out as fixed nitrogen. | Nitrogen Drip (`altanuela.nitrogen_drip`) | Social | The creature secretes nutrient-rich fluids onto the ground, causing nearby vegetation to flourish and grow noticeably stronger. | Starves during quiescent periods; player can use 'Calm Star' skill to reduce growth. |
+| altanuela.c3 | Near-infrared crest sensors | Crest detects 0.9 µm star peak ← M-dwarf spectrum peaks in NIR ← Visible light is scarce | **F2** About 89% of Vessa's light is near-infrared (0.7–1.4 µm), 10% visible (0.4–0.7 µm) and 0.4% ultraviolet (<0.4 µm), peaking near 0.9 µm. | NIR Sight (`altanuela.nir_sight`) | Basic | The creature's crest sensors pierce through visual cover, making hidden figures and heat trails clearly visible in the surrounding area. | Blinded by visible light; player can use 'Flash' or 'Bright Light' to stun. |
+| altanuela.c4 | Gas bladder buoyancy control | Bladder adjusts density for neutral buoyancy ← Dense air reduces lift requirement ← 2.05 kg/m³ density aids floatation | **F10** Air density is 2.05 kg/m³ at 285 K with a 7 km scale height, and sound travels at 341 m/s — set by temperature and mean molecular weight, not pressure — so low-frequency calls carry up to 2–3× farther near the humid surface while treble still decays in tens of metres. | Buoyancy Shift (`altanuela.buoyancy_shift`) | Defence | The creature inflates its internal gas bladders to become highly buoyant, drifting lightly on the breeze while moving with deliberate slowness. | Rapid depressurization; player can use 'Puncture' to deflate bladder. |
 
 ### altanuela.c1: Enormous aspect-ratio wings
 
 Trait ← Wings generate lift in 50-60 m/s flow ← Upper return circulation flows day-to-night ← Weak Coriolis pins large wind systems ← F12, F14
 
-- **Skill:** Thermal Glide (Basic): Move 10m without action; gain altitude in wind currents.
+- **Skill:** Thermal Glide (Basic): The creature glides effortlessly across the landscape for a short while, riding rising air currents to climb higher into the sky.
 - **Weakness:** Wing shear in turbulence; player can use 'Storm' skill to damage flight.
 - **Observe:**
   1. Wings held rigid against return wind
@@ -48,7 +48,7 @@ Trait ← Wings generate lift in 50-60 m/s flow ← Upper return circulation flo
 
 Trait ← Skin fixes atmospheric nitrogen from NOx ← Flares supply pulsed oxidized nitrogen ← Nitrate rains out after flare events ← F22
 
-- **Skill:** Nitrogen Drip (Social): Fertilize a 5m radius, boosting plant growth by +3 P over 3 turns.
+- **Skill:** Nitrogen Drip (Social): The creature secretes nutrient-rich fluids onto the ground, causing nearby vegetation to flourish and grow noticeably stronger.
 - **Weakness:** Starves during quiescent periods; player can use 'Calm Star' skill to reduce growth.
 - **Observe:**
   1. Skin darkening and bubbling during flare
@@ -67,7 +67,7 @@ Trait ← Skin fixes atmospheric nitrogen from NOx ← Flares supply pulsed oxid
 
 Trait ← Crest detects 0.9 µm star peak ← M-dwarf spectrum peaks in NIR ← Visible light is scarce ← F2
 
-- **Skill:** NIR Sight (Basic): Reveal stealth and IR signatures in 15m radius; ignore visible light camouflage.
+- **Skill:** NIR Sight (Basic): The creature's crest sensors pierce through visual cover, making hidden figures and heat trails clearly visible in the surrounding area.
 - **Weakness:** Blinded by visible light; player can use 'Flash' or 'Bright Light' to stun.
 - **Observe:**
   1. Crest twitching toward star direction
@@ -85,7 +85,7 @@ Trait ← Crest detects 0.9 µm star peak ← M-dwarf spectrum peaks in NIR ← 
 
 Trait ← Bladder adjusts density for neutral buoyancy ← Dense air reduces lift requirement ← 2.05 kg/m³ density aids floatation ← F10
 
-- **Skill:** Buoyancy Shift (Defence): Gain 'Drift' status; take 50% less wind damage, but movement speed halved.
+- **Skill:** Buoyancy Shift (Defence): The creature inflates its internal gas bladders to become highly buoyant, drifting lightly on the breeze while moving with deliberate slowness.
 - **Weakness:** Rapid depressurization; player can use 'Puncture' to deflate bladder.
 - **Observe:**
   1. Bladder inflating/deflating subtly

@@ -34,7 +34,7 @@
           "en": "Sustained Flight"
         },
         "role": "Engage",
-        "effect": "hold 60 km/h for three minutes across open ground, ignoring rough-terrain penalties and outlasting any pursuer that relies on anaerobic bursts",
+        "effect": "The pronghorn maintains a steady, swift pace across open terrain, moving easily over rough ground and outlasting any chasers who rely on short bursts of speed.",
         "numbers": {}
       },
       "weakness": "it is built to run past obstacles, not over them: it will not jump a fence and instead crawls underneath, so a fenceline corners it",
@@ -99,7 +99,7 @@
           "en": "Winter Coat"
         },
         "role": "Passive",
-        "effect": "no cold penalty down to -45 °C wind chill and full stamina regeneration while bedded in snow; a distinct blue-ice Overheat meter fills twice as fast under summer sun, forcing shade or water before it tops out",
+        "effect": "This pronghorn withstands extreme cold and rapidly restores its energy while resting in the snow. In hot weather, it overheats strongly and must seek shade or water to cool down before collapsing.",
         "numbers": {}
       },
       "weakness": "between the spring moult and the new coat the fur is patchy, bare skin burns and the Overheat meter runs hot: corner it in open sun at midday, or pen it behind a fence it will not jump, and the winter-proof coat becomes a summer trap",
@@ -167,7 +167,7 @@
           "en": "Horizon Watch"
         },
         "role": "Control",
-        "effect": "spots a moving concealed creature at 500 m and grants the party +2 initiative; also reveals a hidden creature's position one turn early, but detection drops to 250 m in scrub",
+        "effect": "The pronghorn's wide-set eyes scan the horizon, spotting hidden creatures from afar and alerting the group before danger strikes. Its keen sight weakens in thick vegetation, but it still catches movement early.",
         "numbers": {}
       },
       "weakness": "the eyes trade binocular overlap for width: it is poor at judging close range and blind in a wedge directly behind, so a stalker that gets inside 40 m from downwind is invisible to it",

@@ -36,7 +36,7 @@
           "en": "Waste Absorption"
         },
         "role": "Defence",
-        "effect": "Neutralizes environmental toxins and nanite decay radiation, granting damage reduction (40% for 60s).",
+        "effect": "The filter mats absorb nearby toxins and lingering radiation, their surfaces darkening as they cleanse the air. This protective barrier keeps them safe from harm for a short while.",
         "numbers": {}
       },
       "weakness": "Physically fragile; limited mobility makes them easy targets for kinetic attacks.",
@@ -97,7 +97,7 @@
           "en": "Biofilter Assimilation"
         },
         "role": "Basic",
-        "effect": "Converts contaminated soil/water into temporary stamina and reduces radiation damage by 30%.",
+        "effect": "The living mats spread across contaminated soil and water, drawing out nourishment as the murky liquid clears. Their nervous nets pulse with renewed vigor, allowing them to endure lingering radiation.",
         "numbers": {}
       },
       "weakness": "Vulnerable to rapid desiccation when atmospheric humidity drops below 40%.",

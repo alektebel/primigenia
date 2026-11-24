@@ -21,16 +21,16 @@ Anisotropic defect filaments aligned to B-field, ~0.5 μm long
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cristalino_filar.c1 | Filaments align strictly along magnetic flux tubes | Alignment minimizes Zeeman energy in supercritical field ← Degenerate electrons condense into spin-polarized states ← Magnetic energy density exceeds thermal energy density | **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry. | Flux-Weave (`cristalino_filar.flux_weave`) | Control | Aligns adjacent lattice defects along a chosen B-field vector, granting +30% tunneling efficiency to allies in a 0.2μm radius. | Sudden field inversion flips alignment, causing a 20μs metabolic stall. |
-| cristalino_filar.c2 | Captures reconnection sparks via Zeeman-split electron shells | Spark energy excites spin-polarized electrons ← Zeeman splitting creates discrete absorption bands ← Stellar spin drives stochastic magnetic reconnection | **F2** Crust rotates with a 2.3-second period, driving stochastic giant flares (10^44–10^46 erg) via crustal yield fractures and magnetic reconnection.; **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry. | Spark-Siphon (`cristalino_filar.spark_siphon`) | Basic | Converts 15% of incoming flare energy into metabolic ATP-equivalents (weak-interaction cycles). | Overloads during giant flares, triggering local proton-capture risk and lattice stress. |
-| cristalino_filar.c3 | Communicates via coherent phonon harmonics along crystal planes | Dense lattice enables ultra-fast phonon propagation ← Phonons carry phase information over meters ← High bulk modulus yields sound speeds near 0.004c | **F6** Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing. | Phonon-Hymn (`cristalino_filar.phonon_hymn`) | Social | Sends a calibrated lattice vibration that syncs ally metabolic cycles, reducing glitch-stress by 25% for 50μs. | Phonon echoes are easily distorted by micro-fractures, causing miscommunication. |
-| cristalino_filar.c4 | Reroutes magnetic field lines to deflect neutron-rich ejecta | High conductivity enables flux-tube screening ← Ejected matter follows rigid field lines ← Super-critical B enforces magnetic rigidity | **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry.; **F10** Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter. | Field-Bulwark (`cristalino_filar.field_bulwark`) | Defence | Creates a temporary flux-tube shield, absorbing 40% of micro-glitch ejecta damage. | Shield drains topological charge, leaving hereditary information temporarily scrambled. |
+| cristalino_filar.c1 | Filaments align strictly along magnetic flux tubes | Alignment minimizes Zeeman energy in supercritical field ← Degenerate electrons condense into spin-polarized states ← Magnetic energy density exceeds thermal energy density | **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry. | Flux-Weave (`cristalino_filar.flux_weave`) | Control | The creature aligns nearby structural defects along a magnetic path, allowing allies to slip through narrow gaps with greater ease. | Sudden field inversion flips alignment, causing a 20μs metabolic stall. |
+| cristalino_filar.c2 | Captures reconnection sparks via Zeeman-split electron shells | Spark energy excites spin-polarized electrons ← Zeeman splitting creates discrete absorption bands ← Stellar spin drives stochastic magnetic reconnection | **F2** Crust rotates with a 2.3-second period, driving stochastic giant flares (10^44–10^46 erg) via crustal yield fractures and magnetic reconnection.; **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry. | Spark-Siphon (`cristalino_filar.spark_siphon`) | Basic | The creature draws in stray energy from nearby flares and converts it into vital sustenance, steadily restoring its own strength. | Overloads during giant flares, triggering local proton-capture risk and lattice stress. |
+| cristalino_filar.c3 | Communicates via coherent phonon harmonics along crystal planes | Dense lattice enables ultra-fast phonon propagation ← Phonons carry phase information over meters ← High bulk modulus yields sound speeds near 0.004c | **F6** Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing. | Phonon-Hymn (`cristalino_filar.phonon_hymn`) | Social | The creature emits a steady harmonic pulse that resonates through nearby allies, calming their erratic movements and easing their stress for a short while. | Phonon echoes are easily distorted by micro-fractures, causing miscommunication. |
+| cristalino_filar.c4 | Reroutes magnetic field lines to deflect neutron-rich ejecta | High conductivity enables flux-tube screening ← Ejected matter follows rigid field lines ← Super-critical B enforces magnetic rigidity | **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry.; **F10** Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter. | Field-Bulwark (`cristalino_filar.field_bulwark`) | Defence | The creature projects a shimmering magnetic barrier that deflects incoming hazardous particles, shielding nearby allies from harm. | Shield drains topological charge, leaving hereditary information temporarily scrambled. |
 
 ### cristalino_filar.c1: Filaments align strictly along magnetic flux tubes
 
 Trait ← Alignment minimizes Zeeman energy in supercritical field ← Degenerate electrons condense into spin-polarized states ← Magnetic energy density exceeds thermal energy density ← F4
 
-- **Skill:** Flux-Weave (Control): Aligns adjacent lattice defects along a chosen B-field vector, granting +30% tunneling efficiency to allies in a 0.2μm radius.
+- **Skill:** Flux-Weave (Control): The creature aligns nearby structural defects along a magnetic path, allowing allies to slip through narrow gaps with greater ease.
 - **Weakness:** Sudden field inversion flips alignment, causing a 20μs metabolic stall.
 - **Observe:**
   1. Filaments point uniformly during quiet spin
@@ -49,7 +49,7 @@ Trait ← Alignment minimizes Zeeman energy in supercritical field ← Degenerat
 
 Trait ← Spark energy excites spin-polarized electrons ← Zeeman splitting creates discrete absorption bands ← Stellar spin drives stochastic magnetic reconnection ← F2, F4
 
-- **Skill:** Spark-Siphon (Basic): Converts 15% of incoming flare energy into metabolic ATP-equivalents (weak-interaction cycles).
+- **Skill:** Spark-Siphon (Basic): The creature draws in stray energy from nearby flares and converts it into vital sustenance, steadily restoring its own strength.
 - **Weakness:** Overloads during giant flares, triggering local proton-capture risk and lattice stress.
 - **Observe:**
   1. Lattice hums at flare onset
@@ -67,7 +67,7 @@ Trait ← Spark energy excites spin-polarized electrons ← Zeeman splitting cre
 
 Trait ← Dense lattice enables ultra-fast phonon propagation ← Phonons carry phase information over meters ← High bulk modulus yields sound speeds near 0.004c ← F6
 
-- **Skill:** Phonon-Hymn (Social): Sends a calibrated lattice vibration that syncs ally metabolic cycles, reducing glitch-stress by 25% for 50μs.
+- **Skill:** Phonon-Hymn (Social): The creature emits a steady harmonic pulse that resonates through nearby allies, calming their erratic movements and easing their stress for a short while.
 - **Weakness:** Phonon echoes are easily distorted by micro-fractures, causing miscommunication.
 - **Observe:**
   1. Lattice rings after interaction
@@ -86,7 +86,7 @@ Trait ← Dense lattice enables ultra-fast phonon propagation ← Phonons carry 
 
 Trait ← High conductivity enables flux-tube screening ← Ejected matter follows rigid field lines ← Super-critical B enforces magnetic rigidity ← F4, F10
 
-- **Skill:** Field-Bulwark (Defence): Creates a temporary flux-tube shield, absorbing 40% of micro-glitch ejecta damage.
+- **Skill:** Field-Bulwark (Defence): The creature projects a shimmering magnetic barrier that deflects incoming hazardous particles, shielding nearby allies from harm.
 - **Weakness:** Shield drains topological charge, leaving hereditary information temporarily scrambled.
 - **Observe:**
   1. Defects cluster in a ring

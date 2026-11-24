@@ -21,16 +21,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| trenza_magnetica.c1 | Helical body shape absorbs torsional stress | Helical morphology distributes rotational strain ← Differential rotation shears magnetic flux tubes across latitudes ← G2V torsional oscillation winds field lines | **F4** Equatorial rotation period is ~25.4 days with differential rotation extending to ~34.5 days at the poles.; **F17** Helical body plans absorb torsional stress from differential rotation and magnetic shear. | Twist Anchor (`trenza_magnetica.twist_anchor`) | Control | Tangles in a 20m radius, halting enemy movement for 3s | Exposed to Alfvénic resonance; high-frequency waves shatter its braid |
-| trenza_magnetica.c2 | Radiative lattice skin scatters lethal UV flux | Structured plasma crystal reflects and redirects photons ← Photospheric/coronal flux exceeds cellular damage threshold ← Stefan-Boltzmann blackbody emission at 5800 K | **F6** Photospheric radiative flux is ~63 MW/m², with coronal temperatures reaching ~10⁶ K.; **F18** Radiative lattice skin scatters and refracts lethal UV/X-ray flux while maximizing photon capture cross-section. | Flare Shield (`trenza_magnetica.flare_shield`) | Defence | Redirects 50% of incoming energy burst, storing it for 5s | Lattice gaps close in high-density plasma; suffocates if it dives into the chromosphere |
-| trenza_magnetica.c3 | Current-loop stomach stores reconnection charge | Diamagnetic shielding confines plasma currents ← Reconnection releases sudden kinetic and thermal bursts ← Anti-parallel field lines break and reconnect | **F12** Magnetic reconnection converts stored magnetic free energy into kinetic and thermal energy, accelerating particles to relativistic speeds.; **F16** Organisms utilize high-conductivity plasma currents to store and shed charge during reconnection events. | Siphon Burst (`trenza_magnetica.siphon_burst`) | Poke | Drains 30% of target charge, healing self for 4s | Overcharge triggers uncontrolled reconnection; self-cannibalizes if fed too rapidly |
-| trenza_magnetica.c4 | Alfvén-wave communication along field lines | Transverse MHD waves propagate along closed flux tubes ← Vacuum corona lacks acoustic transmission medium ← Magnetized plasma supports 1000 km/s wave speeds | **F20** Alfvén-wave communication propagates along magnetically connected field lines at ~1000 km/s, with range limited by frequency-dependent damping and line-tying. | Field Call (`trenza_magnetica.field_call`) | Social | Summons 3 allies within 500m along the same flux tube | Requires magnetically closed tubes; breaks in open solar wind |
+| trenza_magnetica.c1 | Helical body shape absorbs torsional stress | Helical morphology distributes rotational strain ← Differential rotation shears magnetic flux tubes across latitudes ← G2V torsional oscillation winds field lines | **F4** Equatorial rotation period is ~25.4 days with differential rotation extending to ~34.5 days at the poles.; **F17** Helical body plans absorb torsional stress from differential rotation and magnetic shear. | Twist Anchor (`trenza_magnetica.twist_anchor`) | Control | The creature coils tightly around nearby foes, wrapping them in a thick knot that holds them fast for a short while. | Exposed to Alfvénic resonance; high-frequency waves shatter its braid |
+| trenza_magnetica.c2 | Radiative lattice skin scatters lethal UV flux | Structured plasma crystal reflects and redirects photons ← Photospheric/coronal flux exceeds cellular damage threshold ← Stefan-Boltzmann blackbody emission at 5800 K | **F6** Photospheric radiative flux is ~63 MW/m², with coronal temperatures reaching ~10⁶ K.; **F18** Radiative lattice skin scatters and refracts lethal UV/X-ray flux while maximizing photon capture cross-section. | Flare Shield (`trenza_magnetica.flare_shield`) | Defence | Its shimmering skin deflects incoming energy blasts, catching the scattered light and storing it strongly for a short while. | Lattice gaps close in high-density plasma; suffocates if it dives into the chromosphere |
+| trenza_magnetica.c3 | Current-loop stomach stores reconnection charge | Diamagnetic shielding confines plasma currents ← Reconnection releases sudden kinetic and thermal bursts ← Anti-parallel field lines break and reconnect | **F12** Magnetic reconnection converts stored magnetic free energy into kinetic and thermal energy, accelerating particles to relativistic speeds.; **F16** Organisms utilize high-conductivity plasma currents to store and shed charge during reconnection events. | Siphon Burst (`trenza_magnetica.siphon_burst`) | Poke | The creature extends a glowing tendril to draw power from a nearby target, absorbing the stolen energy to mend its own wounds. | Overcharge triggers uncontrolled reconnection; self-cannibalizes if fed too rapidly |
+| trenza_magnetica.c4 | Alfvén-wave communication along field lines | Transverse MHD waves propagate along closed flux tubes ← Vacuum corona lacks acoustic transmission medium ← Magnetized plasma supports 1000 km/s wave speeds | **F20** Alfvén-wave communication propagates along magnetically connected field lines at ~1000 km/s, with range limited by frequency-dependent damping and line-tying. | Field Call (`trenza_magnetica.field_call`) | Social | It sends out a resonant pulse that draws nearby allies along the same magnetic path, pulling them swiftly to its side. | Requires magnetically closed tubes; breaks in open solar wind |
 
 ### trenza_magnetica.c1: Helical body shape absorbs torsional stress
 
 Trait ← Helical morphology distributes rotational strain ← Differential rotation shears magnetic flux tubes across latitudes ← G2V torsional oscillation winds field lines ← F4, F17
 
-- **Skill:** Twist Anchor (Control): Tangles in a 20m radius, halting enemy movement for 3s
+- **Skill:** Twist Anchor (Control): The creature coils tightly around nearby foes, wrapping them in a thick knot that holds them fast for a short while.
 - **Weakness:** Exposed to Alfvénic resonance; high-frequency waves shatter its braid
 - **Observe:**
   1. Spire-like silhouette against a dark spot
@@ -48,7 +48,7 @@ Trait ← Helical morphology distributes rotational strain ← Differential rota
 
 Trait ← Structured plasma crystal reflects and redirects photons ← Photospheric/coronal flux exceeds cellular damage threshold ← Stefan-Boltzmann blackbody emission at 5800 K ← F6, F18
 
-- **Skill:** Flare Shield (Defence): Redirects 50% of incoming energy burst, storing it for 5s
+- **Skill:** Flare Shield (Defence): Its shimmering skin deflects incoming energy blasts, catching the scattered light and storing it strongly for a short while.
 - **Weakness:** Lattice gaps close in high-density plasma; suffocates if it dives into the chromosphere
 - **Observe:**
   1. Iridescent sheen refracting sunlight into spectral bands
@@ -66,7 +66,7 @@ Trait ← Structured plasma crystal reflects and redirects photons ← Photosphe
 
 Trait ← Diamagnetic shielding confines plasma currents ← Reconnection releases sudden kinetic and thermal bursts ← Anti-parallel field lines break and reconnect ← F12, F16
 
-- **Skill:** Siphon Burst (Poke): Drains 30% of target charge, healing self for 4s
+- **Skill:** Siphon Burst (Poke): The creature extends a glowing tendril to draw power from a nearby target, absorbing the stolen energy to mend its own wounds.
 - **Weakness:** Overcharge triggers uncontrolled reconnection; self-cannibalizes if fed too rapidly
 - **Observe:**
   1. Pulsing crimson core visible through its braid
@@ -84,7 +84,7 @@ Trait ← Diamagnetic shielding confines plasma currents ← Reconnection releas
 
 Trait ← Transverse MHD waves propagate along closed flux tubes ← Vacuum corona lacks acoustic transmission medium ← Magnetized plasma supports 1000 km/s wave speeds ← F20
 
-- **Skill:** Field Call (Social): Summons 3 allies within 500m along the same flux tube
+- **Skill:** Field Call (Social): It sends out a resonant pulse that draws nearby allies along the same magnetic path, pulling them swiftly to its side.
 - **Weakness:** Requires magnetically closed tubes; breaks in open solar wind
 - **Observe:**
   1. Rapid polarization shifts along its length

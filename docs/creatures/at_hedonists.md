@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_hedonists.c1 | Decade-long polyandrous conception cycle | Prolonged estrus gatekeeping prevents selective sweeps ← Absence of seasonal photoperiod cues removes natural breeding windows ← Low axial tilt & low-eccentricity orbit lock photoperiods | **F1** Host stars are K2V to G2V main-sequence dwarfs (0.6–1.0 L⊙) with stable photosynthetic output and age-dependent flare activity.; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Sweet Manna Lure (`at_hedonists.sweet_manna_lure`) | Social | Draws Hedonists within 20m using nutrient-rich bacterial slurry | Metabolic lethargy; cannot initiate rapid escape without decades of gestational preparation |
-| at_hedonists.c2 | Three-year-old intellectual ceiling & leisurely browsing | Lack of ecological problem-solving pressure ← Nutrient-dense fruit and microbial manna blooms ← Stable tropical climate and low seasonal stress | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F15** Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Pleasure Drift (`at_hedonists.pleasure_drift`) | Passive | Reduces stress by 15% per turn but delays action readiness by 1 turn | Falls ill when exposed to bitter or toxic flora |
+| at_hedonists.c1 | Decade-long polyandrous conception cycle | Prolonged estrus gatekeeping prevents selective sweeps ← Absence of seasonal photoperiod cues removes natural breeding windows ← Low axial tilt & low-eccentricity orbit lock photoperiods | **F1** Host stars are K2V to G2V main-sequence dwarfs (0.6–1.0 L⊙) with stable photosynthetic output and age-dependent flare activity.; **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Sweet Manna Lure (`at_hedonists.sweet_manna_lure`) | Social | The creature releases a rich bacterial scent that strongly attracts nearby Hedonists to gather around it. | Metabolic lethargy; cannot initiate rapid escape without decades of gestational preparation |
+| at_hedonists.c2 | Three-year-old intellectual ceiling & leisurely browsing | Lack of ecological problem-solving pressure ← Nutrient-dense fruit and microbial manna blooms ← Stable tropical climate and low seasonal stress | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F15** Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Pleasure Drift (`at_hedonists.pleasure_drift`) | Passive | The creature settles into a deeply relaxed state, appearing calm and content, but moves and reacts with noticeable slowness. | Falls ill when exposed to bitter or toxic flora |
 
 ### at_hedonists.c1: Decade-long polyandrous conception cycle
 
 Trait ← Prolonged estrus gatekeeping prevents selective sweeps ← Absence of seasonal photoperiod cues removes natural breeding windows ← Low axial tilt & low-eccentricity orbit lock photoperiods ← F1, F2, F3
 
-- **Skill:** Sweet Manna Lure (Social): Draws Hedonists within 20m using nutrient-rich bacterial slurry
+- **Skill:** Sweet Manna Lure (Social): The creature releases a rich bacterial scent that strongly attracts nearby Hedonists to gather around it.
 - **Weakness:** Metabolic lethargy; cannot initiate rapid escape without decades of gestational preparation
 - **Observe:**
   1. Soft, unpigmented skin with high capillary density
@@ -47,7 +47,7 @@ Trait ← Prolonged estrus gatekeeping prevents selective sweeps ← Absence of 
 
 Trait ← Lack of ecological problem-solving pressure ← Nutrient-dense fruit and microbial manna blooms ← Stable tropical climate and low seasonal stress ← F6, F15, F20
 
-- **Skill:** Pleasure Drift (Passive): Reduces stress by 15% per turn but delays action readiness by 1 turn
+- **Skill:** Pleasure Drift (Passive): The creature settles into a deeply relaxed state, appearing calm and content, but moves and reacts with noticeable slowness.
 - **Weakness:** Falls ill when exposed to bitter or toxic flora
 - **Observe:**
   1. Leisurely chewing of succulent fruit clusters

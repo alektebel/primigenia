@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| morrudo.c1 | Limbless, undulatory body | Eel-like undulation ← Avoids snagging in tidal kelp and lava crevices ← Turbid shallows (F20) + rapid tidal flux (F13) demand 3D agility | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Silt Glide (`morrudo.silt_glide`) | Basic | Darts through murk without kicking up sediment, +20% movement speed in shallows | Cannot stop quickly on hard rock; slides into spines and loses balance |
-| morrudo.c2 | Ampullae of Lorenzini-like electroreceptors along snout | Electroreception ← Detects muscle twitches of hidden prey ← Turbidity limits sight (F20) while wave noise (F4) masks pressure cues | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F4** Dense air: 1.6 bar | Static Sense (`morrudo.static_sense`) | Poke | Reveals hidden prey outline and movement speed within 2 m radius | Overloaded by lightning storms (F10), causing panic strikes and self-harm |
-| morrudo.c3 | Crepuscular activity pattern (dawn/dusk) | Dawn/dusk foraging ← Prey aggregate in shallows at low light ← Tidal drawdown (F13) concentrates prey; 26 h day (F3) extends twilight | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Low Light Lunge (`morrudo.low_light_lunge`) | Engage | +30% strike success in dim conditions, -40% in bright sun | Blind to sudden flashes, relies entirely on electro/pressure cues |
-| morrudo.c4 | Thick, gelatinous dermal layer | Dense subcutaneous matrix ← Insulates neural tissue for electroreception ← High pO2 (D10) supports metabolic cost; dense air (F4) cools dawn pools | **F4** Dense air: 1.6 bar | Cold Stiffness (`morrudo.cold_stiffness`) | Defence | Immunity to temperature shock, maintains strike accuracy down to 8°C | Vulnerable to gill parasites (F29) if dermal layer is torn by rock spines |
+| morrudo.c1 | Limbless, undulatory body | Eel-like undulation ← Avoids snagging in tidal kelp and lava crevices ← Turbid shallows (F20) + rapid tidal flux (F13) demand 3D agility | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Silt Glide (`morrudo.silt_glide`) | Basic | The creature darts through murky shallows without stirring the silt, gliding swiftly past obstacles. | Cannot stop quickly on hard rock; slides into spines and loses balance |
+| morrudo.c2 | Ampullae of Lorenzini-like electroreceptors along snout | Electroreception ← Detects muscle twitches of hidden prey ← Turbidity limits sight (F20) while wave noise (F4) masks pressure cues | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F4** Dense air: 1.6 bar | Static Sense (`morrudo.static_sense`) | Poke | The creature detects the faint outline and quick movements of hidden prey nearby, allowing it to track them easily. | Overloaded by lightning storms (F10), causing panic strikes and self-harm |
+| morrudo.c3 | Crepuscular activity pattern (dawn/dusk) | Dawn/dusk foraging ← Prey aggregate in shallows at low light ← Tidal drawdown (F13) concentrates prey; 26 h day (F3) extends twilight | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Low Light Lunge (`morrudo.low_light_lunge`) | Engage | The creature strikes strongly in dim light, but its attacks grow weak and inaccurate under bright sunlight. | Blind to sudden flashes, relies entirely on electro/pressure cues |
+| morrudo.c4 | Thick, gelatinous dermal layer | Dense subcutaneous matrix ← Insulates neural tissue for electroreception ← High pO2 (D10) supports metabolic cost; dense air (F4) cools dawn pools | **F4** Dense air: 1.6 bar | Cold Stiffness (`morrudo.cold_stiffness`) | Defence | Its thick, gelatinous skin shields it from freezing conditions, allowing it to keep striking strongly in the cold. | Vulnerable to gill parasites (F29) if dermal layer is torn by rock spines |
 
 ### morrudo.c1: Limbless, undulatory body
 
 Trait ← Eel-like undulation ← Avoids snagging in tidal kelp and lava crevices ← Turbid shallows (F20) + rapid tidal flux (F13) demand 3D agility ← F20, F13, F9
 
-- **Skill:** Silt Glide (Basic): Darts through murk without kicking up sediment, +20% movement speed in shallows
+- **Skill:** Silt Glide (Basic): The creature darts through murky shallows without stirring the silt, gliding swiftly past obstacles.
 - **Weakness:** Cannot stop quickly on hard rock; slides into spines and loses balance
 - **Observe:**
   1. Sees it coil in submerged tuff shadows at noon
@@ -49,7 +49,7 @@ Trait ← Eel-like undulation ← Avoids snagging in tidal kelp and lava crevice
 
 Trait ← Electroreception ← Detects muscle twitches of hidden prey ← Turbidity limits sight (F20) while wave noise (F4) masks pressure cues ← F20, F4
 
-- **Skill:** Static Sense (Poke): Reveals hidden prey outline and movement speed within 2 m radius
+- **Skill:** Static Sense (Poke): The creature detects the faint outline and quick movements of hidden prey nearby, allowing it to track them easily.
 - **Weakness:** Overloaded by lightning storms (F10), causing panic strikes and self-harm
 - **Observe:**
   1. Sees head tilt toward specific water columns
@@ -67,7 +67,7 @@ Trait ← Electroreception ← Detects muscle twitches of hidden prey ← Turbid
 
 Trait ← Dawn/dusk foraging ← Prey aggregate in shallows at low light ← Tidal drawdown (F13) concentrates prey; 26 h day (F3) extends twilight ← F3, F13, F27
 
-- **Skill:** Low Light Lunge (Engage): +30% strike success in dim conditions, -40% in bright sun
+- **Skill:** Low Light Lunge (Engage): The creature strikes strongly in dim light, but its attacks grow weak and inaccurate under bright sunlight.
 - **Weakness:** Blind to sudden flashes, relies entirely on electro/pressure cues
 - **Observe:**
   1. Hides in rock overhangs during midday heat
@@ -85,7 +85,7 @@ Trait ← Dawn/dusk foraging ← Prey aggregate in shallows at low light ← Tid
 
 Trait ← Dense subcutaneous matrix ← Insulates neural tissue for electroreception ← High pO2 (D10) supports metabolic cost; dense air (F4) cools dawn pools ← F4
 
-- **Skill:** Cold Stiffness (Defence): Immunity to temperature shock, maintains strike accuracy down to 8°C
+- **Skill:** Cold Stiffness (Defence): Its thick, gelatinous skin shields it from freezing conditions, allowing it to keep striking strongly in the cold.
 - **Weakness:** Vulnerable to gill parasites (F29) if dermal layer is torn by rock spines
 - **Observe:**
   1. Basks on submerged basalt at noon, skin glistening
@@ -104,7 +104,7 @@ Trait ← Dense subcutaneous matrix ← Insulates neural tissue for electrorecep
 | With | Kind | Via | Note |
 |---|---|---|---|
 | Cuarteta | prey |  | Eats dissolved proteins and small prey from the shallows |
-| Brújula | prey |  | Ambushes it when it filters suspension near the shore |
+| brujula | prey |  | Ambushes it when it filters suspension near the shore |
 | Acechalunas | predation |  | Becomes prey when the terrestrial predator wades into the shallows to drink |
 
 ## Journal

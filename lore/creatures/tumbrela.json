@@ -1,0 +1,323 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "tumbrela",
+  "name": {
+    "en": "Tumbrela"
+  },
+  "world": "deepinterior",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Narrow hydrothermal-adjacent fractures, 1.5–3 km depth",
+    "diet": "Chemosynthetic (radiolytic H2, serpentinised CH4, Fe(III)/sulfate redox)",
+    "active": "Continuous, paced by 56-hour tidal strain",
+    "predators": []
+  },
+  "body": "Flattened, segmented, with a mineralized dorsal plate and hydrostatic suckers",
+  "chains": [
+    {
+      "id": "tumbrela.c1",
+      "trait": "Dorsal piezoelectric quartz plates",
+      "links": [
+        "Detects rock-borne elastic waves",
+        "Converts mechanical strain to electrochemical signals",
+        "Maps fracture geometry and distant seismic swarms"
+      ],
+      "roots": [
+        "F10",
+        "F3"
+      ],
+      "skill": {
+        "id": "tumbrela.seismic_tap",
+        "name": {
+          "en": "Seismic Tap"
+        },
+        "role": "Control",
+        "effect": "The creature strikes the ground, drawing nearby allies to its side and soothing aggressive fracture-dwellers into a calm state.",
+        "numbers": {}
+      },
+      "weakness": "Deaf to high-frequency gas bubbles, so venting CO2 startles them",
+      "observe": [
+        "Dorsal plate glints faintly under mantle heat",
+        "Body trembles in time with distant quakes",
+        "Oriented perpendicular to fracture walls"
+      ],
+      "journal": {
+        "en": "They don't see the dark; they listen to the rock breathe."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the array as a low-frequency seismic receiver, add inverse-piezo tapping or limb-striking as the sender, call the plates siliceous rather than pure quartz, replace the glint with trembling and orientation cues, swap in a piezo/biomechanics source, and reduce the skill to a plain 'low call that gathers allies and calms nearby dwellers'.",
+        "fixes": [
+          "Keep the array as a low-frequency seismic receiver, add inverse-piezo tapping or limb-striking as the sender, call the plates siliceous rather than pure quartz, replace the glint with trembling and orientation cues, swap in a piezo/biomechanics source, and reduce the skill to a plain 'low call that gathers allies and calms nearby dwellers'."
+        ],
+        "analogues": [
+          {
+            "organism": "Elephants and blind mole rats tracking substrate vibrations; piezoelectricity in bone and collagen; quartz transducers (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chivian_2008_desulforudis"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chivian_2008_desulforudis"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "tumbrela.c2",
+      "trait": "Methane clathrate buoyancy bladders",
+      "links": [
+        "Stabilizes CH4 hydrate at 5–15 MPa",
+        "Adjusts density to match dense CaCl2 brine",
+        "Enables vertical positioning in narrow conduits"
+      ],
+      "roots": [
+        "F21",
+        "F13"
+      ],
+      "skill": {
+        "id": "tumbrela.brine_drift",
+        "name": {
+          "en": "Brine Drift"
+        },
+        "role": "Basic",
+        "effect": "The creature expands its buoyancy bladders to drift swiftly upward through the water.",
+        "numbers": {}
+      },
+      "weakness": "Rapid depressurization causes explosive gas expansion, rupturing bladders",
+      "observe": [
+        "Translucent side pouches shimmer",
+        "Body angles up/down with pressure shifts",
+        "Leaves micro-bubbles when stabilizing"
+      ],
+      "journal": {
+        "en": "A living submarine, tuned to the weight of a calcium sea."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Confine the bladders to the 0.9-1.5 km upper shell where F21 holds, or switch to a lipid/gas bladder at 1.5-3 km; make movement slow and passive, treat dissociation as a one-shot emergency ascent, and strip the numeric movement values.",
+        "fixes": [
+          "Confine the bladders to the 0.9-1.5 km upper shell where F21 holds, or switch to a lipid/gas bladder at 1.5-3 km; make movement slow and passive, treat dissociation as a one-shot emergency ascent, and strip the numeric movement values."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish swim bladders and cuttlefish buoyancy regulation; methane clathrate in shallow sediments (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "tumbrela.c3",
+      "trait": "Radiolytic oxygen storage vesicles",
+      "links": [
+        "Hoards radiolytic O2 from uranium decay",
+        "Spends it in a single anaerobic-to-aerobic burst",
+        "Overrides baseline metabolic paralysis"
+      ],
+      "roots": [
+        "F15",
+        "F22"
+      ],
+      "skill": {
+        "id": "tumbrela.oxygen_flash",
+        "name": {
+          "en": "Oxygen Flash"
+        },
+        "role": "Poke",
+        "effect": "The creature releases stored oxygen to move and strike strongly before settling down to recover.",
+        "numbers": {}
+      },
+      "weakness": "Leaves them completely anaerobic and sluggish until they recharge",
+      "observe": [
+        "Gills flush crimson then fade",
+        "Sudden explosive acceleration",
+        "Pant-like ciliary beats post-burst"
+      ],
+      "journal": {
+        "en": "A match struck in a vault; one strike, then darkness."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep one rare stored-oxygen burst for escape or a lunge followed by a long refractory period, delete the numbers, replace external gills with internal vesicles or a pigment sac if the colour cue matters, and tie recharge to local U/Th-rich rock rather than ambient water.",
+        "fixes": [
+          "Keep one rare stored-oxygen burst for escape or a lunge followed by a long refractory period, delete the numbers, replace external gills with internal vesicles or a pigment sac if the colour cue matters, and tie recharge to local U/Th-rich rock rather than ambient water."
+        ],
+        "analogues": [
+          {
+            "organism": "The radiolysis-fed Desulforudis community; oxygen-detoxifying anaerobes and pigment-backed oxygen stores in annelids (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "tumbrela.c4",
+      "trait": "Hydrostatic fracture-anchoring limbs",
+      "links": [
+        "Compensates for near-zero diffusion of scents",
+        "Grips rock walls during slow Darcy flow",
+        "Positions mouthparts into advective current veins"
+      ],
+      "roots": [
+        "F11",
+        "F12"
+      ],
+      "skill": {
+        "id": "tumbrela.wall_grip",
+        "name": {
+          "en": "Wall Grip"
+        },
+        "role": "Defence",
+        "effect": "The creature extends its limbs to lock firmly against the rock, bracing itself so it cannot be pushed back.",
+        "numbers": {}
+      },
+      "weakness": "Cannot reposition quickly if pinned by calcite precipitation",
+      "observe": [
+        "Segmented suckers clamp to stone",
+        "Body remains perfectly still for hours",
+        "Cilia sweep only when flow changes"
+      ],
+      "journal": {
+        "en": "Still as the crust itself, waiting for the chemical tide."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the trait; reframe the weakness as long-term sealing and burial when flow stalls, or use sudden flow reversal dislodging the suckers as an in-play weakness, and strip the numeric resistance value.",
+        "fixes": [
+          "Keep the trait; reframe the weakness as long-term sealing and burial when flow stalls, or use sudden flow reversal dislodging the suckers as an in-play weakness, and strip the numeric resistance value."
+        ],
+        "analogues": [
+          {
+            "organism": "Barnacles, mussel byssal attachment, clingfish and remora suction discs, hydrothermal-vent tubeworm anchoring (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'competitor') Shares fracture space but avoids direct contact through vertical zoning; Tumbrela holds the mid-fracture, Cascavel hunts deeper."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "fracture-dwelling lineage"
+  },
+  "temperament": "Patient, reactive only to specific seismic frequencies",
+  "secrets": [
+    "Can be befriended by mimicking their seismic frequency to approach silently.",
+    "Their vesicles can be harvested for one-time burst metabolism, but risk poisoning if overused."
+  ],
+  "moments": [
+    "When a distant quake strikes, every Tumbrela turns its plates in unison, listening to the planet’s heartbeat across the dark."
+  ],
+  "journal": [
+    {
+      "en": "They don't see the dark; they listen to the rock breathe."
+    },
+    {
+      "en": "A living submarine, tuned to the weight of a calcium sea."
+    }
+  ]
+}

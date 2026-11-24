@@ -6,10 +6,11 @@
 
 ## Niche
 
-- **Habitat:** Ice-shell stress fractures and vent-conduit junctions
+- **Habitat:** Ice-shell stress fractures and vent-conduit junctions. Also, in the council's sketch (no such creature in this world yet): Vent-Spinners, both crave stress fractures; fights over anchor points.
 - **Diet:** Chemolithotrophic symbionts and electro-captured macro-prey
 - **Active:** Sessile anchor with mobile stinger-tendrils
-- **Predators:** none
+- **Predators:** Deep Silencers
+- **Prey:** Vessica Grazers
 
 ## Body
 
@@ -21,8 +22,8 @@ Jagged crystalline carapace fused to substrate, with three conductive electro-os
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| el_susurrador_de_hielo.c1 | Crystalline spine harvests tidal flexure | Converts ice stress to voltage ← Powers slow metabolism ← Cold pressure slows diffusion | **F3** Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth.; **F7** The ice shell is about 8 km thick at the poles and 30 km at the equator — a highly speculative tidal-stress pattern — and beneath it a global ocean covers the rock.; **F24** Enzymes at 271 K run roughly an order of magnitude slower than at 300 K, so microbial growth and turnover take years to decades; decades-to-centuries lifespans apply only to the largest symbiotic bodies and are highly speculative. | Resonant Charge (`el_susurrador_de_hielo.resonant_charge`) | Basic | Absorbs tidal vibration to fill charge meter. Unlocks abilities. +15% charge rate near stress fractures. | Cannot charge if locked to dead ice; must be near stress. |
-| el_susurrador_de_hielo.c2 | Bioluminescence triggered by ionic discharge | Voltage excites chemiluminescence ← Dark ocean has no sunlight ← Prey attracted to light | **F27** Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate.; **F12** Photosynthetic flux at the ocean roof is essentially zero under 8-30 km of ice, so no photosynthesis and no plant-like primary production exist in the ocean.; **F3** Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth. | Lure Flash (`el_susurrador_de_hielo.lure_flash`) | Engage | Spends charge to flash bright blue. Draws nearby creatures toward tendrils. 470 nm peak. | Flash reveals position to predators and rivals. |
+| el_susurrador_de_hielo.c1 | Crystalline spine harvests tidal flexure | Converts ice stress to voltage ← Powers slow metabolism ← Cold pressure slows diffusion | **F3** Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth.; **F7** The ice shell is about 8 km thick at the poles and 30 km at the equator — a highly speculative tidal-stress pattern — and beneath it a global ocean covers the rock.; **F24** Enzymes at 271 K run roughly an order of magnitude slower than at 300 K, so microbial growth and turnover take years to decades; decades-to-centuries lifespans apply only to the largest symbiotic bodies and are highly speculative. | Resonant Charge (`el_susurrador_de_hielo.resonant_charge`) | Basic | The creature absorbs ambient vibrations to steadily build its energy, glowing brighter as it prepares to unleash a powerful attack. It gathers this strength much more rapidly when standing near deep cracks in the terrain. | Cannot charge if locked to dead ice; must be near stress. |
+| el_susurrador_de_hielo.c2 | Bioluminescence triggered by ionic discharge | Voltage excites chemiluminescence ← Dark ocean has no sunlight ← Prey attracted to light | **F27** Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate.; **F12** Photosynthetic flux at the ocean roof is essentially zero under 8-30 km of ice, so no photosynthesis and no plant-like primary production exist in the ocean.; **F3** Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth. | Lure Flash (`el_susurrador_de_hielo.lure_flash`) | Engage | The creature flashes a bright blue light that strongly pulls nearby creatures toward its tendrils. | Flash reveals position to predators and rivals. |
 | el_susurrador_de_hielo.c3 | Electro-osmotic cavitation jet | Voltage drives ion pump ← Creates pressure wave ← High pressure causes cavitation bubbles | **F14** At 1.4 kbar and a 271 K roof, water is far above its saturation pressure and below its critical pressure of 220 bar, so the ocean has no vapour cavities; only dissolved gases and exsolved CO₂/N₂ in conduits can form bubbles.; **F3** Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth.; **F22** Life uses archaeal-type ether and isoprenoid lipids, whose tighter packing keeps membranes serviceable at 271 K and 1.4 kbar, at the cost of slow diffusion. | Cavitation Strike (`el_susurrador_de_hielo.cavitation_strike`) | Poke | Spends charge to fire shockwave. Damages prey and stuns sensitive sensors. Area effect. | Overcharge risks rupturing membrane; recharge needed. |
 | el_susurrador_de_hielo.c4 | Vibration-damping skin matches tidal hum | Tidal hum fills acoustic channel ← Matching vibration hides echo ← Predators rely on sonar | **F11** Sound travels at 1,480-1,520 m/s in the ocean and 3,500-3,900 m/s in the ice, so hearing works well locally, while 'tens of kilometres' of acoustic range is speculative without an attenuation model.; **F3** Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth.; **F26** Primary production is chemolithoautotrophic, and the dominant animals are symbiont hosts that farm sulphide- and H₂-oxidising microbes internally, Riftia-style. | Phase Lock (`el_susurrador_de_hielo.phase_lock`) | Defence | Matches background tidal frequency. Hides from sonar-based enemies. Cannot move. | Stuck in place; vulnerable to direct strikes. |
 
@@ -30,7 +31,7 @@ Jagged crystalline carapace fused to substrate, with three conductive electro-os
 
 Trait ← Converts ice stress to voltage ← Powers slow metabolism ← Cold pressure slows diffusion ← F3, F7, F24
 
-- **Skill:** Resonant Charge (Basic): Absorbs tidal vibration to fill charge meter. Unlocks abilities. +15% charge rate near stress fractures.
+- **Skill:** Resonant Charge (Basic): The creature absorbs ambient vibrations to steadily build its energy, glowing brighter as it prepares to unleash a powerful attack. It gathers this strength much more rapidly when standing near deep cracks in the terrain.
 - **Weakness:** Cannot charge if locked to dead ice; must be near stress.
 - **Observe:**
   1. Carapace glints with internal lattice
@@ -49,7 +50,7 @@ Trait ← Converts ice stress to voltage ← Powers slow metabolism ← Cold pre
 
 Trait ← Voltage excites chemiluminescence ← Dark ocean has no sunlight ← Prey attracted to light ← F27, F12, F3
 
-- **Skill:** Lure Flash (Engage): Spends charge to flash bright blue. Draws nearby creatures toward tendrils. 470 nm peak.
+- **Skill:** Lure Flash (Engage): The creature flashes a bright blue light that strongly pulls nearby creatures toward its tendrils.
 - **Weakness:** Flash reveals position to predators and rivals.
 - **Observe:**
   1. Tendril sacs dilate before flash
@@ -100,14 +101,6 @@ Trait ← Tidal hum fills acoustic channel ← Matching vibration hides echo ←
   - Analogue: Moth scales dampening bat call frequencies (experimental acoustic camouflage); settling fish on noisy reefs — exploit masking bandwidth; not the same as matching a 3.55-day mechanical tide to 50 kHz clicks.: as named by the judge; no mechanism or reference recorded
   - Fix: Phase Lock masks against low-frequency fracture creaks and current hum (passive listeners, vent competitors), not kHz sonar; for Deep Silencers add weakness that only works when predator uses low-band passive detection, or give predator-behavior that hunts piezo emissions/charge hum in a narrow band. Sessile trade-off (cannot move) stays honest.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Vessica Grazers | cousin |  | (council kind 'Predator-Prey') Flashes lure grazers; strikes them before they flee. |
-| Vent-Spinners | cousin |  | (council kind 'Competitor') Both crave stress fractures; fights over anchor points. |
-| Deep Silencers | cousin |  | (council kind 'Predator') Sonar-predators hunt Susurradores; only Phase Lock saves them. |
 
 ## Journal
 

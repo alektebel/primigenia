@@ -41,7 +41,7 @@
           "en": "Drift-Dash"
         },
         "role": "Basic",
-        "effect": "Short burst flight using dense air, moves 8 m and loses 5 stamina",
+        "effect": "The mantis glides swiftly through the air on a sudden burst of wind, darting forward before settling down.",
         "numbers": {}
       },
       "weakness": "Wing joints stiffen in cold damp, slowing takeoff",
@@ -96,7 +96,7 @@
           "en": "Silent Strike"
         },
         "role": "Poke",
-        "effect": "Inserts egg into target, stuns host for 3s, +15% hatch success",
+        "effect": "The creature drives its curved ovipositor into the target, paralyzing it briefly while carefully depositing an egg inside.",
         "numbers": {}
       },
       "weakness": "Exposed abdomen during laying invites counterattacks",
@@ -151,7 +151,7 @@
           "en": "Foliage Blend"
         },
         "role": "Defence",
-        "effect": "Chance to avoid 1 detection attempt, +10 stealth",
+        "effect": "It presses its mottled wings against the nearby foliage, frequently slipping past notice as it moves with remarkable quietness.",
         "numbers": {}
       },
       "weakness": "Fails against predators that use motion or smell",
@@ -206,7 +206,7 @@
           "en": "Scent Trail"
         },
         "role": "Engage",
-        "effect": "Marks host path, reveals movement for 12s, +20% tracking",
+        "effect": "The mantis releases a strong pheromone trail that clings to the target, allowing anyone nearby to easily follow its recent path.",
         "numbers": {}
       },
       "weakness": "Wind shifts scramble chemical maps",

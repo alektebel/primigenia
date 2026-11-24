@@ -37,7 +37,7 @@
           "en": "Root Harvest"
         },
         "role": "Engage",
-        "effect": "Uproots trees and clears a 10m area, dealing 15 damage to cover and granting 5 food.",
+        "effect": "The creature wrenches ancient trees from the earth, scattering debris and leaving a wide cleared space. Broken cover crumbles under its weight, yielding a rich harvest for the colony.",
         "numbers": {}
       },
       "weakness": "Slow movement; cannot cross deep water or narrow bridges.",
@@ -104,7 +104,7 @@
           "en": "Ancient Boom"
         },
         "role": "Control",
-        "effect": "Deters large predators within 150m and rallies allied Titans, granting +10% defense.",
+        "effect": "A deep, resonant call echoes across the landscape, sending large predators fleeing into the distance. Allied Titans stand their ground more firmly, drawing strength from the powerful sound.",
         "numbers": {}
       },
       "weakness": "Location broadcast; attracts aerial threats and distant enemies.",

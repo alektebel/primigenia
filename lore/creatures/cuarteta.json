@@ -37,7 +37,7 @@
           "en": "Drift Pulse"
         },
         "role": "Basic",
-        "effect": "Surges forward 15m along a straight arc, ignoring terrain drag",
+        "effect": "The creature surges forward in a sweeping arc, gliding smoothly over obstacles and rough terrain without slowing down.",
         "numbers": {}
       },
       "weakness": "Wide turn radius makes its path predictable, easy to dodge",
@@ -94,7 +94,7 @@
           "en": "Sting Lash"
         },
         "role": "Engage",
-        "effect": "Releases a 2m shockwave of toxins, draining 12% target HP and slowing movement by 40%",
+        "effect": "The creature lashes out with a burst of glowing toxins that wash over nearby foes, leaving them sluggish and noticeably weakened.",
         "numbers": {}
       },
       "weakness": "Glow betrays position in dark water; cooldown leaves arms bare",
@@ -151,7 +151,7 @@
           "en": "Jet Burst"
         },
         "role": "Control",
-        "effect": "Forces a 20m backward dash, creating a pressure wake that disrupts enemy balance by 25%",
+        "effect": "The creature forcefully jets backward, sending a strongly rippling pressure wave that knocks nearby enemies off balance.",
         "numbers": {}
       },
       "weakness": "Loud pressure wave attracts larger predators and triggers nearby prey flight",
@@ -207,7 +207,7 @@
           "en": "Sensory Ring"
         },
         "role": "Passive",
-        "effect": "Reveals hidden prey and traps within 10m, increasing first-attack hit chance by 30%",
+        "effect": "The creature's sensory rings constantly scan the area, making hidden prey and concealed traps visible, while its strikes land with strong accuracy.",
         "numbers": {}
       },
       "weakness": "Hypersensitive to lightning strikes during evening storms, causing disorientation",

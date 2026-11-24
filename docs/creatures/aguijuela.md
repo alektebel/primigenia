@@ -22,16 +22,16 @@ Length 3.5 cm, mass 2.8 g
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| aguijuela.c1 | Nocturnal activity under moonlight | Hunts only when moon bright ← Relies on moonlight for navigation and host location ← Moon 1.2 Luna mass gives bright nights ← F6 | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Moon-sting (`aguijuela.moon_sting`) | Signature | Deal 20% more damage under full moon; stuns host for 3s. | Inactive at new moon; cannot hunt without moonlight. |
+| aguijuela.c1 | Nocturnal activity under moonlight | Hunts only when moon bright ← Relies on moonlight for navigation and host location ← Moon 1.2 Luna mass gives bright nights ← F6 | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Moon-sting (`aguijuela.moon_sting`) | Signature | Bathed in moonlight, the creature strikes with heightened ferocity, momentarily paralyzing its host. | Inactive at new moon; cannot hunt without moonlight. |
 | aguijuela.c2 | Electroreceptive sensors on head | Senses host biofields ← Hosts emit weak electricity ← Turbid water hides visual cues ← F20 | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Sense pulse (`aguijuela.sense_pulse`) | Poke | Reveal host hidden by turbidity or camouflage; detect weak hosts. | Sensory overload near strong electric sources or storms. |
-| aguijuela.c3 | Cutaneous gas exchange | Absorbs oxygen through skin ← Water holds more oxygen ← High atmospheric pressure increases gas solubility ← F4 | **F4** Dense air: 1.6 bar | Lunge (`aguijuela.lunge`) | Basic | Quick strike to latch onto host; grants +5 movement for 5s. | Suffocates rapidly if removed from water. |
-| aguijuela.c4 | Arachnid body plan | Eight legs, two body segments ← Convergent arachnid form ← Island radiation fills niches with diverse archetypes ← F27 | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Grip (`aguijuela.grip`) | Engage | Latch onto host; immune to shake/detach effects for 10s. | Vulnerable to shellfish claws and cleaning behaviors. |
+| aguijuela.c3 | Cutaneous gas exchange | Absorbs oxygen through skin ← Water holds more oxygen ← High atmospheric pressure increases gas solubility ← F4 | **F4** Dense air: 1.6 bar | Lunge (`aguijuela.lunge`) | Basic | The creature launches a swift strike to firmly attach itself to its host, briefly propelling them forward. | Suffocates rapidly if removed from water. |
+| aguijuela.c4 | Arachnid body plan | Eight legs, two body segments ← Convergent arachnid form ← Island radiation fills niches with diverse archetypes ← F27 | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Grip (`aguijuela.grip`) | Engage | The creature clamps tightly onto its host, holding on firmly and resisting any attempts to dislodge it. | Vulnerable to shellfish claws and cleaning behaviors. |
 
 ### aguijuela.c1: Nocturnal activity under moonlight
 
 Trait ← Hunts only when moon bright ← Relies on moonlight for navigation and host location ← Moon 1.2 Luna mass gives bright nights ← F6 ← F6
 
-- **Skill:** Moon-sting (Signature): Deal 20% more damage under full moon; stuns host for 3s.
+- **Skill:** Moon-sting (Signature): Bathed in moonlight, the creature strikes with heightened ferocity, momentarily paralyzing its host.
 - **Weakness:** Inactive at new moon; cannot hunt without moonlight.
 - **Observe:**
   1. Active only when moon bright
@@ -67,7 +67,7 @@ Trait ← Senses host biofields ← Hosts emit weak electricity ← Turbid water
 
 Trait ← Absorbs oxygen through skin ← Water holds more oxygen ← High atmospheric pressure increases gas solubility ← F4 ← F4
 
-- **Skill:** Lunge (Basic): Quick strike to latch onto host; grants +5 movement for 5s.
+- **Skill:** Lunge (Basic): The creature launches a swift strike to firmly attach itself to its host, briefly propelling them forward.
 - **Weakness:** Suffocates rapidly if removed from water.
 - **Observe:**
   1. Skin glistens with moisture
@@ -86,7 +86,7 @@ Trait ← Absorbs oxygen through skin ← Water holds more oxygen ← High atmos
 
 Trait ← Eight legs, two body segments ← Convergent arachnid form ← Island radiation fills niches with diverse archetypes ← F27 ← F27
 
-- **Skill:** Grip (Engage): Latch onto host; immune to shake/detach effects for 10s.
+- **Skill:** Grip (Engage): The creature clamps tightly onto its host, holding on firmly and resisting any attempts to dislodge it.
 - **Weakness:** Vulnerable to shellfish claws and cleaning behaviors.
 - **Observe:**
   1. Leg count of eight

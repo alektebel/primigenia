@@ -34,7 +34,7 @@
           "en": "Nociceptor Dampening"
         },
         "role": "Passive",
-        "effect": "Reduce host agitation by 40%, allowing safe extraction of nutrients without combat",
+        "effect": "The creature secretes a numbing fluid that quietly calms the host, allowing it to feed peacefully without provoking a struggle.",
         "numbers": {}
       },
       "weakness": "Salivary enzymes are thermally unstable; high surface temperatures degrade secretion efficiency",
@@ -95,7 +95,7 @@
           "en": "Silent Gestation"
         },
         "role": "Control",
-        "effect": "Converts 1 host unit into a temporary parasite carrier with +3 stealth",
+        "effect": "The parasite infests a nearby creature, transforming it into a carrier that moves silently and remains concealed for a short while.",
         "numbers": {}
       },
       "weakness": "Hosts that discover infection will violently purge them",

@@ -21,7 +21,7 @@ sem = threading.Semaphore(int(os.environ.get("QWEN_CONC", "5")))  # NAN qwen all
 
 
 # advisors served by opencode free-tier models instead of qwen (model diversity)
-OC_MODEL = {"skeptic": "opencode/deepseek-v4.1-flash-free", "senses": "opencode/glm-5.3-flash-free"}
+from voices import OC_MODEL, REFEREE_FALLBACK, down_file
 ocsem = threading.Semaphore(2)
 ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
@@ -34,7 +34,7 @@ def oc_chat(model, system, user):
     msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. "
            "Do not edit or create any files and do not run commands other than reading that one file. "
            "Your final message must be ONLY the requested Markdown answer.")
-    down = os.path.join(os.path.dirname(D), "oc_down_until_" + re.sub(r"\W+", "_", model))  # shared cooldown when opencode's free quota is exhausted
+    down = down_file(os.path.dirname(D), model)  # shared cooldown when opencode's free quota is exhausted
     for a in range(8):
         if os.path.exists(down) and time.time() < float(open(down).read() or 0):
             print("oc cooldown: skipping", model, file=sys.stderr, flush=True); return "(failed)"
@@ -71,13 +71,18 @@ def cur_chat(model, system, user):
     pf = os.path.join(wd, "prompt.md")
     msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. You may search the web for references. "
            "Do not create or edit files. Your final message must be ONLY the requested answer.")
+    down = os.path.join(os.path.dirname(D), "cursor_down_until_" + re.sub(r"\W+", "_", model))  # plan rejected the model: do not retry 8 times per call
     for a in range(8):
+        if os.path.exists(down) and time.time() < float(open(down).read() or 0):
+            print("cursor cooldown: skipping", model, file=sys.stderr, flush=True); return "(failed)"
         with cursem:
             r = subprocess.run(["agent", "-p", "--trust", "--mode", "ask", "--model", model, "--workspace", wd, msg], cwd=wd,
                                stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=2400)
         out = ANSI.sub("", r.stdout).strip()
         if r.returncode == 0 and len(out) > 300:
             return out
+        if "Model unavailable" in (r.stdout + r.stderr) or "usage limit" in (r.stdout + r.stderr).lower():
+            open(down, "w").write(str(time.time() + 1800)); print("cursor model unavailable on this plan: cooling down 30 min", file=sys.stderr, flush=True); return "(failed)"
         print("cursor retry", model, a, r.returncode, len(out), r.stderr[-300:], file=sys.stderr, flush=True); time.sleep(30)
     return "(failed)"
 
@@ -121,7 +126,12 @@ def ask(k, system, user, **kw):
         if not t.startswith("(failed)"): return t
         t = oc_chat(OC_MODEL["skeptic"], system, user)
         return t if not t.startswith("(failed)") else chat(system, user, **kw)
-    if k in CUR_MODEL: return cur_chat(CUR_MODEL[k], system, user)
+    if k in CUR_MODEL:
+        t = cur_chat(CUR_MODEL[k], system, user)
+        if t.startswith("(failed)"):
+            print("referee fallback: cursor unavailable; trying", REFEREE_FALLBACK, file=sys.stderr, flush=True)
+            t = oc_chat(REFEREE_FALLBACK, system, user)
+        return t
     return oc_chat(OC_MODEL[k], system, user) if k in OC_MODEL else chat(system, user, **kw)
 
 
@@ -156,8 +166,11 @@ star (type, light, UV, flares) -> planet (gravity, day length, tilt, atmosphere 
 radiation, oceans, chemistry, moons, tides) -> habitat on the {HABITAT} (biome, food, light, temperature, terrain) -> selection pressure
 -> trait (body part, sense, behaviour) -> what the PLAYER can do with it (a skill or move, a befriend preference, a weakness, a secret).
 Style example: "They talk in low hums. Why? Sound carries far in the dense air, and valley fog blinds eyes most mornings. Why fog? Cold
-sea against warm volcanic ground. Root: 1.6 bar atmosphere + active volcanism. -> Skill 'Long hum' (Control): calls the herd from 120 m
-and calms allies. Weakness: deaf to high pitches, so a whistle startles them."
+sea against warm volcanic ground. Root: 1.6 bar atmosphere + active volcanism. -> Skill 'Long hum' (Control): a low call that carries
+through the fog, gathers the herd and calms its members. Weakness: deaf to high pitches, so a whistle startles them."
+GAME NUMBERS ARE NOT YOURS: the game is real time and moves are designed in our labs. A skill is only a name, a role and a plain
+description of the behaviour. Never write damage, durations, turns, percentages, cooldowns, ranges or any stat for a skill or move.
+(Planet and physics numbers, with units, are still required in the world facts and links.)"
 Write each chain as:  TRAIT  <- why  <- why  <- PHYSICAL ROOT   ->  SKILL/MECHANIC (+ weakness).
 Reuse the same planet facts across creatures; where two creatures face the same pressure, show convergent or opposite solutions."""
 FP = FP.replace("{HABITAT}", HABITAT)

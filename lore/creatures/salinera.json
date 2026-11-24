@@ -34,7 +34,7 @@
           "en": "Gill Filter"
         },
         "role": "Basic",
-        "effect": "Heal 3 HP and gain +2 P to a local area; weakens in ash-poor zones.",
+        "effect": "The creature filters nutrients to restore its own vitality and strongly strengthens nearby allies, though its power fades in barren, ash-scarred waters.",
         "numbers": {}
       },
       "weakness": "Starves in regions without recent volcanic ash or flare fallout.",
@@ -96,7 +96,7 @@
           "en": "Salt Blast"
         },
         "role": "Poke",
-        "effect": "Deal 4 damage to enemies within 3m; causes dehydration debuff.",
+        "effect": "It forcefully expels concentrated brine at nearby foes, leaving them parched and weakened by the sudden salt spray.",
         "numbers": {}
       },
       "weakness": "Vulnerable to freshwater shock; player can stun with water-skill.",
@@ -151,7 +151,7 @@
           "en": "Glow Signal"
         },
         "role": "Social",
-        "effect": "Attract all Salinera within 20m to player or ally; grants 'Herd' buff.",
+        "effect": "A bright bioluminescent flash ripples from its body, drawing nearby kin to gather closely together and form a protective cluster.",
         "numbers": {}
       },
       "weakness": "Attracts predators and flares; player can lure enemies using biolum lure.",
@@ -206,7 +206,7 @@
           "en": "Vent Dodge"
         },
         "role": "Defence",
-        "effect": "Gain immunity to oxidant damage for 5 turns; move 2m away from vent.",
+        "effect": "Its sensitive gill cilia instantly seal shut as it swiftly retreats from the vent plume, rendering it strongly resistant to the harsh oxidant fumes.",
         "numbers": {}
       },
       "weakness": "Blind to chemical plumes; player can use chemical smoke to mask vent signals.",

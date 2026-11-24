@@ -21,16 +21,16 @@ Sessile mantle with three parabolic ear-lobes; expandable wind-shear wing membra
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| voxmanta.c1 | Parabolic ear-lobes track 5km infrasound with independent rotation | High pressure CO2/N2 atmosphere lowers acoustic impedance ← Low-frequency sound attenuates over distances >5km ← Predator uses infrasound to locate prey; prey cannot localize source due to diffraction | **F10** Sound travels at approximately 340 m/s with low-frequency attenuation lengths exceeding 5 km. | Infrasense (`voxmanta.infrasense`) | Control | Reveals all hidden enemies within 50m and prevents their first attack of the turn; Voxmanta gains +3 Defence against sonic attacks. | Deaf to high-pitched sounds; sudden whistles or sonic blasts stun it. |
-| voxmanta.c2 | Wing membranes generate wind-shear vortices to mask approach | Giant-driven atmospheric tides create permanent wind shear ← Wing vortices match ambient turbulence spectrum ← Acoustic signature masked by self-generated turbulence | **F11** Giant-driven atmospheric tides produce permanent wind shear, though eclipse-driven thermal tides dominate local pressure waves. | Shear Hide (`voxmanta.shear_hide`) | Defence | Grants 'Stealth' vs sound-based detection and reduces incoming wind damage by 50% for 4 turns; expires if air is still. | Fails in still air or enclosed spaces; wind direction must match. |
-| voxmanta.c3 | Melanin-rich scales dampen bio-acoustics and shield radiation | Chronic ionizing stress selects for melanin deposition ← Melanin increases acoustic impedance mismatch at tissue boundary ← Simultaneous radiation shielding and sound absorption | **F8** Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys. | Silent Damp (`voxmanta.silent_damp`) | Passive | Reduces movement noise by 70% and halves radiation damage; reduces movement speed by 20% due to mass. | Heavy scales limit agility; shedding is required to recover speed. |
-| voxmanta.c4 | Mantle inflates to fill tidal cavity and camouflage as rock | Tidal locking creates regular pressure changes in sub-aquatic zones ← Mantle cavity expands to match external pressure and volume ← Textured inflation mimics local geology perfectly | **F3** The moon orbits its gas giant at 5.5×10⁵ km with a 58-hour orbital period. | Tide-Blow (`voxmanta.tide_blow`) | Engage | Inflates to become 'Unstoppable' (cannot be displaced) and grants +4 Defence; next attack deals 20 damage but leaves Voxmanta 'Deflated' (-50% speed) for 3 turns. | Cannot deflate quickly; vulnerable to burst damage while inflated. |
+| voxmanta.c1 | Parabolic ear-lobes track 5km infrasound with independent rotation | High pressure CO2/N2 atmosphere lowers acoustic impedance ← Low-frequency sound attenuates over distances >5km ← Predator uses infrasound to locate prey; prey cannot localize source due to diffraction | **F10** Sound travels at approximately 340 m/s with low-frequency attenuation lengths exceeding 5 km. | Infrasense (`voxmanta.infrasense`) | Control | The creature's rotating ear-lobes catch distant vibrations, making nearby hidden foes visible and causing them to hesitate before striking. Sonic assaults bounce harmlessly off its reinforced hide. | Deaf to high-pitched sounds; sudden whistles or sonic blasts stun it. |
+| voxmanta.c2 | Wing membranes generate wind-shear vortices to mask approach | Giant-driven atmospheric tides create permanent wind shear ← Wing vortices match ambient turbulence spectrum ← Acoustic signature masked by self-generated turbulence | **F11** Giant-driven atmospheric tides produce permanent wind shear, though eclipse-driven thermal tides dominate local pressure waves. | Shear Hide (`voxmanta.shear_hide`) | Defence | Its flapping wings stir up swirling air currents that scramble nearby sound waves, masking its presence from auditory hunters. It moves silently through gusts while the wind continues to blow. | Fails in still air or enclosed spaces; wind direction must match. |
+| voxmanta.c3 | Melanin-rich scales dampen bio-acoustics and shield radiation | Chronic ionizing stress selects for melanin deposition ← Melanin increases acoustic impedance mismatch at tissue boundary ← Simultaneous radiation shielding and sound absorption | **F8** Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys. | Silent Damp (`voxmanta.silent_damp`) | Passive | Its heavy, dark scales absorb nearly all sound from its steps, allowing it to creep forward without alerting nearby creatures. The thick armor deflects harsh energy, though its weight makes it move with deliberate slowness. | Heavy scales limit agility; shedding is required to recover speed. |
+| voxmanta.c4 | Mantle inflates to fill tidal cavity and camouflage as rock | Tidal locking creates regular pressure changes in sub-aquatic zones ← Mantle cavity expands to match external pressure and volume ← Textured inflation mimics local geology perfectly | **F3** The moon orbits its gas giant at 5.5×10⁵ km with a 58-hour orbital period. | Tide-Blow (`voxmanta.tide_blow`) | Engage | The creature swells its mantle until it resembles a heavy boulder, anchoring itself firmly against the current and shrugging off impacts. It strikes back with crushing force before collapsing into a weary, sluggish form. | Cannot deflate quickly; vulnerable to burst damage while inflated. |
 
 ### voxmanta.c1: Parabolic ear-lobes track 5km infrasound with independent rotation
 
 Trait ← High pressure CO2/N2 atmosphere lowers acoustic impedance ← Low-frequency sound attenuates over distances >5km ← Predator uses infrasound to locate prey; prey cannot localize source due to diffraction ← F10
 
-- **Skill:** Infrasense (Control): Reveals all hidden enemies within 50m and prevents their first attack of the turn; Voxmanta gains +3 Defence against sonic attacks.
+- **Skill:** Infrasense (Control): The creature's rotating ear-lobes catch distant vibrations, making nearby hidden foes visible and causing them to hesitate before striking. Sonic assaults bounce harmlessly off its reinforced hide.
 - **Weakness:** Deaf to high-pitched sounds; sudden whistles or sonic blasts stun it.
 - **Observe:**
   1. Lobes rotate independently, tracking faint hums.
@@ -49,7 +49,7 @@ Trait ← High pressure CO2/N2 atmosphere lowers acoustic impedance ← Low-freq
 
 Trait ← Giant-driven atmospheric tides create permanent wind shear ← Wing vortices match ambient turbulence spectrum ← Acoustic signature masked by self-generated turbulence ← F11
 
-- **Skill:** Shear Hide (Defence): Grants 'Stealth' vs sound-based detection and reduces incoming wind damage by 50% for 4 turns; expires if air is still.
+- **Skill:** Shear Hide (Defence): Its flapping wings stir up swirling air currents that scramble nearby sound waves, masking its presence from auditory hunters. It moves silently through gusts while the wind continues to blow.
 - **Weakness:** Fails in still air or enclosed spaces; wind direction must match.
 - **Observe:**
   1. Wings ripple continuously, matching wind gusts.
@@ -68,7 +68,7 @@ Trait ← Giant-driven atmospheric tides create permanent wind shear ← Wing vo
 
 Trait ← Chronic ionizing stress selects for melanin deposition ← Melanin increases acoustic impedance mismatch at tissue boundary ← Simultaneous radiation shielding and sound absorption ← F8
 
-- **Skill:** Silent Damp (Passive): Reduces movement noise by 70% and halves radiation damage; reduces movement speed by 20% due to mass.
+- **Skill:** Silent Damp (Passive): Its heavy, dark scales absorb nearly all sound from its steps, allowing it to creep forward without alerting nearby creatures. The thick armor deflects harsh energy, though its weight makes it move with deliberate slowness.
 - **Weakness:** Heavy scales limit agility; shedding is required to recover speed.
 - **Observe:**
   1. Dark, matte patches on joints and mantle edges.
@@ -87,7 +87,7 @@ Trait ← Chronic ionizing stress selects for melanin deposition ← Melanin inc
 
 Trait ← Tidal locking creates regular pressure changes in sub-aquatic zones ← Mantle cavity expands to match external pressure and volume ← Textured inflation mimics local geology perfectly ← F3
 
-- **Skill:** Tide-Blow (Engage): Inflates to become 'Unstoppable' (cannot be displaced) and grants +4 Defence; next attack deals 20 damage but leaves Voxmanta 'Deflated' (-50% speed) for 3 turns.
+- **Skill:** Tide-Blow (Engage): The creature swells its mantle until it resembles a heavy boulder, anchoring itself firmly against the current and shrugging off impacts. It strikes back with crushing force before collapsing into a weary, sluggish form.
 - **Weakness:** Cannot deflate quickly; vulnerable to burst damage while inflated.
 - **Observe:**
   1. Matches rock texture perfectly when stationary.

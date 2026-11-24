@@ -39,7 +39,7 @@
           "en": "Radial Stance"
         },
         "role": "Control",
-        "effect": "Turns 360° threat arc visible, +20% intimidation, -30% sprint speed",
+        "effect": "The creature rotates its arms in a full circle to watch for threats, projecting a strong aura of intimidation while trudging forward at a slow pace.",
         "numbers": {}
       },
       "weakness": "Strike the soft underside between raised arms while the tube feet release their grip",
@@ -103,7 +103,7 @@
           "en": "Adhesion"
         },
         "role": "Basic",
-        "effect": "Climb vertical basalt cliffs, +40% stability on wet surfaces, prevents knockback",
+        "effect": "It climbs steep stone walls using its suction cups and holds its ground firmly on damp surfaces, shrugging off any attempts to push it back.",
         "numbers": {}
       },
       "weakness": "Player can dry the rock surface with wind or heat to break suction and force a fall",
@@ -166,7 +166,7 @@
           "en": "Autotomy"
         },
         "role": "Defence",
-        "effect": "Drop an arm when HP < 30%, enemy distracted, arm regenerates in 3 cycles",
+        "effect": "When badly injured, it drops a limb to confuse its foes before swiftly knitting a new one back together.",
         "numbers": {}
       },
       "weakness": "Player can target the exposed nerve ring during regeneration for bonus damage",
@@ -229,7 +229,7 @@
           "en": "Chemical Sweep"
         },
         "role": "Engage",
-        "effect": "Reveals hidden prey/carcasses within 15m, +50% befriend chance if offered bone/salt gifts",
+        "effect": "It trails its arm tips along the ground to sniff out hidden meals nearby, and responds warmly to bone or salt offerings by lowering its guard.",
         "numbers": {}
       },
       "weakness": "Player can deploy H₂S gas or trigger thick fog to blind its chemical sense and force random movement",

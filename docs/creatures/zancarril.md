@@ -21,16 +21,16 @@ Length: 12 cm; Mass: 450 g
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| zancarril.c1 | Eight jointed legs with curved claws | To grip uneven basalt and climb vertical lava tube walls ← The island is a stratovolcano with basalt caves (F9) ← F9 | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Climb (`zancarril.climb`) | Basic | Climb vertical surfaces and navigate tight cave crevices. (+5 to move on cliffs). | Slow movement speed on smooth sand. |
-| zancarril.c2 | Powerful, serrated mandibles for shredding hides | To process large chunks of sinking carcasses quickly ← Carcasses drift and sink in the turbid shallows (F20) ← F20 | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Shred (`zancarril.shred`) | Engage | Tear flesh from carcass, increasing food value. (+2 food value). | Loud crunching noise attracts predators. |
-| zancarril.c3 | Giant compound eyes and chemosensory palps | To navigate dark caves and detect scent trails in turbid water ← Caves are dark and shallows are turbid (F9, F20) ← F9, F20 | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Scavenge Sense (`zancarril.scavenge_sense`) | Poke | Track carcass scent upwind or underwater. (+10 to find food). | Disoriented by bright sun. |
-| zancarril.c4 | Thick, plated carapace with gill-slits along the abdomen | To withstand crushing pressure in tide pools and high O2 respiration ← Dense air and high oxygen (F5) and tidal ranges (F13) ← F5, F13 | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Armour (`zancarril.armour`) | Defence | Resist bite damage from small predators. (+2 armor). | Slow movement speed. |
+| zancarril.c1 | Eight jointed legs with curved claws | To grip uneven basalt and climb vertical lava tube walls ← The island is a stratovolcano with basalt caves (F9) ← F9 | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Climb (`zancarril.climb`) | Basic | It scales steep rock faces and squeezes through narrow crevices with ease. You can watch it scramble up sheer walls and navigate tight passages without slipping. | Slow movement speed on smooth sand. |
+| zancarril.c2 | Powerful, serrated mandibles for shredding hides | To process large chunks of sinking carcasses quickly ← Carcasses drift and sink in the turbid shallows (F20) ← F20 | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Shred (`zancarril.shred`) | Engage | It uses its serrated jaws to rip meat from carcasses, leaving behind easily gathered scraps. You can collect the shredded remains to sustain yourself longer. | Loud crunching noise attracts predators. |
+| zancarril.c3 | Giant compound eyes and chemosensory palps | To navigate dark caves and detect scent trails in turbid water ← Caves are dark and shallows are turbid (F9, F20) ← F9, F20 | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Scavenge Sense (`zancarril.scavenge_sense`) | Poke | It sniffs the air and water to locate distant food sources. You can follow its movements to discover hidden carcasses nearby. | Disoriented by bright sun. |
+| zancarril.c4 | Thick, plated carapace with gill-slits along the abdomen | To withstand crushing pressure in tide pools and high O2 respiration ← Dense air and high oxygen (F5) and tidal ranges (F13) ← F5, F13 | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Armour (`zancarril.armour`) | Defence | Its thick, plated shell deflects the bites of smaller hunters. You can observe it shrugging off minor attacks while foraging safely. | Slow movement speed. |
 
 ### zancarril.c1: Eight jointed legs with curved claws
 
 Trait ← To grip uneven basalt and climb vertical lava tube walls ← The island is a stratovolcano with basalt caves (F9) ← F9 ← F9
 
-- **Skill:** Climb (Basic): Climb vertical surfaces and navigate tight cave crevices. (+5 to move on cliffs).
+- **Skill:** Climb (Basic): It scales steep rock faces and squeezes through narrow crevices with ease. You can watch it scramble up sheer walls and navigate tight passages without slipping.
 - **Weakness:** Slow movement speed on smooth sand.
 - **Observe:**
   1. Climbs vertical basalt wall
@@ -49,7 +49,7 @@ Trait ← To grip uneven basalt and climb vertical lava tube walls ← The islan
 
 Trait ← To process large chunks of sinking carcasses quickly ← Carcasses drift and sink in the turbid shallows (F20) ← F20 ← F20
 
-- **Skill:** Shred (Engage): Tear flesh from carcass, increasing food value. (+2 food value).
+- **Skill:** Shred (Engage): It uses its serrated jaws to rip meat from carcasses, leaving behind easily gathered scraps. You can collect the shredded remains to sustain yourself longer.
 - **Weakness:** Loud crunching noise attracts predators.
 - **Observe:**
   1. Shredding a carcass piece
@@ -68,7 +68,7 @@ Trait ← To process large chunks of sinking carcasses quickly ← Carcasses dri
 
 Trait ← To navigate dark caves and detect scent trails in turbid water ← Caves are dark and shallows are turbid (F9, F20) ← F9, F20 ← F9, F20
 
-- **Skill:** Scavenge Sense (Poke): Track carcass scent upwind or underwater. (+10 to find food).
+- **Skill:** Scavenge Sense (Poke): It sniffs the air and water to locate distant food sources. You can follow its movements to discover hidden carcasses nearby.
 - **Weakness:** Disoriented by bright sun.
 - **Observe:**
   1. Palps twitching in still air
@@ -87,7 +87,7 @@ Trait ← To navigate dark caves and detect scent trails in turbid water ← Cav
 
 Trait ← To withstand crushing pressure in tide pools and high O2 respiration ← Dense air and high oxygen (F5) and tidal ranges (F13) ← F5, F13 ← F5, F13
 
-- **Skill:** Armour (Defence): Resist bite damage from small predators. (+2 armor).
+- **Skill:** Armour (Defence): Its thick, plated shell deflects the bites of smaller hunters. You can observe it shrugging off minor attacks while foraging safely.
 - **Weakness:** Slow movement speed.
 - **Observe:**
   1. Shell reflecting green water
@@ -106,7 +106,6 @@ Trait ← To withstand crushing pressure in tide pools and high O2 respiration �
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| carrion | prey |  | Shreds sinking carcasses. |
 | garfio | predation |  | Garfio snaps it up while hunting. |
 
 ## Journal

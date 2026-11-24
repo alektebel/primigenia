@@ -34,7 +34,7 @@
           "en": "Wave Glide"
         },
         "role": "Basic",
-        "effect": "Rides magnetoacoustic waves for 15m distance, ignoring terrain",
+        "effect": "The creature surfs along magnetoacoustic waves, gliding effortlessly over the landscape without being hindered by obstacles.",
         "numbers": {}
       },
       "weakness": "Broad bodies or dense attachments increase drag; slows it to a crawl in granular upflows",
@@ -90,7 +90,7 @@
           "en": "Flux Grip"
         },
         "role": "Engage",
-        "effect": "Anchors to a magnetic surface, becoming immune to displacement for 8s",
+        "effect": "The creature locks its lattice skin firmly onto magnetic surfaces, holding its position strongly against any pushing forces.",
         "numbers": {}
       },
       "weakness": "Lattice shatters under high-turbulence spicule ejections (5–50 km/s)",
@@ -146,7 +146,7 @@
           "en": "Path Echo"
         },
         "role": "Passive",
-        "effect": "Reveals hidden safe routes through active regions for 10s",
+        "effect": "The creature traces glowing pathways through active regions, marking safe routes that remain visible for a short while.",
         "numbers": {}
       },
       "weakness": "Knots unravel during prolonged magnetic reconnection; causes disorientation and random drifting",

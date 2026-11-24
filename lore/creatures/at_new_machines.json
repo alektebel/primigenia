@@ -43,7 +43,7 @@
           "en": "Adaptive Morph"
         },
         "role": "Engage",
-        "effect": "Reshapes limbs for environment-specific thrust or heat exchange, granting terrain bonuses that increase effective damage output by 30% for 2 turns.",
+        "effect": "The creature constantly reshapes its limbs to match the nearby terrain, strongly modifying its thrust or heat exchange to suit the environment.",
         "numbers": {}
       },
       "weakness": "Nanite restructuring requires extended downtime in stable climates; sudden temperature shifts or vacuum exposure cause lattice fractures, imposing disadvantage on crafting or repair checks.",
@@ -95,7 +95,7 @@
           "en": "Form-Shift"
         },
         "role": "Poke",
-        "effect": "Reroutes structural integrity to grow a temporary ramjet, boosting movement speed by 60% for 4 seconds",
+        "effect": "The creature reroutes its structural frame to sprout a ramjet, strongly accelerating its movement for a short while.",
         "numbers": {}
       },
       "weakness": "Rapid reconfiguration consumes stored nanites, requiring a 10-minute recharge cycle in dense atmosphere",

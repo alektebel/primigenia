@@ -34,7 +34,7 @@
           "en": "Haze Float"
         },
         "role": "Passive",
-        "effect": "Ignores terrain drag, granting +20% evasion in open zones",
+        "effect": "The creature drifts effortlessly over rough ground and shifts its position in open areas, making it difficult to track or strike.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden pressure drops or strong downdrafts",
@@ -90,7 +90,7 @@
           "en": "Static Siphon"
         },
         "role": "Engage",
-        "effect": "Drains 15% shield from targets during flare windows, converting to ally HP",
+        "effect": "When its fringes flare, the creature siphons protective energy from nearby foes and channels it toward its allies.",
         "numbers": {}
       },
       "weakness": "Ineffective in calm, un-ionized haze layers",
@@ -146,7 +146,7 @@
           "en": "Redox Lance"
         },
         "role": "Poke",
-        "effect": "Fires a conductive pulse, dealing 12 shock damage and breaking stealth",
+        "effect": "The creature fires a crackling conductive pulse that shocks nearby enemies and forces cloaked foes to reveal themselves.",
         "numbers": {}
       },
       "weakness": "Loses charge quickly; requires recharging in ion-rich zones",
@@ -202,7 +202,7 @@
           "en": "Deep Hum"
         },
         "role": "Control",
-        "effect": "Stuns enemies within 15m with resonant frequency for 1.5s",
+        "effect": "The creature emits a powerful resonant hum that holds nearby enemies in place for a short while.",
         "numbers": {}
       },
       "weakness": "Ineffective against heavily insulated or silent targets",

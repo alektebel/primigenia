@@ -33,7 +33,7 @@
           "en": "Flux-Weave"
         },
         "role": "Control",
-        "effect": "Aligns adjacent lattice defects along a chosen B-field vector, granting +30% tunneling efficiency to allies in a 0.2μm radius.",
+        "effect": "The creature aligns nearby structural defects along a magnetic path, allowing allies to slip through narrow gaps with greater ease.",
         "numbers": {}
       },
       "weakness": "Sudden field inversion flips alignment, causing a 20μs metabolic stall.",
@@ -96,7 +96,7 @@
           "en": "Spark-Siphon"
         },
         "role": "Basic",
-        "effect": "Converts 15% of incoming flare energy into metabolic ATP-equivalents (weak-interaction cycles).",
+        "effect": "The creature draws in stray energy from nearby flares and converts it into vital sustenance, steadily restoring its own strength.",
         "numbers": {}
       },
       "weakness": "Overloads during giant flares, triggering local proton-capture risk and lattice stress.",
@@ -151,7 +151,7 @@
           "en": "Phonon-Hymn"
         },
         "role": "Social",
-        "effect": "Sends a calibrated lattice vibration that syncs ally metabolic cycles, reducing glitch-stress by 25% for 50μs.",
+        "effect": "The creature emits a steady harmonic pulse that resonates through nearby allies, calming their erratic movements and easing their stress for a short while.",
         "numbers": {}
       },
       "weakness": "Phonon echoes are easily distorted by micro-fractures, causing miscommunication.",
@@ -214,7 +214,7 @@
           "en": "Field-Bulwark"
         },
         "role": "Defence",
-        "effect": "Creates a temporary flux-tube shield, absorbing 40% of micro-glitch ejecta damage.",
+        "effect": "The creature projects a shimmering magnetic barrier that deflects incoming hazardous particles, shielding nearby allies from harm.",
         "numbers": {}
       },
       "weakness": "Shield drains topological charge, leaving hereditary information temporarily scrambled.",

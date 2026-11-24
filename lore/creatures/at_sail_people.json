@@ -35,7 +35,7 @@
           "en": "Aero-Sail"
         },
         "role": "Engage",
-        "effect": "Moves unit across open water at double speed, ignores terrain penalties (duration 4 turns)",
+        "effect": "The creature glides swiftly across open water, effortlessly ignoring obstacles and currents for a short while.",
         "numbers": {}
       },
       "weakness": "Calm winds ground the unit, leaving it vulnerable to melee",
@@ -90,7 +90,7 @@
           "en": "Glossal Lash"
         },
         "role": "Poke",
-        "effect": "Strikes a target within 8m for heavy bludgeoning damage, ignores armor (once per encounter)",
+        "effect": "The creature lashes out at a nearby target with a heavy strike that easily bypasses protective cover.",
         "numbers": {}
       },
       "weakness": "Predictable strike trajectory allows opponents to sidestep",
@@ -141,7 +141,7 @@
           "en": "Wind-Ride"
         },
         "role": "Basic",
-        "effect": "Move 40% faster downwind; ignore current drag",
+        "effect": "The creature catches the wind and moves strongly downwind, effortlessly ignoring water resistance.",
         "numbers": {}
       },
       "weakness": "Immobilized in dead calm; vulnerable to headwinds",

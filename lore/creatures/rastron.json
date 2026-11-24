@@ -41,7 +41,7 @@
           "en": "Night Sniff"
         },
         "role": "Basic",
-        "effect": "Tracks scent trails for 15s, reveals hidden eggs and carrion markers.",
+        "effect": "The creature follows lingering scents through the air and soil. It uncovers concealed eggs and rotting remains, making them visible to anyone nearby.",
         "numbers": {}
       },
       "weakness": "Loud noises disrupt tracking; sensitive to strong chemical sprays.",
@@ -103,7 +103,7 @@
           "en": "Shell Soften"
         },
         "role": "Engage",
-        "effect": "Sprays acidic saliva on target, breaks defense in 8s, leaves sour taste.",
+        "effect": "The creature sprays a sharp acidic saliva onto its target. The corrosive spray weakens the target's defenses for a short while and leaves a lingering sour taste.",
         "numbers": {}
       },
       "weakness": "Saliva depletes quickly; using it on bone yields no extra nutrients.",
@@ -158,7 +158,7 @@
           "en": "Grip Climb"
         },
         "role": "Defence",
-        "effect": "Climbs vertical wet surfaces in 4s, escapes grapples and falls safely.",
+        "effect": "The creature scales slick vertical surfaces with ease using its padded limbs. It slips free from any holds and lands safely after a fall.",
         "numbers": {}
       },
       "weakness": "Pads lose adhesion in dry, dusty highlands; vulnerable to heatstroke inland.",
@@ -221,7 +221,7 @@
           "en": "Tide Sense"
         },
         "role": "Poke",
-        "effect": "Pulses ground/water, reveals hidden targets in 6s radius, stuns if too close.",
+        "effect": "The creature sends out sharp pulses through the ground and water. These vibrations expose concealed enemies nearby and strongly stun anyone standing too close.",
         "numbers": {}
       },
       "weakness": "Useless on dry land; electrical storms cause temporary confusion.",

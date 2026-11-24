@@ -44,7 +44,7 @@
           "en": "Sure-footed Stride"
         },
         "role": "Basic",
-        "effect": "+20% movement speed and stability on irregular terrain",
+        "effect": "The creature moves swiftly and maintains steady footing across rough and uneven ground.",
         "numbers": {}
       },
       "weakness": "Rapid joint degeneration and muscle wasting if relocated to sub-0.5g environments",
@@ -101,7 +101,7 @@
           "en": "Clear Call"
         },
         "role": "Social",
-        "effect": "+25 m effective range for diplomatic commands; -15% hostility in local fauna",
+        "effect": "Its resonant voice carries clearly across the landscape, reaching nearby creatures and strongly calming their aggressive instincts.",
         "numbers": {}
       },
       "weakness": "Vocal folds crackle and fade below 0.3 bar pressure",
@@ -153,7 +153,7 @@
           "en": "Adrenal Surge"
         },
         "role": "Engage",
-        "effect": "3× burst speed for 4 seconds, consumes 40% stamina",
+        "effect": "The creature suddenly bursts into a rapid sprint, covering ground swiftly for a short while before its energy quickly fades.",
         "numbers": {}
       },
       "weakness": "Hypoxia collapse if ambient O₂ drops below 15% for >10 s",

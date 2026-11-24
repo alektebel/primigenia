@@ -39,7 +39,7 @@
           "en": "Nocturnal Focus"
         },
         "role": "Basic",
-        "effect": "Increases hit chance and observe speed by 15% in darkness or fog",
+        "effect": "In dim or misty surroundings, the creature tracks targets with ease and strikes with remarkable accuracy.",
         "numbers": {}
       },
       "weakness": "Blinded by sudden bright flashes or lightning strikes",
@@ -209,7 +209,7 @@
           "en": "Scent Mark"
         },
         "role": "Social",
-        "effect": "Leaves a chemical trail that allies can follow (+20% befriend chance if followed)",
+        "effect": "It leaves behind a lingering aroma that guides companions along its route, making them much more receptive to friendship.",
         "numbers": {}
       },
       "weakness": "Wind disperses markers quickly, confusing rivals",

@@ -42,7 +42,7 @@
           "en": "Stilt Sprint"
         },
         "role": "Basic",
-        "effect": "15 m/s for 6 s; 10 s recovery and -30% speed on grass, -50% on broken lava crust or wet mud.",
+        "effect": "The creature dashes forward at a remarkable pace for a short while before needing a brief rest. It moves noticeably slower when traversing grassy fields, broken lava crust, or wet mud.",
         "numbers": {}
       },
       "weakness": "Wet meadow mud or fractured lava crust breaks metapodial traction and triggers the sprint penalty early; force them onto firm ground or use erratic turning (herd dilution) instead of chasing.",
@@ -101,7 +101,7 @@
           "en": "Stomp Dance"
         },
         "role": "Social",
-        "effect": "+10 befriend base (works best on wet compacted meadow; dry ash halves payout); +4 in open midday sun; +18 if the player matches the 4-beat tap; answering an off-tempo rhythm loses the audition.",
+        "effect": "The creature performs a rhythmic stomp dance that the player can join by matching its footfalls. The creature strongly accepts the player when the rhythm aligns on wet meadows or in open sunlight, while dry ash makes the display difficult and a mismatched beat causes it to turn away.",
         "numbers": {}
       },
       "weakness": "Dry loose ash or wind masking breaks the seismic channel and halves befriend payout; drum the beat off-tempo and any Zanco that answers it turns away after 5 s — farm trust from rivals or sabotage an audition.",
@@ -157,7 +157,7 @@
           "en": "Drum Warning"
         },
         "role": "Control",
-        "effect": "Alerts herd within 100 m; +20% flee speed for 5 s. Player stomping near them triggers the alarm, but failing on ash/snow marks the player as a threat.",
+        "effect": "The creature strikes the ground to sound an alarm that quickly rallies nearby herd members to flee. If you stomp nearby, it triggers the warning, but stumbling on ash or snow surfaces will mark you as a threat.",
         "numbers": {}
       },
       "weakness": "Soft volcanic ash, deep snow, or a hard rock slab under the herd decouples the seismic pulse and muffles the acoustic thump; cut them off on these substrates or avoid triggering the relay.",
@@ -216,7 +216,7 @@
           "en": "Imitate Dance"
         },
         "role": "Engage",
-        "effect": "+15 befriend per phase-locked sway; each gust raises the timing difficulty; missing the post-gust correction breaks rhythm and resets the 20 s befriend timer.",
+        "effect": "The creature sways its neck in time with passing wind gusts to build trust. You must mirror its movements to strengthen the bond, but missing the rhythm breaks the connection and forces you to start over.",
         "numbers": {}
       },
       "weakness": "No wind, no dance: lure them into sheltered calm and the display collapses; a sudden player roar mimics a gust spike and resets their rhythm.",

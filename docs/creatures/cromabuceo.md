@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Hydrothermal vent plains & iron-sulfide mudflats. Evolves here because vent plumes obscure geographic landmarks & 38 PSU conductivity amplifies bio-voltages. Magnetotactic symbionts & ampullary organs exploit the dense ionic medium to track prey & navigate stable crustal anomaly corridors.
+- **Habitat:** Hydrothermal vent plains & iron-sulfide mudflats. Evolves here because vent plumes obscure geographic landmarks & 38 PSU conductivity amplifies bio-voltages. Magnetotactic symbionts & ampullary organs exploit the dense ionic medium to track prey & navigate stable crustal anomaly corridors. Also, in the council's sketch (no such creature in this world yet): Siderobacter, magnetotactic colonies provide internal compass & dietary iron, traded for stable gut pH.
 - **Diet:** Conductive fluid grazers, magnetotactic bacterial colonies, electro-receptive invertebrates
 - **Active:** Nocturnal & flare-peak, tide-quiet
 - **Predators:** none
@@ -21,16 +21,16 @@ Low-profile armored carapace, ampullary electroreceptor snout, magnetotactic gut
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cromabuceo.c1 | Ampullary snout maps conductivity & induced voltage | Prey move through conductive hydrothermal plumes ← Electric fish analog electrocommunication detects micro-fields ← Ion-rich fluid (38 PSU) amplifies bio-voltage ← Ampullary organs sense induced potential shifts | **F9** Global mean ocean depth 2.8 km with salinity 38 PSU.; **F14** Ampullary electroreception and galvanic discharge for prey tracking and combat. | Conductivity Sense (`cromabuceo.conductivity_sense`) | Basic | Reveals prey voltage signatures, hunting range +50m | Saturated by high-salinity pools; player can dump conductive salts to blind it. |
+| cromabuceo.c1 | Ampullary snout maps conductivity & induced voltage | Prey move through conductive hydrothermal plumes ← Electric fish analog electrocommunication detects micro-fields ← Ion-rich fluid (38 PSU) amplifies bio-voltage ← Ampullary organs sense induced potential shifts | **F9** Global mean ocean depth 2.8 km with salinity 38 PSU.; **F14** Ampullary electroreception and galvanic discharge for prey tracking and combat. | Conductivity Sense (`cromabuceo.conductivity_sense`) | Basic | The creature sweeps its snout across the environment to read the electrical whispers of nearby prey. Hidden targets glow faintly as it tracks them. | Saturated by high-salinity pools; player can dump conductive salts to blind it. |
 | cromabuceo.c2 | Magnetotactic gut symbionts as heading reference | Vent plumes obscure geographic landmarks ← Magnetotactic bacteria form internal chains ← Align with local field to sequester iron & calibrate radical-pair sensors ← Host digestive tract hosts stable symbiont colonies | **F13** Magnetotactic bacterial symbionts in digestive tracts optimize iron trafficking and calibrate host magnetoreception.; **F18** Field-aligned resource migration along stable crustal anomaly corridors. | Iron Compass (`cromabuceo.iron_compass`) | Control | Navigates vent mazes without error, resource migration cost halved | Symbiont chains disrupt if gut pH shifts; player can use acid sprays to disorient. |
-| cromabuceo.c3 | Radial arm ripples induce galvanic traps | Prey rely on electroreception ← Arm muscles generate controlled galvanic discharges ← Symbiont iron-buffering prevents self-harm ← Active electrolocation creates localized field distortion | **F14** Ampullary electroreception and galvanic discharge for prey tracking and combat.; **F13** Magnetotactic bacterial symbionts in digestive tracts optimize iron trafficking and calibrate host magnetoreception. | Galvanic Snare (`cromabuceo.galvanic_snare`) | Poke | Releases low-voltage pulse, stuns conductive prey, +25% capture rate | Pulse drains metabolic energy; player can lure it into low-conductivity dry mud to exhaust it. |
-| cromabuceo.c4 | Carapace tessellation matches magnetic anomaly gradients | High Fe²⁺ crust creates patchy field strength ← Hematite/magnetite plates shift orientation to average local dipole ← Reduces magnetic signature & provides camouflage ← Iron-rich sediment deposition forms stable crust | **F10** Crust rich in Fe²⁺, magnetite, pyrrhotite, and sulfides.; **F5** Equatorial surface magnetic field 0.8 mT with storm spikes ≤10 mT. | Anomaly Blend (`cromabuceo.anomaly_blend`) | Defence | Matches local field gradient, detection chance -60% | Plate alignment lags behind rapid field spikes; player can trigger storm flares to misalign it. |
+| cromabuceo.c3 | Radial arm ripples induce galvanic traps | Prey rely on electroreception ← Arm muscles generate controlled galvanic discharges ← Symbiont iron-buffering prevents self-harm ← Active electrolocation creates localized field distortion | **F14** Ampullary electroreception and galvanic discharge for prey tracking and combat.; **F13** Magnetotactic bacterial symbionts in digestive tracts optimize iron trafficking and calibrate host magnetoreception. | Galvanic Snare (`cromabuceo.galvanic_snare`) | Poke | It releases a crackling electric pulse that locks onto conductive creatures and holds them still. The stunned prey drop their defenses and become easy to catch. | Pulse drains metabolic energy; player can lure it into low-conductivity dry mud to exhaust it. |
+| cromabuceo.c4 | Carapace tessellation matches magnetic anomaly gradients | High Fe²⁺ crust creates patchy field strength ← Hematite/magnetite plates shift orientation to average local dipole ← Reduces magnetic signature & provides camouflage ← Iron-rich sediment deposition forms stable crust | **F10** Crust rich in Fe²⁺, magnetite, pyrrhotite, and sulfides.; **F5** Equatorial surface magnetic field 0.8 mT with storm spikes ≤10 mT. | Anomaly Blend (`cromabuceo.anomaly_blend`) | Defence | Its shell ripples to perfectly match the local magnetic shifts, making it nearly impossible to spot. Observers struggle to pick it out from the background noise. | Plate alignment lags behind rapid field spikes; player can trigger storm flares to misalign it. |
 
 ### cromabuceo.c1: Ampullary snout maps conductivity & induced voltage
 
 Trait ← Prey move through conductive hydrothermal plumes ← Electric fish analog electrocommunication detects micro-fields ← Ion-rich fluid (38 PSU) amplifies bio-voltage ← Ampullary organs sense induced potential shifts ← F9, F14
 
-- **Skill:** Conductivity Sense (Basic): Reveals prey voltage signatures, hunting range +50m
+- **Skill:** Conductivity Sense (Basic): The creature sweeps its snout across the environment to read the electrical whispers of nearby prey. Hidden targets glow faintly as it tracks them.
 - **Weakness:** Saturated by high-salinity pools; player can dump conductive salts to blind it.
 - **Observe:**
   1. Snout twitches toward heat vents
@@ -66,7 +66,7 @@ Trait ← Vent plumes obscure geographic landmarks ← Magnetotactic bacteria fo
 
 Trait ← Prey rely on electroreception ← Arm muscles generate controlled galvanic discharges ← Symbiont iron-buffering prevents self-harm ← Active electrolocation creates localized field distortion ← F14, F13
 
-- **Skill:** Galvanic Snare (Poke): Releases low-voltage pulse, stuns conductive prey, +25% capture rate
+- **Skill:** Galvanic Snare (Poke): It releases a crackling electric pulse that locks onto conductive creatures and holds them still. The stunned prey drop their defenses and become easy to catch.
 - **Weakness:** Pulse drains metabolic energy; player can lure it into low-conductivity dry mud to exhaust it.
 - **Observe:**
   1. Arm membranes stiffen
@@ -84,7 +84,7 @@ Trait ← Prey rely on electroreception ← Arm muscles generate controlled galv
 
 Trait ← High Fe²⁺ crust creates patchy field strength ← Hematite/magnetite plates shift orientation to average local dipole ← Reduces magnetic signature & provides camouflage ← Iron-rich sediment deposition forms stable crust ← F10, F5
 
-- **Skill:** Anomaly Blend (Defence): Matches local field gradient, detection chance -60%
+- **Skill:** Anomaly Blend (Defence): Its shell ripples to perfectly match the local magnetic shifts, making it nearly impossible to spot. Observers struggle to pick it out from the background noise.
 - **Weakness:** Plate alignment lags behind rapid field spikes; player can trigger storm flares to misalign it.
 - **Observe:**
   1. Carapace plates click into place
@@ -104,7 +104,6 @@ Trait ← High Fe²⁺ crust creates patchy field strength ← Hematite/magnetit
 |---|---|---|---|
 | cromavolante | cousin |  | (council kind 'Competitor') Juveniles of Cromabuceo drop to vent plains; adults hunt dropped juveniles when magnetotactic plumes overlap. |
 | cromavolante | cousin |  | (council kind 'Predator') Adults ambush juvenile Cromavolante when they descend to feed on vent microplankton. |
-| Siderobacter | cousin |  | (council kind 'Symbiont') Magnetotactic colonies provide internal compass & dietary iron, traded for stable gut pH. |
 
 ## Journal
 

@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_predators.c1 | Enormous, independently rotating pinnae atop cranial domes | Dense humid air bends sound waves around tall grass obstacles ← Nocturnal temperature inversions channel low-frequency pulses along the ground ← Pack hunters rely on acoustic triangulation over visual contact in darkening savannas ← Qu-gene locks preserve neural processing for complex sound mapping | **F9** Acoustic propagation favors low-frequency modulation over vast distances.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F17** Neural retention carries severe thermal and energetic penalties when unutilized. | Pack Rally (`at_predators.pack_rally`) | Control | Reveals stealth units within 25m and grants allies +2 evasion for 1 turn. | High-pitched sonic disruptors scramble pinnae focus, breaking pack coordination. |
-| at_predators.c2 | Retractable razor-thumbs on manipulator paws | 0.88g gravity reduces skeletal stress on fine motor override ← Savanna ecology favors ambush over prolonged chases across open loam ← Qu-engineered tendon sheaths lock under tension to pierce herbivore hide ← Pack coordination forces precise strike over blunt force | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F15** Qu-engineered synthetic proteins are heritable and retained only when conferring niche advantages. | Precision Flank (`at_predators.precision_flank`) | Engage | Targets limb joints for -40% movement speed on hit, ignores 50% armor. | Claws lock upon extension; cannot reposition or grapple without retracting and risking a turn. |
+| at_predators.c1 | Enormous, independently rotating pinnae atop cranial domes | Dense humid air bends sound waves around tall grass obstacles ← Nocturnal temperature inversions channel low-frequency pulses along the ground ← Pack hunters rely on acoustic triangulation over visual contact in darkening savannas ← Qu-gene locks preserve neural processing for complex sound mapping | **F9** Acoustic propagation favors low-frequency modulation over vast distances.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F17** Neural retention carries severe thermal and energetic penalties when unutilized. | Pack Rally (`at_predators.pack_rally`) | Control | The creature's massive ears swivel independently, exposing hidden foes lurking nearby. Its allies feel a sudden boost in agility, easily dodging incoming strikes for a short while. | High-pitched sonic disruptors scramble pinnae focus, breaking pack coordination. |
+| at_predators.c2 | Retractable razor-thumbs on manipulator paws | 0.88g gravity reduces skeletal stress on fine motor override ← Savanna ecology favors ambush over prolonged chases across open loam ← Qu-engineered tendon sheaths lock under tension to pierce herbivore hide ← Pack coordination forces precise strike over blunt force | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F15** Qu-engineered synthetic proteins are heritable and retained only when conferring niche advantages. | Precision Flank (`at_predators.precision_flank`) | Engage | It lunges to strike the joints of nearby foes, leaving them struggling to move. Its razor-thumbs cut through their defenses as if they were barely there. | Claws lock upon extension; cannot reposition or grapple without retracting and risking a turn. |
 
 ### at_predators.c1: Enormous, independently rotating pinnae atop cranial domes
 
 Trait ← Dense humid air bends sound waves around tall grass obstacles ← Nocturnal temperature inversions channel low-frequency pulses along the ground ← Pack hunters rely on acoustic triangulation over visual contact in darkening savannas ← Qu-gene locks preserve neural processing for complex sound mapping ← F9, F7, F17
 
-- **Skill:** Pack Rally (Control): Reveals stealth units within 25m and grants allies +2 evasion for 1 turn.
+- **Skill:** Pack Rally (Control): The creature's massive ears swivel independently, exposing hidden foes lurking nearby. Its allies feel a sudden boost in agility, easily dodging incoming strikes for a short while.
 - **Weakness:** High-pitched sonic disruptors scramble pinnae focus, breaking pack coordination.
 - **Observe:**
   1. Ears swivel independently to track ground-level vibrations
@@ -47,7 +47,7 @@ Trait ← Dense humid air bends sound waves around tall grass obstacles ← Noct
 
 Trait ← 0.88g gravity reduces skeletal stress on fine motor override ← Savanna ecology favors ambush over prolonged chases across open loam ← Qu-engineered tendon sheaths lock under tension to pierce herbivore hide ← Pack coordination forces precise strike over blunt force ← F5, F15
 
-- **Skill:** Precision Flank (Engage): Targets limb joints for -40% movement speed on hit, ignores 50% armor.
+- **Skill:** Precision Flank (Engage): It lunges to strike the joints of nearby foes, leaving them struggling to move. Its razor-thumbs cut through their defenses as if they were barely there.
 - **Weakness:** Claws lock upon extension; cannot reposition or grapple without retracting and risking a turn.
 - **Observe:**
   1. Sunken nail beds snap outward like switchblades during ambush

@@ -21,15 +21,15 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_symbiotes.c1 | Olfactory-tactile neural puppetry interface | saturated high-humidity atmosphere attenuates high-frequency vision and sound ← dense canopy forests further block line-of-sight travel ← baseline 1-g gravity permits sustained low-energy attachment | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Scent-Command (`at_symbiotes.scent_command`) | Control | Directs a host to move or attack with a chemical pulse (range 15m, lasts 3 turns) | Volatile solvent sprays scramble pheromone trails, causing host confusion |
-| at_symbiotes.c2 | Dimorphic nesting architecture & size-specific doors | parasitic attachment requires thermal buffering from host metabolism ← high biomass yields constant nutrient surplus for host growth ← 1.1 bar atmospheric pressure supports dense forest undergrowth | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Habitat Symbiosis (`at_symbiotes.habitat_symbiosis`) | Passive | Reduces supply cost for host units by 20% and grants shelter in forest biomes | Firestorms dry out host blood, severing the neural link |
-| at_symbiotes.c3 | Host-puppetry via chemosensory-tactile interface | High O2 allows large host metabolic bodies ← Dense humid air preserves scent molecules ← Precise chemical contact signals enable puppetry ← Speculative: Modified electrocytes enhance tactile feedback | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F17** Electrochemical symbiosis utilizes modified electrocytes and tactile/olfactory dominance for neural interface tissues. | Sensory Hijack (`at_symbiotes.sensory_hijack`) | Control | 25% chance to command a hostile host unit for 2 turns | Dry environments degrade signal; high wind disperses pheromones |
+| at_symbiotes.c1 | Olfactory-tactile neural puppetry interface | saturated high-humidity atmosphere attenuates high-frequency vision and sound ← dense canopy forests further block line-of-sight travel ← baseline 1-g gravity permits sustained low-energy attachment | **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Scent-Command (`at_symbiotes.scent_command`) | Control | The creature releases a chemical pulse that compels a nearby host to march or strike for a short while. | Volatile solvent sprays scramble pheromone trails, causing host confusion |
+| at_symbiotes.c2 | Dimorphic nesting architecture & size-specific doors | parasitic attachment requires thermal buffering from host metabolism ← high biomass yields constant nutrient surplus for host growth ← 1.1 bar atmospheric pressure supports dense forest undergrowth | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Habitat Symbiosis (`at_symbiotes.habitat_symbiosis`) | Passive | The creature weaves dense nesting architecture that quietly shields nearby hosts and lightens the strain of sustaining them. | Firestorms dry out host blood, severing the neural link |
+| at_symbiotes.c3 | Host-puppetry via chemosensory-tactile interface | High O2 allows large host metabolic bodies ← Dense humid air preserves scent molecules ← Precise chemical contact signals enable puppetry ← Speculative: Modified electrocytes enhance tactile feedback | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F17** Electrochemical symbiosis utilizes modified electrocytes and tactile/olfactory dominance for neural interface tissues. | Sensory Hijack (`at_symbiotes.sensory_hijack`) | Control | The creature occasionally slips a chemical command into a hostile host, strongly bending it to its will for a short while. | Dry environments degrade signal; high wind disperses pheromones |
 
 ### at_symbiotes.c1: Olfactory-tactile neural puppetry interface
 
 Trait ← saturated high-humidity atmosphere attenuates high-frequency vision and sound ← dense canopy forests further block line-of-sight travel ← baseline 1-g gravity permits sustained low-energy attachment ← F8, F3
 
-- **Skill:** Scent-Command (Control): Directs a host to move or attack with a chemical pulse (range 15m, lasts 3 turns)
+- **Skill:** Scent-Command (Control): The creature releases a chemical pulse that compels a nearby host to march or strike for a short while.
 - **Weakness:** Volatile solvent sprays scramble pheromone trails, causing host confusion
 - **Observe:**
   1. Host stands rigidly upright while parasite manipulates limbs
@@ -47,7 +47,7 @@ Trait ← saturated high-humidity atmosphere attenuates high-frequency vision an
 
 Trait ← parasitic attachment requires thermal buffering from host metabolism ← high biomass yields constant nutrient surplus for host growth ← 1.1 bar atmospheric pressure supports dense forest undergrowth ← F7, F6, F21
 
-- **Skill:** Habitat Symbiosis (Passive): Reduces supply cost for host units by 20% and grants shelter in forest biomes
+- **Skill:** Habitat Symbiosis (Passive): The creature weaves dense nesting architecture that quietly shields nearby hosts and lightens the strain of sustaining them.
 - **Weakness:** Firestorms dry out host blood, severing the neural link
 - **Observe:**
   1. Huts feature paired entrances: man-sized arches and palm-sized apertures
@@ -64,7 +64,7 @@ Trait ← parasitic attachment requires thermal buffering from host metabolism �
 
 Trait ← High O2 allows large host metabolic bodies ← Dense humid air preserves scent molecules ← Precise chemical contact signals enable puppetry ← Speculative: Modified electrocytes enhance tactile feedback ← F7, F8, F17
 
-- **Skill:** Sensory Hijack (Control): 25% chance to command a hostile host unit for 2 turns
+- **Skill:** Sensory Hijack (Control): The creature occasionally slips a chemical command into a hostile host, strongly bending it to its will for a short while.
 - **Weakness:** Dry environments degrade signal; high wind disperses pheromones
 - **Observe:**
   1. Host freezes mid-motion

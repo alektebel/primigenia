@@ -21,15 +21,15 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_bug_facers.c1 | Ossified leathery jaw-plates & pincer manipulators | chitinous exoskeletons of dominant insect prey require high crushing force ← high atmospheric oxygen increases arthropod cuticle rigidity ← balmy tropical climate reduces metabolic cost of heavy armor | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Chitin Shear (`at_bug_facers.chitin_shear`) | Engage | Deals bonus damage to armored/insectoid targets and reduces their defense by 15% | Heavy facial armor limits peripheral vision and head-turn speed |
-| at_bug_facers.c2 | Partial ectothermy & thermoregulatory basking behavior | energy-dense hive farming reduces need for high basal metabolism ← high humidity and stable diurnal temps minimize heat loss ← atavistic brain expansion favors burst-digestion over sustained activity | **F15** Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Ambush Metabolism (`at_bug_facers.ambush_metabolism`) | Basic | Unit remains hidden and silent while regenerating stamina; strikes with +20% damage on first turn | Rapid temperature drops force a mandatory resting state, halting actions |
-| at_bug_facers.c3 | Ossified mandible face-plates for nest-cracking | Insectivorous diet on hive-world requires shell access ← Mechanical stress on jaws during excavation ← Mandibles fuse and ossify into plates ← Face-plates form protective armor resembling prey | **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Carapace Breaker (`at_bug_facers.carapace_breaker`) | Engage | Ignore 50% of armor; damage structures | Face-plates reduce sensory flexibility; social misreading due to rigid jaw |
+| at_bug_facers.c1 | Ossified leathery jaw-plates & pincer manipulators | chitinous exoskeletons of dominant insect prey require high crushing force ← high atmospheric oxygen increases arthropod cuticle rigidity ← balmy tropical climate reduces metabolic cost of heavy armor | **F7** Partial oxygen pressure is optimized at 23–27% O₂.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland.; **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template. | Chitin Shear (`at_bug_facers.chitin_shear`) | Engage | The creature's heavy jaw-plates and pincers crush through tough shells, leaving armored foes strongly weakened. Players can target heavily armored enemies to watch their defenses quickly give way. | Heavy facial armor limits peripheral vision and head-turn speed |
+| at_bug_facers.c2 | Partial ectothermy & thermoregulatory basking behavior | energy-dense hive farming reduces need for high basal metabolism ← high humidity and stable diurnal temps minimize heat loss ← atavistic brain expansion favors burst-digestion over sustained activity | **F15** Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.; **F8** Relative humidity regularly exceeds 80% with saturated boundary layers.; **F20** Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland. | Ambush Metabolism (`at_bug_facers.ambush_metabolism`) | Basic | The creature basks quietly in the shade for a short while, conserving its energy before launching a sudden strike. Players must watch for signs of movement to interrupt its ambush before it strikes. | Rapid temperature drops force a mandatory resting state, halting actions |
+| at_bug_facers.c3 | Ossified mandible face-plates for nest-cracking | Insectivorous diet on hive-world requires shell access ← Mechanical stress on jaws during excavation ← Mandibles fuse and ossify into plates ← Face-plates form protective armor resembling prey | **F21** World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound). | Carapace Breaker (`at_bug_facers.carapace_breaker`) | Engage | Its reinforced mandibles smash through thick armor and crumble nearby walls without hesitation. Players will need to keep their fortifications well-guarded or risk them being torn apart. | Face-plates reduce sensory flexibility; social misreading due to rigid jaw |
 
 ### at_bug_facers.c1: Ossified leathery jaw-plates & pincer manipulators
 
 Trait ← chitinous exoskeletons of dominant insect prey require high crushing force ← high atmospheric oxygen increases arthropod cuticle rigidity ← balmy tropical climate reduces metabolic cost of heavy armor ← F7, F20, F3
 
-- **Skill:** Chitin Shear (Engage): Deals bonus damage to armored/insectoid targets and reduces their defense by 15%
+- **Skill:** Chitin Shear (Engage): The creature's heavy jaw-plates and pincers crush through tough shells, leaving armored foes strongly weakened. Players can target heavily armored enemies to watch their defenses quickly give way.
 - **Weakness:** Heavy facial armor limits peripheral vision and head-turn speed
 - **Observe:**
   1. Lower jaws are reinforced with thick, plate-like keratin
@@ -47,7 +47,7 @@ Trait ← chitinous exoskeletons of dominant insect prey require high crushing f
 
 Trait ← energy-dense hive farming reduces need for high basal metabolism ← high humidity and stable diurnal temps minimize heat loss ← atavistic brain expansion favors burst-digestion over sustained activity ← F15, F8, F20
 
-- **Skill:** Ambush Metabolism (Basic): Unit remains hidden and silent while regenerating stamina; strikes with +20% damage on first turn
+- **Skill:** Ambush Metabolism (Basic): The creature basks quietly in the shade for a short while, conserving its energy before launching a sudden strike. Players must watch for signs of movement to interrupt its ambush before it strikes.
 - **Weakness:** Rapid temperature drops force a mandatory resting state, halting actions
 - **Observe:**
   1. Units spread limbs wide on sun-warmed rocks before hunting
@@ -65,7 +65,7 @@ Trait ← energy-dense hive farming reduces need for high basal metabolism ← h
 
 Trait ← Insectivorous diet on hive-world requires shell access ← Mechanical stress on jaws during excavation ← Mandibles fuse and ossify into plates ← Face-plates form protective armor resembling prey ← F21
 
-- **Skill:** Carapace Breaker (Engage): Ignore 50% of armor; damage structures
+- **Skill:** Carapace Breaker (Engage): Its reinforced mandibles smash through thick armor and crumble nearby walls without hesitation. Players will need to keep their fortifications well-guarded or risk them being torn apart.
 - **Weakness:** Face-plates reduce sensory flexibility; social misreading due to rigid jaw
 - **Observe:**
   1. Jaw plates click when agitated

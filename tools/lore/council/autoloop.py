@@ -13,6 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 LORE = os.path.dirname(HERE)
 ROOT = os.path.dirname(os.path.dirname(LORE))
 sys.path.insert(0, LORE)
+from voices import OC_MODEL, on_cooldown
 from lorelib import load, dump, slug
 RUNS = os.path.abspath(os.environ.get("LORE_RUNS_DIR", os.path.join(HERE, "runs")))
 DATE = datetime.date.today().isoformat()
@@ -335,7 +336,14 @@ def process(w, args, opus_wait=False):
     else:
         if st["steps"].get("chair") != "ok":
             pd = os.path.join(rd, "planet")
-            ok1 = retry("planet", lambda: sh([PY, council, "planet"], env, cwd), lambda: len(glob.glob(os.path.join(pd, "draft_*.md"))) >= 7 and all(not open(f).read().startswith("(failed)") for f in glob.glob(os.path.join(pd, "draft_*.md"))) and len(glob.glob(os.path.join(pd, "review_*.md"))) >= 7, tries=6)
+            def planet_ok():
+                good = lambda kind: {os.path.basename(f)[len(kind) + 1:-3] for f in glob.glob(os.path.join(pd, kind + "_*.md")) if not open(f).read().startswith("(failed)")}
+                dr, rv = good("draft"), good("review")
+                if len(dr) >= 7 and len(rv) >= 7: return True
+                # 6/7 is final when each missing voice is an opencode voice whose model is on cooldown: retrying it 6 times only burns time
+                miss = (set(OC_MODEL) - dr) | (set(OC_MODEL) - rv)
+                return len(dr) >= 6 and len(rv) >= 6 and bool(miss) and all(on_cooldown(RUNS, v) for v in miss)
+            ok1 = retry("planet", lambda: sh([PY, council, "planet"], env, cwd), planet_ok, tries=6)
             if not ok1:
                 nd = len([f for f in glob.glob(os.path.join(pd, "draft_*.md")) if not open(f).read().startswith("(failed)")])
                 if nd < 4: mark("planet", f"FAILED ({nd} drafts)"); return finish(w, st, mark, args, "planet failed")

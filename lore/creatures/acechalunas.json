@@ -47,7 +47,7 @@
           "en": "Night eyes"
         },
         "role": "Passive",
-        "effect": "See 3× farther in moonlight; −50% sight in full sun",
+        "effect": "The creature sees clearly across vast distances under moonlight, though its vision grows dim and hazy in bright daylight.",
         "numbers": {}
       },
       "weakness": "A flare or bright sun blinds it for 5 s; fight at noon.",
@@ -104,7 +104,7 @@
           "en": "Dark call"
         },
         "role": "Control",
-        "effect": "Locate kin within 150 m; +10 befriend at night",
+        "effect": "It emits low calls that echo across the landscape, allowing nearby creatures to recognize its kind. At night, this resonant call makes it strongly easier to befriend.",
         "numbers": {}
       },
       "weakness": "A 7 kHz whistle jams it; it loses the call for 8 s.",
@@ -157,7 +157,7 @@
           "en": "Glow code"
         },
         "role": "Social",
-        "effect": "+15 befriend at night; identifies species within 40 m",
+        "effect": "Its glowing patterns pulse rhythmically in the dark, making it strongly receptive to forming friendships. The shifting lights also reveal the true nature of any creature standing nearby.",
         "numbers": {}
       },
       "weakness": "Garfio spots the glow at 60 m; use a bright light to lure it away.",
@@ -215,7 +215,7 @@
           "en": "Shade step"
         },
         "role": "Defence",
-        "effect": "+20 dodge in bright light; grants +5 to spot hidden paths at dusk",
+        "effect": "The creature darts through bright light with strong agility, slipping away from harm with ease. As dusk falls, its keen eyes easily reveal hidden trails and secret routes.",
         "numbers": {}
       },
       "weakness": "Stays rigid in open sun; easy to corner on exposed ridges.",

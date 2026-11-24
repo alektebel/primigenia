@@ -37,7 +37,7 @@
           "en": "Climb"
         },
         "role": "Basic",
-        "effect": "Climb vertical surfaces and navigate tight cave crevices. (+5 to move on cliffs).",
+        "effect": "It scales steep rock faces and squeezes through narrow crevices with ease. You can watch it scramble up sheer walls and navigate tight passages without slipping.",
         "numbers": {}
       },
       "weakness": "Slow movement speed on smooth sand.",
@@ -99,7 +99,7 @@
           "en": "Shred"
         },
         "role": "Engage",
-        "effect": "Tear flesh from carcass, increasing food value. (+2 food value).",
+        "effect": "It uses its serrated jaws to rip meat from carcasses, leaving behind easily gathered scraps. You can collect the shredded remains to sustain yourself longer.",
         "numbers": {}
       },
       "weakness": "Loud crunching noise attracts predators.",
@@ -162,7 +162,7 @@
           "en": "Scavenge Sense"
         },
         "role": "Poke",
-        "effect": "Track carcass scent upwind or underwater. (+10 to find food).",
+        "effect": "It sniffs the air and water to locate distant food sources. You can follow its movements to discover hidden carcasses nearby.",
         "numbers": {}
       },
       "weakness": "Disoriented by bright sun.",
@@ -222,7 +222,7 @@
           "en": "Armour"
         },
         "role": "Defence",
-        "effect": "Resist bite damage from small predators. (+2 armor).",
+        "effect": "Its thick, plated shell deflects the bites of smaller hunters. You can observe it shrugging off minor attacks while foraging safely.",
         "numbers": {}
       },
       "weakness": "Slow movement speed.",
@@ -269,11 +269,6 @@
     }
   ],
   "relations": [
-    {
-      "with": "carrion",
-      "kind": "prey",
-      "note": "Shreds sinking carcasses."
-    },
     {
       "with": "garfio",
       "kind": "predation",

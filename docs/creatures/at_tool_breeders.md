@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_tool_breeders.c1 | Blowhole nasal valve with sphincter control | Warm shallow seas (F10) demand submerged tool manipulation ← Dense atmosphere (F6) increases dissolved O2 capacity ← Sphincter valve seals airway during extended dives ← Continuous underwater manipulation without surfacing | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3). | Aqueous Adapt (`at_tool_breeders.aqueous_adapt`) | Engage | breathe underwater for 10 turns, -20% movement penalty | Valve seals fail in high-sediment water, causing choking |
-| at_tool_breeders.c2 | Bioluminescent reef-city signaling networks | Low-light depths replace solar dependence (F16) ← High alkalinity (F10) fosters calcified shell architecture ← Silent optical communication avoids acoustic predators ← Synchronized dermal flashes transmit tactical commands | **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F16** Widespread bioluminescent and chemosynthetic pathways replace solar dependence in dark zones. | Glow-Code (`at_tool_breeders.glow_code`) | Basic | transmit tactical commands in darkness, 15m radius | Light pollution in bright zones washes out signals; causes disorientation |
+| at_tool_breeders.c1 | Blowhole nasal valve with sphincter control | Warm shallow seas (F10) demand submerged tool manipulation ← Dense atmosphere (F6) increases dissolved O2 capacity ← Sphincter valve seals airway during extended dives ← Continuous underwater manipulation without surfacing | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3). | Aqueous Adapt (`at_tool_breeders.aqueous_adapt`) | Engage | The creature opens its blowhole to breathe underwater for a short while, and you see it move with a slight drag through the water. | Valve seals fail in high-sediment water, causing choking |
+| at_tool_breeders.c2 | Bioluminescent reef-city signaling networks | Low-light depths replace solar dependence (F16) ← High alkalinity (F10) fosters calcified shell architecture ← Silent optical communication avoids acoustic predators ← Synchronized dermal flashes transmit tactical commands | **F10** Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).; **F16** Widespread bioluminescent and chemosynthetic pathways replace solar dependence in dark zones. | Glow-Code (`at_tool_breeders.glow_code`) | Basic | The creature pulses with bioluminescent light to send signals, and you can see the glowing patterns guide nearby allies in the dark. | Light pollution in bright zones washes out signals; causes disorientation |
 
 ### at_tool_breeders.c1: Blowhole nasal valve with sphincter control
 
 Trait ← Warm shallow seas (F10) demand submerged tool manipulation ← Dense atmosphere (F6) increases dissolved O2 capacity ← Sphincter valve seals airway during extended dives ← Continuous underwater manipulation without surfacing ← F6, F10
 
-- **Skill:** Aqueous Adapt (Engage): breathe underwater for 10 turns, -20% movement penalty
+- **Skill:** Aqueous Adapt (Engage): The creature opens its blowhole to breathe underwater for a short while, and you see it move with a slight drag through the water.
 - **Weakness:** Valve seals fail in high-sediment water, causing choking
 - **Observe:**
   1. Rhythmic blowhole mist
@@ -46,7 +46,7 @@ Trait ← Warm shallow seas (F10) demand submerged tool manipulation ← Dense a
 
 Trait ← Low-light depths replace solar dependence (F16) ← High alkalinity (F10) fosters calcified shell architecture ← Silent optical communication avoids acoustic predators ← Synchronized dermal flashes transmit tactical commands ← F10, F16
 
-- **Skill:** Glow-Code (Basic): transmit tactical commands in darkness, 15m radius
+- **Skill:** Glow-Code (Basic): The creature pulses with bioluminescent light to send signals, and you can see the glowing patterns guide nearby allies in the dark.
 - **Weakness:** Light pollution in bright zones washes out signals; causes disorientation
 - **Observe:**
   1. Pulsing dermal chromatophores

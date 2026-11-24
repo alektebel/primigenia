@@ -36,7 +36,7 @@
           "en": "Turbine Burst"
         },
         "role": "Signature",
-        "effect": "Increases speed by 40% for 2 turns; heart rate spikes, revealing position and draining 3 HP/turn.",
+        "effect": "The creature suddenly surges forward with frantic energy, its turbine heart pounding loudly enough to betray its location. As it races, the frantic beating weakens nearby targets.",
         "numbers": {}
       },
       "weakness": "Heart overheats if burst is used too long; must rest to cool.",
@@ -100,7 +100,7 @@
           "en": "Thermal Ride"
         },
         "role": "Passive",
-        "effect": "Gains 5m altitude per turn when stationary, grants +1 evasion.",
+        "effect": "When it remains still, the creature steadily climbs higher into the air, its stretched wing membranes catching the updrafts. Its elevated position makes it difficult to track and strike.",
         "numbers": {}
       },
       "weakness": "Cannot land on narrow branches; crashes on complex terrain.",

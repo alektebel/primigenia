@@ -46,7 +46,7 @@
           "en": "Undulatory Lunge"
         },
         "role": "Engage",
-        "effect": "+25% burst speed in kelp and rocky cover.",
+        "effect": "When navigating kelp thickets and rocky terrain, it darts forward with sudden, powerful bursts of speed.",
         "numbers": {}
       },
       "weakness": "Slower acceleration on open, flat sand.",

@@ -24,15 +24,15 @@ Spindly limbs with reduced bone density <- 0.38 g surface gravity + Wolff’s la
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_martians.c1 | Spindly limbs with reduced bone density | Elongated osteological architecture ← Disuse osteopenia & deliberate selection ← 0.38g surface gravity reduces mechanical loading | **F4** Earth surface gravity is 9.81 m/s² while Mars surface gravity is 3.71 m/s².; **F5** Martians exhibit elongated limbs and reduced bone mineral density relative to Terrestrials. | Leaping Drift (`at_martians.leaping_drift`) | Engage | +40% vertical leap and +30% fall damage mitigation | Fracture risk exceeds 0.6g; prolonged Earth-side duty causes rapid joint collapse |
-| at_martians.c2 | UV-hardened integument with enhanced DNA repair | Melanin-analog skin pigmentation ← Chronic high-surface radiation exposure ← Unshielded magnetosphere & thin ozone layer | **F16** Martian lineages developed UV-hardened integument and enhanced DNA repair pathways to withstand high surface radiation.; **F19** Mars lacks a global dynamo, resulting in high energetic particle flux that post-terraform habitability must mitigate. | Solar Shield (`at_martians.solar_shield`) | Defence | +50% resistance to radiation damage and +10% photosynthetic efficiency from ambient light | Pigment absorbs visible light poorly, reducing night vision by 40% |
-| at_martians.c3 | Perchlorate-reducing gut symbiome for soil detox | Halophilic bacterial consortium in hindgut ← Regolith perchlorate concentration requires enzymatic reduction ← Ancient UV photolysis left toxic salt deposits | **F11** Martian regolith is perchlorate-rich and locally clay-poor. | Toxin Digest (`at_martians.toxin_digest`) | Basic | +30% stamina recovery from raw local biomass, identifies safe foraging zones | Incompatible with Earth-standard probiotics; causes acute dysentery on diet shift |
+| at_martians.c1 | Spindly limbs with reduced bone density | Elongated osteological architecture ← Disuse osteopenia & deliberate selection ← 0.38g surface gravity reduces mechanical loading | **F4** Earth surface gravity is 9.81 m/s² while Mars surface gravity is 3.71 m/s².; **F5** Martians exhibit elongated limbs and reduced bone mineral density relative to Terrestrials. | Leaping Drift (`at_martians.leaping_drift`) | Engage | The creature springs high into the air with its spindly legs, landing softly without trouble. You can watch it bound across the terrain with effortless leaps. | Fracture risk exceeds 0.6g; prolonged Earth-side duty causes rapid joint collapse |
+| at_martians.c2 | UV-hardened integument with enhanced DNA repair | Melanin-analog skin pigmentation ← Chronic high-surface radiation exposure ← Unshielded magnetosphere & thin ozone layer | **F16** Martian lineages developed UV-hardened integument and enhanced DNA repair pathways to withstand high surface radiation.; **F19** Mars lacks a global dynamo, resulting in high energetic particle flux that post-terraform habitability must mitigate. | Solar Shield (`at_martians.solar_shield`) | Defence | Its hardened skin shimmers as it absorbs ambient light, shielding it from harmful rays. You see it stand calmly in bright conditions, drawing strength strongly from the surroundings. | Pigment absorbs visible light poorly, reducing night vision by 40% |
+| at_martians.c3 | Perchlorate-reducing gut symbiome for soil detox | Halophilic bacterial consortium in hindgut ← Regolith perchlorate concentration requires enzymatic reduction ← Ancient UV photolysis left toxic salt deposits | **F11** Martian regolith is perchlorate-rich and locally clay-poor. | Toxin Digest (`at_martians.toxin_digest`) | Basic | The creature quickly restores its energy by consuming local plants and soil nearby. It moves confidently toward safe foraging patches, leaving behind clearly marked trails. | Incompatible with Earth-standard probiotics; causes acute dysentery on diet shift |
 
 ### at_martians.c1: Spindly limbs with reduced bone density
 
 Trait ← Elongated osteological architecture ← Disuse osteopenia & deliberate selection ← 0.38g surface gravity reduces mechanical loading ← F4, F5
 
-- **Skill:** Leaping Drift (Engage): +40% vertical leap and +30% fall damage mitigation
+- **Skill:** Leaping Drift (Engage): The creature springs high into the air with its spindly legs, landing softly without trouble. You can watch it bound across the terrain with effortless leaps.
 - **Weakness:** Fracture risk exceeds 0.6g; prolonged Earth-side duty causes rapid joint collapse
 - **Observe:**
   1. Skeletal X-rays show porous trabecular matrix
@@ -48,7 +48,7 @@ Trait ← Elongated osteological architecture ← Disuse osteopenia & deliberate
 
 Trait ← Melanin-analog skin pigmentation ← Chronic high-surface radiation exposure ← Unshielded magnetosphere & thin ozone layer ← F16, F19
 
-- **Skill:** Solar Shield (Defence): +50% resistance to radiation damage and +10% photosynthetic efficiency from ambient light
+- **Skill:** Solar Shield (Defence): Its hardened skin shimmers as it absorbs ambient light, shielding it from harmful rays. You see it stand calmly in bright conditions, drawing strength strongly from the surroundings.
 - **Weakness:** Pigment absorbs visible light poorly, reducing night vision by 40%
 - **Observe:**
   1. Bronze-to-black skin sheen
@@ -66,7 +66,7 @@ Trait ← Melanin-analog skin pigmentation ← Chronic high-surface radiation ex
 
 Trait ← Halophilic bacterial consortium in hindgut ← Regolith perchlorate concentration requires enzymatic reduction ← Ancient UV photolysis left toxic salt deposits ← F11
 
-- **Skill:** Toxin Digest (Basic): +30% stamina recovery from raw local biomass, identifies safe foraging zones
+- **Skill:** Toxin Digest (Basic): The creature quickly restores its energy by consuming local plants and soil nearby. It moves confidently toward safe foraging patches, leaving behind clearly marked trails.
 - **Weakness:** Incompatible with Earth-standard probiotics; causes acute dysentery on diet shift
 - **Observe:**
   1. Faint salt-crystals on lips

@@ -33,7 +33,7 @@
           "en": "Drip-Sieve"
         },
         "role": "Basic",
-        "effect": "Harvests 20 free neutrons per cycle, fueling beta-decay metabolism and granting +10% mass to self.",
+        "effect": "The creature gathers drifting neutrons from its surroundings, using them to sustain its internal processes and steadily growing heavier.",
         "numbers": {}
       },
       "weakness": "Neutron depletion stalls activity; requires waiting 40μs for drip replenishment.",
@@ -88,7 +88,7 @@
           "en": "Phase-Forge"
         },
         "role": "Engage",
-        "effect": "Triggers localized pasta transition, dealing 25% heat damage to adjacent enemies and healing self.",
+        "effect": "It induces a sudden structural shift in nearby matter, releasing intense warmth that scorches adjacent foes while mending its own form.",
         "numbers": {}
       },
       "weakness": "Requires precise density targeting; wrong phase causes structural instability.",
@@ -151,7 +151,7 @@
           "en": "Proton-Scrub"
         },
         "role": "Defence",
-        "effect": "Purges adjacent proton-rich defects, preventing micro-glitch nucleation and granting +20% lattice integrity.",
+        "effect": "The creature sweeps away proton impurities from its immediate vicinity, strongly reinforcing its own structure and shielding nearby areas from structural fractures.",
         "numbers": {}
       },
       "weakness": "Scrubbing releases neutrino flux, attracting Andador Fractura scavengers.",
@@ -207,7 +207,7 @@
           "en": "Resonant-Graft"
         },
         "role": "Engage",
-        "effect": "Synchronizes with a target's vibration, transferring 15% of its heavy isotope reserves via tunneling.",
+        "effect": "It locks onto a target's rhythmic vibrations and steadily draws heavy isotopes from it through a shimmering tunneling effect.",
         "numbers": {}
       },
       "weakness": "Requires sustained contact; broken contact during vibration mismatch causes tunneling failure.",

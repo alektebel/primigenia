@@ -21,16 +21,16 @@ Kite-shaped membrane with silver conductive veins, subdermal capacitive bladders
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| rayotela.c1 | Silver conductive veins | Channel lightning current safely ← Prevent tissue burn from discharge ← Harvest free energy from storms | **F12** Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium. | Discharge (`rayotela.discharge`) | Poke | Deals 20 damage to nearby enemies, consumes stored charge. | Insulation or grounding breaks the circuit, disabling movement and attacks. |
-| rayotela.c2 | Subdermal capacitive bladders | Store ionic charge between flashes ← Buffer intermittent energy supply ← Maintain depth via electrostatic repulsion | **F12** Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Capacitor Charge (`rayotela.capacitor_charge`) | Basic | Stores 30 charge over 2 seconds, unlocking high-power abilities. | Overcharge causes tissue damage; requires venting gas. |
-| rayotela.c3 | Grounding spikes | Complete circuit with prey or rival ← Minimize injury cost in duels ← Reduce metabolic cost of conflict | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments. | Grounding Zap (`rayotela.grounding_zap`) | Control | Stuns target for 3 seconds by discharging to ground. | Spikes are brittle; break on hard impact. |
-| rayotela.c4 | Iridescent signaling patches | Signal through aerosol haze ← Attract mates in low visibility ← Reflect red-shifted starlight | **F1** G2V main-sequence star with 0.95 L☉ luminosity provides reduced, red-skewing insolation (~3.5% Earth flux) at 5.2 AU.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Flash Signal (`rayotela.flash_signal`) | Social | Calls allies within 50m, boosting their morale by 15. | Predictable pattern; enemies can mask themselves. |
+| rayotela.c1 | Silver conductive veins | Channel lightning current safely ← Prevent tissue burn from discharge ← Harvest free energy from storms | **F12** Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium. | Discharge (`rayotela.discharge`) | Poke | The creature releases a burst of electricity at nearby foes, draining its own energy in the process. | Insulation or grounding breaks the circuit, disabling movement and attacks. |
+| rayotela.c2 | Subdermal capacitive bladders | Store ionic charge between flashes ← Buffer intermittent energy supply ← Maintain depth via electrostatic repulsion | **F12** Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Capacitor Charge (`rayotela.capacitor_charge`) | Basic | The creature gathers energy over a short while, its body pulsing as it prepares for a much stronger strike. | Overcharge causes tissue damage; requires venting gas. |
+| rayotela.c3 | Grounding spikes | Complete circuit with prey or rival ← Minimize injury cost in duels ← Reduce metabolic cost of conflict | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments. | Grounding Zap (`rayotela.grounding_zap`) | Control | The creature strikes the ground, sending a shockwave that holds the target completely still. | Spikes are brittle; break on hard impact. |
+| rayotela.c4 | Iridescent signaling patches | Signal through aerosol haze ← Attract mates in low visibility ← Reflect red-shifted starlight | **F1** G2V main-sequence star with 0.95 L☉ luminosity provides reduced, red-skewing insolation (~3.5% Earth flux) at 5.2 AU.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients. | Flash Signal (`rayotela.flash_signal`) | Social | The creature flashes bright patterns to summon nearby allies and rally them for battle. | Predictable pattern; enemies can mask themselves. |
 
 ### rayotela.c1: Silver conductive veins
 
 Trait ← Channel lightning current safely ← Prevent tissue burn from discharge ← Harvest free energy from storms ← F12
 
-- **Skill:** Discharge (Poke): Deals 20 damage to nearby enemies, consumes stored charge.
+- **Skill:** Discharge (Poke): The creature releases a burst of electricity at nearby foes, draining its own energy in the process.
 - **Weakness:** Insulation or grounding breaks the circuit, disabling movement and attacks.
 - **Observe:**
   1. Edges sparking before a strike
@@ -49,7 +49,7 @@ Trait ← Channel lightning current safely ← Prevent tissue burn from discharg
 
 Trait ← Store ionic charge between flashes ← Buffer intermittent energy supply ← Maintain depth via electrostatic repulsion ← F12, F16
 
-- **Skill:** Capacitor Charge (Basic): Stores 30 charge over 2 seconds, unlocking high-power abilities.
+- **Skill:** Capacitor Charge (Basic): The creature gathers energy over a short while, its body pulsing as it prepares for a much stronger strike.
 - **Weakness:** Overcharge causes tissue damage; requires venting gas.
 - **Observe:**
   1. Bladders swelling with light before burst
@@ -67,7 +67,7 @@ Trait ← Store ionic charge between flashes ← Buffer intermittent energy supp
 
 Trait ← Complete circuit with prey or rival ← Minimize injury cost in duels ← Reduce metabolic cost of conflict ← F3, F19
 
-- **Skill:** Grounding Zap (Control): Stuns target for 3 seconds by discharging to ground.
+- **Skill:** Grounding Zap (Control): The creature strikes the ground, sending a shockwave that holds the target completely still.
 - **Weakness:** Spikes are brittle; break on hard impact.
 - **Observe:**
   1. Tucking spikes when resting
@@ -85,7 +85,7 @@ Trait ← Complete circuit with prey or rival ← Minimize injury cost in duels 
 
 Trait ← Signal through aerosol haze ← Attract mates in low visibility ← Reflect red-shifted starlight ← F1, F7
 
-- **Skill:** Flash Signal (Social): Calls allies within 50m, boosting their morale by 15.
+- **Skill:** Flash Signal (Social): The creature flashes bright patterns to summon nearby allies and rally them for battle.
 - **Weakness:** Predictable pattern; enemies can mask themselves.
 - **Observe:**
   1. Patches shifting color with mood

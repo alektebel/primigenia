@@ -21,16 +21,16 @@ Filamentary ribbon of strongly coupled dusty plasma (Yukawa lattice), anchored b
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| seda_coronal.c1 | Filamentary ribbon body minimizes drag in low-density corona | Thin cross-section reduces kinetic friction ← Coronal density drops to 10⁻¹⁵ kg/m³ ← Hydrostatic gradient integrated from photosphere upward | **F5** Photosphere base pressure is ~0.1–1 bar at optical depth τ=1, dropping exponentially to ~10⁻¹⁵ kg/m³ in the outer corona.; **F7** Magnetoacoustic wave speed is ~7–10 km/s in the photosphere, transitioning to Alfvén wave speeds ~1000 km/s in the corona. | Wave Glide (`seda_coronal.wave_glide`) | Basic | Rides magnetoacoustic waves for 15m distance, ignoring terrain | Broad bodies or dense attachments increase drag; slows it to a crawl in granular upflows |
-| seda_coronal.c2 | Yukawa lattice skin anchors to magnetic flux | Repulsive screened Coulomb potentials form ordered crystal ← Strong coupling (Γ > 170) overcomes thermal chaos ← Dusty plasma structures under partial ionization | **F13** Dusty plasma structures form ordered Yukawa lattices under strong coupling conditions (Γ > 170), providing a structural scaffold for inorganic life.; **F11** Plasma solvent lacks a liquid phase; chemistry is replaced by non-equilibrium self-organization in ionized hydrogen/helium. | Flux Grip (`seda_coronal.flux_grip`) | Engage | Anchors to a magnetic surface, becoming immune to displacement for 8s | Lattice shatters under high-turbulence spicule ejections (5–50 km/s) |
-| seda_coronal.c3 | Helicity memory knots store navigational maps | Topological knots record past reconnection sites ← Alfvén's theorem preserves field line linkage ← Magnetic helicity is nearly conserved in high-Rm plasma | **F14** Magnetic helicity is nearly conserved in high-R_m plasma, allowing topological knots to store structural and informational memory.; **F10** Prominences are cooled plasma (~10⁴–10⁵ K) suspended in coronal magnetic arches by field tension. | Path Echo (`seda_coronal.path_echo`) | Passive | Reveals hidden safe routes through active regions for 10s | Knots unravel during prolonged magnetic reconnection; causes disorientation and random drifting |
+| seda_coronal.c1 | Filamentary ribbon body minimizes drag in low-density corona | Thin cross-section reduces kinetic friction ← Coronal density drops to 10⁻¹⁵ kg/m³ ← Hydrostatic gradient integrated from photosphere upward | **F5** Photosphere base pressure is ~0.1–1 bar at optical depth τ=1, dropping exponentially to ~10⁻¹⁵ kg/m³ in the outer corona.; **F7** Magnetoacoustic wave speed is ~7–10 km/s in the photosphere, transitioning to Alfvén wave speeds ~1000 km/s in the corona. | Wave Glide (`seda_coronal.wave_glide`) | Basic | The creature surfs along magnetoacoustic waves, gliding effortlessly over the landscape without being hindered by obstacles. | Broad bodies or dense attachments increase drag; slows it to a crawl in granular upflows |
+| seda_coronal.c2 | Yukawa lattice skin anchors to magnetic flux | Repulsive screened Coulomb potentials form ordered crystal ← Strong coupling (Γ > 170) overcomes thermal chaos ← Dusty plasma structures under partial ionization | **F13** Dusty plasma structures form ordered Yukawa lattices under strong coupling conditions (Γ > 170), providing a structural scaffold for inorganic life.; **F11** Plasma solvent lacks a liquid phase; chemistry is replaced by non-equilibrium self-organization in ionized hydrogen/helium. | Flux Grip (`seda_coronal.flux_grip`) | Engage | The creature locks its lattice skin firmly onto magnetic surfaces, holding its position strongly against any pushing forces. | Lattice shatters under high-turbulence spicule ejections (5–50 km/s) |
+| seda_coronal.c3 | Helicity memory knots store navigational maps | Topological knots record past reconnection sites ← Alfvén's theorem preserves field line linkage ← Magnetic helicity is nearly conserved in high-Rm plasma | **F14** Magnetic helicity is nearly conserved in high-R_m plasma, allowing topological knots to store structural and informational memory.; **F10** Prominences are cooled plasma (~10⁴–10⁵ K) suspended in coronal magnetic arches by field tension. | Path Echo (`seda_coronal.path_echo`) | Passive | The creature traces glowing pathways through active regions, marking safe routes that remain visible for a short while. | Knots unravel during prolonged magnetic reconnection; causes disorientation and random drifting |
 | seda_coronal.c4 | Spicule launch mechanism ejects plasma to feed | Ventral current jets amplify local wave amplitude ← Magnetoacoustic wave pressure drives periodic mass ejections ← Chromospheric spicules eject vertical plasma jets | **F19** Chromospheric spicules eject vertical plasma jets at ~5–50 km/s, enabling short-range vertical transit.; **F12** Magnetic reconnection converts stored magnetic free energy into kinetic and thermal energy, accelerating particles to relativistic speeds. | Jet Surge (`seda_coronal.jet_surge`) | Poke | Fires a directed plasma burst, knocking back enemies and creating a temporary feeding zone | Requires precise timing; misfires waste charge and leave it vulnerable to ambient radiation |
 
 ### seda_coronal.c1: Filamentary ribbon body minimizes drag in low-density corona
 
 Trait ← Thin cross-section reduces kinetic friction ← Coronal density drops to 10⁻¹⁵ kg/m³ ← Hydrostatic gradient integrated from photosphere upward ← F5, F7
 
-- **Skill:** Wave Glide (Basic): Rides magnetoacoustic waves for 15m distance, ignoring terrain
+- **Skill:** Wave Glide (Basic): The creature surfs along magnetoacoustic waves, gliding effortlessly over the landscape without being hindered by obstacles.
 - **Weakness:** Broad bodies or dense attachments increase drag; slows it to a crawl in granular upflows
 - **Observe:**
   1. Silken trail of ionized gas
@@ -48,7 +48,7 @@ Trait ← Thin cross-section reduces kinetic friction ← Coronal density drops 
 
 Trait ← Repulsive screened Coulomb potentials form ordered crystal ← Strong coupling (Γ > 170) overcomes thermal chaos ← Dusty plasma structures under partial ionization ← F13, F11
 
-- **Skill:** Flux Grip (Engage): Anchors to a magnetic surface, becoming immune to displacement for 8s
+- **Skill:** Flux Grip (Engage): The creature locks its lattice skin firmly onto magnetic surfaces, holding its position strongly against any pushing forces.
 - **Weakness:** Lattice shatters under high-turbulence spicule ejections (5–50 km/s)
 - **Observe:**
   1. Geometric hexagonal shimmer on its surface
@@ -66,7 +66,7 @@ Trait ← Repulsive screened Coulomb potentials form ordered crystal ← Strong 
 
 Trait ← Topological knots record past reconnection sites ← Alfvén's theorem preserves field line linkage ← Magnetic helicity is nearly conserved in high-Rm plasma ← F14, F10
 
-- **Skill:** Path Echo (Passive): Reveals hidden safe routes through active regions for 10s
+- **Skill:** Path Echo (Passive): The creature traces glowing pathways through active regions, marking safe routes that remain visible for a short while.
 - **Weakness:** Knots unravel during prolonged magnetic reconnection; causes disorientation and random drifting
 - **Observe:**
   1. Slowly rotating core structures

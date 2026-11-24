@@ -40,7 +40,7 @@
           "en": "Wrack Scuttle"
         },
         "role": "Basic",
-        "effect": "Move 20% faster on shore/wrack terrain.",
+        "effect": "The creature scurries swiftly across the shoreline and damp coastal ground, easily navigating the shifting sand.",
         "numbers": {}
       },
       "weakness": "Slow on dry inland terrain due to high weight-to-surface-area ratio.",
@@ -268,7 +268,7 @@
   ],
   "relations": [
     {
-      "with": "Brújula",
+      "with": "brujula",
       "kind": "predation",
       "note": "Brújula preys on Garra_marea when solitary."
     },
@@ -276,11 +276,6 @@
       "with": "Garfio",
       "kind": "predation",
       "note": "Garfio attacks Garra_marea to steal carcasses."
-    },
-    {
-      "with": "Carrion",
-      "kind": "prey",
-      "note": "Primary food source; strips carcasses rapidly."
     },
     {
       "with": "Cinta_de_marea",

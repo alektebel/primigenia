@@ -1,0 +1,320 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ocotl",
+  "name": {
+    "en": "Ocotl"
+  },
+  "world": "deepinterior",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "2.8–3.5 km depth, stagnant high-brine porosity near 100–115°C",
+    "diet": "Microbial colonies, stored O2-burst attacks, mineral particulates",
+    "active": "Episodic, triggered by chemical gradients or pressure shifts",
+    "predators": []
+  },
+  "body": "Spherical/ovoid, spiny exoskeleton, internal clathrate reservoirs",
+  "chains": [
+    {
+      "id": "ocotl.c1",
+      "trait": "Internal methane clathrate reservoirs control buoyancy",
+      "links": [
+        "Brine density reaches 1.2 g/cm3 near 4km",
+        "Neutral buoyancy requires precise volume displacement",
+        "Calcium chloride saturation stabilizes heavy fluid"
+      ],
+      "roots": [
+        "F13"
+      ],
+      "skill": {
+        "id": "ocotl.clathrate_rise",
+        "name": {
+          "en": "Clathrate Rise"
+        },
+        "role": "Basic",
+        "effect": "The creature rapidly releases gas from its bladders to shoot upward, leaving a trail of bubbles as it rises. It expends its stored energy to make the sudden ascent.",
+        "numbers": {}
+      },
+      "weakness": "Violent bubble release alerts prey and scavengers",
+      "observe": [
+        "Iridescent bladder panels beneath carapace",
+        "Rapid ascent leaves trailing ice crystals",
+        "Pressure sensors twitch before movement"
+      ],
+      "journal": {
+        "en": "They carry their own ice to ride the dark."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Move the clathrate bladder into the shallow liquid shell (roughly the 0.9-1.2 km band where F21 allows it) or, if the predator must stay at 2.8-3.5 km, replace it with a compressible gas/lipid reservoir or regulated brine-density change. Keep the rapid-rise and noisy-release mechanic; drop the ice-chip secret at depth.",
+        "fixes": [
+          "Move the clathrate bladder into the shallow liquid shell (roughly the 0.9-1.2 km band where F21 allows it) or, if the predator must stay at 2.8-3.5 km, replace it with a compressible gas/lipid reservoir or regulated brine-density change. Keep the rapid-rise and noisy-release mechanic; drop the ice-chip secret at depth."
+        ],
+        "analogues": [
+          {
+            "organism": "Methane hydrate is stable in cold, high-pressure shallow sediments and in the upper few hundred metres of permafrost, not in hot deep crustal brines.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ocotl.c2",
+      "trait": "Radiolytic oxygen burst organs deliver one-shot attacks",
+      "links": [
+        "Strict anaerobes cannot tolerate free O2 long-term",
+        "Radiolysis hoards H2 and O2 in same pore",
+        "Metabolic explosion poisons cell after one use"
+      ],
+      "roots": [
+        "F22"
+      ],
+      "skill": {
+        "id": "ocotl.oxygen_spike",
+        "name": {
+          "en": "Oxygen Spike"
+        },
+        "role": "Poke",
+        "effect": "The creature violently expels a concentrated burst of oxygen that shocks nearby targets. It then falls still and spasms as its cells work to purge the toxic byproducts.",
+        "numbers": {}
+      },
+      "weakness": "Leaves them metabolically inactive until detox complete",
+      "observe": [
+        "Gill slits vent pale vapor post-attack",
+        "Muscle fibers contract in violent spasms",
+        "Skin flushed red, then grey as O2 clears"
+      ],
+      "journal": {
+        "en": "They breathe poison to strike."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make the attack a concentrated oxidant/reactive-oxygen squirt that burns prey tissue and forces the host into detox afterwards; keep the silence-and-recovery weakness. Replace the boiling-brine image with a pale chemical plume, and keep the recharge tied to slow radiolytic accumulation.",
+        "fixes": [
+          "Make the attack a concentrated oxidant/reactive-oxygen squirt that burns prey tissue and forces the host into detox afterwards; keep the silence-and-recovery weakness. Replace the boiling-brine image with a pale chemical plume, and keep the recharge tied to slow radiolytic accumulation."
+        ],
+        "analogues": [
+          {
+            "organism": "Desulforudis audaxviator lives on radiolysis-derived oxidants and reductants in a closed deep fracture; oxygen-storing detox systems exist in anaerobes such as стрептococci and in the oxygen-tolerant nitrogenase systems of some microbes.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ocotl.c3",
+      "trait": "Spiny thermal-insulating carapace survives near 118°C",
+      "links": [
+        "Protein denaturation sets hard ceiling near 122°C",
+        "Repair mechanisms fail above thermal limit",
+        "Local isotherm lies at about 4km depth"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "ocotl.heat_shell",
+        "name": {
+          "en": "Heat Shell"
+        },
+        "role": "Defence",
+        "effect": "The creature braces its spiny carapace against the intense heat, shimmering as it absorbs the thermal energy. Its tough outer shell resists melting and holds its shape against the scorching environment.",
+        "numbers": {}
+      },
+      "weakness": "Carapace limits flexibility in narrow cracks",
+      "observe": [
+        "Spines arranged in insulating air pockets",
+        "Scales crackle when approaching 110°C threshold",
+        "Metabolic rate drops as temperature rises"
+      ],
+      "journal": {
+        "en": "They wear the crust’s fever as armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the spines as defence/sensing, but move thermal tolerance into heat-shock proteins and thermostable biochemistry with a deliberately low metabolic rate; describe the near-ceiling torpor instead of thermal insulation.",
+        "fixes": [
+          "Keep the spines as defence/sensing, but move thermal tolerance into heat-shock proteins and thermostable biochemistry with a deliberately low metabolic rate; describe the near-ceiling torpor instead of thermal insulation."
+        ],
+        "analogues": [
+          {
+            "organism": "Thermus thermophilus and other hot-spring microbes keep proteins stable with thermostable enzymes and heat-shock systems; vent animals rely on symbionts and behaviour rather than thick insulation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ocotl.c4",
+      "trait": "Seismic vibration receptors hunt via low-frequency tremors",
+      "links": [
+        "Chemical diffusion moves scent only 1 cm/day",
+        "Sound travels 3000 m/s in solid rock",
+        "Fracture networks act as planetary acoustic waveguides"
+      ],
+      "roots": [
+        "F10",
+        "F11"
+      ],
+      "skill": {
+        "id": "ocotl.quake_sense",
+        "name": {
+          "en": "Quake Sense"
+        },
+        "role": "Passive",
+        "effect": "The creature tilts its head and listens to the ground, sensing faint tremors through its specialized receptors. Hidden movements nearby become apparent as it tracks the subtle vibrations.",
+        "numbers": {}
+      },
+      "weakness": "Deaf to high-frequency vibrations and sudden cracks",
+      "observe": [
+        "Head cups channel low rumbles",
+        "Antennae quiver to distant tectonic shifts",
+        "Pupils dilate when rock hums"
+      ],
+      "journal": {
+        "en": "They listen to the world’s heartbeat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "No physics change needed: keep the skill and the high-frequency deafness. Replace the pupil-dilation cue with a whole-body freeze, a body-wall colour flush or a change in posture/antenna tension.",
+        "fixes": [
+          "No physics change needed: keep the skill and the high-frequency deafness. Replace the pupil-dilation cue with a whole-body freeze, a body-wall colour flush or a change in posture/antenna tension."
+        ],
+        "analogues": [
+          {
+            "organism": "Blind mole rats (Spalax) and elephants use ground-borne low-frequency vibration for orientation and communication; snakes pick up substrate vibration through the jaw and skeleton.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Ocotl ambushes grazing Cascabel; Cascabel escapes via narrow cracks Ocotl cannot squeeze through."
+    },
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Ocotl ambushes grazing Cascabel; Cascabel escapes via narrow cracks Ocotl cannot squeeze through."
+    },
+    {
+      "with": "soplillo",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both seek network nodes, but Ocotl’s pressure bursts destabilize Soplillo’s nursery structures."
+    },
+    {
+      "with": "soplillo",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both seek network nodes, but Ocotl’s pressure bursts destabilize Soplillo’s nursery structures."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "spherical",
+    "origin": "clathrate bladder"
+  },
+  "temperament": "Ambush predator, highly territorial",
+  "secrets": [
+    "If you cool their bladder with fresh ice chips, they become harmless and docile for a turn.",
+    "Their spines can be harvested to craft heat-resistant gear."
+  ],
+  "moments": [
+    "When it strikes, the brine boils around it for three seconds, then goes still as the oxygen dies in its own veins."
+  ],
+  "journal": [
+    {
+      "en": "They are the planet’s sudden thought."
+    },
+    {
+      "en": "Warmth is a weapon, and a cage."
+    }
+  ]
+}

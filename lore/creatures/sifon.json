@@ -37,7 +37,7 @@
           "en": "Electric Sense"
         },
         "role": "Poke",
-        "effect": "Reveals hidden prey and ambushers within 8m; ignores visual camouflage.",
+        "effect": "The creature's snout twitches as it senses hidden prey and ambushers nearby, revealing their presence even through thick camouflage.",
         "numbers": {}
       },
       "weakness": "Loud electrical interference (lightning strikes nearby) disorients it; blind to visual traps.",
@@ -101,7 +101,7 @@
           "en": "Glow"
         },
         "role": "Basic",
-        "effect": "Illuminates dark areas; attracts curious prey to lure; +10% befriending in dark.",
+        "effect": "The creature pulses a soft blue light that brightens the surrounding darkness and draws curious prey toward its lure. This gentle glow also makes nearby creatures more willing to trust and bond with it.",
         "numbers": {}
       },
       "weakness": "Glow reveals position to predators; cannot turn off in combat.",

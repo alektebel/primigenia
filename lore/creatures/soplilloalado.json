@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Persistent fog banks and anticyclone edges (3-5 km altitude)",
+    "habitat": "Persistent fog banks and anticyclone edges (3-5 km altitude). Also, in the council's sketch (no such creature in this world yet): Brisacoral, both filter the same aerosol layer; SoplilloAlado dominates the upper canopy.",
     "diet": "Aerosolized microbes, spores, and organic condensates",
     "active": "Diurnal, follows thermal updrafts",
     "predators": []
@@ -34,7 +34,7 @@
           "en": "Sky Weave"
         },
         "role": "Passive",
-        "effect": "Drifts on thermal currents, reducing stamina cost by 40% while airborne.",
+        "effect": "The creature drifts smoothly on rising air currents, staying aloft with barely any effort. It can remain airborne for a long time without tiring.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden downdrafts in anticyclone edges; forced to land.",
@@ -90,7 +90,7 @@
           "en": "Mist Strainer"
         },
         "role": "Basic",
-        "effect": "Automatically gathers nutrients while moving, grants +5 stamina regen per turn.",
+        "effect": "The creature drifts through the area, filtering particles from the air to feed itself. This constant nourishment allows it to recover continuously.",
         "numbers": {}
       },
       "weakness": "Cilia clog instantly in dry, volcanic ash storms; requires grooming cooldown.",
@@ -146,7 +146,7 @@
           "en": "Buoyancy Shell"
         },
         "role": "Defence",
-        "effect": "Reduces damage taken while airborne by 30% and negates all fall damage.",
+        "effect": "The creature floats lightly in the air, easily shrugging off strikes. It lands softly without any injury from drops.",
         "numbers": {}
       },
       "weakness": "Rapid pressure changes cause decompression sickness; movement speed halved until stabilized.",
@@ -202,7 +202,7 @@
           "en": "Copper Rush"
         },
         "role": "Engage",
-        "effect": "Boosts attack speed by 20% for 3 turns, but overheats if used consecutively.",
+        "effect": "The creature strikes rapidly for a short while, moving with fierce speed. It must pause afterward, as using the ability again too soon causes it to overheat.",
         "numbers": {}
       },
       "weakness": "Blood is highly visible in murky fog; predators track the blue gleam.",
@@ -246,11 +246,6 @@
       "with": "rastreadorceniza",
       "kind": "predation",
       "note": "Rarely falls prey to ash-plows during sudden updrafts; relies on altitude."
-    },
-    {
-      "with": "Brisacoral",
-      "kind": "cousin",
-      "note": "(council kind 'competition') Both filter the same aerosol layer; SoplilloAlado dominates the upper canopy."
     },
     {
       "with": "rastreadorceniza",

@@ -1,0 +1,312 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cintillo",
+  "name": {
+    "en": "Cintillo"
+  },
+  "world": "orbital",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Ring edges, shear zones, and L4/L5 interface swarms",
+    "diet": "Ice, organics, gametes of grazers, silicate fractures",
+    "active": "Active during high-velocity shear; rests in L4 shadows",
+    "predators": []
+  },
+  "body": "Asymmetric teardrop, spring-loaded spore capsules, reflective dorsal scale",
+  "chains": [
+    {
+      "id": "cintillo.c1",
+      "trait": "Reflective dorsal iridophores",
+      "links": [
+        "Iridophores reflect starlight and radiation",
+        "Prevents cell damage above 260 K",
+        "High flux at 0.575 AU raises thermal load",
+        "Radiation pressure also exerts thermal stress"
+      ],
+      "roots": [
+        "F22",
+        "F10",
+        "F2"
+      ],
+      "skill": {
+        "id": "cintillo.flash_burn",
+        "name": {
+          "en": "Flash Burn"
+        },
+        "role": "Defence",
+        "effect": "The creature's reflective scales bounce back incoming radiation, scorching nearby foes with intense heat while leaving the creature slightly weakened.",
+        "numbers": {}
+      },
+      "weakness": "Overheat risk; flash reduces own insulation temporarily",
+      "observe": [
+        "Mirror-like flash from dorsal scale",
+        "Heat warning shimmer",
+        "Radiation deflecting off surface"
+      ],
+      "journal": {
+        "en": "Survival is a matter of reflecting the fire."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Specify a selective reflector: high visible reflectance, high mid-IR emissivity. Make the flash an aimed sunlight glance that temporarily sacrifices insulation, and hide or shed scales during cascades; describe the move qualitatively.",
+        "fixes": [
+          "Specify a selective reflector: high visible reflectance, high mid-IR emissivity. Make the flash an aimed sunlight glance that temporarily sacrifices insulation, and hide or shed scales during cascades; describe the move qualitatively."
+        ],
+        "analogues": [
+          {
+            "organism": "Cephalopod and fish iridophores; Saharan Cataglyphis reflective hairs; spacecraft selective solar-reflector/IR-emitter coatings.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cintillo.c2",
+      "trait": "Spring-loaded spore capsules",
+      "links": [
+        "Capsules launch gametes with mechanical force",
+        "No sedimentation in microgravity",
+        "Gametes must be aimed by orbital phasing",
+        "Spring mechanism ensures initial delta-v"
+      ],
+      "roots": [
+        "F23"
+      ],
+      "skill": {
+        "id": "cintillo.phasing_spawn",
+        "name": {
+          "en": "Phasing Spawn"
+        },
+        "role": "Social",
+        "effect": "The creature springs its capsule, sending a cloud of spores drifting toward nearby allies. The mist gently restores their vitality and subtly shifts their loyalty in your favor.",
+        "numbers": {}
+      },
+      "weakness": "Aiming error; miss can waste spores or hit enemies",
+      "observe": [
+        "Spring-click sound (audible only via contact)",
+        "Spore trajectory calculated against shear",
+        "Phasing shift in ally orbit"
+      ],
+      "journal": {
+        "en": "Love is a calculated orbit in the dark."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the launch physics; change the origin to ejecta-descended colonists of the Ledge and delete any plume-to-orbit claim (F16: 300 m/s cannot reach Coth's 3.7 km/s escape). Describe the move qualitatively with no numeric effect.",
+        "fixes": [
+          "Keep the launch physics; change the origin to ejecta-descended colonists of the Ledge and delete any plume-to-orbit claim (F16: 300 m/s cannot reach Coth's 3.7 km/s escape). Describe the move qualitatively with no numeric effect."
+        ],
+        "analogues": [
+          {
+            "organism": "Ballistospore discharge in fungi; flea/resilin catapults; tardigrade cryptobiosis for the spore itself.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jonsson_2008_tardigrades"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jonsson_2008_tardigrades"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cintillo.c3",
+      "trait": "Silicate-cracker jaws",
+      "links": [
+        "Jaws fracture silicate and ice matrix",
+        "Silicates provide structural material for shell",
+        "Ring composition is 8% silicates",
+        "Cracking releases trapped organics and ice"
+      ],
+      "roots": [
+        "F18"
+      ],
+      "skill": {
+        "id": "cintillo.crack_burn",
+        "name": {
+          "en": "Crack & Burn"
+        },
+        "role": "Poke",
+        "effect": "The creature's powerful jaws crack the target's defenses, shattering them while releasing a burst of cold ice that drifts toward the attacker.",
+        "numbers": {}
+      },
+      "weakness": "Slow processing; unable to crack large silicate chunks quickly",
+      "observe": [
+        "Jaws grinding against hard grains",
+        "Silicate dust and ice release",
+        "Mass gain after fracture"
+      ],
+      "journal": {
+        "en": "The rock is the skeleton of the sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Add an adhesive ventral pad or harpoon anchor, and frame the move as anchored wedge-and-scavenge; describe it qualitatively with no numeric effect.",
+        "fixes": [
+          "Add an adhesive ventral pad or harpoon anchor, and frame the move as anchored wedge-and-scavenge; describe it qualitatively with no numeric effect."
+        ],
+        "analogues": [
+          {
+            "organism": "Seed-cracking finches and rodents; wood-boring beetle mandibles; sea stars wedging bivalves.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cintillo.c4",
+      "trait": "Amber-absorption retina",
+      "links": [
+        "Retina tuned to 585 nm absorption",
+        "Matches K2V star peak spectrum",
+        "Star is K2V dwarf with 4950 K photosphere",
+        "Amber light drives primary photosynthesis"
+      ],
+      "roots": [
+        "F21",
+        "F1"
+      ],
+      "skill": {
+        "id": "cintillo.spectrum_sight",
+        "name": {
+          "en": "Spectrum Sight"
+        },
+        "role": "Basic",
+        "effect": "Detects peroxide frost and heat signatures; reveals hidden grazers",
+        "numbers": {}
+      },
+      "weakness": "Blind to IR; thermal cloaking is effective",
+      "observe": [
+        "Eyes shifting amber hue",
+        "Target lock on peroxide crystals",
+        "Heat map overlay"
+      ],
+      "journal": {
+        "en": "In the amber light, the invisible becomes visible."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep amber for navigation, grazers against planet-shine, and frost texture via UV/polarization; either add a separate bolometric/IR sense for heat or change the effect to reveal silhouettes, so thermal cloaking still works. Describe the move qualitatively.",
+        "fixes": [
+          "Keep amber for navigation, grazers against planet-shine, and frost texture via UV/polarization; either add a separate bolometric/IR sense for heat or change the effect to reveal silhouettes, so thermal cloaking still works. Describe the move qualitatively."
+        ],
+        "analogues": [
+          {
+            "organism": "Firefly Photinus spectral matching; honeybee UV/polarization vision; retinal photopigments in microbes.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "polvovela",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Cintillo targets Polvovela spores and grazes in the same shear zones"
+    },
+    {
+      "with": "polvovela",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Cintillo targets Polvovela spores and grazes in the same shear zones"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "Descended from L4 ice-bodies; teardrop stabilizes in granular vacuum"
+  },
+  "temperament": "Aggressive skitter, opportunistic, phasing social",
+  "secrets": [
+    "Cintillo can ride Coth's cryovolcanic plume debris to enter orbit.",
+    "Spore shells can phase-shift orbit slightly to avoid collision.",
+    "Iridophores can be tuned to hide thermal signature in ring shadows."
+  ],
+  "moments": [
+    "A Cintillo drifts through a Kessler cascade, its reflective scales turning the debris field into a blinding kaleidoscope, guiding the swarm through the storm by reading the light of colliding ice."
+  ],
+  "journal": [
+    {
+      "en": "Life here is a balance of burn and bite."
+    },
+    {
+      "en": "The L4 swarm is a graveyard of ice; the Cintillo is the ghost that wakes it."
+    }
+  ]
+}

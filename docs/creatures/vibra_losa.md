@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Inner crust slab-transition zone (~0.65 ρ_sat)
+- **Habitat:** Inner crust slab-transition zone (~0.65 ρ_sat). Also, in the council's sketch (no such creature in this world yet): Sialagón, vibra-Losa grazes on their phase-transition heat; Sialagón avoids competition by migrating to the higher-density gnocchi layer.
 - **Diet:** Downward neutron drip flux & latent heat from phase transitions
 - **Active:** Continuous (cycles synchronized to stellar spin & glitch cycles)
 - **Predators:** none
@@ -21,16 +21,16 @@ Sub-micron planar defect complex, elongated along magnetic flux tubes, quasi-cry
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| vibra_losa.c1 | Cognitive cycles flash at one microsecond intervals | Processes magnetic flux states via weak decay ← Weak interaction timescales impose a hard biological ceiling ← Relativistic degenerate electrons lower tunneling activation barriers | **F12** Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield.; **F13** Macroscopic life is constrained to sub-micron quasi-crystalline defect complexes; metabolic cycles run at microsecond timescales due to weak interaction and phonon transport limits.; **F11** Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust. | Phonon Sync (`vibra_losa.phonon_sync`) | Engage | Synchronizes with nearby allies, granting +25% resonant tunneling success for 3 turns. | Proton contamination stalls metabolic cycles, causing a 1-turn stun. |
-| vibra_losa.c2 | Planar defect bodies glide along nuclear lasagna sheets | Frictionless sliding between competing pasta phases ← Density gradients minimize Coulomb repulsion at slab interfaces ← QED-supercritical magnetic field confines motion to two-dimensional planes | **F8** The inner crust hosts nuclear pasta phases (lasagna, gnocchi, spaghetti) where competing strong-force clustering and Coulomb repulsion minimize free energy at density gradients.; **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry. | Phase Slip (`vibra_losa.phase_slip`) | Basic | Shifts to an adjacent pasta layer, dodging seismic waves and gaining +30% mobility. | Micro-glitch fractures trap them, dealing +20% damage taken. |
-| vibra_losa.c3 | Hereditary data stored in magnetic flux-tube knots | Encodes isotopic traits via quantum entanglement ← Flux tubes provide radiation-hard channels in degenerate matter ← Chiral EFT stabilizes metastable nuclear isomers | **F15** Hereditary information is stored in topological flux-tube entanglements and lattice defect patterns, replicated via electron-mediated quantum tunneling between nuclear clusters; relies on metastable isomers with finite lifetimes.; **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry.; **F18** Persistent X/gamma flux and supercritical B impose strict selection pressures; life requires radiation-hard, magnet-aligned defect strategies with no Earth-analog multicell at mm scale. | Knot Weave (`vibra_losa.knot_weave`) | Social | Shares adaptive isotopes via resonant tunneling, granting +15% radiation resistance to allies. | X-ray flares disrupt knot topology, breaking the link and causing -20% resistance for 2 turns. |
-| vibra_losa.c4 | Extracts metabolic energy from downward neutron drip | Captures free neutrons before they sink to the core ← Chemical potential gradient drives steady downward drip flow ← Nuclear binding energy gradients supply work for defect maintenance | **F9** Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core.; **F12** Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield. | Drip Siphon (`vibra_losa.drip_siphon`) | Poke | Drains neutron flux from a lattice node, dealing 2 weak-interaction damage and healing 1 HP. | Overharvesting triggers inverse beta decay, attracting lattice predators. |
+| vibra_losa.c1 | Cognitive cycles flash at one microsecond intervals | Processes magnetic flux states via weak decay ← Weak interaction timescales impose a hard biological ceiling ← Relativistic degenerate electrons lower tunneling activation barriers | **F12** Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield.; **F13** Macroscopic life is constrained to sub-micron quasi-crystalline defect complexes; metabolic cycles run at microsecond timescales due to weak interaction and phonon transport limits.; **F11** Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust. | Phonon Sync (`vibra_losa.phonon_sync`) | Engage | The creature aligns its vibrations with nearby allies, making their resonant tunneling much more reliable for a short while. | Proton contamination stalls metabolic cycles, causing a 1-turn stun. |
+| vibra_losa.c2 | Planar defect bodies glide along nuclear lasagna sheets | Frictionless sliding between competing pasta phases ← Density gradients minimize Coulomb repulsion at slab interfaces ← QED-supercritical magnetic field confines motion to two-dimensional planes | **F8** The inner crust hosts nuclear pasta phases (lasagna, gnocchi, spaghetti) where competing strong-force clustering and Coulomb repulsion minimize free energy at density gradients.; **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry. | Phase Slip (`vibra_losa.phase_slip`) | Basic | It glides sideways into a neighboring structural layer to evade incoming seismic waves, moving with noticeably greater agility. | Micro-glitch fractures trap them, dealing +20% damage taken. |
+| vibra_losa.c3 | Hereditary data stored in magnetic flux-tube knots | Encodes isotopic traits via quantum entanglement ← Flux tubes provide radiation-hard channels in degenerate matter ← Chiral EFT stabilizes metastable nuclear isomers | **F15** Hereditary information is stored in topological flux-tube entanglements and lattice defect patterns, replicated via electron-mediated quantum tunneling between nuclear clusters; relies on metastable isomers with finite lifetimes.; **F4** A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry.; **F18** Persistent X/gamma flux and supercritical B impose strict selection pressures; life requires radiation-hard, magnet-aligned defect strategies with no Earth-analog multicell at mm scale. | Knot Weave (`vibra_losa.knot_weave`) | Social | The creature transmits protective isotopes through resonant channels, shielding nearby allies from harmful radiation. | X-ray flares disrupt knot topology, breaking the link and causing -20% resistance for 2 turns. |
+| vibra_losa.c4 | Extracts metabolic energy from downward neutron drip | Captures free neutrons before they sink to the core ← Chemical potential gradient drives steady downward drip flow ← Nuclear binding energy gradients supply work for defect maintenance | **F9** Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core.; **F12** Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield. | Drip Siphon (`vibra_losa.drip_siphon`) | Poke | It siphons energy from a lattice node, weakening the target while absorbing the released power to mend its own body. | Overharvesting triggers inverse beta decay, attracting lattice predators. |
 
 ### vibra_losa.c1: Cognitive cycles flash at one microsecond intervals
 
 Trait ← Processes magnetic flux states via weak decay ← Weak interaction timescales impose a hard biological ceiling ← Relativistic degenerate electrons lower tunneling activation barriers ← F12, F13, F11
 
-- **Skill:** Phonon Sync (Engage): Synchronizes with nearby allies, granting +25% resonant tunneling success for 3 turns.
+- **Skill:** Phonon Sync (Engage): The creature aligns its vibrations with nearby allies, making their resonant tunneling much more reliable for a short while.
 - **Weakness:** Proton contamination stalls metabolic cycles, causing a 1-turn stun.
 - **Observe:**
   1. Rapid lattice shimmer
@@ -48,7 +48,7 @@ Trait ← Processes magnetic flux states via weak decay ← Weak interaction tim
 
 Trait ← Frictionless sliding between competing pasta phases ← Density gradients minimize Coulomb repulsion at slab interfaces ← QED-supercritical magnetic field confines motion to two-dimensional planes ← F8, F4
 
-- **Skill:** Phase Slip (Basic): Shifts to an adjacent pasta layer, dodging seismic waves and gaining +30% mobility.
+- **Skill:** Phase Slip (Basic): It glides sideways into a neighboring structural layer to evade incoming seismic waves, moving with noticeably greater agility.
 - **Weakness:** Micro-glitch fractures trap them, dealing +20% damage taken.
 - **Observe:**
   1. Smooth lateral glide
@@ -67,7 +67,7 @@ Trait ← Frictionless sliding between competing pasta phases ← Density gradie
 
 Trait ← Encodes isotopic traits via quantum entanglement ← Flux tubes provide radiation-hard channels in degenerate matter ← Chiral EFT stabilizes metastable nuclear isomers ← F15, F4, F18
 
-- **Skill:** Knot Weave (Social): Shares adaptive isotopes via resonant tunneling, granting +15% radiation resistance to allies.
+- **Skill:** Knot Weave (Social): The creature transmits protective isotopes through resonant channels, shielding nearby allies from harmful radiation.
 - **Weakness:** X-ray flares disrupt knot topology, breaking the link and causing -20% resistance for 2 turns.
 - **Observe:**
   1. Glowing knot patterns
@@ -85,7 +85,7 @@ Trait ← Encodes isotopic traits via quantum entanglement ← Flux tubes provid
 
 Trait ← Captures free neutrons before they sink to the core ← Chemical potential gradient drives steady downward drip flow ← Nuclear binding energy gradients supply work for defect maintenance ← F9, F12
 
-- **Skill:** Drip Siphon (Poke): Drains neutron flux from a lattice node, dealing 2 weak-interaction damage and healing 1 HP.
+- **Skill:** Drip Siphon (Poke): It siphons energy from a lattice node, weakening the target while absorbing the released power to mend its own body.
 - **Weakness:** Overharvesting triggers inverse beta decay, attracting lattice predators.
 - **Observe:**
   1. Subtle density waves
@@ -99,12 +99,6 @@ Trait ← Captures free neutrons before they sink to the core ← Chemical poten
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Chamel 2008 [verified])
   - Fix: Drip Siphon = local enhancement of n-capture–β turnover at a drip node and tapping phase-transition heat; damage/heal flavored as redistribution of binding energy, with predator attraction tied to F14 proton/neutron imbalance, not literal neutron vacuuming.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Sialagón | cousin |  | (council kind 'Niche Partitioning') Vibra-Losa grazes on their phase-transition heat; Sialagón avoids competition by migrating to the higher-density gnocchi layer. |
 
 ## Journal
 

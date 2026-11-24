@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Shallow tidal karst shelves and hyphal-overburdened basalt plains",
+    "habitat": "Shallow tidal karst shelves and hyphal-overburdened basalt plains. Also, in the council's sketch (no such creature in this world yet): Siltfilter, lombardo scavenges nutrient paste left behind by Siltfilter benthic grinders; in return, the Lombardo's crushing claws clear carbonate blockages that trap Siltfilter nests.",
     "diet": "Chitin-glucan rhizomorphs, detrital slurry, carbonate minerals, opportunistic carrion",
     "active": "Crepuscular and diurnal (tracks low-UV bands, avoids thermal peak)",
     "predators": []
@@ -35,7 +35,7 @@
           "en": "Shell Slide"
         },
         "role": "Defence",
-        "effect": "Reduces incoming damage by 30% and grants 2 turns of cover.",
+        "effect": "The creature lowers its broad carapace to block incoming strikes and settles behind it for cover for a short while.",
         "numbers": {}
       },
       "weakness": "Vulnerable to top-down strikes and high-impact blows that exploit the broad profile.",
@@ -92,7 +92,7 @@
           "en": "Lateral Step"
         },
         "role": "Basic",
-        "effect": "Moves sideways at full speed without turning penalty; navigates gaps 0.5m wide.",
+        "effect": "The creature strides sideways at full speed without needing to turn, easily crossing narrow gaps nearby.",
         "numbers": {}
       },
       "weakness": "Struggles on smooth vertical surfaces; blind-side vulnerable.",
@@ -150,7 +150,7 @@
           "en": "Hide Tuck"
         },
         "role": "Defence",
-        "effect": "Retract abdomen to seal ventral side, granting camouflage and reducing detection by 50% while stationary.",
+        "effect": "The creature tucks its segmented abdomen beneath its carapace to seal itself away, becoming nearly invisible when it stays still.",
         "numbers": {}
       },
       "weakness": "Immobility while tucked; slow recovery time.",
@@ -208,7 +208,7 @@
           "en": "Crush Claw"
         },
         "role": "Engage",
-        "effect": "Applies 150% force to shatter chitinous armor or fungal nodules; extracts high-nutrient paste.",
+        "effect": "The creature brings its heavy crusher claw down with great force to shatter hard shells or fungal growths, then uses its finer claw to extract the soft flesh inside.",
         "numbers": {}
       },
       "weakness": "High metabolic cost; claws jam in wet hyphal mats; slow strike speed.",
@@ -249,11 +249,6 @@
   ],
   "relations": [
     {
-      "with": "Siltfilter",
-      "kind": "cousin",
-      "note": "(council kind 'Commensal') Lombardo scavenges nutrient paste left behind by Siltfilter benthic grinders; in return, the Lombardo's crushing claws clear carbonate blockages that trap Siltfilter nests."
-    },
-    {
       "with": "carapaz",
       "kind": "convergent",
       "via": "carcinisation",
@@ -276,6 +271,18 @@
       "kind": "convergent",
       "via": "carcinisation",
       "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "crang_lira",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "ferrisca",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
     }
   ],
   "provenance": {
@@ -294,6 +301,16 @@
       "date": "2026-11-19",
       "who": "autoloop",
       "what": "carcinisation links to 4 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
     }
   ],
   "carcinised": true,

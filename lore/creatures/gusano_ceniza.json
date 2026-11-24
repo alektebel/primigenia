@@ -220,7 +220,7 @@
           "en": "Probar"
         },
         "role": "Poke",
-        "effect": "Reveal food source within 5m through wind by contact-tasting.",
+        "effect": "The creature sweeps its mouth-tentacles through the breeze to taste the air. This allows you to see where food lies nearby.",
         "numbers": {}
       },
       "weakness": "Tentacles are fragile; lost if grabbed by a predator.",

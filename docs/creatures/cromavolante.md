@@ -10,6 +10,7 @@
 - **Diet:** Electro-sensory plankton analogs, magnetotactic symbiont-rich grazers
 - **Active:** Diurnal & crepuscular, flare-responsive
 - **Predators:** none
+- **Prey:** Lámina-nidus
 
 ## Body
 
@@ -21,16 +22,16 @@ Broad, torsion-stiffened wings with cryptochrome-rich retinal overlay; helical b
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cromavolante.c1 | Retinal cryptochrome overlay maps field lines | Field lines provide stable 3D topology ← Dense copper haze & flare scatter wash out visual contrast ← Strong 0.8 mT planetary field enables radical-pair yield shifts ← Quantum spin coherence in flavin pigments under geomagnetic stress | **F5** Equatorial surface magnetic field 0.8 mT with storm spikes ≤10 mT.; **F6** Rayleigh scattering shifts zenith to copper-amber tones and makes sky polarization strong near quadrature.; **F1** K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.; **F12** Cryptochrome radical-pair magnetoreception for heading and anomaly detection. | Magnetic Sight (`cromavolante.magnetic_sight`) | Passive | Reveals field-line topology, navigation cost reduced by 30% | Sudden flare-induced field scrambles vision; player can use UV bursts to blind it. |
-| cromavolante.c2 | Helical ribcage cancels magnetic dipole | Predators track prey by induced bio-fields ← Helical geometry averages dipole moment near zero ← Reduces detection range across conductive air ← 1.49 g gravity demands torsional strength & magnetic stealth (highly speculative) | **F3** Super-Earth mass 2.6 M🜨 and radius 1.32 R🜨 produce 1.49 g surface gravity.; **F16** Helical shell geometry for torsional strength and reduced magnetic signature. | Magnetic Stealth (`cromavolante.magnetic_stealth`) | Defence | Drops magnetic profile, evasion chance +40% | Helical torsion limits rapid pitch changes; player can corner it in tight magnetic eddies. |
-| cromavolante.c3 | Ventral auroral photophores for counter-illumination | Prey silhouettes stand out against copper horizon ← Auroral precipitation provides ambient sky glow ← Specialized symbionts harvest ionizing UV & emit matching light ← Radiation-buffered symbiosis enables safe bioluminescent flush | **F1** K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.; **F15** Auroral photophore counter-illumination for camouflage and UV harvesting.; **F17** Radiation-buffered symbiosis and rapid DNA repair for belt exposure. | Auroral Veil (`cromavolante.auroral_veil`) | Control | Calms herbivores, attracts symbiont-rich prey, stealth +25% | Photophore flush reveals position; player can overcharge it with focused light. |
-| cromavolante.c4 | Flare-dive reflex along field-aligned corridors | X-ray flares strip atmosphere & heat surface ← Field lines channel charged particles downward ← Organism rides stable crustal anomaly migration corridors ← Kinetic energy conversion via 13.5 h rotation & 1.49 g gravity | **F1** K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.; **F18** Field-aligned resource migration along stable crustal anomaly corridors.; **F3** Super-Earth mass 2.6 M🜨 and radius 1.32 R🜨 produce 1.49 g surface gravity.; **F4** Axial tilt 9° and rotation period 13.5 hours sustain a vigorous dynamo. | Comet Drop (`cromavolante.comet_drop`) | Engage | Rapid descent along field line, strike damage x2.5 | Predictable path; player can ambush at corridor bends. |
+| cromavolante.c1 | Retinal cryptochrome overlay maps field lines | Field lines provide stable 3D topology ← Dense copper haze & flare scatter wash out visual contrast ← Strong 0.8 mT planetary field enables radical-pair yield shifts ← Quantum spin coherence in flavin pigments under geomagnetic stress | **F5** Equatorial surface magnetic field 0.8 mT with storm spikes ≤10 mT.; **F6** Rayleigh scattering shifts zenith to copper-amber tones and makes sky polarization strong near quadrature.; **F1** K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.; **F12** Cryptochrome radical-pair magnetoreception for heading and anomaly detection. | Magnetic Sight (`cromavolante.magnetic_sight`) | Passive | It traces invisible magnetic currents with its eyes, gliding effortlessly through complex terrain so you can easily follow its path. | Sudden flare-induced field scrambles vision; player can use UV bursts to blind it. |
+| cromavolante.c2 | Helical ribcage cancels magnetic dipole | Predators track prey by induced bio-fields ← Helical geometry averages dipole moment near zero ← Reduces detection range across conductive air ← 1.49 g gravity demands torsional strength & magnetic stealth (highly speculative) | **F3** Super-Earth mass 2.6 M🜨 and radius 1.32 R🜨 produce 1.49 g surface gravity.; **F16** Helical shell geometry for torsional strength and reduced magnetic signature. | Magnetic Stealth (`cromavolante.magnetic_stealth`) | Defence | Its ribcage twists to mask its magnetic signature, making it nearly impossible to track. Attacks frequently glance off its shifting form as it slips away. | Helical torsion limits rapid pitch changes; player can corner it in tight magnetic eddies. |
+| cromavolante.c3 | Ventral auroral photophores for counter-illumination | Prey silhouettes stand out against copper horizon ← Auroral precipitation provides ambient sky glow ← Specialized symbionts harvest ionizing UV & emit matching light ← Radiation-buffered symbiosis enables safe bioluminescent flush | **F1** K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.; **F15** Auroral photophore counter-illumination for camouflage and UV harvesting.; **F17** Radiation-buffered symbiosis and rapid DNA repair for belt exposure. | Auroral Veil (`cromavolante.auroral_veil`) | Control | The creature flashes soft bioluminescent patterns that soothe nearby herbivores while strongly drawing in symbiotic prey. Its glowing scales blend seamlessly with the surroundings, keeping it hidden from view. | Photophore flush reveals position; player can overcharge it with focused light. |
+| cromavolante.c4 | Flare-dive reflex along field-aligned corridors | X-ray flares strip atmosphere & heat surface ← Field lines channel charged particles downward ← Organism rides stable crustal anomaly migration corridors ← Kinetic energy conversion via 13.5 h rotation & 1.49 g gravity | **F1** K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.; **F18** Field-aligned resource migration along stable crustal anomaly corridors.; **F3** Super-Earth mass 2.6 M🜨 and radius 1.32 R🜨 produce 1.49 g surface gravity.; **F4** Axial tilt 9° and rotation period 13.5 hours sustain a vigorous dynamo. | Comet Drop (`cromavolante.comet_drop`) | Engage | The creature plummets swiftly along the field line and strikes the ground strongly, delivering a crushing blow. | Predictable path; player can ambush at corridor bends. |
 
 ### cromavolante.c1: Retinal cryptochrome overlay maps field lines
 
 Trait ← Field lines provide stable 3D topology ← Dense copper haze & flare scatter wash out visual contrast ← Strong 0.8 mT planetary field enables radical-pair yield shifts ← Quantum spin coherence in flavin pigments under geomagnetic stress ← F5, F6, F1, F12
 
-- **Skill:** Magnetic Sight (Passive): Reveals field-line topology, navigation cost reduced by 30%
+- **Skill:** Magnetic Sight (Passive): It traces invisible magnetic currents with its eyes, gliding effortlessly through complex terrain so you can easily follow its path.
 - **Weakness:** Sudden flare-induced field scrambles vision; player can use UV bursts to blind it.
 - **Observe:**
   1. Copper sky haze
@@ -49,7 +50,7 @@ Trait ← Field lines provide stable 3D topology ← Dense copper haze & flare s
 
 Trait ← Predators track prey by induced bio-fields ← Helical geometry averages dipole moment near zero ← Reduces detection range across conductive air ← 1.49 g gravity demands torsional strength & magnetic stealth (highly speculative) ← F3, F16
 
-- **Skill:** Magnetic Stealth (Defence): Drops magnetic profile, evasion chance +40%
+- **Skill:** Magnetic Stealth (Defence): Its ribcage twists to mask its magnetic signature, making it nearly impossible to track. Attacks frequently glance off its shifting form as it slips away.
 - **Weakness:** Helical torsion limits rapid pitch changes; player can corner it in tight magnetic eddies.
 - **Observe:**
   1. Rib-cage shimmer
@@ -67,7 +68,7 @@ Trait ← Predators track prey by induced bio-fields ← Helical geometry averag
 
 Trait ← Prey silhouettes stand out against copper horizon ← Auroral precipitation provides ambient sky glow ← Specialized symbionts harvest ionizing UV & emit matching light ← Radiation-buffered symbiosis enables safe bioluminescent flush ← F1, F15, F17
 
-- **Skill:** Auroral Veil (Control): Calms herbivores, attracts symbiont-rich prey, stealth +25%
+- **Skill:** Auroral Veil (Control): The creature flashes soft bioluminescent patterns that soothe nearby herbivores while strongly drawing in symbiotic prey. Its glowing scales blend seamlessly with the surroundings, keeping it hidden from view.
 - **Weakness:** Photophore flush reveals position; player can overcharge it with focused light.
 - **Observe:**
   1. Pulsing belly glow
@@ -85,7 +86,7 @@ Trait ← Prey silhouettes stand out against copper horizon ← Auroral precipit
 
 Trait ← X-ray flares strip atmosphere & heat surface ← Field lines channel charged particles downward ← Organism rides stable crustal anomaly migration corridors ← Kinetic energy conversion via 13.5 h rotation & 1.49 g gravity ← F1, F18, F3, F4
 
-- **Skill:** Comet Drop (Engage): Rapid descent along field line, strike damage x2.5
+- **Skill:** Comet Drop (Engage): The creature plummets swiftly along the field line and strikes the ground strongly, delivering a crushing blow.
 - **Weakness:** Predictable path; player can ambush at corridor bends.
 - **Observe:**
   1. Body aligns with invisible lines
@@ -104,7 +105,6 @@ Trait ← X-ray flares strip atmosphere & heat surface ← Field lines channel c
 | With | Kind | Via | Note |
 |---|---|---|---|
 | cromabuceo | cousin |  | (council kind 'Competitor') Juveniles of Cromabuceo drop to vent plains; adults hunt dropped juveniles when magnetotactic plumes overlap. |
-| Lámina-nidus | cousin |  | (council kind 'Prey') Grazes on electro-plankton that cluster along magnetic gradient edges. |
 | cromabuceo | cousin |  | (council kind 'Predator') Adults ambush juvenile Cromavolante when they descend to feed on vent microplankton. |
 
 ## Journal

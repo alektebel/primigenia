@@ -19,16 +19,16 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| brincaniebla.c1 | large, reflective tapetum lucidum eyes | trait: large, reflective tapetum lucidum eyes gather faint light ← why: nocturnal activity avoids diurnal herbivore competition ← why: D11 dense air scatters daylight, reducing contrast in fog ← why: F8 cold sea meets warm volcanic ground creates persistent morning fog | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Dusk Gaze (`brincaniebla.dusk_gaze`) | Poke | Highlights fruit clusters and safe branches in darkness, +12% forage success | Dazzled by sudden bright flashes and direct moonlight on snow |
-| brincaniebla.c2 | short limbs with padded, non-retractile digits | trait: short limbs with padded, non-retractile digits grip bark ← why: frequent branch falls are survivable due to air resistance ← why: D11 air density provides 1.6× drag, lowering terminal velocity ← why: F4 dense atmosphere makes aerial descent low-risk | **F4** Dense air: 1.6 bar | Soft Landing (`brincaniebla.soft_landing`) | Defence | Reduces fall damage by 70% and stabilizes instantly on impact | Struggles on smooth, vertical rock faces and slick tuff |
-| brincaniebla.c3 | highly efficient alveolar lungs with cross-current exchange | trait: highly efficient alveolar lungs with cross-current exchange oxygenate blood ← why: high pO₂ supports active nocturnal foraging and larger neural tissue ← why: D10 partial pressure of oxygen is 1.6× Earth's standard ← why: F5 elevated oxygen allows costly aerobic organs without overheating | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Sustained Pace (`brincaniebla.sustained_pace`) | Basic | Maintains climb and sprint speed for 20% longer without fatigue | Overheats quickly in direct afternoon sun and humid still air |
-| brincaniebla.c4 | elongated snout and complex foregut fermentation chamber | trait: elongated snout and complex foregut fermentation chamber process tough leaves ← why: slower molecular diffusion preserves scent trails for navigation ← why: D18 reduced diffusion rate extends olfactory map accuracy in still air ← why: F16 atmospheric composition and humidity slow scent dispersal | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Trail (`brincaniebla.scent_trail`) | Control | Follows preserved scent pathways to known fruiting trees, +10% movement efficiency | Disoriented by strong volcanic updrafts or heavy rain washing trails |
+| brincaniebla.c1 | large, reflective tapetum lucidum eyes | trait: large, reflective tapetum lucidum eyes gather faint light ← why: nocturnal activity avoids diurnal herbivore competition ← why: D11 dense air scatters daylight, reducing contrast in fog ← why: F8 cold sea meets warm volcanic ground creates persistent morning fog | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Dusk Gaze (`brincaniebla.dusk_gaze`) | Poke | Its large eyes reflect ambient light, making hidden fruit clusters and safe branches clearly visible in the dark. You can easily track these glowing markers to find food and secure resting spots. | Dazzled by sudden bright flashes and direct moonlight on snow |
+| brincaniebla.c2 | short limbs with padded, non-retractile digits | trait: short limbs with padded, non-retractile digits grip bark ← why: frequent branch falls are survivable due to air resistance ← why: D11 air density provides 1.6× drag, lowering terminal velocity ← why: F4 dense atmosphere makes aerial descent low-risk | **F4** Dense air: 1.6 bar | Soft Landing (`brincaniebla.soft_landing`) | Defence | Its padded feet cushion every impact, allowing it to drop from heights without stumbling. It regains its balance instantly, showing no sign of strain. | Struggles on smooth, vertical rock faces and slick tuff |
+| brincaniebla.c3 | highly efficient alveolar lungs with cross-current exchange | trait: highly efficient alveolar lungs with cross-current exchange oxygenate blood ← why: high pO₂ supports active nocturnal foraging and larger neural tissue ← why: D10 partial pressure of oxygen is 1.6× Earth's standard ← why: F5 elevated oxygen allows costly aerobic organs without overheating | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Sustained Pace (`brincaniebla.sustained_pace`) | Basic | Its efficient lungs supply steady oxygen, letting it climb and run without growing tired. It maintains a brisk pace through the trees for a long while. | Overheats quickly in direct afternoon sun and humid still air |
+| brincaniebla.c4 | elongated snout and complex foregut fermentation chamber | trait: elongated snout and complex foregut fermentation chamber process tough leaves ← why: slower molecular diffusion preserves scent trails for navigation ← why: D18 reduced diffusion rate extends olfactory map accuracy in still air ← why: F16 atmospheric composition and humidity slow scent dispersal | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Trail (`brincaniebla.scent_trail`) | Control | Its elongated snout traces invisible scent lines through the air, leading it directly to fruiting trees. It moves along these familiar trails with confident, unhurried steps. | Disoriented by strong volcanic updrafts or heavy rain washing trails |
 
 ### brincaniebla.c1: large, reflective tapetum lucidum eyes
 
 Trait ← trait: large, reflective tapetum lucidum eyes gather faint light ← why: nocturnal activity avoids diurnal herbivore competition ← why: D11 dense air scatters daylight, reducing contrast in fog ← why: F8 cold sea meets warm volcanic ground creates persistent morning fog ← F6, F8
 
-- **Skill:** Dusk Gaze (Poke): Highlights fruit clusters and safe branches in darkness, +12% forage success
+- **Skill:** Dusk Gaze (Poke): Its large eyes reflect ambient light, making hidden fruit clusters and safe branches clearly visible in the dark. You can easily track these glowing markers to find food and secure resting spots.
 - **Weakness:** Dazzled by sudden bright flashes and direct moonlight on snow
 - **Observe:**
   1. pupils dilate fully in low light
@@ -39,7 +39,7 @@ Trait ← trait: large, reflective tapetum lucidum eyes gather faint light ← w
   - Keep tapetum and Dusk Gaze. Align observe text with predation: forage mainly under closed canopy or in fog-dawn(F8/F3), not exposed moonless skylines where acechalunas hunts; moon-on-snow dazzle weakness stays.
   - scores: astrobio 8, skeptic 5
   - Analogue: Kinkajou (Potos flavus) and northern greater galago (Otolemur garnettii): nocturnal arboreal frugivores with strong eye-shine from tapetum lucidum.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Mainster 2007 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Keep tapetum and Dusk Gaze. Align observe text with predation: forage mainly under closed canopy or in fog-dawn(F8/F3), not exposed moonless skylines where acechalunas hunts; moon-on-snow dazzle weakness stays.
 - **Chain provenance:** council run `foodweb-2026-11-21`; by naturalist/qwen
 
@@ -47,7 +47,7 @@ Trait ← trait: large, reflective tapetum lucidum eyes gather faint light ← w
 
 Trait ← trait: short limbs with padded, non-retractile digits grip bark ← why: frequent branch falls are survivable due to air resistance ← why: D11 air density provides 1.6× drag, lowering terminal velocity ← why: F4 dense atmosphere makes aerial descent low-risk ← F4
 
-- **Skill:** Soft Landing (Defence): Reduces fall damage by 70% and stabilizes instantly on impact
+- **Skill:** Soft Landing (Defence): Its padded feet cushion every impact, allowing it to drop from heights without stumbling. It regains its balance instantly, showing no sign of strain.
 - **Weakness:** Struggles on smooth, vertical rock faces and slick tuff
 - **Observe:**
   1. toes splay to distribute weight on curved branches
@@ -65,7 +65,7 @@ Trait ← trait: short limbs with padded, non-retractile digits grip bark ← wh
 
 Trait ← trait: highly efficient alveolar lungs with cross-current exchange oxygenate blood ← why: high pO₂ supports active nocturnal foraging and larger neural tissue ← why: D10 partial pressure of oxygen is 1.6× Earth's standard ← why: F5 elevated oxygen allows costly aerobic organs without overheating ← F5
 
-- **Skill:** Sustained Pace (Basic): Maintains climb and sprint speed for 20% longer without fatigue
+- **Skill:** Sustained Pace (Basic): Its efficient lungs supply steady oxygen, letting it climb and run without growing tired. It maintains a brisk pace through the trees for a long while.
 - **Weakness:** Overheats quickly in direct afternoon sun and humid still air
 - **Observe:**
   1. flanks rise and fall steadily during rest
@@ -83,7 +83,7 @@ Trait ← trait: highly efficient alveolar lungs with cross-current exchange oxy
 
 Trait ← trait: elongated snout and complex foregut fermentation chamber process tough leaves ← why: slower molecular diffusion preserves scent trails for navigation ← why: D18 reduced diffusion rate extends olfactory map accuracy in still air ← why: F16 atmospheric composition and humidity slow scent dispersal ← F16
 
-- **Skill:** Scent Trail (Control): Follows preserved scent pathways to known fruiting trees, +10% movement efficiency
+- **Skill:** Scent Trail (Control): Its elongated snout traces invisible scent lines through the air, leading it directly to fruiting trees. It moves along these familiar trails with confident, unhurried steps.
 - **Weakness:** Disoriented by strong volcanic updrafts or heavy rain washing trails
 - **Observe:**
   1. nose twitches rhythmically sampling air currents
@@ -110,3 +110,4 @@ council run `foodweb-2026-11-21`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-21 import_got: imported from council run foodweb-2026-11-21
+- 2026-11-24 autoloop: removed rejected references from analogues

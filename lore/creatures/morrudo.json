@@ -43,7 +43,7 @@
           "en": "Silt Glide"
         },
         "role": "Basic",
-        "effect": "Darts through murk without kicking up sediment, +20% movement speed in shallows",
+        "effect": "The creature darts through murky shallows without stirring the silt, gliding swiftly past obstacles.",
         "numbers": {}
       },
       "weakness": "Cannot stop quickly on hard rock; slides into spines and loses balance",
@@ -99,7 +99,7 @@
           "en": "Static Sense"
         },
         "role": "Poke",
-        "effect": "Reveals hidden prey outline and movement speed within 2 m radius",
+        "effect": "The creature detects the faint outline and quick movements of hidden prey nearby, allowing it to track them easily.",
         "numbers": {}
       },
       "weakness": "Overloaded by lightning storms (F10), causing panic strikes and self-harm",
@@ -156,7 +156,7 @@
           "en": "Low Light Lunge"
         },
         "role": "Engage",
-        "effect": "+30% strike success in dim conditions, -40% in bright sun",
+        "effect": "The creature strikes strongly in dim light, but its attacks grow weak and inaccurate under bright sunlight.",
         "numbers": {}
       },
       "weakness": "Blind to sudden flashes, relies entirely on electro/pressure cues",
@@ -211,7 +211,7 @@
           "en": "Cold Stiffness"
         },
         "role": "Defence",
-        "effect": "Immunity to temperature shock, maintains strike accuracy down to 8°C",
+        "effect": "Its thick, gelatinous skin shields it from freezing conditions, allowing it to keep striking strongly in the cold.",
         "numbers": {}
       },
       "weakness": "Vulnerable to gill parasites (F29) if dermal layer is torn by rock spines",
@@ -257,7 +257,7 @@
       "note": "Eats dissolved proteins and small prey from the shallows"
     },
     {
-      "with": "Brújula",
+      "with": "brujula",
       "kind": "prey",
       "note": "Ambushes it when it filters suspension near the shore"
     },

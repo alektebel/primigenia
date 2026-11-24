@@ -33,7 +33,7 @@
           "en": "Discharge"
         },
         "role": "Poke",
-        "effect": "Deals 20 damage to nearby enemies, consumes stored charge.",
+        "effect": "The creature releases a burst of electricity at nearby foes, draining its own energy in the process.",
         "numbers": {}
       },
       "weakness": "Insulation or grounding breaks the circuit, disabling movement and attacks.",
@@ -96,7 +96,7 @@
           "en": "Capacitor Charge"
         },
         "role": "Basic",
-        "effect": "Stores 30 charge over 2 seconds, unlocking high-power abilities.",
+        "effect": "The creature gathers energy over a short while, its body pulsing as it prepares for a much stronger strike.",
         "numbers": {}
       },
       "weakness": "Overcharge causes tissue damage; requires venting gas.",
@@ -152,7 +152,7 @@
           "en": "Grounding Zap"
         },
         "role": "Control",
-        "effect": "Stuns target for 3 seconds by discharging to ground.",
+        "effect": "The creature strikes the ground, sending a shockwave that holds the target completely still.",
         "numbers": {}
       },
       "weakness": "Spikes are brittle; break on hard impact.",
@@ -208,7 +208,7 @@
           "en": "Flash Signal"
         },
         "role": "Social",
-        "effect": "Calls allies within 50m, boosting their morale by 15.",
+        "effect": "The creature flashes bright patterns to summon nearby allies and rally them for battle.",
         "numbers": {}
       },
       "weakness": "Predictable pattern; enemies can mask themselves.",

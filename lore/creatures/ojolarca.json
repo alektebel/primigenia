@@ -12,7 +12,10 @@
     "habitat": "Equatorial rift cliffs & updraft corridors",
     "diet": "Thermally active vertebrates, canopy insects, mineral-rich nectar",
     "active": "Diurnal & crepuscular",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Cieloscopa"
+    ]
   },
   "body": "Streamlined aerodynamic frame, massive compound eyes with fused corneal lenses, paired thermal pit organs, polarization-sensitive wing membranes",
   "chains": [
@@ -35,7 +38,7 @@
           "en": "Spectral Lock"
         },
         "role": "Basic",
-        "effect": "Highlights prey, mineral deposits, and thermal vents across 210–5000 nm for 8 seconds, revealing hidden paths or weaknesses",
+        "effect": "The creature's broad-spectrum vision sweeps across its surroundings, revealing hidden prey, mineral deposits, and thermal vents. This brief clarity exposes concealed paths and vulnerabilities to nearby observers.",
         "numbers": {}
       },
       "weakness": "Large corneal mass causes rapid aerodynamic drag and metabolic heat buildup during M-dwarf flares",
@@ -99,7 +102,7 @@
           "en": "Sky Compass"
         },
         "role": "Control",
-        "effect": "Aligns flight path with polarization vectors to navigate rift valleys with 92% accuracy, ignoring magnetic drift",
+        "effect": "The creature reads polarized light patterns to steer its flight, gliding smoothly through narrow rift valleys without losing its way. It completely ignores magnetic interference while navigating.",
         "numbers": {}
       },
       "weakness": "Overcast or ash-choked skies scramble polarization maps, causing disorientation",
@@ -157,7 +160,7 @@
           "en": "Heat Trace"
         },
         "role": "Engage",
-        "effect": "Marks warm targets and geothermal vents within 15 m, enabling ambush strikes or safe resting zones",
+        "effect": "The creature's infrared pits detect nearby warmth, pinpointing living targets and geothermal vents. This allows it to launch sudden ambushes or locate secure resting spots.",
         "numbers": {}
       },
       "weakness": "Pit organs suffer thermal noise from direct sunlight; must use shadows or burrow to reset baseline",
@@ -222,7 +225,7 @@
           "en": "Solar Shield"
         },
         "role": "Defence",
-        "effect": "Activates dermal UV-scattering polymers to reduce flare damage by 70% for 12 seconds, at the cost of 30% movement speed",
+        "effect": "The creature activates specialized skin polymers that scatter intense sunlight, greatly reducing the impact of solar flares. While this protection holds, its movements become noticeably slower.",
         "numbers": {}
       },
       "weakness": "Prolonged flare activity depletes photolyase reserves, leaving tissues vulnerable to mutation and fatigue",
@@ -261,13 +264,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Cieloscopa",
-      "kind": "cousin",
-      "note": "(council kind 'predator-prey') Ojolarca hunts Cieloscopa near rift edges but spares mature individuals that signal mutualistic nectar exchange"
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

@@ -34,7 +34,7 @@
           "en": "Glide Snare"
         },
         "role": "Basic",
-        "effect": "Catches falling resources, +15% yield",
+        "effect": "The creature swoops down to catch falling items from the air, gathering a generous amount each time.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden thermal turbulence",
@@ -94,7 +94,7 @@
           "en": "Dawn Pulse"
         },
         "role": "Passive",
-        "effect": "+20% energy gain during morning phase",
+        "effect": "During the early hours, the creature strongly resonates with the morning light, radiating a steady stream of vitality.",
         "numbers": {}
       },
       "weakness": "Blind to sudden UV flares",
@@ -150,7 +150,7 @@
           "en": "Featherlight"
         },
         "role": "Defence",
-        "effect": "-10% damage taken from falls, +5% speed",
+        "effect": "The creature glides gracefully through the air, landing softly on its padded feet while maintaining a swift pace.",
         "numbers": {}
       },
       "weakness": "Cannot molt quickly in high humidity",
@@ -206,7 +206,7 @@
           "en": "Deep Hum"
         },
         "role": "Control",
-        "effect": "Calms nearby fauna, +20m detection radius",
+        "effect": "The creature emits a soothing resonance that pacifies nearby wildlife, allowing it to sense movements across a wide area.",
         "numbers": {}
       },
       "weakness": "Shattered by high-pitched sonic weapons",

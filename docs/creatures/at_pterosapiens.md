@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_pterosapiens.c1 | Hyperthrophic cardiac ventricles with high oxygen affinity | Low-gravity moon (F5) allows heavier brains without wing penalty ← High O2 partial pressure (F7) maximizes hemoglobin binding saturation ← Dual-aerobic hearts sustain flight and cognition simultaneously ← Leap upward with height advantage, -20% defense next turn | **F5** Low-gravity moon environments yield 0.2 g surface acceleration.; **F7** Partial oxygen pressure is optimized at 23–27% O₂. | Aero-Thrust (`at_pterosapiens.aero_thrust`) | Engage | leap 30m upward, gain height advantage, -20% defense next turn | Cardiac strain from prolonged flight; ends turn with exhaustion |
-| at_pterosapiens.c2 | Hollow trabeculated long bones filled with air sacs | Low-g environment (F5) favors ventral feeding and aerial lifestyle ← Stable climate (F2) allows prolonged flight without thermal stress ← Hollow trabeculated bones reduce structural mass ← Reduce incoming kinetic damage by 20% when airborne | **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.; **F5** Low-gravity moon environments yield 0.2 g surface acceleration. | Aerodynamic Frame (`at_pterosapiens.aerodynamic_frame`) | Defence | Reduce incoming kinetic damage by 20% when airborne | Bones fracture easily if caught in high-wind shear zones |
+| at_pterosapiens.c1 | Hyperthrophic cardiac ventricles with high oxygen affinity | Low-gravity moon (F5) allows heavier brains without wing penalty ← High O2 partial pressure (F7) maximizes hemoglobin binding saturation ← Dual-aerobic hearts sustain flight and cognition simultaneously ← Leap upward with height advantage, -20% defense next turn | **F5** Low-gravity moon environments yield 0.2 g surface acceleration.; **F7** Partial oxygen pressure is optimized at 23–27% O₂. | Aero-Thrust (`at_pterosapiens.aero_thrust`) | Engage | The creature launches itself high into the sky, gaining a commanding view of the battlefield. While soaring above, its exposed form leaves it strongly vulnerable to nearby strikes. | Cardiac strain from prolonged flight; ends turn with exhaustion |
+| at_pterosapiens.c2 | Hollow trabeculated long bones filled with air sacs | Low-g environment (F5) favors ventral feeding and aerial lifestyle ← Stable climate (F2) allows prolonged flight without thermal stress ← Hollow trabeculated bones reduce structural mass ← Reduce incoming kinetic damage by 20% when airborne | **F2** Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.; **F5** Low-gravity moon environments yield 0.2 g surface acceleration. | Aerodynamic Frame (`at_pterosapiens.aerodynamic_frame`) | Defence | Its hollow, air-filled bones allow it to glide effortlessly through the sky. When struck while airborne, the creature's lightweight frame absorbs the impact with remarkable resilience. | Bones fracture easily if caught in high-wind shear zones |
 
 ### at_pterosapiens.c1: Hyperthrophic cardiac ventricles with high oxygen affinity
 
 Trait ← Low-gravity moon (F5) allows heavier brains without wing penalty ← High O2 partial pressure (F7) maximizes hemoglobin binding saturation ← Dual-aerobic hearts sustain flight and cognition simultaneously ← Leap upward with height advantage, -20% defense next turn ← F5, F7
 
-- **Skill:** Aero-Thrust (Engage): leap 30m upward, gain height advantage, -20% defense next turn
+- **Skill:** Aero-Thrust (Engage): The creature launches itself high into the sky, gaining a commanding view of the battlefield. While soaring above, its exposed form leaves it strongly vulnerable to nearby strikes.
 - **Weakness:** Cardiac strain from prolonged flight; ends turn with exhaustion
 - **Observe:**
   1. Massive chest cavity
@@ -46,7 +46,7 @@ Trait ← Low-gravity moon (F5) allows heavier brains without wing penalty ← H
 
 Trait ← Low-g environment (F5) favors ventral feeding and aerial lifestyle ← Stable climate (F2) allows prolonged flight without thermal stress ← Hollow trabeculated bones reduce structural mass ← Reduce incoming kinetic damage by 20% when airborne ← F2, F5
 
-- **Skill:** Aerodynamic Frame (Defence): Reduce incoming kinetic damage by 20% when airborne
+- **Skill:** Aerodynamic Frame (Defence): Its hollow, air-filled bones allow it to glide effortlessly through the sky. When struck while airborne, the creature's lightweight frame absorbs the impact with remarkable resilience.
 - **Weakness:** Bones fracture easily if caught in high-wind shear zones
 - **Observe:**
   1. Lightweight gait

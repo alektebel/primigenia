@@ -21,16 +21,16 @@ Balloon-like gas bladder, conductive nanowire fringes, lightning-rod proboscis, 
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cenix.c1 | Balloon-like gas bladder | Provides passive buoyancy in dense cryo-atmosphere ← 1.15 bar pressure and low gravity allow float without propulsion ← F8 | **F8** Surface pressure is 1.15 bar with a reducing composition: 78% N₂, 14% CH₄, 6% Ar, 1.5% H₂.; **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass. | Haze Float (`cenix.haze_float`) | Passive | Ignores terrain drag, granting +20% evasion in open zones | Vulnerable to sudden pressure drops or strong downdrafts |
-| cenix.c2 | Conductive nanowire fringes | Captures transient ions from photolytic smog ← Micro-flares ionize haze particles, creating electrochemical gradients ← F3 | **F3** Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg.; **F19** Stratospheric haze regulation controls surface UV and greenhouse warming via photochemical smog. | Static Siphon (`cenix.static_siphon`) | Engage | Drains 15% shield from targets during flare windows, converting to ally HP | Ineffective in calm, un-ionized haze layers |
-| cenix.c3 | Lightning-rod proboscis | Channels collected ions to internal catalytic chambers ← Redox metabolism requires trace oxidizers and H₂ at cryogenic temps ← F15 | **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes.; **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking. | Redox Lance (`cenix.redox_lance`) | Poke | Fires a conductive pulse, dealing 12 shock damage and breaking stealth | Loses charge quickly; requires recharging in ion-rich zones |
-| cenix.c4 | Acoustic resonance chambers | Emits low-frequency pulses for navigation in thick haze ← Cold dense air favors low-frequency propagation over high frequencies ← F9 | **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.; **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄. | Deep Hum (`cenix.deep_hum`) | Control | Stuns enemies within 15m with resonant frequency for 1.5s | Ineffective against heavily insulated or silent targets |
+| cenix.c1 | Balloon-like gas bladder | Provides passive buoyancy in dense cryo-atmosphere ← 1.15 bar pressure and low gravity allow float without propulsion ← F8 | **F8** Surface pressure is 1.15 bar with a reducing composition: 78% N₂, 14% CH₄, 6% Ar, 1.5% H₂.; **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass. | Haze Float (`cenix.haze_float`) | Passive | The creature drifts effortlessly over rough ground and shifts its position in open areas, making it difficult to track or strike. | Vulnerable to sudden pressure drops or strong downdrafts |
+| cenix.c2 | Conductive nanowire fringes | Captures transient ions from photolytic smog ← Micro-flares ionize haze particles, creating electrochemical gradients ← F3 | **F3** Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg.; **F19** Stratospheric haze regulation controls surface UV and greenhouse warming via photochemical smog. | Static Siphon (`cenix.static_siphon`) | Engage | When its fringes flare, the creature siphons protective energy from nearby foes and channels it toward its allies. | Ineffective in calm, un-ionized haze layers |
+| cenix.c3 | Lightning-rod proboscis | Channels collected ions to internal catalytic chambers ← Redox metabolism requires trace oxidizers and H₂ at cryogenic temps ← F15 | **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes.; **F18** Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking. | Redox Lance (`cenix.redox_lance`) | Poke | The creature fires a crackling conductive pulse that shocks nearby enemies and forces cloaked foes to reveal themselves. | Loses charge quickly; requires recharging in ion-rich zones |
+| cenix.c4 | Acoustic resonance chambers | Emits low-frequency pulses for navigation in thick haze ← Cold dense air favors low-frequency propagation over high frequencies ← F9 | **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.; **F10** Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄. | Deep Hum (`cenix.deep_hum`) | Control | The creature emits a powerful resonant hum that holds nearby enemies in place for a short while. | Ineffective against heavily insulated or silent targets |
 
 ### cenix.c1: Balloon-like gas bladder
 
 Trait ← Provides passive buoyancy in dense cryo-atmosphere ← 1.15 bar pressure and low gravity allow float without propulsion ← F8 ← F8, F4
 
-- **Skill:** Haze Float (Passive): Ignores terrain drag, granting +20% evasion in open zones
+- **Skill:** Haze Float (Passive): The creature drifts effortlessly over rough ground and shifts its position in open areas, making it difficult to track or strike.
 - **Weakness:** Vulnerable to sudden pressure drops or strong downdrafts
 - **Observe:**
   1. Oval, taut silhouette
@@ -48,7 +48,7 @@ Trait ← Provides passive buoyancy in dense cryo-atmosphere ← 1.15 bar pressu
 
 Trait ← Captures transient ions from photolytic smog ← Micro-flares ionize haze particles, creating electrochemical gradients ← F3 ← F3, F19
 
-- **Skill:** Static Siphon (Engage): Drains 15% shield from targets during flare windows, converting to ally HP
+- **Skill:** Static Siphon (Engage): When its fringes flare, the creature siphons protective energy from nearby foes and channels it toward its allies.
 - **Weakness:** Ineffective in calm, un-ionized haze layers
 - **Observe:**
   1. Faint blue luminescence
@@ -66,7 +66,7 @@ Trait ← Captures transient ions from photolytic smog ← Micro-flares ionize h
 
 Trait ← Channels collected ions to internal catalytic chambers ← Redox metabolism requires trace oxidizers and H₂ at cryogenic temps ← F15 ← F15, F18
 
-- **Skill:** Redox Lance (Poke): Fires a conductive pulse, dealing 12 shock damage and breaking stealth
+- **Skill:** Redox Lance (Poke): The creature fires a crackling conductive pulse that shocks nearby enemies and forces cloaked foes to reveal themselves.
 - **Weakness:** Loses charge quickly; requires recharging in ion-rich zones
 - **Observe:**
   1. Metallic sheen on snout
@@ -84,7 +84,7 @@ Trait ← Channels collected ions to internal catalytic chambers ← Redox metab
 
 Trait ← Emits low-frequency pulses for navigation in thick haze ← Cold dense air favors low-frequency propagation over high frequencies ← F9 ← F9, F10
 
-- **Skill:** Deep Hum (Control): Stuns enemies within 15m with resonant frequency for 1.5s
+- **Skill:** Deep Hum (Control): The creature emits a powerful resonant hum that holds nearby enemies in place for a short while.
 - **Weakness:** Ineffective against heavily insulated or silent targets
 - **Observe:**
   1. Chamber throbbing

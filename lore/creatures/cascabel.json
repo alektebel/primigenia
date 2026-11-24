@@ -1,0 +1,332 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cascabel",
+  "name": {
+    "en": "Cascabel"
+  },
+  "world": "deepinterior",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "1.5–2.5 km depth, high-permeability shear fractures",
+    "diet": "Dissolved iron-sulfate, suspended calcite dust, chemosynthetic biofilm",
+    "active": "Continuous, tied to fluid pulses",
+    "predators": []
+  },
+  "body": "Segmented, ventral cilia-bands, dorsal pressure-sensors",
+  "chains": [
+    {
+      "id": "cascabel.c1",
+      "trait": "Ventral cilia-band rides slow brine flow",
+      "links": [
+        "Darcy flow runs centimetres per year",
+        "Passive drifting wastes energy in high-viscosity brine",
+        "Rock matrix limits permeability to 1e-17 m2"
+      ],
+      "roots": [
+        "F12"
+      ],
+      "skill": {
+        "id": "cascabel.current_glide",
+        "name": {
+          "en": "Current Glide"
+        },
+        "role": "Passive",
+        "effect": "The creature rides the slow brine flow across fractured ground, gliding swiftly so you can traverse broken terrain without delay.",
+        "numbers": {}
+      },
+      "weakness": "Stops instantly if fluid flow reverses direction",
+      "observe": [
+        "Cilia ripples match flow direction",
+        "Scales smooth, ventral side flattened",
+        "Tracks visible in fresh calcite dust"
+      ],
+      "journal": {
+        "en": "They do not swim; they surf the crust."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Rename the root mechanism from surfing cm/yr flow to ciliary creeping plus local pumping: cilia let it hold station on a fracture wall and draw brine across the ventral biofilm; treat the 56-hour tidal strain (F4) as a weak timing cue for aperture pulses, not a fast current. Weakness becomes 'lose position and withdraw when flow reverses or pressure drops', not instant stop.",
+        "fixes": [
+          "Rename the root mechanism from surfing cm/yr flow to ciliary creeping plus local pumping: cilia let it hold station on a fracture wall and draw brine across the ventral biofilm; treat the 56-hour tidal strain (F4) as a weak timing cue for aperture pulses, not a fast current. Weakness becomes 'lose position and withdraw when flow reverses or pressure drops', not instant stop."
+        ],
+        "analogues": [
+          {
+            "organism": "Paramecium uses coordinated cilia to swim and to move food-laden water; bivalve gill cilia pump water through过滤 surfaces even in still conditions.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cascabel.c2",
+      "trait": "Dorsal calcite-crushing jaws harvest sealed minerals",
+      "links": [
+        "Calcite precipitates as CO2 degasses",
+        "Seals fractures and traps redox nutrients",
+        "Geology rewrites permeability on millennial scales"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "cascabel.calcite_crush",
+        "name": {
+          "en": "Calcite Crush"
+        },
+        "role": "Basic",
+        "effect": "Its calcite-crushing jaws smash through mineral barriers, cracking open sealed walls to reveal hidden paths ahead.",
+        "numbers": {}
+      },
+      "weakness": "Jaw wear requires constant molten mineral intake",
+      "observe": [
+        "Jaw plates coated in micro-damage",
+        "Sediment plumes erupt when they bite",
+        "Dorsal ridges align with fracture walls"
+      ],
+      "journal": {
+        "en": "They crack the planet’s scars to feed."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make the jaws a biofilm/mineral-interface tool: crushing opens sealed calcite and exposes fresh reactive rock and chemosynthetic film. Change the weakness to a need for steady dissolved Ca/Fe and trace elements from the same brines to replace worn jaw plates.",
+        "fixes": [
+          "Make the jaws a biofilm/mineral-interface tool: crushing opens sealed calcite and exposes fresh reactive rock and chemosynthetic film. Change the weakness to a need for steady dissolved Ca/Fe and trace elements from the same brines to replace worn jaw plates."
+        ],
+        "analogues": [
+          {
+            "organism": "Sea urchins rasp carbonate rock with Aristotle's lantern to expose algal film; parrotfish crush reef carbonate and pass it through the gut, gaining access to the biofilm rather than energy from the calcite itself.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lasaga_1984_chemical"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lasaga_1984_chemical"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cascabel.c3",
+      "trait": "Hydrogen-gill filaments tap serpentinisation currents",
+      "links": [
+        "Serpentinisation of olivine releases H2 and heat",
+        "Ultramafic bedrock contacts brine in shear zones",
+        "Redox gradients fuel strict anaerobic metabolism"
+      ],
+      "roots": [
+        "F15"
+      ],
+      "skill": {
+        "id": "cascabel.redox_sip",
+        "name": {
+          "en": "Redox Sip"
+        },
+        "role": "Engage",
+        "effect": "The creature rests near olivine-rich stones, sipping nourishment from the currents to steadily restore its vitality over a short while.",
+        "numbers": {}
+      },
+      "weakness": "Metabolism stalls in radiolytic-only pore zones",
+      "observe": [
+        "Filaments pulse with dissolved H2 bubbles",
+        "Skin shimmers near fresh olivine outcrops",
+        "Breathing syncs with distant rock fractures"
+      ],
+      "journal": {
+        "en": "They drink the earth’s slow fire."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Describe the filaments as symbiont chambers that concentrate dissolved H2 and pass fixed carbon to the host; change the weakness to stalling where neither H2, Fe(II) nor sulfate gradients exist.",
+        "fixes": [
+          "Describe the filaments as symbiont chambers that concentrate dissolved H2 and pass fixed carbon to the host; change the weakness to stalling where neither H2, Fe(II) nor sulfate gradients exist."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia pachyptila has no gut and gets its energy from sulfide-oxidising endosymbionts housed in a trophosome; the same architecture works with hydrogenotrophic archaea.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cascabel.c4",
+      "trait": "Segmented pressure bladders ride tidal strain",
+      "links": [
+        "Eccentricity drives cyclic strain of 5e-7",
+        "Tidal flexing modulates fracture aperture width",
+        "Flow pulses become predictable navigation currents"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cascabel.tidal_float",
+        "name": {
+          "en": "Tidal Float"
+        },
+        "role": "Control",
+        "effect": "Its pressure bladders adjust to the rushing water, keeping it steady in the current while allowing it to strongly evade incoming threats.",
+        "numbers": {}
+      },
+      "weakness": "Bladders rupture if pressure drops below 20 MPa",
+      "observe": [
+        "Bladders expand as moon approaches zenith",
+        "Movements lock to 56-hour rhythm",
+        "Scales flex without muscular effort"
+      ],
+      "journal": {
+        "en": "The moon pulls them; they pull back."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make the bladders slow buoyancy/pressure trims that read the 56-hour strain cycle and track aperture changes; keep the 'moon pulls them' feel, drop fast-flow language and the implication of large tidal pumping.",
+        "fixes": [
+          "Make the bladders slow buoyancy/pressure trims that read the 56-hour strain cycle and track aperture changes; keep the 'moon pulls them' feel, drop fast-flow language and the implication of large tidal pumping."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish swim bladders and cephalopod siphons adjust buoyancy by slow gas/fluid regulation; intertidal invertebrates run circatidal clocks from a tiny strain cue.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "segall_2010_earthquake"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "segall_2010_earthquake"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "ocotl",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Ocotl ambushes grazing Cascabel; Cascabel escapes via narrow cracks Ocotl cannot squeeze through."
+    },
+    {
+      "with": "soplillo",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cascabel’s crushing clears calcite blocks, exposing fresh filter surfaces for Soplillo."
+    },
+    {
+      "with": "ocotl",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Ocotl ambushes grazing Cascabel; Cascabel escapes via narrow cracks Ocotl cannot squeeze through."
+    },
+    {
+      "with": "soplillo",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cascabel’s crushing clears calcite blocks, exposing fresh filter surfaces for Soplillo."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "ventral ciliation"
+  },
+  "temperament": "Docile grazer, easily startled by pressure drops",
+  "secrets": [
+    "If you play the 56-hour tidal drum, they will stop moving and listen.",
+    "Their jaw dust can be harvested to temporarily soften nearby calcite walls."
+  ],
+  "moments": [
+    "When a fracture seals, the herd presses bellies to the rock and waits centuries for the stone to crack open again."
+  ],
+  "journal": [
+    {
+      "en": "They eat time itself."
+    },
+    {
+      "en": "The crust is a maze, and they are the compass."
+    }
+  ]
+}

@@ -34,7 +34,7 @@
           "en": "Canopy Lunge"
         },
         "role": "Basic",
-        "effect": "Leap 15 m vertically using elastic cartilage tendons, reaching high foliage",
+        "effect": "The creature launches itself upward on its long legs, using its flexible joints to reach the highest branches.",
         "numbers": {}
       },
       "weakness": "Extreme fragility; any fall >2 m fractures epiphyseal plates. High wind loads cause toppling.",
@@ -100,7 +100,7 @@
           "en": "Solar Flush"
         },
         "role": "Engage",
-        "effect": "Dumps excess heat to heal 3 HP but reduces speed by 25% for 1 turn",
+        "effect": "The creature flares its skin flaps to vent a cloud of warm air, feeling refreshed while moving sluggishly for a short while.",
         "numbers": {}
       },
       "weakness": "Overheats rapidly in shaded or cold microclimates",

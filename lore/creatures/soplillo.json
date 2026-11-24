@@ -1,0 +1,324 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "soplillo",
+  "name": {
+    "en": "Soplillo"
+  },
+  "world": "deepinterior",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Fracture intersections, 1.0–2.0 km depth, multi-gradient zones",
+    "diet": "Filter-feeds dissolved Fe(II)/sulfate, hosts chemosynthetic archaea in symbiosis",
+    "active": "Diurnal/nocturnal analog tied to 56-hour tidal cycle",
+    "predators": []
+  },
+  "body": "Porous, branching tube-structure, central processing chamber",
+  "chains": [
+    {
+      "id": "soplillo.c1",
+      "trait": "Porous silica-carbonate filtration tubes capture particulates",
+      "links": [
+        "Molecular diffusion moves scent 1 cm per day",
+        "Low-flow zones starve mobile grazers",
+        "Network nodes concentrate suspended mineral dust"
+      ],
+      "roots": [
+        "F11"
+      ],
+      "skill": {
+        "id": "soplillo.silt_filter",
+        "name": {
+          "en": "Silt Filter"
+        },
+        "role": "Social",
+        "effect": "The creature distributes nourishing particles to nearby allies, visibly strengthening their development. This shared sustenance helps them thrive and expand their presence.",
+        "numbers": {}
+      },
+      "weakness": "Tubes clog if brine salinity spikes",
+      "observe": [
+        "Tubes weave into branching lattice",
+        "Sediment accumulates in central chamber",
+        "Flow reverses to flush clogged channels"
+      ],
+      "journal": {
+        "en": "They build cities of dust and breath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Root the trait in F12 node convergence plus ciliary pumping (keep F11 as the reason chemical signalling fails, not as the filtration mechanism); keep the flush-to-clear-clogs behaviour and the social sharing mechanic.",
+        "fixes": [
+          "Root the trait in F12 node convergence plus ciliary pumping (keep F11 as the reason chemical signalling fails, not as the filtration mechanism); keep the flush-to-clear-clogs behaviour and the social sharing mechanic."
+        ],
+        "analogues": [
+          {
+            "organism": "Sponges and bivalves actively pump water through porous skeletons and gill cilia; serpulid tubeworms build carbonate tubes by controlling local carbonate chemistry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplillo.c2",
+      "trait": "Tidal-cycle activity gating synchronizes reproduction",
+      "links": [
+        "56-hour tidal month causes cyclic strain",
+        "Fracture apertures open and close rhythmically",
+        "Nutrient pulses align with reproductive windows"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "soplillo.tidal_sync",
+        "name": {
+          "en": "Tidal Sync"
+        },
+        "role": "Control",
+        "effect": "The creature pulses with urgent rhythm, swiftly moving into position and frequently unleashing its abilities.",
+        "numbers": {}
+      },
+      "weakness": "Becomes sluggish if tidal strain is disrupted",
+      "observe": [
+        "Tube tips droop during peak strain",
+        "Spawning clouds erupt at moon apogee",
+        "Metabolic glow pulses in 56-hour rhythm"
+      ],
+      "journal": {
+        "en": "They time their lives to the moon’s pull."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the 56-hour gating and apogee spawning cue as written; withdraw the dubious citation and cite Segall 2010 for the strain clock.",
+        "fixes": [
+          "Keep the 56-hour gating and apogee spawning cue as written; withdraw the dubious citation and cite Segall 2010 for the strain clock."
+        ],
+        "analogues": [
+          {
+            "organism": "Grunion spawn on spring-tide cycles and fiddler crabs run circatidal activity clocks, using the tide as a reproductive timer rather than an energy source.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplillo.c3",
+      "trait": "Symbiotic archaeal housing chambers offload redox processing",
+      "links": [
+        "Energy limitation stretches generation times to millennia",
+        "Microbial base sparse and concentrated at interfaces",
+        "Host shelters archaea to accelerate metabolism"
+      ],
+      "roots": [
+        "F18"
+      ],
+      "skill": {
+        "id": "soplillo.archaeal_bond",
+        "name": {
+          "en": "Archaeal Bond"
+        },
+        "role": "Social",
+        "effect": "The creature bonds with an ally, channeling energy that strongly amplifies their actions against redox targets. This symbiotic link allows the ally to push through those vulnerable foes with visible force.",
+        "numbers": {}
+      },
+      "weakness": "Chamber damage kills symbionts permanently",
+      "observe": [
+        "Internal sacs glow with chemosynthetic light",
+        "Archaea drift freely within host tissue",
+        "Host excretes concentrated metabolic waste"
+      ],
+      "journal": {
+        "en": "They farm the planet’s slow fire."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "State that the host harvests and pipes redox substrates into the chambers and receives fixed carbon back; keep long symbiont generation times away from interfaces, which makes the bond a strategic advantage rather than magic acceleration.",
+        "fixes": [
+          "State that the host harvests and pipes redox substrates into the chambers and receives fixed carbon back; keep long symbiont generation times away from interfaces, which makes the bond a strategic advantage rather than magic acceleration."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia pachyptila houses sulfide-oxidising bacteria in a trophosome; aphids house Buchnera and legumes house rhizobia, in each case trading shelter and substrates for nutrition.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplillo.c4",
+      "trait": "Calcite-secretion weaving constructs stable nurseries",
+      "links": [
+        "Geology edits the map faster than evolution",
+        "Calcite precipitates as CO2 escapes from pores",
+        "Parental care requires stable fracture architecture"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "soplillo.loom_weave",
+        "name": {
+          "en": "Loom Weave"
+        },
+        "role": "Defence",
+        "effect": "The creature weaves a sturdy calcite barrier that halts advancing foes and shields nearby allies.",
+        "numbers": {}
+      },
+      "weakness": "Secretion depletes calcium, weakening own carapace temporarily",
+      "observe": [
+        "Tube tips secrete mineral threads",
+        "Nursery walls smooth and layered",
+        "Young cling to fresh calcite scaffolds"
+      ],
+      "journal": {
+        "en": "They stitch the cracks into cradles."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Describe active ion pumping and pH manipulation to grow calcite threads rather than passive degassing; keep the barrier/nursery mechanic and the calcium-depletion weakness.",
+        "fixes": [
+          "Describe active ion pumping and pH manipulation to grow calcite threads rather than passive degassing; keep the barrier/nursery mechanic and the calcium-depletion weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Serpulid tubeworms and coccolithophores precipitate calcite by controlling carbonate chemistry at a organic matrix, building tubes and plates in seawater.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cascabel’s crushing clears calcite blocks, exposing fresh filter surfaces for Soplillo."
+    },
+    {
+      "with": "ocotl",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both seek network nodes, but Ocotl’s pressure bursts destabilize Soplillo’s nursery structures."
+    },
+    {
+      "with": "cascabel",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cascabel’s crushing clears calcite blocks, exposing fresh filter surfaces for Soplillo."
+    },
+    {
+      "with": "ocotl",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both seek network nodes, but Ocotl’s pressure bursts destabilize Soplillo’s nursery structures."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 4,
+    "origin": "symbiotic tube-weaving"
+  },
+  "temperament": "Communal, slow-moving, highly cooperative",
+  "secrets": [
+    "If you play a slow, steady hum, they will extend tubes toward you, offering nutrients.",
+    "Their calcite threads can be woven into temporary bridges across fractured chasms."
+  ],
+  "moments": [
+    "When the tidal strain peaks, the whole colony glows blue, and for a moment the rock itself seems to breathe."
+  ],
+  "journal": [
+    {
+      "en": "They are the planet’s memory."
+    },
+    {
+      "en": "Patience is their primary muscle."
+    }
+  ]
+}

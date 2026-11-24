@@ -43,7 +43,7 @@
           "en": "Leviathan Hull"
         },
         "role": "Defence",
-        "effect": "Blocks incoming attacks from 180° arc and absorbs 30 damage per hit",
+        "effect": "The leviathan positions its massive bulk to shield nearby allies from frontal assaults, absorbing blows with its thick hide. Enemies striking from the front find their attacks halted by its imposing, unyielding form.",
         "numbers": {}
       },
       "weakness": "Slow turning radius makes them vulnerable to flanking strikes",
@@ -90,7 +90,7 @@
           "en": "Sky Chorus"
         },
         "role": "Social",
-        "effect": "Grants all nearby allies 20% movement speed and 15% damage resistance",
+        "effect": "The creature emits deep, resonant calls that ripple through the air, causing nearby allies to move with renewed vigor and stand firmer against impacts. The harmonious vibrations strongly bolster the group's pace and resilience.",
         "numbers": {}
       },
       "weakness": "Vocalization reveals position to all nearby predators",
@@ -136,7 +136,7 @@
           "en": "Plankton Sweep"
         },
         "role": "Basic",
-        "effect": "Heals 15 HP per second while moving forward through cloud layers",
+        "effect": "As it glides forward through thick cloud layers, the creature's massive filter-maw draws in nourishing particles, slowly restoring its vitality. A gentle mist trails behind it as it feeds and recovers over a short while.",
         "numbers": {}
       },
       "weakness": "Cannot feed while stationary or fighting defensively",
@@ -191,7 +191,7 @@
           "en": "Core Warmth"
         },
         "role": "Passive",
-        "effect": "Immune to cold/pressure debuffs, heal 1 HP/turn",
+        "effect": "The creature's internal thermal network radiates steady warmth, allowing it to thrive in freezing, high-pressure environments without faltering. A soft, glowing heat emanates from its core as it slowly recovers from minor wear.",
         "numbers": {}
       },
       "weakness": "Vulnerable to heat sinks",

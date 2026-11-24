@@ -21,7 +21,7 @@ Length 15 cm, mass 0.8 kg.
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| garra_marea.c1 | Eight jointed legs for traction on shifting sand and wet rock. | High wave energy and tidal flux create unstable substrates. ← Need stable grip and rapid retreat to avoid being swept away. ← Eight legs provide multi-point contact and redundancy for traction. ← Dense air and wet sand terrain favor low, stable body plans. | **F4** Dense air: 1.6 bar; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Wrack Scuttle (`garra_marea.wrack_scuttle`) | Basic | Move 20% faster on shore/wrack terrain. | Slow on dry inland terrain due to high weight-to-surface-area ratio. |
+| garra_marea.c1 | Eight jointed legs for traction on shifting sand and wet rock. | High wave energy and tidal flux create unstable substrates. ← Need stable grip and rapid retreat to avoid being swept away. ← Eight legs provide multi-point contact and redundancy for traction. ← Dense air and wet sand terrain favor low, stable body plans. | **F4** Dense air: 1.6 bar; **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Wrack Scuttle (`garra_marea.wrack_scuttle`) | Basic | The creature scurries swiftly across the shoreline and damp coastal ground, easily navigating the shifting sand. | Slow on dry inland terrain due to high weight-to-surface-area ratio. |
 | garra_marea.c2 | Sensory hairs on legs detect distant carrion scent. | Carcasses drift and wash ashore, creating patchy, ephemeral resources. ← Need to locate food quickly before competitors arrive. ← Scent diffusion is slow but trails last longer in still air. ← Chemosensory adaptation on extremities allows ground-level tracking. | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F4** Dense air: 1.6 bar | Scent Trail (`garra_marea.scent_trail`) | Engage | Reveal carcass direction and freshness to the player. | Wind changes direction easily, breaking scent trails and disorienting the creature. |
 | garra_marea.c3 | Hardened exoskeleton with salt-accumulating glands. | High salinity spray and marine diet create osmoregulation challenges. ← Need to excrete excess salt to maintain cellular function. ← Evolved glands to excrete salt onto the shell surface. ← Dense, protective shell provides defense against predators and abrasion. | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Tide Hiss (`garra_marea.tide_hiss`) | Control | Intimidate smaller creatures by hissing air through spiracles. | Vulnerable when molting; soft shell offers no protection. |
 | garra_marea.c4 | Bright warning coloration on carapace. | High scavenger density increases risk of predation by apex species. ← Need to avoid being eaten by dominant predators. ← Aposematic coloration warns of toxicity or hardness. ← Diet includes toxic wrack or sulfur crusts; metabolic sequestration of toxins. | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth); **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles | Aposematism (`garra_marea.aposematism`) | Passive | Deters low-level attackers from initiating combat. | Predators like Espinodo or Garfio ignore warning colors due to hunger or dominance. |
@@ -30,7 +30,7 @@ Length 15 cm, mass 0.8 kg.
 
 Trait ← High wave energy and tidal flux create unstable substrates. ← Need stable grip and rapid retreat to avoid being swept away. ← Eight legs provide multi-point contact and redundancy for traction. ← Dense air and wet sand terrain favor low, stable body plans. ← F4, F13, F20
 
-- **Skill:** Wrack Scuttle (Basic): Move 20% faster on shore/wrack terrain.
+- **Skill:** Wrack Scuttle (Basic): The creature scurries swiftly across the shoreline and damp coastal ground, easily navigating the shifting sand.
 - **Weakness:** Slow on dry inland terrain due to high weight-to-surface-area ratio.
 - **Observe:**
   1. See legs churning sand with rapid, alternating movements.
@@ -41,7 +41,7 @@ Trait ← High wave energy and tidal flux create unstable substrates. ← Need s
   - Define 15 cm as carapace (cephalothorax) length with ~25–35 cm leg span, or cut mass to ~0.15–0.35 kg if total body length is 15 cm; keep eight walking legs as convergent arthropodomorph tag, not a copy of any one Earth clade.
   - scores: astrobio 6, skeptic 4
   - Analogue: Shore crab (Ocypode) and slater/isopod (Ligia) rapid retreat on wet sand; horseshoe crab (Limulus) multiple walking limbs on unstable tidal flats.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Alexander 2002 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Alexander 2002 [verified])
   - Fix: Define 15 cm as carapace (cephalothorax) length with ~25–35 cm leg span, or cut mass to ~0.15–0.35 kg if total body length is 15 cm; keep eight walking legs as convergent arthropodomorph tag, not a copy of any one Earth clade.
 - **Chain provenance:** council run `foodweb-2026-11-21`; by naturalist/qwen
 
@@ -105,9 +105,8 @@ Trait ← High scavenger density increases risk of predation by apex species. �
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Brújula | predation |  | Brújula preys on Garra_marea when solitary. |
+| brujula | predation |  | Brújula preys on Garra_marea when solitary. |
 | Garfio | predation |  | Garfio attacks Garra_marea to steal carcasses. |
-| Carrion | prey |  | Primary food source; strips carcasses rapidly. |
 | Cinta_de_marea | prey |  | Eats algae in the splash zone. |
 
 ## Journal

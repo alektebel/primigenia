@@ -12,7 +12,10 @@
     "habitat": "Upper canopy near iron-rich basalt forests & magnetic anomaly plumes. Evolves here because dense copper haze & frequent flares wash out visual contrast, while strong 0.8 mT fields provide stable 3D topology. Radical-pair cryptochromes exploit this gradient to navigate & hunt regardless of light.",
     "diet": "Electro-sensory plankton analogs, magnetotactic symbiont-rich grazers",
     "active": "Diurnal & crepuscular, flare-responsive",
-    "predators": []
+    "predators": [],
+    "prey": [
+      "Lámina-nidus"
+    ]
   },
   "body": "Broad, torsion-stiffened wings with cryptochrome-rich retinal overlay; helical bone struts for magnetic stealth; ventral photophore patches for counter-illumination.",
   "chains": [
@@ -37,7 +40,7 @@
           "en": "Magnetic Sight"
         },
         "role": "Passive",
-        "effect": "Reveals field-line topology, navigation cost reduced by 30%",
+        "effect": "It traces invisible magnetic currents with its eyes, gliding effortlessly through complex terrain so you can easily follow its path.",
         "numbers": {}
       },
       "weakness": "Sudden flare-induced field scrambles vision; player can use UV bursts to blind it.",
@@ -102,7 +105,7 @@
           "en": "Magnetic Stealth"
         },
         "role": "Defence",
-        "effect": "Drops magnetic profile, evasion chance +40%",
+        "effect": "Its ribcage twists to mask its magnetic signature, making it nearly impossible to track. Attacks frequently glance off its shifting form as it slips away.",
         "numbers": {}
       },
       "weakness": "Helical torsion limits rapid pitch changes; player can corner it in tight magnetic eddies.",
@@ -160,7 +163,7 @@
           "en": "Auroral Veil"
         },
         "role": "Control",
-        "effect": "Calms herbivores, attracts symbiont-rich prey, stealth +25%",
+        "effect": "The creature flashes soft bioluminescent patterns that soothe nearby herbivores while strongly drawing in symbiotic prey. Its glowing scales blend seamlessly with the surroundings, keeping it hidden from view.",
         "numbers": {}
       },
       "weakness": "Photophore flush reveals position; player can overcharge it with focused light.",
@@ -219,7 +222,7 @@
           "en": "Comet Drop"
         },
         "role": "Engage",
-        "effect": "Rapid descent along field line, strike damage x2.5",
+        "effect": "The creature plummets swiftly along the field line and strikes the ground strongly, delivering a crushing blow.",
         "numbers": {}
       },
       "weakness": "Predictable path; player can ambush at corridor bends.",
@@ -263,11 +266,6 @@
       "with": "cromabuceo",
       "kind": "cousin",
       "note": "(council kind 'Competitor') Juveniles of Cromabuceo drop to vent plains; adults hunt dropped juveniles when magnetotactic plumes overlap."
-    },
-    {
-      "with": "Lámina-nidus",
-      "kind": "cousin",
-      "note": "(council kind 'Prey') Grazes on electro-plankton that cluster along magnetic gradient edges."
     },
     {
       "with": "cromabuceo",

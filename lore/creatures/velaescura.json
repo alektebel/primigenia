@@ -35,7 +35,7 @@
           "en": "Filter Feed"
         },
         "role": "Basic",
-        "effect": "Converts organic snow into 15 stamina, passive regeneration in plumes",
+        "effect": "The creature continuously sifts through the falling snow with its gill rakers, drawing nourishment from the particles. This constant filtering causes its plumes to gently pulse with a soft, lingering glow.",
         "numbers": {}
       },
       "weakness": "Cannot distinguish toxic vent plumes from food sources",
@@ -92,7 +92,7 @@
           "en": "Echo Track"
         },
         "role": "Control",
-        "effect": "Reveals all entities within 50m, slows their movement by 20%",
+        "effect": "The creature senses pressure shifts across the water, making nearby opponents clearly visible and causing them to move sluggishly.",
         "numbers": {}
       },
       "weakness": "Sudden loud noises cause temporary disorientation",
@@ -149,7 +149,7 @@
           "en": "Pressure Equalize"
         },
         "role": "Passive",
-        "effect": "Immunity to crush damage, allows diving to 20 km depth",
+        "effect": "Its internal fluids naturally balance with the surrounding water, letting it plunge into the deepest trenches without being crushed.",
         "numbers": {}
       },
       "weakness": "Cannot survive rapid pressure drops near ice fractures",
@@ -206,7 +206,7 @@
           "en": "Slow Glide"
         },
         "role": "Basic",
-        "effect": "Moves at 2 m/s with zero stamina cost for 10 seconds",
+        "effect": "Its dorsal fin ripples steadily, carrying it forward at a constant pace without tiring for a short while.",
         "numbers": {}
       },
       "weakness": "Cannot accelerate quickly when startled",
@@ -245,13 +245,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "none",
-      "kind": "cousin",
-      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

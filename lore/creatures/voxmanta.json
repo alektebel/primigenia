@@ -33,7 +33,7 @@
           "en": "Infrasense"
         },
         "role": "Control",
-        "effect": "Reveals all hidden enemies within 50m and prevents their first attack of the turn; Voxmanta gains +3 Defence against sonic attacks.",
+        "effect": "The creature's rotating ear-lobes catch distant vibrations, making nearby hidden foes visible and causing them to hesitate before striking. Sonic assaults bounce harmlessly off its reinforced hide.",
         "numbers": {}
       },
       "weakness": "Deaf to high-pitched sounds; sudden whistles or sonic blasts stun it.",
@@ -92,7 +92,7 @@
           "en": "Shear Hide"
         },
         "role": "Defence",
-        "effect": "Grants 'Stealth' vs sound-based detection and reduces incoming wind damage by 50% for 4 turns; expires if air is still.",
+        "effect": "Its flapping wings stir up swirling air currents that scramble nearby sound waves, masking its presence from auditory hunters. It moves silently through gusts while the wind continues to blow.",
         "numbers": {}
       },
       "weakness": "Fails in still air or enclosed spaces; wind direction must match.",
@@ -154,7 +154,7 @@
           "en": "Silent Damp"
         },
         "role": "Passive",
-        "effect": "Reduces movement noise by 70% and halves radiation damage; reduces movement speed by 20% due to mass.",
+        "effect": "Its heavy, dark scales absorb nearly all sound from its steps, allowing it to creep forward without alerting nearby creatures. The thick armor deflects harsh energy, though its weight makes it move with deliberate slowness.",
         "numbers": {}
       },
       "weakness": "Heavy scales limit agility; shedding is required to recover speed.",
@@ -213,7 +213,7 @@
           "en": "Tide-Blow"
         },
         "role": "Engage",
-        "effect": "Inflates to become 'Unstoppable' (cannot be displaced) and grants +4 Defence; next attack deals 20 damage but leaves Voxmanta 'Deflated' (-50% speed) for 3 turns.",
+        "effect": "The creature swells its mantle until it resembles a heavy boulder, anchoring itself firmly against the current and shrugging off impacts. It strikes back with crushing force before collapsing into a weary, sluggish form.",
         "numbers": {}
       },
       "weakness": "Cannot deflate quickly; vulnerable to burst damage while inflated.",

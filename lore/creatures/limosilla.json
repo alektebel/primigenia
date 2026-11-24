@@ -41,7 +41,7 @@
           "en": "Electro-buzz"
         },
         "role": "Engage",
-        "effect": "Locates parasites on clients, removes them, restores client health by 15%.",
+        "effect": "The creature scans nearby clients to locate hidden parasites, then carefully extracts them, leaving the host feeling refreshed and healthy.",
         "numbers": {}
       },
       "weakness": "Sudden pressure spikes from lightning or boat wakes disrupt its electroreception.",
@@ -101,7 +101,7 @@
           "en": "Gentle scrape"
         },
         "role": "Basic",
-        "effect": "Consumes host mucus and dead tissue, gains +10 nutrition and reduces host parasite load by 10%.",
+        "effect": "The creature scrapes away loose mucus and dead skin from the host, feeding on the debris while clearing away the parasites that hide within.",
         "numbers": {}
       },
       "weakness": "Cannot digest fibrous plant matter; starves if confined to grassy shallows.",
@@ -161,7 +161,7 @@
           "en": "Silt glide"
         },
         "role": "Basic",
-        "effect": "Moves through turbid water with minimal disturbance, gaining +20 stealth near clients.",
+        "effect": "It glides through cloudy water with barely a ripple, making it very hard to spot when swimming nearby.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden turbulence; loses maneuverability in heavy rain or storm surges (F8).",
@@ -222,7 +222,7 @@
           "en": "Tide dance"
         },
         "role": "Control",
-        "effect": "Follows tidal currents to client territories, attracting +25 rapport from Brújula and Cuarteta.",
+        "effect": "It rides the sweeping tides into friendly waters, visibly earning the steady favor of Brújula and Cuarteta.",
         "numbers": {}
       },
       "weakness": "Cannot survive prolonged exposure during extreme low tides; must seek splash pools or lava tubes (F9).",

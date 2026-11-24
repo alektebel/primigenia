@@ -37,7 +37,7 @@
           "en": "Dead God Tech"
         },
         "role": "Control",
-        "effect": "Repurposes Qu debris into functional tools/weapons, granting temporary stat boosts (20% for 45s) but risking instability.",
+        "effect": "It sculpts shattered ruins into working weapons, temporarily strengthening itself but leaving it vulnerable to sudden breakdowns.",
         "numbers": {}
       },
       "weakness": "Replicates tech without understanding; prone to catastrophic feedback loops when stressed.",
@@ -97,7 +97,7 @@
           "en": "Archaeo-Techno Synthesis"
         },
         "role": "Engage",
-        "effect": "Temporarily boosts tech research by simulating lost Star People systems, granting +25% progression.",
+        "effect": "It mimics ancient star-faring machines to rapidly advance its own understanding, leaving a trail of deciphered mechanisms.",
         "numbers": {}
       },
       "weakness": "Prone to cognitive overload when processing unshielded stellar flare data.",

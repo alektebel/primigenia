@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| chispilla.c1 | Broad, adhesive toe pads | Need grip on wet rock surfaces ← 1.6-bar air retains high humidity (D8) ← Algal mats form slick biofilm (F15) ← Perpetual moisture dictates locomotion | **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Adhere (`chispilla.adhere`) | Basic | Climb wet surfaces without falling (+25% stability). | Pads lose suction on dry, dusty rock. |
-| chispilla.c2 | Spring-loaded hind limbs | Need rapid acceleration to catch prey ← Dense air (1.6x drag) slows movement (F4) ← 1.6x density increases inertial resistance (D8) ← Long levers maximize takeoff velocity | **F4** Dense air: 1.6 bar | Power Leap (`chispilla.power_leap`) | Engage | Launch 1.2m vertically to snatch prey (+30% reach). | Slow to recover balance after landing. |
-| chispilla.c3 | Large forward-facing eyes | Need photon capture during low light ← Thick air creates 38-minute twilights (F3) ← Sunlight is heavily scattered by dense air (D8) ← Tapetum lucidum reflects ambient light | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | Twilight Focus (`chispilla.twilight_focus`) | Basic | See prey clearly in low light (+40% detection at dawn/dusk). | Dazzled by sudden bright flashes or direct sun. |
-| chispilla.c4 | Acute hearing with mobile ear flaps | Need to locate fluttering targets ← Insect wingbeats in dense air produce low frequencies (F4) ← 1.6x density carries low sound farther (D4) ← Mobile ears triangulate prey location | **F4** Dense air: 1.6 bar | Hearing (`chispilla.hearing`) | Engage | Locate flying prey from 10m away (+25% accuracy). | Loud, high-pitched noises disrupt focus. |
+| chispilla.c1 | Broad, adhesive toe pads | Need grip on wet rock surfaces ← 1.6-bar air retains high humidity (D8) ← Algal mats form slick biofilm (F15) ← Perpetual moisture dictates locomotion | **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Adhere (`chispilla.adhere`) | Basic | The creature scales slick, wet surfaces without slipping, holding on strongly to navigate vertical terrain. | Pads lose suction on dry, dusty rock. |
+| chispilla.c2 | Spring-loaded hind limbs | Need rapid acceleration to catch prey ← Dense air (1.6x drag) slows movement (F4) ← 1.6x density increases inertial resistance (D8) ← Long levers maximize takeoff velocity | **F4** Dense air: 1.6 bar | Power Leap (`chispilla.power_leap`) | Engage | It springs high into the air to snatch prey from above, extending its reach well beyond normal limits. | Slow to recover balance after landing. |
+| chispilla.c3 | Large forward-facing eyes | Need photon capture during low light ← Thick air creates 38-minute twilights (F3) ← Sunlight is heavily scattered by dense air (D8) ← Tapetum lucidum reflects ambient light | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | Twilight Focus (`chispilla.twilight_focus`) | Basic | Its large eyes gather dim light, allowing it to spot prey clearly during twilight hours. | Dazzled by sudden bright flashes or direct sun. |
+| chispilla.c4 | Acute hearing with mobile ear flaps | Need to locate fluttering targets ← Insect wingbeats in dense air produce low frequencies (F4) ← 1.6x density carries low sound farther (D4) ← Mobile ears triangulate prey location | **F4** Dense air: 1.6 bar | Hearing (`chispilla.hearing`) | Engage | Its mobile ears swivel to catch faint wingbeats, pinpointing the location of flying prey nearby. | Loud, high-pitched noises disrupt focus. |
 
 ### chispilla.c1: Broad, adhesive toe pads
 
 Trait ← Need grip on wet rock surfaces ← 1.6-bar air retains high humidity (D8) ← Algal mats form slick biofilm (F15) ← Perpetual moisture dictates locomotion ← F15
 
-- **Skill:** Adhere (Basic): Climb wet surfaces without falling (+25% stability).
+- **Skill:** Adhere (Basic): The creature scales slick, wet surfaces without slipping, holding on strongly to navigate vertical terrain.
 - **Weakness:** Pads lose suction on dry, dusty rock.
 - **Observe:**
   1. Pads flatten when stepping on wet stone
@@ -49,7 +49,7 @@ Trait ← Need grip on wet rock surfaces ← 1.6-bar air retains high humidity (
 
 Trait ← Need rapid acceleration to catch prey ← Dense air (1.6x drag) slows movement (F4) ← 1.6x density increases inertial resistance (D8) ← Long levers maximize takeoff velocity ← F4
 
-- **Skill:** Power Leap (Engage): Launch 1.2m vertically to snatch prey (+30% reach).
+- **Skill:** Power Leap (Engage): It springs high into the air to snatch prey from above, extending its reach well beyond normal limits.
 - **Weakness:** Slow to recover balance after landing.
 - **Observe:**
   1. Hind legs fold tightly before leaping
@@ -67,7 +67,7 @@ Trait ← Need rapid acceleration to catch prey ← Dense air (1.6x drag) slows 
 
 Trait ← Need photon capture during low light ← Thick air creates 38-minute twilights (F3) ← Sunlight is heavily scattered by dense air (D8) ← Tapetum lucidum reflects ambient light ← F3
 
-- **Skill:** Twilight Focus (Basic): See prey clearly in low light (+40% detection at dawn/dusk).
+- **Skill:** Twilight Focus (Basic): Its large eyes gather dim light, allowing it to spot prey clearly during twilight hours.
 - **Weakness:** Dazzled by sudden bright flashes or direct sun.
 - **Observe:**
   1. Eyes glow green in moonlight
@@ -85,7 +85,7 @@ Trait ← Need photon capture during low light ← Thick air creates 38-minute t
 
 Trait ← Need to locate fluttering targets ← Insect wingbeats in dense air produce low frequencies (F4) ← 1.6x density carries low sound farther (D4) ← Mobile ears triangulate prey location ← F4
 
-- **Skill:** Hearing (Engage): Locate flying prey from 10m away (+25% accuracy).
+- **Skill:** Hearing (Engage): Its mobile ears swivel to catch faint wingbeats, pinpointing the location of flying prey nearby.
 - **Weakness:** Loud, high-pitched noises disrupt focus.
 - **Observe:**
   1. Ears swivel toward buzzing sounds

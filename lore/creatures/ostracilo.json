@@ -38,7 +38,7 @@
           "en": "Inductive Tap"
         },
         "role": "Poke",
-        "effect": "Contact strike; induces 5 mV shock in target and sends a magnetic confusion pulse. Target must succeed on Will or be stunned for 1 turn and lose its next action.",
+        "effect": "The creature strikes and delivers a sharp electric jolt that ripples outward as a disorienting magnetic pulse. Nearby foes may stagger and falter in their movements for a short while.",
         "numbers": {}
       },
       "weakness": "Conductivity dependence: In low-conductivity brine pools or dry zones, range drops to 0 and induction fails.",
@@ -100,7 +100,7 @@
           "en": "Bio-Electric Sense"
         },
         "role": "Engage",
-        "effect": "Reveal hidden enemies within 5 m as 'glowing' outlines; grants +2 to hit prey that cannot mask bioelectric signatures.",
+        "effect": "The creature's sensory pores hum as it traces the faint bioelectric fields of nearby life, causing hidden foes to shimmer with visible outlines. This natural awareness makes it easier to track and engage creatures that try to conceal themselves.",
         "numbers": {}
       },
       "weakness": "Noise: High electromagnetic interference from nearby vent activity or magnetic storms masks bioelectric signals.",
@@ -166,7 +166,7 @@
           "en": "Magnetic Stealth"
         },
         "role": "Defence",
-        "effect": "Negate detection by magnetic senses; reduce incoming magnetic disruption damage by 50%. Cannot move or use Inductive Tap this turn.",
+        "effect": "The creature anchors itself firmly and hardens its shell, causing its magnetic signature to fade from view and dampening external field disruptions. While it remains perfectly still to maintain this cover, it becomes temporarily unable to strike.",
         "numbers": {}
       },
       "weakness": "Mass: Heavier than analogues, reducing dodge chance against fast predators.",
@@ -232,7 +232,7 @@
           "en": "Corridor Glide"
         },
         "role": "Control",
-        "effect": "Move through terrain ignoring obstacles that rely on magnetic fields (e.g., magnetic barriers); allies within 3 m gain +10% movement speed.",
+        "effect": "The creature flows effortlessly through magnetic barriers and field-dependent obstacles as if they were mere mist. Its steady migration naturally quickens the pace of nearby allies who follow in its wake.",
         "numbers": {}
       },
       "weakness": "Field spikes: Sudden storm spikes (F5) can scatter the migration path, causing disorientation.",

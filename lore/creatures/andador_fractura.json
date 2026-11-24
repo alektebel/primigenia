@@ -34,7 +34,7 @@
           "en": "Shock-Ride"
         },
         "role": "Basic",
-        "effect": "Surf a phonon front, moving 0.5μm instantly and gaining +30% evasion against lattice-based attacks.",
+        "effect": "The creature rides a crackling wave of energy, darting swiftly across the battlefield. It shimmers and slips away, making it very hard for lattice-based attacks to track it.",
         "numbers": {}
       },
       "weakness": "Lands hard; sudden stoppage causes self-fracture.",
@@ -93,7 +93,7 @@
           "en": "Decay-Taste"
         },
         "role": "Poke",
-        "effect": "Senses metabolic heat of nearby enemies, dealing 20% damage via targeted weak-interaction disruption.",
+        "effect": "It tunes into the faint thermal glow of nearby foes and targets them with a precise disruptive pulse. The affected enemies shudder and weaken as the creature's focused energy unravels their structure.",
         "numbers": {}
       },
       "weakness": "Ineffective against non-decaying inorganic debris.",
@@ -148,7 +148,7 @@
           "en": "Conjugation-Huddle"
         },
         "role": "Social",
-        "effect": "Links 3 allies, sharing 20% of adaptive isotopic traits and reducing mutation risk by 35% for 100μs.",
+        "effect": "It weaves a shimmering bond with nearby allies, passing along their resilient traits. This shared connection stabilizes their forms, shielding them from harmful mutations for a short while.",
         "numbers": {}
       },
       "weakness": "Prolonged contact increases susceptibility to shared proton-contamination.",
@@ -204,7 +204,7 @@
           "en": "Flash-Suture"
         },
         "role": "Defence",
-        "effect": "Restores 30% lattice integrity to self or ally within 1μs, preventing structural failure.",
+        "effect": "The creature rapidly channels energy to mend fractures in itself or a nearby ally. Glowing seams of material flow into the cracks, reinforcing the structure and preventing it from shattering.",
         "numbers": {}
       },
       "weakness": "Tunneling drains metabolic reserves; overuse causes temporary quiescence.",

@@ -33,7 +33,7 @@
           "en": "Static Glide"
         },
         "role": "Control",
-        "effect": "Glides 2x distance using wind, ignores 10% drag.",
+        "effect": "The creature catches strong wind currents to soar far across the sky, gliding smoothly without being slowed by the air.",
         "numbers": {}
       },
       "weakness": "Calm zones starve it; damp air kills triboelectric effect.",
@@ -96,7 +96,7 @@
           "en": "Repulsion Push"
         },
         "role": "Basic",
-        "effect": "Pushes target or self away, dealing 8 damage and 2m displacement.",
+        "effect": "The creature releases a sudden burst of energy that shoves either itself or a nearby foe backward, knocking them off balance.",
         "numbers": {}
       },
       "weakness": "Reversing bands causes confusion and loss of control.",
@@ -152,7 +152,7 @@
           "en": "Charge Levitation"
         },
         "role": "Passive",
-        "effect": "Reduces fall speed by 50%, allowing safe descent.",
+        "effect": "The creature hovers gently through the air, drifting downward at a slow and controlled pace to land safely.",
         "numbers": {}
       },
       "weakness": "Requires constant charge; drains if wind stops.",
@@ -208,7 +208,7 @@
           "en": "Shear Sense"
         },
         "role": "Engage",
-        "effect": "Reveals hidden wind currents and enemies within 40m for 5 seconds.",
+        "effect": "The creature senses shifting air patterns, making nearby wind currents and hidden foes briefly visible in the mist.",
         "numbers": {}
       },
       "weakness": "High frequencies mask its resonance; deafening noise disorients.",

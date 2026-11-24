@@ -21,16 +21,16 @@ Compact layered defect shells, ~0.3 μm diameter, high proton-tolerance (specula
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| tamiz_drip.c1 | Filters free neutrons before they sink into the superfluid core | Chemical potential gradient drives downward neutron flow ← Defect complexes trap neutrons via weak-interaction capture ← Neutron drip threshold establishes a sharp density boundary | **F9** Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core. | Drip-Sieve (`tamiz_drip.drip_sieve`) | Basic | Harvests 20 free neutrons per cycle, fueling beta-decay metabolism and granting +10% mass to self. | Neutron depletion stalls activity; requires waiting 40μs for drip replenishment. |
-| tamiz_drip.c2 | Metabolizes latent heat from solid-solid pasta phase transitions | Phase boundaries release entropy as heat ← Defect complexes couple to lattice vibrations ← Competing strong-force and Coulomb forces minimize free energy | **F8** The inner crust hosts nuclear pasta phases (lasagna, gnocchi, spaghetti) where competing strong-force clustering and Coulomb repulsion minimize free energy at density gradients. | Phase-Forge (`tamiz_drip.phase_forge`) | Engage | Triggers localized pasta transition, dealing 25% heat damage to adjacent enemies and healing self. | Requires precise density targeting; wrong phase causes structural instability. |
-| tamiz_drip.c3 | Sheds proton contaminants to avoid inverse beta decay fractures | Proton capture catalyzes p+e⁻→n+ν_e ← Reaction disrupts neutron drip equilibrium ← Exceeds crustal break stress | **F9** Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core.; **F14** Organisms metabolize neutron-rich nuclear clusters and magnetic reconnection sparks, while proton-rich contaminants trigger inverse beta decay and risk crust fracture / micro-glitch nucleation. | Proton-Scrub (`tamiz_drip.proton_scrub`) | Defence | Purges adjacent proton-rich defects, preventing micro-glitch nucleation and granting +20% lattice integrity. | Scrubbing releases neutrino flux, attracting Andador Fractura scavengers. |
-| tamiz_drip.c4 | Accumulates heavy isotopes via resonant tunneling during lattice vibrations | Phonon waves modulate lattice spacing ← Electron-mediated tunneling rates peak at resonance ← Relativistic degenerate electrons enable rapid quantum tunneling | **F6** Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing.; **F11** Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust. | Resonant-Graft (`tamiz_drip.resonant_graft`) | Engage | Synchronizes with a target's vibration, transferring 15% of its heavy isotope reserves via tunneling. | Requires sustained contact; broken contact during vibration mismatch causes tunneling failure. |
+| tamiz_drip.c1 | Filters free neutrons before they sink into the superfluid core | Chemical potential gradient drives downward neutron flow ← Defect complexes trap neutrons via weak-interaction capture ← Neutron drip threshold establishes a sharp density boundary | **F9** Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core. | Drip-Sieve (`tamiz_drip.drip_sieve`) | Basic | The creature gathers drifting neutrons from its surroundings, using them to sustain its internal processes and steadily growing heavier. | Neutron depletion stalls activity; requires waiting 40μs for drip replenishment. |
+| tamiz_drip.c2 | Metabolizes latent heat from solid-solid pasta phase transitions | Phase boundaries release entropy as heat ← Defect complexes couple to lattice vibrations ← Competing strong-force and Coulomb forces minimize free energy | **F8** The inner crust hosts nuclear pasta phases (lasagna, gnocchi, spaghetti) where competing strong-force clustering and Coulomb repulsion minimize free energy at density gradients. | Phase-Forge (`tamiz_drip.phase_forge`) | Engage | It induces a sudden structural shift in nearby matter, releasing intense warmth that scorches adjacent foes while mending its own form. | Requires precise density targeting; wrong phase causes structural instability. |
+| tamiz_drip.c3 | Sheds proton contaminants to avoid inverse beta decay fractures | Proton capture catalyzes p+e⁻→n+ν_e ← Reaction disrupts neutron drip equilibrium ← Exceeds crustal break stress | **F9** Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core.; **F14** Organisms metabolize neutron-rich nuclear clusters and magnetic reconnection sparks, while proton-rich contaminants trigger inverse beta decay and risk crust fracture / micro-glitch nucleation. | Proton-Scrub (`tamiz_drip.proton_scrub`) | Defence | The creature sweeps away proton impurities from its immediate vicinity, strongly reinforcing its own structure and shielding nearby areas from structural fractures. | Scrubbing releases neutrino flux, attracting Andador Fractura scavengers. |
+| tamiz_drip.c4 | Accumulates heavy isotopes via resonant tunneling during lattice vibrations | Phonon waves modulate lattice spacing ← Electron-mediated tunneling rates peak at resonance ← Relativistic degenerate electrons enable rapid quantum tunneling | **F6** Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing.; **F11** Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust. | Resonant-Graft (`tamiz_drip.resonant_graft`) | Engage | It locks onto a target's rhythmic vibrations and steadily draws heavy isotopes from it through a shimmering tunneling effect. | Requires sustained contact; broken contact during vibration mismatch causes tunneling failure. |
 
 ### tamiz_drip.c1: Filters free neutrons before they sink into the superfluid core
 
 Trait ← Chemical potential gradient drives downward neutron flow ← Defect complexes trap neutrons via weak-interaction capture ← Neutron drip threshold establishes a sharp density boundary ← F9
 
-- **Skill:** Drip-Sieve (Basic): Harvests 20 free neutrons per cycle, fueling beta-decay metabolism and granting +10% mass to self.
+- **Skill:** Drip-Sieve (Basic): The creature gathers drifting neutrons from its surroundings, using them to sustain its internal processes and steadily growing heavier.
 - **Weakness:** Neutron depletion stalls activity; requires waiting 40μs for drip replenishment.
 - **Observe:**
   1. Lattice vibrates during drip phase
@@ -48,7 +48,7 @@ Trait ← Chemical potential gradient drives downward neutron flow ← Defect co
 
 Trait ← Phase boundaries release entropy as heat ← Defect complexes couple to lattice vibrations ← Competing strong-force and Coulomb forces minimize free energy ← F8
 
-- **Skill:** Phase-Forge (Engage): Triggers localized pasta transition, dealing 25% heat damage to adjacent enemies and healing self.
+- **Skill:** Phase-Forge (Engage): It induces a sudden structural shift in nearby matter, releasing intense warmth that scorches adjacent foes while mending its own form.
 - **Weakness:** Requires precise density targeting; wrong phase causes structural instability.
 - **Observe:**
   1. Lattice changes intensity during transition
@@ -67,7 +67,7 @@ Trait ← Phase boundaries release entropy as heat ← Defect complexes couple t
 
 Trait ← Proton capture catalyzes p+e⁻→n+ν_e ← Reaction disrupts neutron drip equilibrium ← Exceeds crustal break stress ← F9, F14
 
-- **Skill:** Proton-Scrub (Defence): Purges adjacent proton-rich defects, preventing micro-glitch nucleation and granting +20% lattice integrity.
+- **Skill:** Proton-Scrub (Defence): The creature sweeps away proton impurities from its immediate vicinity, strongly reinforcing its own structure and shielding nearby areas from structural fractures.
 - **Weakness:** Scrubbing releases neutrino flux, attracting Andador Fractura scavengers.
 - **Observe:**
   1. Defects reject bright spots
@@ -85,7 +85,7 @@ Trait ← Proton capture catalyzes p+e⁻→n+ν_e ← Reaction disrupts neutron
 
 Trait ← Phonon waves modulate lattice spacing ← Electron-mediated tunneling rates peak at resonance ← Relativistic degenerate electrons enable rapid quantum tunneling ← F6, F11
 
-- **Skill:** Resonant-Graft (Engage): Synchronizes with a target's vibration, transferring 15% of its heavy isotope reserves via tunneling.
+- **Skill:** Resonant-Graft (Engage): It locks onto a target's rhythmic vibrations and steadily draws heavy isotopes from it through a shimmering tunneling effect.
 - **Weakness:** Requires sustained contact; broken contact during vibration mismatch causes tunneling failure.
 - **Observe:**
   1. Defects pulse in sync with target

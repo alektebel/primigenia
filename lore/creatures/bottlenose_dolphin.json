@@ -34,7 +34,7 @@
           "en": "Click Map"
         },
         "role": "Control",
-        "effect": "renders a full 3D image of everything within 100 m, including prey buried under sand and invisible or dark targets, for one turn",
+        "effect": "The dolphin scans the surrounding waters, allowing you to clearly see hidden prey buried in the sand and other concealed targets nearby.",
         "numbers": {}
       },
       "weakness": "it is listening, not looking: a loud broadband noise (engine, hammering, a bubble curtain) blanks the map for about 10 s and leaves it effectively blind",
@@ -93,7 +93,7 @@
           "en": "Name Call"
         },
         "role": "Social",
-        "effect": "summons one specific ally from 2 km, re-forming a hunting party of three; allies answer even through murk where they cannot see you",
+        "effect": "The dolphin calls out a specific companion, which quickly answers and rejoins the group, even when visibility is poor.",
         "numbers": {}
       },
       "weakness": "it answers to a name anyone can copy: play back its signature whistle and it will approach the speaker instead of its pod",
@@ -152,7 +152,7 @@
           "en": "Half Watch"
         },
         "role": "Passive",
-        "effect": "regenerates stamina at 60% while staying fully alert to ambush; cannot be surprised during rest",
+        "effect": "The dolphin rests with half its mind awake, steadily recovering strength while remaining fully watchful for any approaching threats.",
         "numbers": {}
       },
       "weakness": "it is never fully off duty: after three days without a genuine rest its reactions degrade, and any stun or entangle that stops it surfacing kills it outright",

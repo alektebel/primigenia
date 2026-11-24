@@ -39,7 +39,7 @@
           "en": "Resonance Lock"
         },
         "role": "Social",
-        "effect": "Establishes a private 12 cm magnetic channel with an ally; ally gains +25% stealth (immune to acoustic detection) and shares heat-dissipation cooldown for 4 turns.",
+        "effect": "The creature projects a tight magnetic link toward a nearby ally, cloaking them from sound and equalizing their thermal output. This quiet partnership endures only a short while.",
         "numbers": {}
       },
       "weakness": "Eddy heating: If exposed to external alternating field >1 mT, coils overheat and the Cobrezo takes 1 damage/turn and cannot pulse for 2 turns.",
@@ -105,7 +105,7 @@
           "en": "Iron Digest"
         },
         "role": "Basic",
-        "effect": "Consume magnetotactic bacteria; heal 2 HP and gain 'Magnetic Sense' (+1 to identify magnetic anomalies) for 3 turns.",
+        "effect": "The creature consumes magnetotactic bacteria to knit its wounds, allowing its internal compass to clearly read hidden magnetic shifts. It moves with renewed awareness of the environment.",
         "numbers": {}
       },
       "weakness": "Iron toxicity threshold: If environment exceeds 5 mM free Fe ions (F11), the symbionts die, causing -2 Will and vulnerability to magnetic disruption.",
@@ -170,7 +170,7 @@
           "en": "Storm Hunker"
         },
         "role": "Defence",
-        "effect": "Enter defensive posture; negate all radiation damage and magnetic disruption effects for 3 turns, but movement speed halved.",
+        "effect": "The creature coils tightly into a defensive shell, blocking radiation and magnetic interference. It shifts slowly and heavily while maintaining this protective stance.",
         "numbers": {}
       },
       "weakness": "During the hunker, the Cobrezo cannot act and is vulnerable to grapple.",
@@ -228,7 +228,7 @@
           "en": "Auroral Read"
         },
         "role": "Passive",
-        "effect": "Perceive magnetic field lines as a visual overlay; reveals hidden corridors, magnetic traps, and weak points in magnetic shielding (+2 to interact with magnetic mechanics).",
+        "effect": "The creature traces magnetic currents as shimmering lines across nearby terrain, exposing hidden passages, concealed traps, and fragile spots in magnetic barriers. This natural awareness lets it navigate and interact with magnetic forces with ease.",
         "numbers": {}
       },
       "weakness": "Disorientation: Sudden changes in field intensity (>20% jump) cause stun for 1 turn as radical-pair yields scramble.",

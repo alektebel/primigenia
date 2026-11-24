@@ -1,0 +1,374 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ferrisca",
+  "name": {
+    "en": "Ferrisca"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Volcanic rift margins and brackish lagoon edges. Also, in the council's sketch (no such creature in this world yet): Sinter-Dweller Filter-Sponge, ferrisca prys open sinter mats, exposing bacterial films the sponge colonizes; the sponge's chitin-like proteins reinforce Ferrisca's gill rakers.",
+    "diet": "Chemosynthetic bacteria, sulfide sinter crusts, hyperaccumulating flora, detritus",
+    "active": "Crepuscular (avoids peak 30 m/s dust storms)",
+    "predators": [],
+    "prey": [
+      "Acid-Fog Drifter"
+    ]
+  },
+  "body": "Lophophorate-grade bilateral ancestor independently armored with iron-sulfide plates, magnetite-reinforced gill rakers, and laterally jointed limbs",
+  "chains": [
+    {
+      "id": "ferrisca.c1",
+      "trait": "Broad, flattened iron-sulfide carapace",
+      "links": [
+        "Low-contrast orange haze (F14) flattens visual targeting",
+        "1.7x tidal surges (F7) require low-drag clinging",
+        "Abrasive hematite dust (F15) abrades soft tissue",
+        "Iron-oxidizing enzymes precipitate FeS plates (F25)"
+      ],
+      "roots": [
+        "F7",
+        "F14",
+        "F15",
+        "F25"
+      ],
+      "skill": {
+        "id": "ferrisca.low_scurry",
+        "name": {
+          "en": "Low Scurry"
+        },
+        "role": "Basic",
+        "effect": "The creature scurries rapidly across walls and ground, gliding smoothly without being slowed by rough or slippery surfaces for a short while.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to venting steam bursts that lift and tumble them.",
+      "observe": [
+        "Dorsal rust plating",
+        "Lateral compression",
+        "Hemispherical eye stalks"
+      ],
+      "journal": {
+        "en": "Carapace pressed like a pancake, because in this haze, being thin is the only way to disappear."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make F7 the primary cause of the pancake shape (low-drag clinging in surge) and F15/F25 the cause of the plates; demote F14 to 'haze makes cheap concealment possible', not the driver. Replace the stat text with a plain behaviour: a low, gripping scurry along walls and ground, with steam bursts as the honest weakness. State that plates are biologically deposited sulfides, not smelted metal.",
+        "fixes": [
+          "Make F7 the primary cause of the pancake shape (low-drag clinging in surge) and F15/F25 the cause of the plates; demote F14 to 'haze makes cheap concealment possible', not the driver. Replace the stat text with a plain behaviour: a low, gripping scurry along walls and ground, with steam bursts as the honest weakness. State that plates are biologically deposited sulfides, not smelted metal."
+        ],
+        "analogues": [
+          {
+            "organism": "Scaly-foot snail Chrysomallon squamiferum grows iron-sulfide sclerites; limpets and chitons armour exposed surfaces with mineralised plates and teeth.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ferrisca.c2",
+      "trait": "Lateral gait with jointed walking legs",
+      "links": [
+        "Narrow rift topography (F15) restricts forward retreat",
+        "Lateral compression aligns legs with crevice axes",
+        "Jointed margin articulation enables side-stepping",
+        "Low-frequency sound (F13) favors parallel-threat posture; convergence on crab form is highly speculative but physically forced"
+      ],
+      "roots": [
+        "F13",
+        "F15",
+        "F19"
+      ],
+      "skill": {
+        "id": "ferrisca.carcinised_step",
+        "name": {
+          "en": "Carcinised Step"
+        },
+        "role": "Control",
+        "effect": "It steps swiftly sideways in a straight line, easily crossing over rough or obstructive ground without slowing down for a brief moment.",
+        "numbers": {}
+      },
+      "weakness": "Cannot turn quickly; blind spot directly behind the tucked abdomen.",
+      "observe": [
+        "Outward-facing leg joints",
+        "Wide lateral stance",
+        "Ventral gill plumes"
+      ],
+      "journal": {
+        "en": "They walk sideways because the rifts are narrow and the fog is thick, and evolution keeps filing down the ends until only the crab shape survives."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the crab-like silhouette and sideways gait as convergence on tight crevices (F15), but replace 'jointed' with six muscular, mineral-tipped lobes, or change the ancestor to a motile protostome grazer with a muscular foot and scleritome. Rename 'gill rakers' as magnetite-capped scraping spines if a radula-like organ exists, and drop the sound-to-posture claim: sound is for sensing, crevices are for orientation. Strip '6m' from the skill: describe a low side-step that holds the body inside the crevice. Label the whole package highly speculative in the journal.",
+        "fixes": [
+          "Keep the crab-like silhouette and sideways gait as convergence on tight crevices (F15), but replace 'jointed' with six muscular, mineral-tipped lobes, or change the ancestor to a motile protostome grazer with a muscular foot and scleritome. Rename 'gill rakers' as magnetite-capped scraping spines if a radula-like organ exists, and drop the sound-to-posture claim: sound is for sensing, crevices are for orientation. Strip '6m' from the skill: describe a low side-step that holds the body inside the crevice. Label the whole package highly speculative in the journal."
+        ],
+        "analogues": [
+          {
+            "organism": "Carcinisation into crab-like form in decapod crustaceans (porcelain, king and hermit crabs); chiton radular teeth tipped with magnetite; byssal attachment of mussels in surge.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ferrisca.c3",
+      "trait": "Ventral shield covering gill cavity and brood pouch",
+      "links": [
+        "Acidic dry-basin runoff (pH 4) (F17) corrodes exposed flesh",
+        "Sulfide fog (F15) attacks gill membranes",
+        "Ventral abdomen tucks beneath carapace rim",
+        "Hydrostatic flexion seals plates against acid"
+      ],
+      "roots": [
+        "F15",
+        "F17",
+        "F21",
+        "F25"
+      ],
+      "skill": {
+        "id": "ferrisca.iron_fold",
+        "name": {
+          "en": "Iron Fold"
+        },
+        "role": "Defence",
+        "effect": "The creature tucks its abdomen into a tight shield, becoming highly resistant to attacks while remaining completely still.",
+        "numbers": {}
+      },
+      "weakness": "Tightly sealed shield traps heat; prolonged use risks thermal stress.",
+      "observe": [
+        "Overlapping ventral plates",
+        "Gill filtration tufts",
+        "Brood chamber aperture"
+      ],
+      "journal": {
+        "en": "The belly is hidden not for modesty, but because acid fog melts flesh and the ocean keeps its secrets under the ribs."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-24",
+        "scores": {
+          "skeptic": 6
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_scaly"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_scaly"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_scaly"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ferrisca.c4",
+      "trait": "Asymmetrical iron-sulfide crushing and slicing claws",
+      "links": [
+        "Sinter mats concentrate sulfide ore (F27)",
+        "Chemolithotrophic bacteria feed inside crusts",
+        "Fe-S redox metabolism powers high-torque joints (F21)",
+        "Metallothionein chelation (F24) hardens claw tips"
+      ],
+      "roots": [
+        "F17",
+        "F18",
+        "F21",
+        "F24",
+        "F27",
+        "F28"
+      ],
+      "skill": {
+        "id": "ferrisca.ore_breaker",
+        "name": {
+          "en": "Ore Breaker"
+        },
+        "role": "Poke",
+        "effect": "Its heavy iron-sulfide claws strike with crushing force to break through the thick armor of mineral foes, or it can collect useful materials straight from nearby sinter beds.",
+        "numbers": {}
+      },
+      "weakness": "Claw tips degrade in high-salinity brine (conductivity 10 S/m) due to galvanic corrosion.",
+      "observe": [
+        "Mottled red claws",
+        "Serrated inner margin",
+        "Dark metallothionein deposits"
+      ],
+      "journal": {
+        "en": "They don't hunt meat so much as crack open the earth's crust, tasting the bacteria that live in the iron."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-24",
+        "scores": {
+          "skeptic": 5
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_metallophytes"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_metallophytes"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_metallophytes"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "carapaz",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "crang_lira",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "lombardo",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "salcaran",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 6 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "Diverged from a ciliated filter-feeder stem; convergently molded by coastal abrasion and crevice pressure"
+  },
+  "temperament": "Cautiously territorial, vibration-sensitive, socially tolerant near mineral-rich seeps",
+  "secrets": [
+    "Harvesting their shed carapace plates yields conductive iron-sulfide scales that boost electrocyte skills by 20% in brackish water, but handling them requires metallothionein chelation to avoid Cu/Zn toxicity (F24)."
+  ],
+  "moments": [
+    "When the 30 m/s dust storm hits, they lock their claws into the sulfide rock, tuck their abdomens, and let the orange wind scour the plains. You can hear them vibrating in sympathy with the low-frequency thunder of the gale."
+  ],
+  "journal": [
+    {
+      "en": "They wear the world's rust like a second skin, harvesting iron and sulfur to build a fortress that outlasts the tides."
+    },
+    {
+      "en": "Carcinisation is nature's ultimate shortcut: the environment literally grinds every other body plan down until only the crab remains. It's not evolution, it's a meat-grinder wearing a carapace."
+    },
+    {
+      "en": "Again."
+    }
+  ]
+}

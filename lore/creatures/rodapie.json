@@ -1,0 +1,295 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rodapie",
+  "name": {
+    "en": "Rodapié"
+  },
+  "world": "wheels",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Lane borders, dune bases, and evaporite pavements near salt flats. Also, in the council's sketch (no such creature in this world yet): Karrow, karrow skid-lines leave brine residue that Rodapiés lick; Rodapiés disturb dust that Karrow senses for navigation.",
+    "diet": "Omnivore; scavenges carcasses, hunts small invertebrates, licks mineral crusts.",
+    "active": "Crepuscular; avoids midday heat and night frost.",
+    "predators": [
+      "Skirl"
+    ]
+  },
+  "body": "Quadrupedal body with a low center of gravity. Front limbs are bulky, capsule-like structures housing 'Wheel-Capsules'. These capsules can detach and roll independently. Rear limbs are robust walking legs.",
+  "chains": [
+    {
+      "id": "rodapie.c1",
+      "trait": "Front limbs are detachable symbiotic wheel-capsules.",
+      "links": [
+        "Predators (Skirls/Sumpers) ambush on Lanes",
+        "Rolling escape is faster than walking",
+        "Evolution produced front limbs that are symbiotic rolling colonies",
+        "Symbiont can detach from host girdle and roll autonomously",
+        "Detached limb acts as a decoy, distracting predator"
+      ],
+      "roots": [
+        "F27",
+        "F4",
+        "F23"
+      ],
+      "skill": {
+        "id": "rodapie.drop_leg",
+        "name": {
+          "en": "Drop Leg"
+        },
+        "role": "Defence",
+        "effect": "The creature sheds a front wheel-capsule that rolls away randomly, strongly drawing enemy attention. The host moves swiftly while the detached limb distracts foes, though forward strikes are lost.",
+        "numbers": {}
+      },
+      "weakness": "Decoy Vulnerability: If the player or enemy captures the rolling leg, the symbiont can be killed. Dead symbiont cannot be reattached, requiring regrowth.",
+      "observe": [
+        "Front limbs have visible seams and pulsing tissue at the joint.",
+        "On threat, host slams front down and releases limb with a wet pop.",
+        "Detached leg rolls smoothly, surface rippling as symbiont moves."
+      ],
+      "journal": {
+        "en": "It trades a limb for its life, and grows a new one by dawn."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make the capsule a dead keratin-mineral shell (F18/F17 step 3) farmed by the symbiont (F23) and attached through a pre-formed autotomy seam, so the decoy is a shed tyre rather than a torn vascular limb. Replace regrowth by dawn with a moul t-cycle replacement and keep the decoy-versus-firepower trade-off.",
+        "fixes": [
+          "Make the capsule a dead keratin-mineral shell (F18/F17 step 3) farmed by the symbiont (F23) and attached through a pre-formed autotomy seam, so the decoy is a shed tyre rather than a torn vascular limb. Replace regrowth by dawn with a moul t-cycle replacement and keep the decoy-versus-firepower trade-off."
+        ],
+        "analogues": [
+          {
+            "organism": "Lizard caudal autotomy and crab limb autotomy at a pre-formed fracture plane, with the wheel spider as the rolling decoy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodapie.c2",
+      "trait": "Rolling gait via host propulsion of symbiont.",
+      "links": [
+        "Wheel-capsule is symbiont, not driven axle",
+        "Symbiont has no motor, only mobility cilia",
+        "Host pushes symbiont forward against ground",
+        "Symbiont cilia grip and roll the capsule",
+        "Gives 3x walking speed on hard Lanes"
+      ],
+      "roots": [
+        "F14",
+        "F8",
+        "F23"
+      ],
+      "skill": {
+        "id": "rodapie.roll_burst",
+        "name": {
+          "en": "Roll Burst"
+        },
+        "role": "Basic",
+        "effect": "The creature forcefully pushes its front legs to launch into a rapid roll. This sudden burst of speed helps it weave through incoming attacks, though the effort quickly tires it.",
+        "numbers": {}
+      },
+      "weakness": "Loose Sand: Symbiont cilia cannot grip loose sand or soft dunes. Rolling fails, and host must switch to walking.",
+      "observe": [
+        "Host pushes forward with shoulders to drive the wheels.",
+        "Wheel surfaces show rapid ciliary motion under the translucent rim.",
+        "No drive shafts or gears visible."
+      ],
+      "journal": {
+        "en": "It runs by throwing its feet."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Say the host drives a dead shell through a rigid strut and pad at the rim (F18) while the symbiont only maintains and cleans the rolling surface; let cilia matter for the film, not traction. Keep loose sand as the hard counter (F22), which is the most honest part of this chain.",
+        "fixes": [
+          "Say the host drives a dead shell through a rigid strut and pad at the rim (F18) while the symbiont only maintains and cleans the rolling surface; let cilia matter for the film, not traction. Keep loose sand as the hard counter (F22), which is the most honest part of this chain."
+        ],
+        "analogues": [
+          {
+            "organism": "Wheel-spider and pangolin whole-body rolling (F19), plus Berg and Anderson's bacterial flagellar motor to show where true rotary drive stops; ciliary propulsion only works at small scale.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodapie.c3",
+      "trait": "Regrowth cost limits repeated detachment.",
+      "links": [
+        "Symbiont is a complex colony",
+        "Detached symbiont cannot regenerate instantly",
+        "Host must build new capsule over hours",
+        "Metabolic drain during regrowth reduces host stats",
+        "Low gravity makes regrowth cheaper than on Earth, but still costly"
+      ],
+      "roots": [
+        "F4",
+        "F13"
+      ],
+      "skill": {
+        "id": "rodapie.regrow",
+        "name": {
+          "en": "Regrow"
+        },
+        "role": "Social",
+        "effect": "Spend time to regrow a lost wheel-capsule. Restores limb and heals host. Can be used to 'befriend' other Rodapiés by offering symbiont fragments (speculative).",
+        "numbers": {}
+      },
+      "weakness": "Regrowth Vulnerability: During regrowth, Rodapié has only one functional wheel and reduced movement. Aggressive players can interrupt this process.",
+      "observe": [
+        "Missing front limb shows a weeping wound that slowly fills with tissue.",
+        "Host rests in sheltered hollows while regrowing.",
+        "Regrown limb is smaller and paler initially."
+      ],
+      "journal": {
+        "en": "The price of speed is paid in flesh."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Tie regrowth to the next moult or F23 tread cycle, charge water and scarce micronutrients (F15/F23), and allow a pre-grown cached capsule as an alternative. Keep the vulnerable-while-regrowing weakness; drop the generic stat penalty, and keep befriending by symbiont fragment only if the fragment is sealed moist against F10/F15 desiccation.",
+        "fixes": [
+          "Tie regrowth to the next moult or F23 tread cycle, charge water and scarce micronutrients (F15/F23), and allow a pre-grown cached capsule as an alternative. Keep the vulnerable-while-regrowing weakness; drop the generic stat penalty, and keep befriending by symbiont fragment only if the fragment is sealed moist against F10/F15 desiccation."
+        ],
+        "analogues": [
+          {
+            "organism": "Crustacean limb regeneration tied to moulting and salamander limb regeneration, both slow and both paid in resources.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodapie.c4",
+      "trait": "Off-road portage via lifting wheels.",
+      "links": [
+        "Lanes are islands separated by dunes",
+        "Wheels trap in loose sand",
+        "Host retains walking legs",
+        "Rodapié can lift wheel-capsules and walk",
+        "Walking is slow but essential for inter-Lane travel"
+      ],
+      "roots": [
+        "F22",
+        "F13"
+      ],
+      "skill": {
+        "id": "rodapie.portage",
+        "name": {
+          "en": "Portage"
+        },
+        "role": "Control",
+        "effect": "Lift wheel-capsules. Rodapié walks at normal speed on dunes. Cannot use Roll Burst. Symbionts are safe but vulnerable to attack.",
+        "numbers": {}
+      },
+      "weakness": "Slow Travel: Portaging is essential for crossing dunes but makes Rodapié a slow target for chases.",
+      "observe": [
+        "Host tucks wheels against belly when crossing dunes.",
+        "Rear legs do all the work; front limbs are held aloft.",
+        "Symbionts pulse weakly while tucked, conserving energy."
+      ],
+      "journal": {
+        "en": "It walks the desert, wheels tucked like a turtle's head."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "No physics fix needed: state that portage is slower than Lane rolling and energy-expensive on dunes, and keep Roll Burst disabled. Optionally cite F22's quick stow as the model for how fast the capsules tuck away.",
+        "fixes": [
+          "No physics fix needed: state that portage is slower than Lane rolling and energy-expensive on dunes, and keep Roll Burst disabled. Optionally cite F22's quick stow as the model for how fast the capsules tuck away."
+        ],
+        "analogues": [
+          {
+            "organism": "The karrow's two-legs-and-lifting-shoulder portage (F22, the same convergent solution), plus bipedal desert rodents moving over loose substrate.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Quadrupedal ancestor that specialized in rapid limb detachment and regrowth."
+  },
+  "temperament": "Skittish and defensive; plays dead then bolts.",
+  "secrets": [
+    "Symbiont fragments can be transferred: A wounded Rodapié may allow a conspecific to 'graft' a fragment of its symbiont to repair a damaged leg, creating a bond.",
+    "Rolling legs retain a fragment of host memory: Captured legs may roll toward their original host if hummed to."
+  ],
+  "moments": [
+    "A Rodapié senses a shadow overhead. With a wet crack, it slams its front down, releasing a pulsating wheel that rolls away into the dunes. The host walks calmly on its rear legs, the detached limb rolling frantically in the distance, drawing the Skirl's attention."
+  ],
+  "journal": [
+    {
+      "en": "Four legs, two of which can run away."
+    },
+    {
+      "en": "The road claims a limb, the host pays the debt."
+    }
+  ]
+}

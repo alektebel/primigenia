@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| rastron.c1 | Elongated snout with mobile rhinarium | Avoids diurnal wind and heat ← Dense 1.6 bar air slows molecular diffusion ← Scent trails persist 1.6× longer in still night air | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Night Sniff (`rastron.night_sniff`) | Basic | Tracks scent trails for 15s, reveals hidden eggs and carrion markers. | Loud noises disrupt tracking; sensitive to strong chemical sprays. |
-| rastron.c2 | Hinged jaw with calcite-softening salivary glands | Niche targets hard-shelled intertidal eggs ← Mechanical cracking is energetically costly in 1.05 g gravity ← Evolved acidic saliva to dissolve calcium carbonate shells | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Shell Soften (`rastron.shell_soften`) | Engage | Sprays acidic saliva on target, breaks defense in 8s, leaves sour taste. | Saliva depletes quickly; using it on bone yields no extra nutrients. |
-| rastron.c3 | Splayed forelimbs with keratinized gripping pads | Shore habitat features wet, slick basalt and tidal scour ← High wind force per m/s pushes light bodies ← Low center of gravity and strong grip essential | **F4** Dense air: 1.6 bar | Grip Climb (`rastron.grip_climb`) | Defence | Climbs vertical wet surfaces in 4s, escapes grapples and falls safely. | Pads lose adhesion in dry, dusty highlands; vulnerable to heatstroke inland. |
-| rastron.c4 | Ampullae-like electroreceptors in snout and forelimbs | Nocturnal tide pools have low visibility and turbid water ← Mechanical vibration and bioelectric fields reveal trapped prey ← Evolved electroreceptive pits to detect heartbeats and struggling larvae | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Tide Sense (`rastron.tide_sense`) | Poke | Pulses ground/water, reveals hidden targets in 6s radius, stuns if too close. | Useless on dry land; electrical storms cause temporary confusion. |
+| rastron.c1 | Elongated snout with mobile rhinarium | Avoids diurnal wind and heat ← Dense 1.6 bar air slows molecular diffusion ← Scent trails persist 1.6× longer in still night air | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Night Sniff (`rastron.night_sniff`) | Basic | The creature follows lingering scents through the air and soil. It uncovers concealed eggs and rotting remains, making them visible to anyone nearby. | Loud noises disrupt tracking; sensitive to strong chemical sprays. |
+| rastron.c2 | Hinged jaw with calcite-softening salivary glands | Niche targets hard-shelled intertidal eggs ← Mechanical cracking is energetically costly in 1.05 g gravity ← Evolved acidic saliva to dissolve calcium carbonate shells | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Shell Soften (`rastron.shell_soften`) | Engage | The creature sprays a sharp acidic saliva onto its target. The corrosive spray weakens the target's defenses for a short while and leaves a lingering sour taste. | Saliva depletes quickly; using it on bone yields no extra nutrients. |
+| rastron.c3 | Splayed forelimbs with keratinized gripping pads | Shore habitat features wet, slick basalt and tidal scour ← High wind force per m/s pushes light bodies ← Low center of gravity and strong grip essential | **F4** Dense air: 1.6 bar | Grip Climb (`rastron.grip_climb`) | Defence | The creature scales slick vertical surfaces with ease using its padded limbs. It slips free from any holds and lands safely after a fall. | Pads lose adhesion in dry, dusty highlands; vulnerable to heatstroke inland. |
+| rastron.c4 | Ampullae-like electroreceptors in snout and forelimbs | Nocturnal tide pools have low visibility and turbid water ← Mechanical vibration and bioelectric fields reveal trapped prey ← Evolved electroreceptive pits to detect heartbeats and struggling larvae | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Tide Sense (`rastron.tide_sense`) | Poke | The creature sends out sharp pulses through the ground and water. These vibrations expose concealed enemies nearby and strongly stun anyone standing too close. | Useless on dry land; electrical storms cause temporary confusion. |
 
 ### rastron.c1: Elongated snout with mobile rhinarium
 
 Trait ← Avoids diurnal wind and heat ← Dense 1.6 bar air slows molecular diffusion ← Scent trails persist 1.6× longer in still night air ← F3, F6
 
-- **Skill:** Night Sniff (Basic): Tracks scent trails for 15s, reveals hidden eggs and carrion markers.
+- **Skill:** Night Sniff (Basic): The creature follows lingering scents through the air and soil. It uncovers concealed eggs and rotting remains, making them visible to anyone nearby.
 - **Weakness:** Loud noises disrupt tracking; sensitive to strong chemical sprays.
 - **Observe:**
   1. Lifts nose to wind
@@ -50,7 +50,7 @@ Trait ← Avoids diurnal wind and heat ← Dense 1.6 bar air slows molecular dif
 
 Trait ← Niche targets hard-shelled intertidal eggs ← Mechanical cracking is energetically costly in 1.05 g gravity ← Evolved acidic saliva to dissolve calcium carbonate shells ← F2
 
-- **Skill:** Shell Soften (Engage): Sprays acidic saliva on target, breaks defense in 8s, leaves sour taste.
+- **Skill:** Shell Soften (Engage): The creature sprays a sharp acidic saliva onto its target. The corrosive spray weakens the target's defenses for a short while and leaves a lingering sour taste.
 - **Weakness:** Saliva depletes quickly; using it on bone yields no extra nutrients.
 - **Observe:**
   1. Clicks jaws before striking
@@ -68,7 +68,7 @@ Trait ← Niche targets hard-shelled intertidal eggs ← Mechanical cracking is 
 
 Trait ← Shore habitat features wet, slick basalt and tidal scour ← High wind force per m/s pushes light bodies ← Low center of gravity and strong grip essential ← F4
 
-- **Skill:** Grip Climb (Defence): Climbs vertical wet surfaces in 4s, escapes grapples and falls safely.
+- **Skill:** Grip Climb (Defence): The creature scales slick vertical surfaces with ease using its padded limbs. It slips free from any holds and lands safely after a fall.
 - **Weakness:** Pads lose adhesion in dry, dusty highlands; vulnerable to heatstroke inland.
 - **Observe:**
   1. Sprints up vertical rock
@@ -87,7 +87,7 @@ Trait ← Shore habitat features wet, slick basalt and tidal scour ← High wind
 
 Trait ← Nocturnal tide pools have low visibility and turbid water ← Mechanical vibration and bioelectric fields reveal trapped prey ← Evolved electroreceptive pits to detect heartbeats and struggling larvae ← F20, F6
 
-- **Skill:** Tide Sense (Poke): Pulses ground/water, reveals hidden targets in 6s radius, stuns if too close.
+- **Skill:** Tide Sense (Poke): The creature sends out sharp pulses through the ground and water. These vibrations expose concealed enemies nearby and strongly stun anyone standing too close.
 - **Weakness:** Useless on dry land; electrical storms cause temporary confusion.
 - **Observe:**
   1. Presses snout to water

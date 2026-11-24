@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cascarudo.c1 | Membranous wings folded under rigid fore-shields | Atmosphere 1.6 bar (D8) creates high drag ← Low Reynolds number flight ← Short burst lift sufficient ← Reduces metabolic cost for cave transit | **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Short Glide (`cascarudo.short_glide`) | Basic | Dashes 2.5m in dense air, bypassing 1m vertical gap | Loud roars disrupt wing control |
-| cascarudo.c2 | Enlarged antennae with reduced eyes | Deep cave darkness limits vision ← Molecular diffusion 0.6x Earth (D16) extends scent ← Chemoreception favored for food locating ← Antennae house primary chemoreceptors | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Trail (`cascarudo.scent_trail`) | Poke | Tracks dung scent for 3s, reveals hidden carcass fragments | Sudden bright light blinds and freezes it |
-| cascarudo.c3 | Six jointed legs and chitinous carapace | Surface gravity 1.05g (D6) increases weight ← Dense air (D8) provides buoyant drag ← Exoskeleton bears load instead of muscle ← Six legs distribute stress on wet basalt | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F4** Dense air: 1.6 bar; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Grip Crawl (`cascarudo.grip_crawl`) | Basic | Climbs vertical basalt at 0.5 m/s using hooked tarsi | Vulnerable when flipped on open ground |
-| cascarudo.c4 | Gut symbionts for fibrous waste processing | Cave floor lacks fresh plants ← Rapid decomposition (D28) recycles nutrients ← Fungal symbionts break down tough cellulose ← Gut processes rondo dung and carcass bits | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Process Scavenge (`cascarudo.process_scavenge`) | Engage | Consumes carcass/dung in 4s, yields bone and chitin fragments | Exposed and immobile while feeding |
+| cascarudo.c1 | Membranous wings folded under rigid fore-shields | Atmosphere 1.6 bar (D8) creates high drag ← Low Reynolds number flight ← Short burst lift sufficient ← Reduces metabolic cost for cave transit | **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Short Glide (`cascarudo.short_glide`) | Basic | The creature launches forward through the thick air, easily clearing a short vertical drop. You watch it swiftly leap over the gap and land securely above. | Loud roars disrupt wing control |
+| cascarudo.c2 | Enlarged antennae with reduced eyes | Deep cave darkness limits vision ← Molecular diffusion 0.6x Earth (D16) extends scent ← Chemoreception favored for food locating ← Antennae house primary chemoreceptors | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Trail (`cascarudo.scent_trail`) | Poke | The creature strongly follows the dung scent through the air, causing hidden carcass fragments to become visible. You can now clearly see the scattered remains it has uncovered. | Sudden bright light blinds and freezes it |
+| cascarudo.c3 | Six jointed legs and chitinous carapace | Surface gravity 1.05g (D6) increases weight ← Dense air (D8) provides buoyant drag ← Exoskeleton bears load instead of muscle ← Six legs distribute stress on wet basalt | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F4** Dense air: 1.6 bar; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Grip Crawl (`cascarudo.grip_crawl`) | Basic | The creature scales the sheer rock face with steady grace, using its hooked feet to grip the stone. You watch it steadily ascend the vertical wall without slipping. | Vulnerable when flipped on open ground |
+| cascarudo.c4 | Gut symbionts for fibrous waste processing | Cave floor lacks fresh plants ← Rapid decomposition (D28) recycles nutrients ← Fungal symbionts break down tough cellulose ← Gut processes rondo dung and carcass bits | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Process Scavenge (`cascarudo.process_scavenge`) | Engage | The creature devours the waste matter in a short while, leaving behind scattered bone and chitin fragments. You see the useful scraps remain on the ground for collection. | Exposed and immobile while feeding |
 
 ### cascarudo.c1: Membranous wings folded under rigid fore-shields
 
 Trait ← Atmosphere 1.6 bar (D8) creates high drag ← Low Reynolds number flight ← Short burst lift sufficient ← Reduces metabolic cost for cave transit ← F4, F19
 
-- **Skill:** Short Glide (Basic): Dashes 2.5m in dense air, bypassing 1m vertical gap
+- **Skill:** Short Glide (Basic): The creature launches forward through the thick air, easily clearing a short vertical drop. You watch it swiftly leap over the gap and land securely above.
 - **Weakness:** Loud roars disrupt wing control
 - **Observe:**
   1. Wings catching cave drafts
@@ -49,7 +49,7 @@ Trait ← Atmosphere 1.6 bar (D8) creates high drag ← Low Reynolds number flig
 
 Trait ← Deep cave darkness limits vision ← Molecular diffusion 0.6x Earth (D16) extends scent ← Chemoreception favored for food locating ← Antennae house primary chemoreceptors ← F3, F16
 
-- **Skill:** Scent Trail (Poke): Tracks dung scent for 3s, reveals hidden carcass fragments
+- **Skill:** Scent Trail (Poke): The creature strongly follows the dung scent through the air, causing hidden carcass fragments to become visible. You can now clearly see the scattered remains it has uncovered.
 - **Weakness:** Sudden bright light blinds and freezes it
 - **Observe:**
   1. Antennae sampling stagnant air
@@ -67,7 +67,7 @@ Trait ← Deep cave darkness limits vision ← Molecular diffusion 0.6x Earth (D
 
 Trait ← Surface gravity 1.05g (D6) increases weight ← Dense air (D8) provides buoyant drag ← Exoskeleton bears load instead of muscle ← Six legs distribute stress on wet basalt ← F2, F4, F9
 
-- **Skill:** Grip Crawl (Basic): Climbs vertical basalt at 0.5 m/s using hooked tarsi
+- **Skill:** Grip Crawl (Basic): The creature scales the sheer rock face with steady grace, using its hooked feet to grip the stone. You watch it steadily ascend the vertical wall without slipping.
 - **Weakness:** Vulnerable when flipped on open ground
 - **Observe:**
   1. Hooked tarsi gripping wet stone
@@ -85,7 +85,7 @@ Trait ← Surface gravity 1.05g (D6) increases weight ← Dense air (D8) provide
 
 Trait ← Cave floor lacks fresh plants ← Rapid decomposition (D28) recycles nutrients ← Fungal symbionts break down tough cellulose ← Gut processes rondo dung and carcass bits ← F24
 
-- **Skill:** Process Scavenge (Engage): Consumes carcass/dung in 4s, yields bone and chitin fragments
+- **Skill:** Process Scavenge (Engage): The creature devours the waste matter in a short while, leaving behind scattered bone and chitin fragments. You see the useful scraps remain on the ground for collection.
 - **Weakness:** Exposed and immobile while feeding
 - **Observe:**
   1. Mandibles grinding soft matter

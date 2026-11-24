@@ -39,7 +39,7 @@
           "en": "Dusk Gaze"
         },
         "role": "Poke",
-        "effect": "Highlights fruit clusters and safe branches in darkness, +12% forage success",
+        "effect": "Its large eyes reflect ambient light, making hidden fruit clusters and safe branches clearly visible in the dark. You can easily track these glowing markers to find food and secure resting spots.",
         "numbers": {}
       },
       "weakness": "Dazzled by sudden bright flashes and direct moonlight on snow",
@@ -66,10 +66,7 @@
           },
           {
             "organism": "real biology behind this chain",
-            "mechanism": "see the cited works; chain wording is the council's own",
-            "refs": [
-              "mainster_2007_vertebrate"
-            ]
+            "mechanism": "see the cited works; chain wording is the council's own"
           }
         ],
         "scores": {
@@ -102,7 +99,7 @@
           "en": "Soft Landing"
         },
         "role": "Defence",
-        "effect": "Reduces fall damage by 70% and stabilizes instantly on impact",
+        "effect": "Its padded feet cushion every impact, allowing it to drop from heights without stumbling. It regains its balance instantly, showing no sign of strain.",
         "numbers": {}
       },
       "weakness": "Struggles on smooth, vertical rock faces and slick tuff",
@@ -158,7 +155,7 @@
           "en": "Sustained Pace"
         },
         "role": "Basic",
-        "effect": "Maintains climb and sprint speed for 20% longer without fatigue",
+        "effect": "Its efficient lungs supply steady oxygen, letting it climb and run without growing tired. It maintains a brisk pace through the trees for a long while.",
         "numbers": {}
       },
       "weakness": "Overheats quickly in direct afternoon sun and humid still air",
@@ -214,7 +211,7 @@
           "en": "Scent Trail"
         },
         "role": "Control",
-        "effect": "Follows preserved scent pathways to known fruiting trees, +10% movement efficiency",
+        "effect": "Its elongated snout traces invisible scent lines through the air, leading it directly to fruiting trees. It moves along these familiar trails with confident, unhurried steps.",
         "numbers": {}
       },
       "weakness": "Disoriented by strong volcanic updrafts or heavy rain washing trails",
@@ -271,6 +268,11 @@
       "date": "2026-11-21",
       "who": "import_got",
       "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
     }
   ]
 }

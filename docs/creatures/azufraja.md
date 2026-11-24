@@ -21,16 +21,16 @@ Flattened disc-like carapace with radiating piezoelectric filter filaments and C
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| azufraja.c1 | Radiating filter filaments | Harvests suspended silicate and sulfur particulates ← Thermal inversions drive convection plumes across basins ← Molten S8-SO2 eutectic provides liquid ion medium | **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.; **F8** No liquid water oceans; primary solvent is regional molten S₈–SO₂ eutectic stable between 150–250°C. | Current-draw (`azufraja.current_draw`) | Engage | Pulls enemies closer, +20% accuracy on drawn targets | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
-| azufraja.c2 | Supercritical CO2 buoyancy bladders | Maintains neutral buoyancy in stratified eutectic ← Density contrasts between solvent and tissue cause sinking ← Geothermal vents supply supercritical CO2 pockets | **F5** Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).; **F9** Geothermal vents spew reduced H₂S, FeS₂, and supercritical CO₂ pockets across basaltic-silicate crust. | Gas-lift (`azufraja.gas_lift`) | Passive | +30% movement speed in liquid terrain, grants brief float | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
-| azufraja.c3 | Lattice-defect sensory nodes | Reads chemical gradients and thermal shifts in solvent ← Silicate lattice defects store stable high-T data ← Anoxic dry conditions preclude aqueous signaling | **F12** Heritable information is stored via defect-patterned silicate lattices rather than nucleic acids.; **F13** Metabolism oxidizes H₂S and FeS₂ using SO₂ redox gradients without free oxygen. | Ion-taste (`azufraja.ion_taste`) | Basic | Reveals enemy stats/weaknesses, +15% crit chance | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
-| azufraja.c4 | Thermal expansion joints | Allows carapace flexion during temperature swings ← Diurnal cooling induces rapid solvent viscosity changes ← Atmospheric heat lock creates sharp thermal gradients | **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints. | Flex-shell (`azufraja.flex_shell`) | Defence | +40% damage reduction during environmental damage phases | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
+| azufraja.c1 | Radiating filter filaments | Harvests suspended silicate and sulfur particulates ← Thermal inversions drive convection plumes across basins ← Molten S8-SO2 eutectic provides liquid ion medium | **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.; **F8** No liquid water oceans; primary solvent is regional molten S₈–SO₂ eutectic stable between 150–250°C. | Current-draw (`azufraja.current_draw`) | Engage | The creature's filaments tug nearby foes toward its center, drawing them in. Once gathered, its strikes land strongly on the trapped targets. | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
+| azufraja.c2 | Supercritical CO2 buoyancy bladders | Maintains neutral buoyancy in stratified eutectic ← Density contrasts between solvent and tissue cause sinking ← Geothermal vents supply supercritical CO2 pockets | **F5** Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).; **F9** Geothermal vents spew reduced H₂S, FeS₂, and supercritical CO₂ pockets across basaltic-silicate crust. | Gas-lift (`azufraja.gas_lift`) | Passive | Its buoyant bladders propel it swiftly through liquid terrain, gliding over the surface. The creature can rise a short while above the water, drifting lightly on the currents. | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
+| azufraja.c3 | Lattice-defect sensory nodes | Reads chemical gradients and thermal shifts in solvent ← Silicate lattice defects store stable high-T data ← Anoxic dry conditions preclude aqueous signaling | **F12** Heritable information is stored via defect-patterned silicate lattices rather than nucleic acids.; **F13** Metabolism oxidizes H₂S and FeS₂ using SO₂ redox gradients without free oxygen. | Ion-taste (`azufraja.ion_taste`) | Basic | Its sensory nodes scan nearby foes, exposing their fragile points and inner workings. This keen perception allows its strikes to find vulnerable gaps with remarkable precision. | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
+| azufraja.c4 | Thermal expansion joints | Allows carapace flexion during temperature swings ← Diurnal cooling induces rapid solvent viscosity changes ← Atmospheric heat lock creates sharp thermal gradients | **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints. | Flex-shell (`azufraja.flex_shell`) | Defence | Its flexible shell joints absorb and redirect harsh environmental forces, shielding its core. The creature withstands extreme conditions by bending and yielding rather than cracking. | Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely. |
 
 ### azufraja.c1: Radiating filter filaments
 
 Trait ← Harvests suspended silicate and sulfur particulates ← Thermal inversions drive convection plumes across basins ← Molten S8-SO2 eutectic provides liquid ion medium ← F7, F8
 
-- **Skill:** Current-draw (Engage): Pulls enemies closer, +20% accuracy on drawn targets
+- **Skill:** Current-draw (Engage): The creature's filaments tug nearby foes toward its center, drawing them in. Once gathered, its strikes land strongly on the trapped targets.
 - **Weakness:** Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.
 - **Observe:**
   1. Filaments rippling in slow, viscous currents
@@ -49,7 +49,7 @@ Trait ← Harvests suspended silicate and sulfur particulates ← Thermal invers
 
 Trait ← Maintains neutral buoyancy in stratified eutectic ← Density contrasts between solvent and tissue cause sinking ← Geothermal vents supply supercritical CO2 pockets ← F5, F9
 
-- **Skill:** Gas-lift (Passive): +30% movement speed in liquid terrain, grants brief float
+- **Skill:** Gas-lift (Passive): Its buoyant bladders propel it swiftly through liquid terrain, gliding over the surface. The creature can rise a short while above the water, drifting lightly on the currents.
 - **Weakness:** Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.
 - **Observe:**
   1. Filaments rippling in slow, viscous currents
@@ -68,7 +68,7 @@ Trait ← Maintains neutral buoyancy in stratified eutectic ← Density contrast
 
 Trait ← Reads chemical gradients and thermal shifts in solvent ← Silicate lattice defects store stable high-T data ← Anoxic dry conditions preclude aqueous signaling ← F12, F13
 
-- **Skill:** Ion-taste (Basic): Reveals enemy stats/weaknesses, +15% crit chance
+- **Skill:** Ion-taste (Basic): Its sensory nodes scan nearby foes, exposing their fragile points and inner workings. This keen perception allows its strikes to find vulnerable gaps with remarkable precision.
 - **Weakness:** Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.
 - **Observe:**
   1. Filaments rippling in slow, viscous currents
@@ -86,7 +86,7 @@ Trait ← Reads chemical gradients and thermal shifts in solvent ← Silicate la
 
 Trait ← Allows carapace flexion during temperature swings ← Diurnal cooling induces rapid solvent viscosity changes ← Atmospheric heat lock creates sharp thermal gradients ← F7, F15
 
-- **Skill:** Flex-shell (Defence): +40% damage reduction during environmental damage phases
+- **Skill:** Flex-shell (Defence): Its flexible shell joints absorb and redirect harsh environmental forces, shielding its core. The creature withstands extreme conditions by bending and yielding rather than cracking.
 - **Weakness:** Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.
 - **Observe:**
   1. Filaments rippling in slow, viscous currents

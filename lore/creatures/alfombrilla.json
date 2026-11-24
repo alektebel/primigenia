@@ -40,7 +40,7 @@
           "en": "Drift Glide"
         },
         "role": "Basic",
-        "effect": "Move 30m with 1 stamina; silent in fog.",
+        "effect": "The creature glides smoothly across the ground, its micro-wings beating in a steady rhythm. You can guide it to travel a moderate distance while remaining completely unheard in the mist.",
         "numbers": {}
       },
       "weakness": "Stamina drains fast in dry midday air.",
@@ -105,7 +105,7 @@
           "en": "Fog Vision"
         },
         "role": "Passive",
-        "effect": "See prey and threats through fog at +20% range.",
+        "effect": "Its compound eyes pierce through the mist, strongly tracking faint movements that would otherwise remain hidden. You can clearly spot nearby prey and approaching threats through the heavy fog.",
         "numbers": {}
       },
       "weakness": "Blinded by direct sun glare or sudden flares (F10).",
@@ -162,7 +162,7 @@
           "en": "Leaf Swarm"
         },
         "role": "Engage",
-        "effect": "Consume a plant object rapidly; gain +5 mass, attract nearby predators.",
+        "effect": "The creature devours nearby foliage in a frenzy, swelling noticeably as it feeds. This sudden feast strongly attracts the attention of hunters from the surrounding area.",
         "numbers": {}
       },
       "weakness": "Leaves a chewed trail that alerts ground carnivores.",
@@ -222,7 +222,7 @@
           "en": "Silk Bind"
         },
         "role": "Defence",
-        "effect": "Secure a cluster of eggs to a stem; +3 defense against wind.",
+        "effect": "The creature weaves protective silk to anchor its eggs firmly to a branch. This woven shield strongly resists the pull of heavy winds.",
         "numbers": {}
       },
       "weakness": "Stationary target for aerial predators like alula.",

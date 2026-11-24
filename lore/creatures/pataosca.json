@@ -39,7 +39,7 @@
           "en": "Carapace brace"
         },
         "role": "Defence",
-        "effect": "+50% resist wave damage and wind gusts; reduces knockback.",
+        "effect": "Its thick, stony shell absorbs the force of crashing waves and strong winds, keeping it firmly planted. The creature stands strongly against pushing forces without being shoved backward.",
         "numbers": {}
       },
       "weakness": "Vulnerable to crushing from above; shell limits flexibility.",
@@ -100,7 +100,7 @@
           "en": "Tide-walk"
         },
         "role": "Basic",
-        "effect": "Move steadily on wet slopes up to 40° without slipping; +20% speed on shore.",
+        "effect": "Its gripping legs and water-repelling bristles allow it to climb wet, steep slopes without slipping. It moves with quick, sure steps across the nearby shoreline.",
         "numbers": {}
       },
       "weakness": "Cannot climb dry vertical rock; bristles mat in thick mud.",
@@ -160,7 +160,7 @@
           "en": "Scent-track"
         },
         "role": "Engage",
-        "effect": "Locate food sources within 10 m in darkness or fog; +15% befriend chance via calm movement.",
+        "effect": "Its sensitive nose easily catches food scents drifting through thick fog or deep darkness. The creature grows calmer when approached quietly, making it easier to befriend over a short while.",
         "numbers": {}
       },
       "weakness": "Bright light or strong wind breaks the trail; deaf to high pitches.",
@@ -218,7 +218,7 @@
           "en": "Toxin filter"
         },
         "role": "Passive",
-        "effect": "+20 health when eating rotting carcass or sulfurous wrack; immune to mild poison.",
+        "effect": "The creature consumes rotting carcasses or sulfurous wrack and swiftly recovers its strength. It remains entirely unaffected by weak venoms.",
         "numbers": {}
       },
       "weakness": "Sulfur breath alerts carnivores; cannot digest fresh meat without rot.",

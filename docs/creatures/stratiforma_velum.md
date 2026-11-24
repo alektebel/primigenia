@@ -9,7 +9,7 @@
 - **Habitat:** Upper-mid water column, concentrated at the fresher-brine interface
 - **Diet:** Dissolved organics, suspended microbes, chemosynthetic spores
 - **Active:** Tidal-cycle driven (moves with mixing pulses)
-- **Predators:** none
+- **Predators:** Thermarctus ferox
 
 ## Body
 
@@ -21,16 +21,16 @@ Large, translucent sail-like dorsal fin, trailing siphons, buoyant gas bladder
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| stratiforma_velum.c1 | Translucent sail-fin with chromatophores | Blends with light-scattering density boundaries ← Deters silhouette-seeing predators ← High refractive index contrast at halocline | **F16** A halocline separates fresher buoyant melt water at the ice roof from denser brine below, and mixing across it is slow compared with biological timescales.; **F27** Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate. | Refraction Cloak (`stratiforma_velum.refraction_cloak`) | Defence | Grants +30% dodge chance for 2 turns. | Useless in uniform dark water away from strata. |
-| stratiforma_velum.c2 | Trailing chemosensory siphons | Concentrates filter-feeding current ← Exploits nutrient-rich halocline shear ← Fresh melt overlies dense brine, slowing macroscopic mixing | **F16** A halocline separates fresher buoyant melt water at the ice roof from denser brine below, and mixing across it is slow compared with biological timescales.; **F20** H₂ from serpentinisation plus dissolved CO₂ yields methane and acetate exergonically at 271 K, the metabolic base of the ecosystem. | Nutrient Siphon (`stratiforma_velum.nutrient_siphon`) | Basic | Gains 2 damage/heal over 3 turns. | Clogged by falling ice slurry. |
-| stratiforma_velum.c3 | Hydrogen-filled buoyancy sac | Adjusts depth rapidly in stratified water ← Compensates for slow metabolic turnover ← Serpentinisation yields abundant H2 | **F20** H₂ from serpentinisation plus dissolved CO₂ yields methane and acetate exergonically at 271 K, the metabolic base of the ecosystem.; **F24** Enzymes at 271 K run roughly an order of magnitude slower than at 300 K, so microbial growth and turnover take years to decades; decades-to-centuries lifespans apply only to the largest symbiotic bodies and are highly speculative. | Buoyancy Surge (`stratiforma_velum.buoyancy_surge`) | Control | Repositions instantly and grants +5 mobility. | Pressure cracks sac if pushed too deep. |
-| stratiforma_velum.c4 | Pulsatile bioluminescent rhythm | Coordinates colony filter-feeding ← Synchronizes with tidal flexure cycles ← Resonant forcing keeps e from damping, driving periodic stress | **F2** Ardent orbits Vess, a 2.1-Jupiter-mass gas giant, at 860,000 km in 3.55 days with an eccentricity of 0.009, held open by a 2:1 resonance with an outer sibling moon of about 0.012 Jupiter masses at 1.37 million km (7.1-day period).; **F27** Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate. | Tidal Sync (`stratiforma_velum.tidal_sync`) | Passive | Allies gain +2 damage on flexure turn. | Predictable pattern makes them easy to ambush. |
+| stratiforma_velum.c1 | Translucent sail-fin with chromatophores | Blends with light-scattering density boundaries ← Deters silhouette-seeing predators ← High refractive index contrast at halocline | **F16** A halocline separates fresher buoyant melt water at the ice roof from denser brine below, and mixing across it is slow compared with biological timescales.; **F27** Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate. | Refraction Cloak (`stratiforma_velum.refraction_cloak`) | Defence | The creature ripples its translucent sail-fin, bending light around its body to slip past incoming strikes. Nearby foes find their attacks glancing harmlessly off its shimmering form for a short while. | Useless in uniform dark water away from strata. |
+| stratiforma_velum.c2 | Trailing chemosensory siphons | Concentrates filter-feeding current ← Exploits nutrient-rich halocline shear ← Fresh melt overlies dense brine, slowing macroscopic mixing | **F16** A halocline separates fresher buoyant melt water at the ice roof from denser brine below, and mixing across it is slow compared with biological timescales.; **F20** H₂ from serpentinisation plus dissolved CO₂ yields methane and acetate exergonically at 271 K, the metabolic base of the ecosystem. | Nutrient Siphon (`stratiforma_velum.nutrient_siphon`) | Basic | Its trailing chemosensory siphons drift through the water, drawing in nourishment and steadily mending its wounds. The creature slowly regains strength as it feeds on the surrounding currents. | Clogged by falling ice slurry. |
+| stratiforma_velum.c3 | Hydrogen-filled buoyancy sac | Adjusts depth rapidly in stratified water ← Compensates for slow metabolic turnover ← Serpentinisation yields abundant H2 | **F20** H₂ from serpentinisation plus dissolved CO₂ yields methane and acetate exergonically at 271 K, the metabolic base of the ecosystem.; **F24** Enzymes at 271 K run roughly an order of magnitude slower than at 300 K, so microbial growth and turnover take years to decades; decades-to-centuries lifespans apply only to the largest symbiotic bodies and are highly speculative. | Buoyancy Surge (`stratiforma_velum.buoyancy_surge`) | Control | The creature swiftly shifts its position and moves with greater agility for a short while. | Pressure cracks sac if pushed too deep. |
+| stratiforma_velum.c4 | Pulsatile bioluminescent rhythm | Coordinates colony filter-feeding ← Synchronizes with tidal flexure cycles ← Resonant forcing keeps e from damping, driving periodic stress | **F2** Ardent orbits Vess, a 2.1-Jupiter-mass gas giant, at 860,000 km in 3.55 days with an eccentricity of 0.009, held open by a 2:1 resonance with an outer sibling moon of about 0.012 Jupiter masses at 1.37 million km (7.1-day period).; **F27** Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate. | Tidal Sync (`stratiforma_velum.tidal_sync`) | Passive | A pulsatile bioluminescent rhythm radiates from its body, synchronizing with nearby allies and amplifying their strikes. The glowing waves strongly empower those fighting alongside it. | Predictable pattern makes them easy to ambush. |
 
 ### stratiforma_velum.c1: Translucent sail-fin with chromatophores
 
 Trait ← Blends with light-scattering density boundaries ← Deters silhouette-seeing predators ← High refractive index contrast at halocline ← F16, F27
 
-- **Skill:** Refraction Cloak (Defence): Grants +30% dodge chance for 2 turns.
+- **Skill:** Refraction Cloak (Defence): The creature ripples its translucent sail-fin, bending light around its body to slip past incoming strikes. Nearby foes find their attacks glancing harmlessly off its shimmering form for a short while.
 - **Weakness:** Useless in uniform dark water away from strata.
 - **Observe:**
   1. Iridescent shimmer
@@ -48,7 +48,7 @@ Trait ← Blends with light-scattering density boundaries ← Deters silhouette-
 
 Trait ← Concentrates filter-feeding current ← Exploits nutrient-rich halocline shear ← Fresh melt overlies dense brine, slowing macroscopic mixing ← F16, F20
 
-- **Skill:** Nutrient Siphon (Basic): Gains 2 damage/heal over 3 turns.
+- **Skill:** Nutrient Siphon (Basic): Its trailing chemosensory siphons drift through the water, drawing in nourishment and steadily mending its wounds. The creature slowly regains strength as it feeds on the surrounding currents.
 - **Weakness:** Clogged by falling ice slurry.
 - **Observe:**
   1. Long trailing tubes
@@ -67,7 +67,7 @@ Trait ← Concentrates filter-feeding current ← Exploits nutrient-rich halocli
 
 Trait ← Adjusts depth rapidly in stratified water ← Compensates for slow metabolic turnover ← Serpentinisation yields abundant H2 ← F20, F24
 
-- **Skill:** Buoyancy Surge (Control): Repositions instantly and grants +5 mobility.
+- **Skill:** Buoyancy Surge (Control): The creature swiftly shifts its position and moves with greater agility for a short while.
 - **Weakness:** Pressure cracks sac if pushed too deep.
 - **Observe:**
   1. Expanding midsection
@@ -86,7 +86,7 @@ Trait ← Adjusts depth rapidly in stratified water ← Compensates for slow met
 
 Trait ← Coordinates colony filter-feeding ← Synchronizes with tidal flexure cycles ← Resonant forcing keeps e from damping, driving periodic stress ← F2, F27
 
-- **Skill:** Tidal Sync (Passive): Allies gain +2 damage on flexure turn.
+- **Skill:** Tidal Sync (Passive): A pulsatile bioluminescent rhythm radiates from its body, synchronizing with nearby allies and amplifying their strikes. The glowing waves strongly empower those fighting alongside it.
 - **Weakness:** Predictable pattern makes them easy to ambush.
 - **Observe:**
   1. Group flashing
@@ -106,7 +106,6 @@ Trait ← Coordinates colony filter-feeding ← Synchronizes with tidal flexure 
 |---|---|---|---|
 | cryostrata_lar | cousin |  | (council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons. |
 | cryostrata_lar | cousin |  | (council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons. |
-| Thermarctus ferox | cousin |  | (council kind 'Prey') Vent-stalkers sometimes snag drifting colonies near thermal upwellings. |
 
 ## Journal
 

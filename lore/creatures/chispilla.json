@@ -41,7 +41,7 @@
           "en": "Adhere"
         },
         "role": "Basic",
-        "effect": "Climb wet surfaces without falling (+25% stability).",
+        "effect": "The creature scales slick, wet surfaces without slipping, holding on strongly to navigate vertical terrain.",
         "numbers": {}
       },
       "weakness": "Pads lose suction on dry, dusty rock.",
@@ -97,7 +97,7 @@
           "en": "Power Leap"
         },
         "role": "Engage",
-        "effect": "Launch 1.2m vertically to snatch prey (+30% reach).",
+        "effect": "It springs high into the air to snatch prey from above, extending its reach well beyond normal limits.",
         "numbers": {}
       },
       "weakness": "Slow to recover balance after landing.",
@@ -153,7 +153,7 @@
           "en": "Twilight Focus"
         },
         "role": "Basic",
-        "effect": "See prey clearly in low light (+40% detection at dawn/dusk).",
+        "effect": "Its large eyes gather dim light, allowing it to spot prey clearly during twilight hours.",
         "numbers": {}
       },
       "weakness": "Dazzled by sudden bright flashes or direct sun.",
@@ -209,7 +209,7 @@
           "en": "Hearing"
         },
         "role": "Engage",
-        "effect": "Locate flying prey from 10m away (+25% accuracy).",
+        "effect": "Its mobile ears swivel to catch faint wingbeats, pinpointing the location of flying prey nearby.",
         "numbers": {}
       },
       "weakness": "Loud, high-pitched noises disrupt focus.",

@@ -36,7 +36,7 @@
           "en": "Pack Rally"
         },
         "role": "Control",
-        "effect": "Reveals stealth units within 25m and grants allies +2 evasion for 1 turn.",
+        "effect": "The creature's massive ears swivel independently, exposing hidden foes lurking nearby. Its allies feel a sudden boost in agility, easily dodging incoming strikes for a short while.",
         "numbers": {}
       },
       "weakness": "High-pitched sonic disruptors scramble pinnae focus, breaking pack coordination.",
@@ -102,7 +102,7 @@
           "en": "Precision Flank"
         },
         "role": "Engage",
-        "effect": "Targets limb joints for -40% movement speed on hit, ignores 50% armor.",
+        "effect": "It lunges to strike the joints of nearby foes, leaving them struggling to move. Its razor-thumbs cut through their defenses as if they were barely there.",
         "numbers": {}
       },
       "weakness": "Claws lock upon extension; cannot reposition or grapple without retracting and risking a turn.",

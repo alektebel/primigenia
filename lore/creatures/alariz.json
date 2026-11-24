@@ -41,7 +41,7 @@
           "en": "Thermal Soar"
         },
         "role": "Control",
-        "effect": "Gain 20m altitude by following wind columns, costs no stamina",
+        "effect": "The creature rides rising air currents to climb steadily without tiring. You can watch it soar effortlessly upward on invisible thermal columns.",
         "numbers": {}
       },
       "weakness": "Ground-bound in thick fog or windless dawn when thermals fail",
@@ -105,7 +105,7 @@
           "en": "Carion Sight"
         },
         "role": "Poke",
-        "effect": "Reveal hidden carcasses within 250m and mark bone deposits",
+        "effect": "The creature scans the horizon with its specialized eyes to locate hidden remains. You can see it identify distant carcasses and mark bone deposits that were previously concealed.",
         "numbers": {}
       },
       "weakness": "Blinded by sudden glare or dense morning fog",
@@ -160,7 +160,7 @@
           "en": "Light Frame"
         },
         "role": "Defence",
-        "effect": "Take 30% less fall damage and move silently in air",
+        "effect": "The creature's hollow bones cushion its landings, allowing it to touch down without injury. You can watch it drift through the air with complete silence.",
         "numbers": {}
       },
       "weakness": "Vulnerable to direct blunt strikes and heavy impact",
@@ -215,7 +215,7 @@
           "en": "Grit Mill"
         },
         "role": "Basic",
-        "effect": "Chew bone and tough flesh, recover 15 stamina per meal",
+        "effect": "It grinds bones and tough flesh with its gritty gizzard, steadily restoring its own energy with each meal.",
         "numbers": {}
       },
       "weakness": "Requires regular access to volcanic grit or suffers indigestion",

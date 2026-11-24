@@ -10,6 +10,7 @@
 - **Diet:** Lichen, fungal hyphae, and chemosynthetic bacterial mats on rock faces
 - **Active:** Crepuscular, follows heat gradients
 - **Predators:** none
+- **Prey:** Brisacoral
 
 ## Body
 
@@ -21,16 +22,16 @@ Segmented hydrostatic torso; armored carapace; shovel-like forelimbs; vibrationa
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| rastreadorceniza.c1 | Segmented, hydrostatically pressurized torso | High gravity compresses loose soil ← Muscles struggle against compaction under load ← Hydrostatic skeleton distributes force without heavy exoskeleton | **F4** Surface gravity of 1.85 g.; **F20** Aqueous cytoplasm with piezolyte-stabilized proteins and polyunsaturated lipids. | Pressure Crush (`rastreadorceniza.pressure_crush`) | Engage | Grapples and deals 25% more damage to armored or burrowing foes. | Slow movement speed; vulnerable to fast melee strikes that bypass armor. |
-| rastreadorceniza.c2 | Broad, shovel-like forelimbs with reinforced joints | Dense atmosphere increases ground friction ← Digging requires high torque against compaction ← Reinforced joints prevent fracture under 1.85g load | **F4** Surface gravity of 1.85 g.; **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Burrow (`rastreadorceniza.burrow`) | Basic | Moves underground, granting cover and +15% movement speed for 2 turns. | Cannot turn quickly while digging; rear is exposed when emerging. |
-| rastreadorceniza.c3 | Low-frequency vibrational sensory pits | Sluggish convection and fog reduce visual range ← Low-frequency sound travels farther in dense air ← Vibrations penetrate soil efficiently to locate prey | **F12** Sluggish convection, massive anticyclones, and persistent low-altitude fog.; **F10** Sound speed ~355 m/s with low-frequency attenuation reduced. | Ground Sense (`rastreadorceniza.ground_sense`) | Passive | Reveals nearby enemies through terrain and reduces ambush penalty by 50%. | Easily distracted by seismic tremors or heavy footsteps; loses focus temporarily. |
-| rastreadorceniza.c4 | Copper-oxidized carapace plating | High humidity and atmospheric O2 accelerate oxidation ← Iron plating would corrode rapidly ← Copper alloys form stable, corrosion-resistant armor | **F9** Composition: 78% N₂, 18% O₂, 3% CO₂, 1% Ar, 0.5% H₂O.; **F21** Copper-based hemocyanin analogs for O₂ transport. | Oxidised Shell (`rastreadorceniza.oxidised_shell`) | Defence | Reduces elemental damage by 35% and reflects 10% fire damage back to attacker. | Heavy armor reduces stamina regeneration; slow recovery after combat. |
+| rastreadorceniza.c1 | Segmented, hydrostatically pressurized torso | High gravity compresses loose soil ← Muscles struggle against compaction under load ← Hydrostatic skeleton distributes force without heavy exoskeleton | **F4** Surface gravity of 1.85 g.; **F20** Aqueous cytoplasm with piezolyte-stabilized proteins and polyunsaturated lipids. | Pressure Crush (`rastreadorceniza.pressure_crush`) | Engage | It locks onto its target with a crushing grip and strikes with overwhelming force against heavily shielded or hidden enemies. | Slow movement speed; vulnerable to fast melee strikes that bypass armor. |
+| rastreadorceniza.c2 | Broad, shovel-like forelimbs with reinforced joints | Dense atmosphere increases ground friction ← Digging requires high torque against compaction ← Reinforced joints prevent fracture under 1.85g load | **F4** Surface gravity of 1.85 g.; **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Burrow (`rastreadorceniza.burrow`) | Basic | It digs beneath the earth to vanish from sight, moving swiftly through the tunnels before resurfacing nearby. | Cannot turn quickly while digging; rear is exposed when emerging. |
+| rastreadorceniza.c3 | Low-frequency vibrational sensory pits | Sluggish convection and fog reduce visual range ← Low-frequency sound travels farther in dense air ← Vibrations penetrate soil efficiently to locate prey | **F12** Sluggish convection, massive anticyclones, and persistent low-altitude fog.; **F10** Sound speed ~355 m/s with low-frequency attenuation reduced. | Ground Sense (`rastreadorceniza.ground_sense`) | Passive | It constantly monitors the ground, sensing vibrations to reveal hidden foes through solid terrain and staying alert to sudden attacks. | Easily distracted by seismic tremors or heavy footsteps; loses focus temporarily. |
+| rastreadorceniza.c4 | Copper-oxidized carapace plating | High humidity and atmospheric O2 accelerate oxidation ← Iron plating would corrode rapidly ← Copper alloys form stable, corrosion-resistant armor | **F9** Composition: 78% N₂, 18% O₂, 3% CO₂, 1% Ar, 0.5% H₂O.; **F21** Copper-based hemocyanin analogs for O₂ transport. | Oxidised Shell (`rastreadorceniza.oxidised_shell`) | Defence | Its weathered carapace absorbs harsh elemental forces and shimmers with heat, sending a portion of incoming fire back toward the attacker. | Heavy armor reduces stamina regeneration; slow recovery after combat. |
 
 ### rastreadorceniza.c1: Segmented, hydrostatically pressurized torso
 
 Trait ← High gravity compresses loose soil ← Muscles struggle against compaction under load ← Hydrostatic skeleton distributes force without heavy exoskeleton ← F4, F20
 
-- **Skill:** Pressure Crush (Engage): Grapples and deals 25% more damage to armored or burrowing foes.
+- **Skill:** Pressure Crush (Engage): It locks onto its target with a crushing grip and strikes with overwhelming force against heavily shielded or hidden enemies.
 - **Weakness:** Slow movement speed; vulnerable to fast melee strikes that bypass armor.
 - **Observe:**
   1. Body swells noticeably when flexing
@@ -48,7 +49,7 @@ Trait ← High gravity compresses loose soil ← Muscles struggle against compac
 
 Trait ← Dense atmosphere increases ground friction ← Digging requires high torque against compaction ← Reinforced joints prevent fracture under 1.85g load ← F4, F8
 
-- **Skill:** Burrow (Basic): Moves underground, granting cover and +15% movement speed for 2 turns.
+- **Skill:** Burrow (Basic): It digs beneath the earth to vanish from sight, moving swiftly through the tunnels before resurfacing nearby.
 - **Weakness:** Cannot turn quickly while digging; rear is exposed when emerging.
 - **Observe:**
   1. Limbs leave deep, perfectly smooth furrows
@@ -66,7 +67,7 @@ Trait ← Dense atmosphere increases ground friction ← Digging requires high t
 
 Trait ← Sluggish convection and fog reduce visual range ← Low-frequency sound travels farther in dense air ← Vibrations penetrate soil efficiently to locate prey ← F12, F10
 
-- **Skill:** Ground Sense (Passive): Reveals nearby enemies through terrain and reduces ambush penalty by 50%.
+- **Skill:** Ground Sense (Passive): It constantly monitors the ground, sensing vibrations to reveal hidden foes through solid terrain and staying alert to sudden attacks.
 - **Weakness:** Easily distracted by seismic tremors or heavy footsteps; loses focus temporarily.
 - **Observe:**
   1. Head tilts sharply toward distant rumble
@@ -84,7 +85,7 @@ Trait ← Sluggish convection and fog reduce visual range ← Low-frequency soun
 
 Trait ← High humidity and atmospheric O2 accelerate oxidation ← Iron plating would corrode rapidly ← Copper alloys form stable, corrosion-resistant armor ← F9, F21
 
-- **Skill:** Oxidised Shell (Defence): Reduces elemental damage by 35% and reflects 10% fire damage back to attacker.
+- **Skill:** Oxidised Shell (Defence): Its weathered carapace absorbs harsh elemental forces and shimmers with heat, sending a portion of incoming fire back toward the attacker.
 - **Weakness:** Heavy armor reduces stamina regeneration; slow recovery after combat.
 - **Observe:**
   1. Carapace gleams with teal patina in sunlight
@@ -103,7 +104,6 @@ Trait ← High humidity and atmospheric O2 accelerate oxidation ← Iron plating
 | With | Kind | Via | Note |
 |---|---|---|---|
 | soplilloalado | predation |  | Rarely falls prey to ash-plows during sudden updrafts; relies on altitude. |
-| Brisacoral | predation |  | Digging forces coral larvae ash; RastreadorCeniza consumes them when stranded. |
 | soplilloalado | cousin |  | (council kind 'competition') Both harvest ground-level organics; RastreadorCeniza dominates the soil layer. |
 
 ## Journal

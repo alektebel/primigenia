@@ -35,7 +35,7 @@
           "en": "Pressure Match"
         },
         "role": "Passive",
-        "effect": "Immunity to pressure damage and environmental hazards; -20% fall damage.",
+        "effect": "The creature's fluid-filled body naturally equalizes with its surroundings, allowing it to withstand crushing depths and harsh environments without strain. It lands from great heights with a soft, cushioned grace that avoids injury.",
         "numbers": {}
       },
       "weakness": "Rapid temperature changes cause thermal stress; heat sources attract predators.",
@@ -92,7 +92,7 @@
           "en": "Ore Sense"
         },
         "role": "Passive",
-        "effect": "Reveals hidden ores and camouflaged enemies within 15m; reveals weak points.",
+        "effect": "Its sensitive snout twitches and hums when near concealed treasures or disguised foes, causing their hidden forms to shimmer into view. The creature instinctively focuses on vulnerable spots, making them glow faintly for easy targeting.",
         "numbers": {}
       },
       "weakness": "Strong electromagnetic fields scramble detection; magnetic interference causes disorientation.",
@@ -153,7 +153,7 @@
           "en": "Sonar Screech"
         },
         "role": "Control",
-        "effect": "Stuns enemies for 3s and reveals their position; deals 12 sonic damage.",
+        "effect": "The creature emits a sharp, resonant click that echoes through the area, freezing nearby foes in place for a short while and exposing their hidden locations. The powerful sound waves ripple outward, visibly shaking the ground and leaving opponents disoriented and vulnerable.",
         "numbers": {}
       },
       "weakness": "Soft terrain absorbs sound; silent prey or sound-dampening fields evade detection.",
@@ -211,7 +211,7 @@
           "en": "Iron Shell"
         },
         "role": "Defence",
-        "effect": "Reduces all incoming damage by 35%; blocks critical hits.",
+        "effect": "Its layered, metal-reinforced carapace deflects incoming strikes with a heavy, clanging resonance, absorbing blows that would otherwise pierce through. The creature braces firmly against attacks, causing sharp impacts to shatter harmlessly against its unyielding armor.",
         "numbers": {}
       },
       "weakness": "Inlays fatigue after repeated impact; heavy attacks cause structural cracks.",
@@ -252,7 +252,7 @@
   ],
   "relations": [
     {
-      "with": "Eridian Crawler",
+      "with": "eridians",
       "kind": "cousin",
       "note": "(council kind 'Predator') Hidrazón may snatch juvenile Eridians near vent shafts; Eridians use sonic lures to deter them."
     }

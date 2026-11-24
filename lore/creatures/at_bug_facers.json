@@ -35,7 +35,7 @@
           "en": "Chitin Shear"
         },
         "role": "Engage",
-        "effect": "Deals bonus damage to armored/insectoid targets and reduces their defense by 15%",
+        "effect": "The creature's heavy jaw-plates and pincers crush through tough shells, leaving armored foes strongly weakened. Players can target heavily armored enemies to watch their defenses quickly give way.",
         "numbers": {}
       },
       "weakness": "Heavy facial armor limits peripheral vision and head-turn speed",
@@ -90,7 +90,7 @@
           "en": "Ambush Metabolism"
         },
         "role": "Basic",
-        "effect": "Unit remains hidden and silent while regenerating stamina; strikes with +20% damage on first turn",
+        "effect": "The creature basks quietly in the shade for a short while, conserving its energy before launching a sudden strike. Players must watch for signs of movement to interrupt its ambush before it strikes.",
         "numbers": {}
       },
       "weakness": "Rapid temperature drops force a mandatory resting state, halting actions",
@@ -147,7 +147,7 @@
           "en": "Carapace Breaker"
         },
         "role": "Engage",
-        "effect": "Ignore 50% of armor; damage structures",
+        "effect": "Its reinforced mandibles smash through thick armor and crumble nearby walls without hesitation. Players will need to keep their fortifications well-guarded or risk them being torn apart.",
         "numbers": {}
       },
       "weakness": "Face-plates reduce sensory flexibility; social misreading due to rigid jaw",

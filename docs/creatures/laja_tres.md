@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Basalt ridges, thermal vent fields, wind-scoured plates.
+- **Habitat:** Basalt ridges, thermal vent fields, wind-scoured plates. Also, in the council's sketch (no such creature in this world yet): Sulfur-Skimmer, competes for vent crustaceans and mineral crusts; Laja-Tres dominate high-wind ridges, Skimmers hold low-vent flats.
 - **Diet:** FeS₂, sulfur crystals, chemosynthetic biofilms, supercritical vent fluids.
 - **Active:** Thermally regulated; active above 150°C, stasis below 130°C.
 - **Predators:** none
@@ -21,8 +21,8 @@ Laminated silicate armor, lateral piezoelectric limbs, pincer claws, tucked vent
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| laja_tres.c1 | Broad, flattened carapace with sliding thermal joints. | Slides to reduce wind load and distribute shear stress ← Dense atmosphere exerts high shear stress on low profile ← 3.2 bar pressure and abrasive silica dust scour open terrain | **F5** Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).; **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints. | Shield Plate (`laja_tres.shield_plate`) | Defence | Carapace locks plates against wind and impact, reducing damage by 30% and passively venting excess heat. | Slow to deploy; if struck before locking, thermal joints fracture and lose mobility. |
-| laja_tres.c2 | Lateral gait generating bioelectricity via crystal compression. | Compresses specific lattice axes to harvest charge for movement ← High gravity demands efficient locomotion on brittle, glassy terrain ← Silicate crystal lattices exhibit strong piezoelectric response under stress | **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Crystal Stride (`laja_tres.crystal_stride`) | Control | Sideways movement regenerates stamina bar and stabilizes footing on loose scree; 20% speed boost when moving laterally. | Cannot move forward effectively; turning requires a 90° pivot that drains charge and leaves flank exposed. |
+| laja_tres.c1 | Broad, flattened carapace with sliding thermal joints. | Slides to reduce wind load and distribute shear stress ← Dense atmosphere exerts high shear stress on low profile ← 3.2 bar pressure and abrasive silica dust scour open terrain | **F5** Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).; **F7** Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints. | Shield Plate (`laja_tres.shield_plate`) | Defence | The creature locks its broad plates together to brace against strong winds and heavy impacts, steadily releasing built-up heat from its joints. | Slow to deploy; if struck before locking, thermal joints fracture and lose mobility. |
+| laja_tres.c2 | Lateral gait generating bioelectricity via crystal compression. | Compresses specific lattice axes to harvest charge for movement ← High gravity demands efficient locomotion on brittle, glassy terrain ← Silicate crystal lattices exhibit strong piezoelectric response under stress | **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Crystal Stride (`laja_tres.crystal_stride`) | Control | Shifting sideways across the ground allows the creature to quickly renew its vigor and maintain steady footing on loose gravel, while its lateral steps carry it forward with notable swiftness. | Cannot move forward effectively; turning requires a 90° pivot that drains charge and leaves flank exposed. |
 | laja_tres.c3 | Ventral reproductive lattice tucked beneath carapace. | Shielded from shear stress and abrasion during lateral acceleration ← Defect-patterned silicate lattices are brittle and fracture easily under torsion ← Lateral gait creates high differential forces across the body axis | **F12** Heritable information is stored via defect-patterned silicate lattices rather than nucleic acids.; **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints. | Lattice Offer (`laja_tres.lattice_offer`) | Social | Tucks ventrum to reveal defect-pattern glow; befriend increases stability and grants passive thermal shielding from ally. | Ventral is soft siloxane mesh; exposed to sulfuric acid mist or rapid thermal shock causes catastrophic lattice failure. |
 | laja_tres.c4 | Asymmetric crushing claws for prying supercritical vent seals. | Pries supercritical CO₂/SO₂ vents to access chemosynthetic redox gradients ← Dense crust requires mechanical advantage to access reduced volatiles ← Reduced volatiles are locked in high-pressure mineral traps requiring leverage | **F9** Geothermal vents spew reduced H₂S, FeS₂, and supercritical CO₂ pockets across basaltic-silicate crust.; **F15** Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints. | Vent Pry (`laja_tres.vent_pry`) | Poke | Pries open geological vents, releasing gas clouds for loot and exposing hidden mineral crusts; deals high damage to rock. | Claws can jam if silica cements them in place; vulnerable if locked in rock by player or rival. |
 
@@ -30,7 +30,7 @@ Laminated silicate armor, lateral piezoelectric limbs, pincer claws, tucked vent
 
 Trait ← Slides to reduce wind load and distribute shear stress ← Dense atmosphere exerts high shear stress on low profile ← 3.2 bar pressure and abrasive silica dust scour open terrain ← F5, F7, F15
 
-- **Skill:** Shield Plate (Defence): Carapace locks plates against wind and impact, reducing damage by 30% and passively venting excess heat.
+- **Skill:** Shield Plate (Defence): The creature locks its broad plates together to brace against strong winds and heavy impacts, steadily releasing built-up heat from its joints.
 - **Weakness:** Slow to deploy; if struck before locking, thermal joints fracture and lose mobility.
 - **Observe:**
   1. Plates ratchet open under pressure, sliding against each other
@@ -49,7 +49,7 @@ Trait ← Slides to reduce wind load and distribute shear stress ← Dense atmos
 
 Trait ← Compresses specific lattice axes to harvest charge for movement ← High gravity demands efficient locomotion on brittle, glassy terrain ← Silicate crystal lattices exhibit strong piezoelectric response under stress ← F3, F18
 
-- **Skill:** Crystal Stride (Control): Sideways movement regenerates stamina bar and stabilizes footing on loose scree; 20% speed boost when moving laterally.
+- **Skill:** Crystal Stride (Control): Shifting sideways across the ground allows the creature to quickly renew its vigor and maintain steady footing on loose gravel, while its lateral steps carry it forward with notable swiftness.
 - **Weakness:** Cannot move forward effectively; turning requires a 90° pivot that drains charge and leaves flank exposed.
 - **Observe:**
   1. Legs move in a peristaltic wave strictly sideways
@@ -104,11 +104,12 @@ Trait ← Pries supercritical CO₂/SO₂ vents to access chemosynthetic redox g
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Sulfur-Skimmer | cousin |  | (council kind 'Competition') Competes for vent crustaceans and mineral crusts; Laja-Tres dominate high-wind ridges, Skimmers hold low-vent flats. |
 | carmesa | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | salcaran | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | carapaz | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | lombardo | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| crang_lira | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| ferrisca | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -137,3 +138,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)

@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| zancuilla.c1 | Patagial wings fold flat; small mass yields low terminal velocity. | 1.6 bar air increases drag, reducing terminal velocity to ~25% of Earth norms. ← High drag generates lift at low speeds, making gliding energetically cheap. ← Dense air favors gliding hops over flapping flight for short distances in the meadow. | **F4** Dense air: 1.6 bar; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Glide (`zancuilla.glide`) | Control | Drifts silently to ambush prey or escape predators; covers 5 m with no sound. | Vulnerable during wind-up and landing; slow to regain altitude. |
-| zancuilla.c2 | Large ear-tufts detect low-frequency movements in thick fog. | Dawn fog obscures vision, blinding the creature at short range. ← Dense air ducts low-frequency sound along the ground over long distances. ← Insect movement and prey calls produce detectable low-frequency vibrations in grass. | **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Listen (`zancuilla.listen`) | Basic | Highlights hidden prey through grass and fog; reveals location at 3 m. | Sensitive to loud high-pitched whistles that disrupt focus. |
-| zancuilla.c3 | Curved claws and sticky tongue extract insects from grass and fur. | High oxygen allows costly metabolically active tongue muscles. ← Ectoparasites thrive on dense rondo herds in humid air. ← Insects hide deep in grass and fur; dexterity beats brute force. | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Clean (`zancuilla.clean`) | Social | Removes parasites from Rondo; +10 Befriend, heals ally. | Distracted by prey; stops cleaning if insects appear nearby. |
+| zancuilla.c1 | Patagial wings fold flat; small mass yields low terminal velocity. | 1.6 bar air increases drag, reducing terminal velocity to ~25% of Earth norms. ← High drag generates lift at low speeds, making gliding energetically cheap. ← Dense air favors gliding hops over flapping flight for short distances in the meadow. | **F4** Dense air: 1.6 bar; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Glide (`zancuilla.glide`) | Control | It folds its wings flat and drifts silently through the air to ambush nearby creatures or slip away unseen. | Vulnerable during wind-up and landing; slow to regain altitude. |
+| zancuilla.c2 | Large ear-tufts detect low-frequency movements in thick fog. | Dawn fog obscures vision, blinding the creature at short range. ← Dense air ducts low-frequency sound along the ground over long distances. ← Insect movement and prey calls produce detectable low-frequency vibrations in grass. | **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Listen (`zancuilla.listen`) | Basic | Its large ear-tufts twitch strongly to catch faint vibrations, allowing it to track and locate hidden prey moving through thick fog and tall grass. | Sensitive to loud high-pitched whistles that disrupt focus. |
+| zancuilla.c3 | Curved claws and sticky tongue extract insects from grass and fur. | High oxygen allows costly metabolically active tongue muscles. ← Ectoparasites thrive on dense rondo herds in humid air. ← Insects hide deep in grass and fur; dexterity beats brute force. | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Clean (`zancuilla.clean`) | Social | The creature carefully grooms its companion, using its claws and tongue to pick away hidden pests. This attentive care eases the target's discomfort and strongly strengthens their bond. | Distracted by prey; stops cleaning if insects appear nearby. |
 | zancuilla.c4 | Dorsal green plumage matches meadow grasses. | Meadow producers are green by shared ancestry from the seed. ← Predation pressure from garfio selects for crypsis in the meadow. ← Green is the dominant reflection of the meadow light environment. | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Camouflage (`zancuilla.camouflage`) | Passive | Reduces detection chance when standing still against meadow backgrounds. | High contrast against dark basalt or snow. |
 
 ### zancuilla.c1: Patagial wings fold flat; small mass yields low terminal velocity.
 
 Trait ← 1.6 bar air increases drag, reducing terminal velocity to ~25% of Earth norms. ← High drag generates lift at low speeds, making gliding energetically cheap. ← Dense air favors gliding hops over flapping flight for short distances in the meadow. ← F4, F16
 
-- **Skill:** Glide (Control): Drifts silently to ambush prey or escape predators; covers 5 m with no sound.
+- **Skill:** Glide (Control): It folds its wings flat and drifts silently through the air to ambush nearby creatures or slip away unseen.
 - **Weakness:** Vulnerable during wind-up and landing; slow to regain altitude.
 - **Observe:**
   1. Silent descent
@@ -50,7 +50,7 @@ Trait ← 1.6 bar air increases drag, reducing terminal velocity to ~25% of Eart
 
 Trait ← Dawn fog obscures vision, blinding the creature at short range. ← Dense air ducts low-frequency sound along the ground over long distances. ← Insect movement and prey calls produce detectable low-frequency vibrations in grass. ← F4, F8
 
-- **Skill:** Listen (Basic): Highlights hidden prey through grass and fog; reveals location at 3 m.
+- **Skill:** Listen (Basic): Its large ear-tufts twitch strongly to catch faint vibrations, allowing it to track and locate hidden prey moving through thick fog and tall grass.
 - **Weakness:** Sensitive to loud high-pitched whistles that disrupt focus.
 - **Observe:**
   1. Rotating ear-tufts
@@ -69,7 +69,7 @@ Trait ← Dawn fog obscures vision, blinding the creature at short range. ← De
 
 Trait ← High oxygen allows costly metabolically active tongue muscles. ← Ectoparasites thrive on dense rondo herds in humid air. ← Insects hide deep in grass and fur; dexterity beats brute force. ← F5
 
-- **Skill:** Clean (Social): Removes parasites from Rondo; +10 Befriend, heals ally.
+- **Skill:** Clean (Social): The creature carefully grooms its companion, using its claws and tongue to pick away hidden pests. This attentive care eases the target's discomfort and strongly strengthens their bond.
 - **Weakness:** Distracted by prey; stops cleaning if insects appear nearby.
 - **Observe:**
   1. Licking fur

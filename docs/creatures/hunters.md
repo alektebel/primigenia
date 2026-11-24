@@ -22,17 +22,17 @@ Sleek, torpedo-shaped predators with jagged hydrofoils and flank-mounted acousti
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| hunters.c1 | Compressed gas ram-jets for burst acceleration | 100 m/s wind shear renders passive gliding futile ← Low H₂ density starves conventional hydrofoils ← Metabolic CO₂ is rapidly compressed and vented ← Delivers short-duration kinetic strikes | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Ram Strike (`hunters.ram_strike`) | Engage | Deals 22 damage in a 50 m radius with a 0.5 s wind-up | Leaves a brief jet-wake vortex that alerts prey and breaks stealth |
-| hunters.c2 | Infrasound receptor arrays along flanks | Aerosol haze reduces visual range to tens of meters ← H₂ atmosphere transmits low-frequency sound over kilometers ← Membrane flaps detect pressure variations below 100 Hz ← Tracks floating prey by their buoyancy modulation | **F8** Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.; **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments. | Depth Sense (`hunters.depth_sense`) | Basic | Reveals stealthed floaters within 80 m and grants 10% accuracy | Blind to high-frequency alarm whistles used by some prey |
-| hunters.c3 | Electrostatic charge harvesting membranes | Zonal jets mix water/ammonia clouds with lightning ← Atmospheric ionization spikes during convective updrafts ← Conductive surface filaments siphon stray electrons ← Powers neural synapses for high-speed strikes | **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F12** Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium. | Ion Surge (`hunters.ion_surge`) | Poke | Converts 15% environmental lightning into a 25% damage next attack | Overcharges and stuns if struck by opposing polarity storms |
-| hunters.c4 | Shear-wind riding tactics for energy conservation | Conserve energy using wind gradients ← Zonal winds vary by altitude band ← Jet streams act as conveyor belts ← Allows prolonged pursuit without metabolic exhaustion | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Wind Dash (`hunters.wind_dash`) | Control | Move 12m for 2 stamina, gain 1 evasion | Stuck in laminar flow pockets |
-| hunters.c5 | Ritualized duel posture for conflict resolution | Minimize injury cost in expensive environment ← High drag limits rapid combat ← Low visibility favors non-lethal resolution ← Selects for honor-bound, signal-heavy confrontations | **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Oath Challenge (`hunters.oath_challenge`) | Social | Force target to dodge, reduce damage by 4 | Cannot use if oath broken |
+| hunters.c1 | Compressed gas ram-jets for burst acceleration | 100 m/s wind shear renders passive gliding futile ← Low H₂ density starves conventional hydrofoils ← Metabolic CO₂ is rapidly compressed and vented ← Delivers short-duration kinetic strikes | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Ram Strike (`hunters.ram_strike`) | Engage | The creature winds up for a short while before launching forward with a burst of compressed gas, striking nearby targets strongly. | Leaves a brief jet-wake vortex that alerts prey and breaks stealth |
+| hunters.c2 | Infrasound receptor arrays along flanks | Aerosol haze reduces visual range to tens of meters ← H₂ atmosphere transmits low-frequency sound over kilometers ← Membrane flaps detect pressure variations below 100 Hz ← Tracks floating prey by their buoyancy modulation | **F8** Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.; **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments. | Depth Sense (`hunters.depth_sense`) | Basic | The creature's flank sensors pulse to reveal hidden enemies nearby, allowing it to track their movements with strong precision. | Blind to high-frequency alarm whistles used by some prey |
+| hunters.c3 | Electrostatic charge harvesting membranes | Zonal jets mix water/ammonia clouds with lightning ← Atmospheric ionization spikes during convective updrafts ← Conductive surface filaments siphon stray electrons ← Powers neural synapses for high-speed strikes | **F5** Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.; **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F12** Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium. | Ion Surge (`hunters.ion_surge`) | Poke | The creature's membranes absorb ambient electricity, causing its next strike to crackle with strongly amplified force. | Overcharges and stuns if struck by opposing polarity storms |
+| hunters.c4 | Shear-wind riding tactics for energy conservation | Conserve energy using wind gradients ← Zonal winds vary by altitude band ← Jet streams act as conveyor belts ← Allows prolonged pursuit without metabolic exhaustion | **F7** Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Wind Dash (`hunters.wind_dash`) | Control | The creature rides nearby wind currents to dart forward swiftly, leaving a swirling trail that makes it strongly difficult to hit. | Stuck in laminar flow pockets |
+| hunters.c5 | Ritualized duel posture for conflict resolution | Minimize injury cost in expensive environment ← High drag limits rapid combat ← Low visibility favors non-lethal resolution ← Selects for honor-bound, signal-heavy confrontations | **F19** High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments.; **F17** Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters. | Oath Challenge (`hunters.oath_challenge`) | Social | The creature assumes a rigid duel stance, strongly compelling nearby foes to step aside and miss their strikes, while any blows that still connect are met with a braced guard that noticeably lessens their impact. | Cannot use if oath broken |
 
 ### hunters.c1: Compressed gas ram-jets for burst acceleration
 
 Trait ← 100 m/s wind shear renders passive gliding futile ← Low H₂ density starves conventional hydrofoils ← Metabolic CO₂ is rapidly compressed and vented ← Delivers short-duration kinetic strikes ← F7, F17
 
-- **Skill:** Ram Strike (Engage): Deals 22 damage in a 50 m radius with a 0.5 s wind-up
+- **Skill:** Ram Strike (Engage): The creature winds up for a short while before launching forward with a burst of compressed gas, striking nearby targets strongly.
 - **Weakness:** Leaves a brief jet-wake vortex that alerts prey and breaks stealth
 - **Observe:**
   1. Expanding gas vents
@@ -47,7 +47,7 @@ Trait ← 100 m/s wind shear renders passive gliding futile ← Low H₂ density
 
 Trait ← Aerosol haze reduces visual range to tens of meters ← H₂ atmosphere transmits low-frequency sound over kilometers ← Membrane flaps detect pressure variations below 100 Hz ← Tracks floating prey by their buoyancy modulation ← F8, F19
 
-- **Skill:** Depth Sense (Basic): Reveals stealthed floaters within 80 m and grants 10% accuracy
+- **Skill:** Depth Sense (Basic): The creature's flank sensors pulse to reveal hidden enemies nearby, allowing it to track their movements with strong precision.
 - **Weakness:** Blind to high-frequency alarm whistles used by some prey
 - **Observe:**
   1. Wavy membrane ridges
@@ -62,7 +62,7 @@ Trait ← Aerosol haze reduces visual range to tens of meters ← H₂ atmospher
 
 Trait ← Zonal jets mix water/ammonia clouds with lightning ← Atmospheric ionization spikes during convective updrafts ← Conductive surface filaments siphon stray electrons ← Powers neural synapses for high-speed strikes ← F5, F7, F12
 
-- **Skill:** Ion Surge (Poke): Converts 15% environmental lightning into a 25% damage next attack
+- **Skill:** Ion Surge (Poke): The creature's membranes absorb ambient electricity, causing its next strike to crackle with strongly amplified force.
 - **Weakness:** Overcharges and stuns if struck by opposing polarity storms
 - **Observe:**
   1. Static crackling aura
@@ -78,7 +78,7 @@ Trait ← Zonal jets mix water/ammonia clouds with lightning ← Atmospheric ion
 
 Trait ← Conserve energy using wind gradients ← Zonal winds vary by altitude band ← Jet streams act as conveyor belts ← Allows prolonged pursuit without metabolic exhaustion ← F7, F17
 
-- **Skill:** Wind Dash (Control): Move 12m for 2 stamina, gain 1 evasion
+- **Skill:** Wind Dash (Control): The creature rides nearby wind currents to dart forward swiftly, leaving a swirling trail that makes it strongly difficult to hit.
 - **Weakness:** Stuck in laminar flow pockets
 - **Observe:**
   1. Gleaming hydrofoils
@@ -93,7 +93,7 @@ Trait ← Conserve energy using wind gradients ← Zonal winds vary by altitude 
 
 Trait ← Minimize injury cost in expensive environment ← High drag limits rapid combat ← Low visibility favors non-lethal resolution ← Selects for honor-bound, signal-heavy confrontations ← F19, F17
 
-- **Skill:** Oath Challenge (Social): Force target to dodge, reduce damage by 4
+- **Skill:** Oath Challenge (Social): The creature assumes a rigid duel stance, strongly compelling nearby foes to step aside and miss their strikes, while any blows that still connect are met with a braced guard that noticeably lessens their impact.
 - **Weakness:** Cannot use if oath broken
 - **Observe:**
   1. Symmetrical stance

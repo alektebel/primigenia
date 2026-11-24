@@ -35,7 +35,7 @@
           "en": "Aqueous Adapt"
         },
         "role": "Engage",
-        "effect": "breathe underwater for 10 turns, -20% movement penalty",
+        "effect": "The creature opens its blowhole to breathe underwater for a short while, and you see it move with a slight drag through the water.",
         "numbers": {}
       },
       "weakness": "Valve seals fail in high-sediment water, causing choking",
@@ -94,7 +94,7 @@
           "en": "Glow-Code"
         },
         "role": "Basic",
-        "effect": "transmit tactical commands in darkness, 15m radius",
+        "effect": "The creature pulses with bioluminescent light to send signals, and you can see the glowing patterns guide nearby allies in the dark.",
         "numbers": {}
       },
       "weakness": "Light pollution in bright zones washes out signals; causes disorientation",

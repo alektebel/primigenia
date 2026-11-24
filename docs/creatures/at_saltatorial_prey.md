@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_saltatorial_prey.c1 | Elongated, digitigrade saltatorial hindlimbs with fused metatarsals | Open prairie offers zero cover; survival demands explosive acceleration ← Reduced gravity lowers the energetic cost of high-striding gallops ← Masseteric muscle tendons store kinetic energy for ballistic leaps ← Predator pack coordination forces vertical evasion over lateral flight | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F2** Moderate axial tilt enforces cyclical resource pulses and seasonal droughts. | Elastic Sprint (`at_saltatorial_prey.elastic_sprint`) | Basic | Increases movement range by 50% on open ground for 1 turn. | Cannot turn quickly; momentum carries them straight, making them vulnerable to flank attacks on slopes. |
-| at_saltatorial_prey.c2 | Smaller cranial volume and fused manual digits | The 'spark' of mind is energetically costly and irrelevant for fleeing herbivores ← Qu-engineered synthetic proteins were pruned in fertile grasslands ← Unused neural tissue generates excess heat and drains caloric intake ← Caloric surplus diverted to digestive symbionts over cortical expansion | **F17** Neural retention carries severe thermal and energetic penalties when unutilized.; **F18** Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams. | Herd Instinct (`at_saltatorial_prey.herd_instinct`) | Passive | Herd movement reduces predator aggro range by 10% for adjacent allies. | Cannot be taught tools or tricks; confused by non-patterned traps and isolated from the herd. |
+| at_saltatorial_prey.c1 | Elongated, digitigrade saltatorial hindlimbs with fused metatarsals | Open prairie offers zero cover; survival demands explosive acceleration ← Reduced gravity lowers the energetic cost of high-striding gallops ← Masseteric muscle tendons store kinetic energy for ballistic leaps ← Predator pack coordination forces vertical evasion over lateral flight | **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F2** Moderate axial tilt enforces cyclical resource pulses and seasonal droughts. | Elastic Sprint (`at_saltatorial_prey.elastic_sprint`) | Basic | The creature sprints across open ground, covering a greatly extended distance in a short while. | Cannot turn quickly; momentum carries them straight, making them vulnerable to flank attacks on slopes. |
+| at_saltatorial_prey.c2 | Smaller cranial volume and fused manual digits | The 'spark' of mind is energetically costly and irrelevant for fleeing herbivores ← Qu-engineered synthetic proteins were pruned in fertile grasslands ← Unused neural tissue generates excess heat and drains caloric intake ← Caloric surplus diverted to digestive symbionts over cortical expansion | **F17** Neural retention carries severe thermal and energetic penalties when unutilized.; **F18** Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams. | Herd Instinct (`at_saltatorial_prey.herd_instinct`) | Passive | Moving as a tight group, the creature and nearby allies strongly avoid drawing predator attention. | Cannot be taught tools or tricks; confused by non-patterned traps and isolated from the herd. |
 
 ### at_saltatorial_prey.c1: Elongated, digitigrade saltatorial hindlimbs with fused metatarsals
 
 Trait ← Open prairie offers zero cover; survival demands explosive acceleration ← Reduced gravity lowers the energetic cost of high-striding gallops ← Masseteric muscle tendons store kinetic energy for ballistic leaps ← Predator pack coordination forces vertical evasion over lateral flight ← F5, F2
 
-- **Skill:** Elastic Sprint (Basic): Increases movement range by 50% on open ground for 1 turn.
+- **Skill:** Elastic Sprint (Basic): The creature sprints across open ground, covering a greatly extended distance in a short while.
 - **Weakness:** Cannot turn quickly; momentum carries them straight, making them vulnerable to flank attacks on slopes.
 - **Observe:**
   1. Legs coil like springs before a burst leap
@@ -45,7 +45,7 @@ Trait ← Open prairie offers zero cover; survival demands explosive acceleratio
 
 Trait ← The 'spark' of mind is energetically costly and irrelevant for fleeing herbivores ← Qu-engineered synthetic proteins were pruned in fertile grasslands ← Unused neural tissue generates excess heat and drains caloric intake ← Caloric surplus diverted to digestive symbionts over cortical expansion ← F17, F18
 
-- **Skill:** Herd Instinct (Passive): Herd movement reduces predator aggro range by 10% for adjacent allies.
+- **Skill:** Herd Instinct (Passive): Moving as a tight group, the creature and nearby allies strongly avoid drawing predator attention.
 - **Weakness:** Cannot be taught tools or tricks; confused by non-patterned traps and isolated from the herd.
 - **Observe:**
   1. Eyes lack focused intent; gaze drifts randomly across the horizon

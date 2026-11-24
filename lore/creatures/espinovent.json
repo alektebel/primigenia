@@ -35,7 +35,7 @@
           "en": "Silica Armor"
         },
         "role": "Defence",
-        "effect": "Gains +50% armor for 8s when near heat sources; blocks elemental damage.",
+        "effect": "When drawn near warmth, the creature hardens its crystalline shell and deflects elemental attacks for a short while.",
         "numbers": {}
       },
       "weakness": "Thermal shock cracks shell; sudden cooling causes explosive fragmentation.",
@@ -96,7 +96,7 @@
           "en": "Spore Burst"
         },
         "role": "Basic",
-        "effect": "AoE burst deals 15 damage and applies 'Metallic Dust' (reduces enemy armor by 20% for 5s).",
+        "effect": "The creature erupts a cloud of shimmering spores that weakens the defenses of nearby foes for a time.",
         "numbers": {}
       },
       "weakness": "Wind shear disperses spores; silence/pressure dampening prevents trigger.",
@@ -153,7 +153,7 @@
           "en": "Vent Fuel"
         },
         "role": "Basic",
-        "effect": "Heals 20 HP and gains +3 damage for 4s when attacking near heat sources.",
+        "effect": "While feeding near warmth, the creature rapidly restores its vitality and strikes with renewed vigor.",
         "numbers": {}
       },
       "weakness": "Oxygen exposure is toxic; aerobic weapons cause rapid decay.",
@@ -210,7 +210,7 @@
           "en": "Seismic Wake"
         },
         "role": "Signature",
-        "effect": "Summons a wave that stuns all enemies in 10m; Espinovent gains full stats and regeneration for 6s.",
+        "effect": "The creature triggers a ground tremor that temporarily immobilizes nearby foes while it recovers and grows stronger.",
         "numbers": {}
       },
       "weakness": "Requires ground contact; floating/magnetic levitation negates trigger.",
@@ -251,7 +251,7 @@
   ],
   "relations": [
     {
-      "with": "Eridian Crawler",
+      "with": "eridians",
       "kind": "cousin",
       "note": "(council kind 'Resource Competition') Espinovent blooms clog vents; Eridians must blast them away to access metal-rich ores."
     }

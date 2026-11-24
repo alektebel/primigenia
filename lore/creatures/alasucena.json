@@ -39,7 +39,7 @@
           "en": "Slow hover"
         },
         "role": "Control",
-        "effect": "Hovers motionless for 4s; +15% befriend success with grazing herds",
+        "effect": "The creature hovers motionless for a short while. Grazing herds nearby make it strongly receptive to befriending.",
         "numbers": {}
       },
       "weakness": "Clumsy on ground; slow acceleration makes takeoff predictable",
@@ -96,7 +96,7 @@
           "en": "Nectar feed"
         },
         "role": "Basic",
-        "effect": "Restores 12 stamina; leaves pollen on flora, unlocking pollination events",
+        "effect": "The creature extends its brush-tipped proboscis to sip nectar, renewing its energy for a short while. It leaves a dusting of pollen on nearby flora, which naturally encourages pollination.",
         "numbers": {}
       },
       "weakness": "Proboscis is fragile; cannot process hard food or defend",
@@ -154,7 +154,7 @@
           "en": "Twilight focus"
         },
         "role": "Passive",
-        "effect": "+25% befriend success in fog/dusk; reveals hidden prey in low light",
+        "effect": "During fog or dusk, the creature becomes strongly open to befriending. Its keen eyesight easily reveals hidden prey in dim light.",
         "numbers": {}
       },
       "weakness": "Pupils constrict painfully in bright noon sun; blind to high-contrast flashes",
@@ -211,7 +211,7 @@
           "en": "Wing flick"
         },
         "role": "Social",
-        "effect": "Reveals nearby flock location; +10 befriend; attracts mates",
+        "effect": "The creature performs a synchronized wing flick that signals its position to nearby companions. This display strongly encourages affection and draws potential mates from the surrounding area.",
         "numbers": {}
       },
       "weakness": "Flock stays within 10m; player can isolate with sudden loud noise",

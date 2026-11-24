@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| pelotero.c1 | Six jointed legs and low, wide carapace | Stable footing required in tall grass and uneven litter ← Low center of gravity prevents lateral tumbling ← Dense air amplifies wind force per meter per second on exposed meadows | **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Wind-Anchor (`pelotero.wind_anchor`) | Defence | Hitches to grass stems, +40% survival in gales during the 26 h day/night cycle | Stationary for 3 seconds, vulnerable to bite attacks |
-| pelotero.c2 | Acidic gut secretions and symbiotic rot-bacteria | Breaks down tough lignin and cellulose in dried grass and dung ← Symbiotic microbes accelerate aerobic decay of organic matter ← High partial pressure of oxygen fuels bacterial metabolism and spore turnover | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Rapid Breakdown (`pelotero.rapid_breakdown`) | Basic | Consumes detritus, converts to +15% local plant growth over 2 days | Excretes nutrient-rich pellets that attract scavengers and mid-predators |
-| pelotero.c3 | Fine tracheal network and spiracle valves | Extracts oxygen efficiently at low mass without massive body cavities ← High pO₂ allows passive tracheal diffusion across short distances ← Reduced spiracle size minimizes water loss in clear midday sun | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | O2-Burst (`pelotero.o2_burst`) | Engage | Sprints 8m in 1.5s using stored tracheal pressure, +20% chase speed | Valves seal in fog; loses burst capability and moves sluggishly in dense air/moisture |
-| pelotero.c4 | Dark melanin-rich cuticle with UV-absorbing pigments | Shields internal tissues from seasonal UV pulses and photodamage ← Dense air scatters blue light but concentrates ground-level UV in dry seasons ← East-side meadows lack cloud cover to filter radiation during summer clearings | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring | Sun-Plated (`pelotero.sun_plated`) | Defence | -30% radiation damage during midday, +10% camouflage on dark soil | Absorbs heat; overheats during peak sun, forces midday shelter-seeking |
+| pelotero.c1 | Six jointed legs and low, wide carapace | Stable footing required in tall grass and uneven litter ← Low center of gravity prevents lateral tumbling ← Dense air amplifies wind force per meter per second on exposed meadows | **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Wind-Anchor (`pelotero.wind_anchor`) | Defence | It clings tightly to grass stems and remains firmly anchored during strong winds. | Stationary for 3 seconds, vulnerable to bite attacks |
+| pelotero.c2 | Acidic gut secretions and symbiotic rot-bacteria | Breaks down tough lignin and cellulose in dried grass and dung ← Symbiotic microbes accelerate aerobic decay of organic matter ← High partial pressure of oxygen fuels bacterial metabolism and spore turnover | **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) | Rapid Breakdown (`pelotero.rapid_breakdown`) | Basic | It devours decaying matter and leaves behind rich nutrients that strongly encourage nearby plants to flourish. | Excretes nutrient-rich pellets that attract scavengers and mid-predators |
+| pelotero.c3 | Fine tracheal network and spiracle valves | Extracts oxygen efficiently at low mass without massive body cavities ← High pO₂ allows passive tracheal diffusion across short distances ← Reduced spiracle size minimizes water loss in clear midday sun | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | O2-Burst (`pelotero.o2_burst`) | Engage | It releases stored air pressure to launch into a sudden, rapid dash that swiftly pursues fleeing prey. | Valves seal in fog; loses burst capability and moves sluggishly in dense air/moisture |
+| pelotero.c4 | Dark melanin-rich cuticle with UV-absorbing pigments | Shields internal tissues from seasonal UV pulses and photodamage ← Dense air scatters blue light but concentrates ground-level UV in dry seasons ← East-side meadows lack cloud cover to filter radiation during summer clearings | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring | Sun-Plated (`pelotero.sun_plated`) | Defence | Its dark, sun-resistant shell allows it to blend seamlessly into dark soil while withstanding harsh sunlight. | Absorbs heat; overheats during peak sun, forces midday shelter-seeking |
 
 ### pelotero.c1: Six jointed legs and low, wide carapace
 
 Trait ← Stable footing required in tall grass and uneven litter ← Low center of gravity prevents lateral tumbling ← Dense air amplifies wind force per meter per second on exposed meadows ← F4, F19
 
-- **Skill:** Wind-Anchor (Defence): Hitches to grass stems, +40% survival in gales during the 26 h day/night cycle
+- **Skill:** Wind-Anchor (Defence): It clings tightly to grass stems and remains firmly anchored during strong winds.
 - **Weakness:** Stationary for 3 seconds, vulnerable to bite attacks
 - **Observe:**
   1. Watch it lock its tarsi into grass blades when the breeze picks up.
@@ -49,7 +49,7 @@ Trait ← Stable footing required in tall grass and uneven litter ← Low center
 
 Trait ← Breaks down tough lignin and cellulose in dried grass and dung ← Symbiotic microbes accelerate aerobic decay of organic matter ← High partial pressure of oxygen fuels bacterial metabolism and spore turnover ← F27
 
-- **Skill:** Rapid Breakdown (Basic): Consumes detritus, converts to +15% local plant growth over 2 days
+- **Skill:** Rapid Breakdown (Basic): It devours decaying matter and leaves behind rich nutrients that strongly encourage nearby plants to flourish.
 - **Weakness:** Excretes nutrient-rich pellets that attract scavengers and mid-predators
 - **Observe:**
   1. Notice the glistening secretion that softens dried stems on contact.
@@ -67,7 +67,7 @@ Trait ← Breaks down tough lignin and cellulose in dried grass and dung ← Sym
 
 Trait ← Extracts oxygen efficiently at low mass without massive body cavities ← High pO₂ allows passive tracheal diffusion across short distances ← Reduced spiracle size minimizes water loss in clear midday sun ← F5
 
-- **Skill:** O2-Burst (Engage): Sprints 8m in 1.5s using stored tracheal pressure, +20% chase speed
+- **Skill:** O2-Burst (Engage): It releases stored air pressure to launch into a sudden, rapid dash that swiftly pursues fleeing prey.
 - **Weakness:** Valves seal in fog; loses burst capability and moves sluggishly in dense air/moisture
 - **Observe:**
   1. Spot the tiny side openings that open and close rhythmically.
@@ -86,7 +86,7 @@ Trait ← Extracts oxygen efficiently at low mass without massive body cavities 
 
 Trait ← Shields internal tissues from seasonal UV pulses and photodamage ← Dense air scatters blue light but concentrates ground-level UV in dry seasons ← East-side meadows lack cloud cover to filter radiation during summer clearings ← F1, F14, F18
 
-- **Skill:** Sun-Plated (Defence): -30% radiation damage during midday, +10% camouflage on dark soil
+- **Skill:** Sun-Plated (Defence): Its dark, sun-resistant shell allows it to blend seamlessly into dark soil while withstanding harsh sunlight.
 - **Weakness:** Absorbs heat; overheats during peak sun, forces midday shelter-seeking
 - **Observe:**
   1. See its glossy black back shimmer and reflect harsh light.

@@ -42,7 +42,7 @@
           "en": "Glide"
         },
         "role": "Control",
-        "effect": "Drifts silently to ambush prey or escape predators; covers 5 m with no sound.",
+        "effect": "It folds its wings flat and drifts silently through the air to ambush nearby creatures or slip away unseen.",
         "numbers": {}
       },
       "weakness": "Vulnerable during wind-up and landing; slow to regain altitude.",
@@ -105,7 +105,7 @@
           "en": "Listen"
         },
         "role": "Basic",
-        "effect": "Highlights hidden prey through grass and fog; reveals location at 3 m.",
+        "effect": "Its large ear-tufts twitch strongly to catch faint vibrations, allowing it to track and locate hidden prey moving through thick fog and tall grass.",
         "numbers": {}
       },
       "weakness": "Sensitive to loud high-pitched whistles that disrupt focus.",
@@ -164,7 +164,7 @@
           "en": "Clean"
         },
         "role": "Social",
-        "effect": "Removes parasites from Rondo; +10 Befriend, heals ally.",
+        "effect": "The creature carefully grooms its companion, using its claws and tongue to pick away hidden pests. This attentive care eases the target's discomfort and strongly strengthens their bond.",
         "numbers": {}
       },
       "weakness": "Distracted by prey; stops cleaning if insects appear nearby.",

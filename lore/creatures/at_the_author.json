@@ -44,7 +44,7 @@
           "en": "Strata Spectrometry"
         },
         "role": "Control",
-        "effect": "Decodes degraded fossil chemistry, revealing 2 hidden environmental traits of a ruined biome.",
+        "effect": "The creature scans ancient fossils with its photoreceptive forelimb patches, uncovering hidden environmental secrets of the ruined landscape.",
         "numbers": {}
       },
       "weakness": "Requires prolonged exposure to specific stellar wavelengths; artificial light sources yield false positives.",
@@ -110,7 +110,7 @@
           "en": "Deep Archive"
         },
         "role": "Defence",
-        "effect": "Safely retrieves intact specimens from unstable ruins, +40% resistance to collapse damage.",
+        "effect": "The creature carefully gathers specimens from crumbling ruins. It shields itself from falling debris and moves steadily through the unstable terrain.",
         "numbers": {}
       },
       "weakness": "Information retrieval is slow; Author cannot react quickly to sudden threats while accessing data.",

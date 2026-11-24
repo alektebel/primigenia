@@ -21,16 +21,16 @@ Fractal lattice of porous silicates; pores open with thermal expansion
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sifon_hielo.c1 | Fractal porous lattice | Maximizes surface area ← Diffusion is slow ← Cold solvent viscosity | **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.; **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes. | Frost Bloom (`sifon_hielo.frost_bloom`) | Basic | Opens pores; filters air, gains nutrients, and creates a zone of lowered density that slows nearby enemies by 1 movement. | Cannot move; exposed during bloom. |
+| sifon_hielo.c1 | Fractal porous lattice | Maximizes surface area ← Diffusion is slow ← Cold solvent viscosity | **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.; **F15** Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes. | Frost Bloom (`sifon_hielo.frost_bloom`) | Basic | The creature opens its pores to filter the air and absorb nutrients, releasing a shimmering zone of thin air that strongly slows nearby enemies. | Cannot move; exposed during bloom. |
 | sifon_hielo.c2 | Pores open on warming | Thermal expansion of siloxane bonds ← Solvent viscosity drops ← Temp threshold 110–120 K | **F14** Biochemical backbone consists of siloxane (Si–O–Si) and organosilicon (Si–C) chains.; **F17** Universal poisons are H₂O (hydrolyzes silanes), O₂ (oxidizes Si-hydrides instantly), and T > 130 K (polymer softening). | Thermal Resonance (`sifon_hielo.thermal_resonance`) | Engage | Absorbs heat from a target; target takes thermal damage and Sifon-Hielo heals. | Vulnerable to freezing attacks that close pores. |
-| sifon_hielo.c3 | Anchored by root-crystals | Stability against wind ← Low gravity allows height ← 0.86 g surface gravity | **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass. | Deep Root (`sifon_hielo.deep_root`) | Defence | Immobile but gains +3 Defence; immune to knockback. | Cannot relocate if threatened. |
-| sifon_hielo.c4 | Resonates with low hum | Detects pulse arrival ← Sound travels far ← Dense atmosphere | **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.; **F3** Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg. | Pulse Anticipation (`sifon_hielo.pulse_anticipation`) | Social | Shares pulse warning with allies; allies gain +1 initiative on pulse turn. | Attracts attention from thermal predators. |
+| sifon_hielo.c3 | Anchored by root-crystals | Stability against wind ← Low gravity allows height ← 0.86 g surface gravity | **F4** Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass. | Deep Root (`sifon_hielo.deep_root`) | Defence | The creature anchors itself firmly to the ground with crystalline roots, becoming completely stationary and firmly resisting any force that tries to move it. | Cannot relocate if threatened. |
+| sifon_hielo.c4 | Resonates with low hum | Detects pulse arrival ← Sound travels far ← Dense atmosphere | **F9** Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.; **F3** Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg. | Pulse Anticipation (`sifon_hielo.pulse_anticipation`) | Social | The creature emits a resonant warning hum that alerts nearby allies, allowing them to react swiftly to incoming threats. | Attracts attention from thermal predators. |
 
 ### sifon_hielo.c1: Fractal porous lattice
 
 Trait ← Maximizes surface area ← Diffusion is slow ← Cold solvent viscosity ← F9, F15
 
-- **Skill:** Frost Bloom (Basic): Opens pores; filters air, gains nutrients, and creates a zone of lowered density that slows nearby enemies by 1 movement.
+- **Skill:** Frost Bloom (Basic): The creature opens its pores to filter the air and absorb nutrients, releasing a shimmering zone of thin air that strongly slows nearby enemies.
 - **Weakness:** Cannot move; exposed during bloom.
 - **Observe:**
   1. Lattice structure
@@ -67,7 +67,7 @@ Trait ← Thermal expansion of siloxane bonds ← Solvent viscosity drops ← Te
 
 Trait ← Stability against wind ← Low gravity allows height ← 0.86 g surface gravity ← F4
 
-- **Skill:** Deep Root (Defence): Immobile but gains +3 Defence; immune to knockback.
+- **Skill:** Deep Root (Defence): The creature anchors itself firmly to the ground with crystalline roots, becoming completely stationary and firmly resisting any force that tries to move it.
 - **Weakness:** Cannot relocate if threatened.
 - **Observe:**
   1. Root-crystals penetrate ice
@@ -85,7 +85,7 @@ Trait ← Stability against wind ← Low gravity allows height ← 0.86 g surfac
 
 Trait ← Detects pulse arrival ← Sound travels far ← Dense atmosphere ← F9, F3
 
-- **Skill:** Pulse Anticipation (Social): Shares pulse warning with allies; allies gain +1 initiative on pulse turn.
+- **Skill:** Pulse Anticipation (Social): The creature emits a resonant warning hum that alerts nearby allies, allowing them to react swiftly to incoming threats.
 - **Weakness:** Attracts attention from thermal predators.
 - **Observe:**
   1. Lattice vibrates at low frequency

@@ -35,7 +35,7 @@
           "en": "Sweet Manna Lure"
         },
         "role": "Social",
-        "effect": "Draws Hedonists within 20m using nutrient-rich bacterial slurry",
+        "effect": "The creature releases a rich bacterial scent that strongly attracts nearby Hedonists to gather around it.",
         "numbers": {}
       },
       "weakness": "Metabolic lethargy; cannot initiate rapid escape without decades of gestational preparation",
@@ -101,7 +101,7 @@
           "en": "Pleasure Drift"
         },
         "role": "Passive",
-        "effect": "Reduces stress by 15% per turn but delays action readiness by 1 turn",
+        "effect": "The creature settles into a deeply relaxed state, appearing calm and content, but moves and reacts with noticeable slowness.",
         "numbers": {}
       },
       "weakness": "Falls ill when exposed to bitter or toxic flora",

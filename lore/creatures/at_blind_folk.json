@@ -34,7 +34,7 @@
           "en": "Cave Echo"
         },
         "role": "Poke",
-        "effect": "Reveals hidden enemies within 30m and deals 2 psychic damage to disoriented foes",
+        "effect": "The creature emits sharp echoes that uncover hidden foes nearby and mentally disorient them, leaving them vulnerable to follow-up strikes.",
         "numbers": {}
       },
       "weakness": "Blind to high-frequency whistles and sudden visual cues",
@@ -91,7 +91,7 @@
           "en": "Banshee Wail"
         },
         "role": "Engage",
-        "effect": "Stuns sonic predators within 25m for 2 turns",
+        "effect": "The infant unleashes a piercing scream that freezes nearby sonic predators in place, halting their movements for a short while.",
         "numbers": {}
       },
       "weakness": "Sudden silence causes panic and loss of orientation",

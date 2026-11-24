@@ -36,7 +36,7 @@
           "en": "Spectral Shroud"
         },
         "role": "Defence",
-        "effect": "Player gains ability to cloak in UV band; 90% invisibility to UV-sensitive sensors.",
+        "effect": "The creature's mirrored carapace reflects ultraviolet light, allowing you to step into its glow and become nearly invisible to those who track it.",
         "numbers": {}
       },
       "weakness": "Reflection mechanism creates polarization artifact; visible to polarization hunters.",
@@ -94,7 +94,7 @@
           "en": "Polari-Glyph"
         },
         "role": "Poke",
-        "effect": "Player can deploy a polarized foil that mimics Salaris artifact; attracts Salaris for 60s.",
+        "effect": "You can scatter a shimmering polarized foil that perfectly mimics the creature's artifact, and it will draw the creature strongly toward the spot for a short while.",
         "numbers": {}
       },
       "weakness": "Polarization hunters can track Salaris even when UV-camouflaged.",
@@ -151,7 +151,7 @@
           "en": "UV Resilience"
         },
         "role": "Passive",
-        "effect": "Player reduces UV damage accumulation by 70% when near Salaris.",
+        "effect": "The creature's rapid photolyase cycling naturally absorbs harsh ultraviolet rays, so standing nearby significantly lessens the stinging heat that would otherwise build up on your skin.",
         "numbers": {}
       },
       "weakness": "Metabolic drain; Salaris must feed constantly, reducing stealth time.",
@@ -208,7 +208,7 @@
           "en": "Ghost Step"
         },
         "role": "Basic",
-        "effect": "Player movement noise reduced by 80%; avoids vibration-sensitive predators.",
+        "effect": "The creature moves with a silent, gliding crawl that leaves no audible trace, allowing you to slip past vibration-sensitive hunters without alerting them.",
         "numbers": {}
       },
       "weakness": "Silent movement requires precise balance; slips on wet salt.",

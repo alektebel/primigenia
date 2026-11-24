@@ -21,16 +21,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| lengua_de_marea.c1 | Ventral mucus-ribbon grips wet basalt | Strong wind and wave force (F19) tear unanchored bodies ← Selection favors streamlined, limbless hydrostatic skeletons ← Ventral gland secretes tenacious adhesive mucus ← Secure grip enables prolonged algae scraping | **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges; **F4** Dense air: 1.6 bar; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Adhere (`lengua_de_marea.adhere`) | Defence | Anchors to rock, +80% survival in high wave action, -20% movement speed | Dries out and loses grip if exposed >4 hours without tide or fog |
-| lengua_de_marea.c2 | Electroreceptive pores detect buried crusts | Turbid coastal waters (F20) limit visual foraging ← Selection favours non-visual substrate sensing ← Ampullae-like pores along lateral line detect bioelectric fields ← Algae and crusts show weak bioelectric signatures on rock | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Glow-Track (`lengua_de_marea.glow_track`) | Poke | Reveals hidden food sources within 3 m for 10 s, +15% feed efficiency | Disrupted by sudden electrical storms or high-mineral runoff |
-| lengua_de_marea.c3 | Nocturnal activity avoids midday desiccation | Dense air still dries thin skin under sun (F3, F14) ← 38-minute twilight and 26-h day (F3) stretch dark hours ← Shifted activity to lunar cycle and fog windows ← Conserves water and avoids diurnal predators | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Night Shift (`lengua_de_marea.night_shift`) | Passive | +25% foraging speed and -50% predation risk during dark phases | Vulnerable to sudden fog clearance or moonless blackouts |
-| lengua_de_marea.c4 | Silica-reinforced radula scrapes hard crusts | Turbid shallows host tough, mineral-rich producers (D24) ← Water density increases drag on weak mandibles (F11) ← Ingestion of basalt grit and silica sands ← Lining stomach with grit powers a self-sharpening radula | **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | Stone Tongue (`lengua_de_marea.stone_tongue`) | Engage | Breaks through hard crusts, +20% food value, +5% armor if molted | Requires periodic grit consumption; starvation if only soft algae available |
+| lengua_de_marea.c1 | Ventral mucus-ribbon grips wet basalt | Strong wind and wave force (F19) tear unanchored bodies ← Selection favors streamlined, limbless hydrostatic skeletons ← Ventral gland secretes tenacious adhesive mucus ← Secure grip enables prolonged algae scraping | **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges; **F4** Dense air: 1.6 bar; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Adhere (`lengua_de_marea.adhere`) | Defence | The creature clings tightly to wet stone, resisting strong currents while moving with deliberate slowness. | Dries out and loses grip if exposed >4 hours without tide or fog |
+| lengua_de_marea.c2 | Electroreceptive pores detect buried crusts | Turbid coastal waters (F20) limit visual foraging ← Selection favours non-visual substrate sensing ← Ampullae-like pores along lateral line detect bioelectric fields ← Algae and crusts show weak bioelectric signatures on rock | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Glow-Track (`lengua_de_marea.glow_track`) | Poke | Faint traces guide it to hidden food nearby, which it gathers with eager precision. | Disrupted by sudden electrical storms or high-mineral runoff |
+| lengua_de_marea.c3 | Nocturnal activity avoids midday desiccation | Dense air still dries thin skin under sun (F3, F14) ← 38-minute twilight and 26-h day (F3) stretch dark hours ← Shifted activity to lunar cycle and fog windows ← Conserves water and avoids diurnal predators | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Night Shift (`lengua_de_marea.night_shift`) | Passive | It scurries swiftly through the shadows, slipping past predators with quiet grace. | Vulnerable to sudden fog clearance or moonless blackouts |
+| lengua_de_marea.c4 | Silica-reinforced radula scrapes hard crusts | Turbid shallows host tough, mineral-rich producers (D24) ← Water density increases drag on weak mandibles (F11) ← Ingestion of basalt grit and silica sands ← Lining stomach with grit powers a self-sharpening radula | **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | Stone Tongue (`lengua_de_marea.stone_tongue`) | Engage | It scrapes away tough outer layers to draw out rich nourishment, and its shedding skin hardens into a protective shell. | Requires periodic grit consumption; starvation if only soft algae available |
 
 ### lengua_de_marea.c1: Ventral mucus-ribbon grips wet basalt
 
 Trait ← Strong wind and wave force (F19) tear unanchored bodies ← Selection favors streamlined, limbless hydrostatic skeletons ← Ventral gland secretes tenacious adhesive mucus ← Secure grip enables prolonged algae scraping ← F19, F4, F20
 
-- **Skill:** Adhere (Defence): Anchors to rock, +80% survival in high wave action, -20% movement speed
+- **Skill:** Adhere (Defence): The creature clings tightly to wet stone, resisting strong currents while moving with deliberate slowness.
 - **Weakness:** Dries out and loses grip if exposed >4 hours without tide or fog
 - **Observe:**
   1. Glistens with thick mucus on flanks
@@ -49,7 +49,7 @@ Trait ← Strong wind and wave force (F19) tear unanchored bodies ← Selection 
 
 Trait ← Turbid coastal waters (F20) limit visual foraging ← Selection favours non-visual substrate sensing ← Ampullae-like pores along lateral line detect bioelectric fields ← Algae and crusts show weak bioelectric signatures on rock ← F20, F15
 
-- **Skill:** Glow-Track (Poke): Reveals hidden food sources within 3 m for 10 s, +15% feed efficiency
+- **Skill:** Glow-Track (Poke): Faint traces guide it to hidden food nearby, which it gathers with eager precision.
 - **Weakness:** Disrupted by sudden electrical storms or high-mineral runoff
 - **Observe:**
   1. Pulsating pores along flanks
@@ -68,7 +68,7 @@ Trait ← Turbid coastal waters (F20) limit visual foraging ← Selection favour
 
 Trait ← Dense air still dries thin skin under sun (F3, F14) ← 38-minute twilight and 26-h day (F3) stretch dark hours ← Shifted activity to lunar cycle and fog windows ← Conserves water and avoids diurnal predators ← F3, F14, F16, F8
 
-- **Skill:** Night Shift (Passive): +25% foraging speed and -50% predation risk during dark phases
+- **Skill:** Night Shift (Passive): It scurries swiftly through the shadows, slipping past predators with quiet grace.
 - **Weakness:** Vulnerable to sudden fog clearance or moonless blackouts
 - **Observe:**
   1. Shrinks into rock crevices at dawn
@@ -87,7 +87,7 @@ Trait ← Dense air still dries thin skin under sun (F3, F14) ← 38-minute twil
 
 Trait ← Turbid shallows host tough, mineral-rich producers (D24) ← Water density increases drag on weak mandibles (F11) ← Ingestion of basalt grit and silica sands ← Lining stomach with grit powers a self-sharpening radula ← F11
 
-- **Skill:** Stone Tongue (Engage): Breaks through hard crusts, +20% food value, +5% armor if molted
+- **Skill:** Stone Tongue (Engage): It scrapes away tough outer layers to draw out rich nourishment, and its shedding skin hardens into a protective shell.
 - **Weakness:** Requires periodic grit consumption; starvation if only soft algae available
 - **Observe:**
   1. Grinds basalt flakes between jaws

@@ -36,7 +36,7 @@
           "en": "Polaris Sight"
         },
         "role": "Engage",
-        "effect": "Player can reveal hidden targets by detecting polarization contrast; 0.85 contrast reveal radius.",
+        "effect": "The creature's sensory array constantly scans for polarization contrasts, causing nearby hidden targets to become visible as they move through the surrounding area.",
         "numbers": {}
       },
       "weakness": "Blind to UV and color cues; relies entirely on polarization geometry.",
@@ -150,7 +150,7 @@
           "en": "Pounce"
         },
         "role": "Basic",
-        "effect": "Player can perform a 15m leap strike; covers distance instantly.",
+        "effect": "The creature springs forward with a sudden, powerful leap to strike nearby targets.",
         "numbers": {}
       },
       "weakness": "Strike leaves predictable trajectory; prey can dodge with lateral motion.",
@@ -207,7 +207,7 @@
           "en": "Thermal Roost"
         },
         "role": "Control",
-        "effect": "Player can heal by resting near fumaroles; 10 HP/turn.",
+        "effect": "The creature settles near steaming vents to rest, allowing nearby visitors to recover their strength while they linger.",
         "numbers": {}
       },
       "weakness": "Vulnerable while roosting; flares can overwhelm sensory array.",

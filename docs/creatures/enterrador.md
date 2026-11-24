@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| enterrador.c1 | Six jointed legs for stable litter navigation | Forest floor is uneven with roots, basalt tuff, and deep leaf litter (F9, F28) ← Selection favors low center of gravity and independent leg control ← Six legs distribute weight and allow continuous traction ← Hexapod body plan with segmented tarsi | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Stable Crawl (`enterrador.stable_crawl`) | Basic | Moves through dense undergrowth at 2.1 m/s without tripping (+2 speed in forest/meadow). | Exposed leg joints snap under heavy impact; vulnerable to espinodo spine volleys. |
-| enterrador.c2 | Acid-secreting mandibles and burial behavior | Dense air and 21% O2 (D10) cause rapid aerobic decay of small carcasses (F28) ← Competition from larger scavengers selects for rapid nutrient locking ← Antifungal/antibacterial acid secretions liquefy tissue for crop digestion ← Burial behavior with specialized mandibles evolves | **F4** Dense air: 1.6 bar | Bury & Liquefy (`enterrador.bury_liquefy`) | Engage | Dissolves small carcass in crop, storing nutrient paste (+6 nutrition, preserves food for later). | Burrowing exposes abdomen; easily spotted by el_resoplido thermals. |
-| enterrador.c3 | Nocturnal activity and bioluminescent ventral marking | 26 h days heat the meadow and dry the forest floor (F5, F8) ← Night foraging avoids desiccation and daytime apex predators (F3, F6) ← Low-light environments select for non-acoustic mate recognition ← Ventral bioluminescent organs evolve for pulse-coding | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Moon Lure (`enterrador.moon_lure`) | Social | Pulses belly light to attract mates or calm creatures in darkness (+12 charm, +5 befriend in night variant). | Glow gives precise position to nocturnal acechalunas hunters. |
-| enterrador.c4 | Short-range flight and high-capacity tracheal system | 1.6 bar atmosphere (F4) provides high drag and cheap lift ← 21% O2 partial pressure (D10) supports rapid flight metabolism ← Escape from ground predators and quick carcass reaches select for burst flight ← Compact wings and enlarged thoracic tracheae evolve | **F4** Dense air: 1.6 bar | Glide Burst (`enterrador.glide_burst`) | Basic | Short flight up to 9 m, +3 to reach carcasses before larger scavengers. | Heavy rain (F8) mats wings; flight is metabolically costly in still, foggy air. |
+| enterrador.c1 | Six jointed legs for stable litter navigation | Forest floor is uneven with roots, basalt tuff, and deep leaf litter (F9, F28) ← Selection favors low center of gravity and independent leg control ← Six legs distribute weight and allow continuous traction ← Hexapod body plan with segmented tarsi | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Stable Crawl (`enterrador.stable_crawl`) | Basic | The creature glides smoothly through thick brush and tangled roots without ever stumbling. It maintains a steady pace across uneven forest floors and open meadows. | Exposed leg joints snap under heavy impact; vulnerable to espinodo spine volleys. |
+| enterrador.c2 | Acid-secreting mandibles and burial behavior | Dense air and 21% O2 (D10) cause rapid aerobic decay of small carcasses (F28) ← Competition from larger scavengers selects for rapid nutrient locking ← Antifungal/antibacterial acid secretions liquefy tissue for crop digestion ← Burial behavior with specialized mandibles evolves | **F4** Dense air: 1.6 bar | Bury & Liquefy (`enterrador.bury_liquefy`) | Engage | The creature secretes acid to break down small carcasses inside its body, storing the resulting nutrient paste for future use. You can watch it bury the remains and retrieve the preserved food when needed. | Burrowing exposes abdomen; easily spotted by el_resoplido thermals. |
+| enterrador.c3 | Nocturnal activity and bioluminescent ventral marking | 26 h days heat the meadow and dry the forest floor (F5, F8) ← Night foraging avoids desiccation and daytime apex predators (F3, F6) ← Low-light environments select for non-acoustic mate recognition ← Ventral bioluminescent organs evolve for pulse-coding | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year | Moon Lure (`enterrador.moon_lure`) | Social | It pulses a gentle light from its underside to attract mates or soothe nearby animals in the dark. You can observe this glowing display to peacefully calm or befriend other creatures. | Glow gives precise position to nocturnal acechalunas hunters. |
+| enterrador.c4 | Short-range flight and high-capacity tracheal system | 1.6 bar atmosphere (F4) provides high drag and cheap lift ← 21% O2 partial pressure (D10) supports rapid flight metabolism ← Escape from ground predators and quick carcass reaches select for burst flight ← Compact wings and enlarged thoracic tracheae evolve | **F4** Dense air: 1.6 bar | Glide Burst (`enterrador.glide_burst`) | Basic | The creature launches into a brief glide, quickly reaching scattered food before larger scavengers can claim it. | Heavy rain (F8) mats wings; flight is metabolically costly in still, foggy air. |
 
 ### enterrador.c1: Six jointed legs for stable litter navigation
 
 Trait ← Forest floor is uneven with roots, basalt tuff, and deep leaf litter (F9, F28) ← Selection favors low center of gravity and independent leg control ← Six legs distribute weight and allow continuous traction ← Hexapod body plan with segmented tarsi ← F9, F2
 
-- **Skill:** Stable Crawl (Basic): Moves through dense undergrowth at 2.1 m/s without tripping (+2 speed in forest/meadow).
+- **Skill:** Stable Crawl (Basic): The creature glides smoothly through thick brush and tangled roots without ever stumbling. It maintains a steady pace across uneven forest floors and open meadows.
 - **Weakness:** Exposed leg joints snap under heavy impact; vulnerable to espinodo spine volleys.
 - **Observe:**
   1. Counting legs on a moonlit meadow
@@ -49,7 +49,7 @@ Trait ← Forest floor is uneven with roots, basalt tuff, and deep leaf litter (
 
 Trait ← Dense air and 21% O2 (D10) cause rapid aerobic decay of small carcasses (F28) ← Competition from larger scavengers selects for rapid nutrient locking ← Antifungal/antibacterial acid secretions liquefy tissue for crop digestion ← Burial behavior with specialized mandibles evolves ← F4
 
-- **Skill:** Bury & Liquefy (Engage): Dissolves small carcass in crop, storing nutrient paste (+6 nutrition, preserves food for later).
+- **Skill:** Bury & Liquefy (Engage): The creature secretes acid to break down small carcasses inside its body, storing the resulting nutrient paste for future use. You can watch it bury the remains and retrieve the preserved food when needed.
 - **Weakness:** Burrowing exposes abdomen; easily spotted by el_resoplido thermals.
 - **Observe:**
   1. Digging with reinforced hind tibiae
@@ -67,7 +67,7 @@ Trait ← Dense air and 21% O2 (D10) cause rapid aerobic decay of small carcasse
 
 Trait ← 26 h days heat the meadow and dry the forest floor (F5, F8) ← Night foraging avoids desiccation and daytime apex predators (F3, F6) ← Low-light environments select for non-acoustic mate recognition ← Ventral bioluminescent organs evolve for pulse-coding ← F3, F6, F5, F8
 
-- **Skill:** Moon Lure (Social): Pulses belly light to attract mates or calm creatures in darkness (+12 charm, +5 befriend in night variant).
+- **Skill:** Moon Lure (Social): It pulses a gentle light from its underside to attract mates or soothe nearby animals in the dark. You can observe this glowing display to peacefully calm or befriend other creatures.
 - **Weakness:** Glow gives precise position to nocturnal acechalunas hunters.
 - **Observe:**
   1. Glowing under a full moon
@@ -85,7 +85,7 @@ Trait ← 26 h days heat the meadow and dry the forest floor (F5, F8) ← Night 
 
 Trait ← 1.6 bar atmosphere (F4) provides high drag and cheap lift ← 21% O2 partial pressure (D10) supports rapid flight metabolism ← Escape from ground predators and quick carcass reaches select for burst flight ← Compact wings and enlarged thoracic tracheae evolve ← F4
 
-- **Skill:** Glide Burst (Basic): Short flight up to 9 m, +3 to reach carcasses before larger scavengers.
+- **Skill:** Glide Burst (Basic): The creature launches into a brief glide, quickly reaching scattered food before larger scavengers can claim it.
 - **Weakness:** Heavy rain (F8) mats wings; flight is metabolically costly in still, foggy air.
 - **Observe:**
   1. Sudden wing extension from thorax

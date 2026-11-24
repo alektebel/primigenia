@@ -1,0 +1,314 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ferroluz",
+  "name": {
+    "en": "Ferroluz"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Shallow rift lagoons (1.2–1.8 S/m conductivity)",
+    "diet": "Filter-feeder plankton, crustacean analogs, small fish analogs",
+    "active": "Dusk to dawn; hides in sediment during daylight flares",
+    "predators": []
+  },
+  "body": "Flattened, eel-like torso with parallel dermal electrocyte folds; copper-chelating hepatopancreas; iron-sulfide marginal plates; lateral orange-eyed orbs",
+  "chains": [
+    {
+      "id": "ferroluz.c1",
+      "trait": "Parallel dermal electrocyte folds",
+      "links": [
+        "Generates directional 300V stun pulses",
+        "Brackish water conducts well but shorts in full brine",
+        "World salinity gradients and conductivity limits"
+      ],
+      "roots": [
+        "F16",
+        "F26"
+      ],
+      "skill": {
+        "id": "ferroluz.arc_stun",
+        "name": {
+          "en": "Arc Stun"
+        },
+        "role": "Poke",
+        "effect": "The creature discharges a crackling electrical pulse that knocks nearby foes unconscious for a short while.",
+        "numbers": {}
+      },
+      "weakness": "Voltage collapses in open brine pools (>3 S/m)",
+      "observe": [
+        "Dermal folds ripple in rhythmic waves before strike",
+        "Water crackles blue-white along flanks",
+        "Prey freezes mid-swim, gills clamped shut"
+      ],
+      "journal": {
+        "en": "It doesn't chase. It simply decides the water belongs to it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep 300 V as canon F26, but describe a short-range body-axis discharge used only at contact after the flank-ripple warning; make the metabolic/oxygen cost and recharge time the real weakness, and delete all stat numbers.",
+        "fixes": [
+          "Keep 300 V as canon F26, but describe a short-range body-axis discharge used only at contact after the flank-ripple warning; make the metabolic/oxygen cost and recharge time the real weakness, and delete all stat numbers."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric eel (Electrophorus electricus) uses high-voltage pulses in low-conductivity fresh water; torpedo rays use low-voltage, high-current discharges in seawater — conductivity sets the design.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ferroluz.c2",
+      "trait": "Vacuolar metallothionein crystals",
+      "links": [
+        "Sequesters toxic free Cu2+/Zn2+ ions",
+        "Sulfide weathering releases dissolved metals into lagoons",
+        "High environmental metal load and toxicity threshold"
+      ],
+      "roots": [
+        "F19",
+        "F24"
+      ],
+      "skill": {
+        "id": "ferroluz.chelate_cache",
+        "name": {
+          "en": "Chelate Cache"
+        },
+        "role": "Defence",
+        "effect": "The creature absorbs incoming chemical attacks and draws strength from them, slowly recovering its vitality.",
+        "numbers": {}
+      },
+      "weakness": "Cannot molt quickly if chelation load exceeds 3 charges",
+      "observe": [
+        "Gills filter metallic glints from passing water",
+        "Liver tissue glows faint green under vent light",
+        "Molting crust falls to silt in layered sheets"
+      ],
+      "journal": {
+        "en": "It drinks poison and wears it as armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Rename the trait to metal-thiolate/phytochelatin-like granules in vacuoles; keep the 'drinks poison and wears it as armor' behaviour and drop all stat numbers.",
+        "fixes": [
+          "Rename the trait to metal-thiolate/phytochelatin-like granules in vacuoles; keep the 'drinks poison and wears it as armor' behaviour and drop all stat numbers."
+        ],
+        "analogues": [
+          {
+            "organism": "Metal-hyperaccumulator plants such as Noccaea caerulescens sequester Ni/Zn in vacuoles; mussels and crustaceans induce metallothionein when exposed to dissolved metals.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ferroluz.c3",
+      "trait": "Red-shifted lateral eye pigments",
+      "links": [
+        "Sees through orange hematite haze",
+        "Blue light scattered by suspended iron-oxide dust",
+        "K-star spectrum filtered by atmospheric aerosols"
+      ],
+      "roots": [
+        "F14",
+        "F22"
+      ],
+      "skill": {
+        "id": "ferroluz.haze_gaze",
+        "name": {
+          "en": "Haze Gaze"
+        },
+        "role": "Passive",
+        "effect": "Its keen eyes pierce through thick mist and dim lighting, allowing it to spot hidden movements that others would miss.",
+        "numbers": {}
+      },
+      "weakness": "Blinded by sudden flare brightening or lightning strikes",
+      "observe": [
+        "Eyes reflect dull orange instead of silver",
+        "Pupils narrow sharply in open water",
+        "Tracks prey through thick dust clouds effortlessly"
+      ],
+      "journal": {
+        "en": "The world is orange, but it sees the dark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Tune the pigment to orange dusk light and surface glints, keep the flare/lightning weakness, remove effortless tracking through dust clouds while submerged, and delete all stat numbers.",
+        "fixes": [
+          "Tune the pigment to orange dusk light and surface glints, keep the flare/lightning weakness, remove effortless tracking through dust clouds while submerged, and delete all stat numbers."
+        ],
+        "analogues": [
+          {
+            "organism": "Turbid-water fishes shift visual-pigment sensitivity toward longer wavelengths; deep-sea fishes with red-sensitive pigments use the same trick at the other extreme.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ferroluz.c4",
+      "trait": "Electrolytic ion siphon mouth",
+      "links": [
+        "Extracts dissolved Fe2+/Fe3+ from prey tissue",
+        "Metabolism relies on iron-redox cycling for energy",
+        "Oxidative stress in metal-rich water demands rapid uptake"
+      ],
+      "roots": [
+        "F20",
+        "F21"
+      ],
+      "skill": {
+        "id": "ferroluz.ion_siphon",
+        "name": {
+          "en": "Ion Siphon"
+        },
+        "role": "Basic",
+        "effect": "The creature feeds upon fallen prey, drawing sustenance from their remains to slowly mend its own wounds.",
+        "numbers": {}
+      },
+      "weakness": "Immobile and vulnerable during the 4s feeding window",
+      "observe": [
+        "Mouth flares like a bellows over the carcass",
+        "Water bubbles and acid-fog forms near the wound",
+        "Gills pulse rhythmically as ions flow inward"
+      ],
+      "journal": {
+        "en": "It doesn't just eat flesh. It eats the rust inside it."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Reframe the siphon as an iron-scavenging organ supplying heme/Fe-S cofactors, with chemosynthetic symbionts supplying the ATP; keep 'it eats the rust inside its prey' as micronutrient harvesting, remove the wound-side acid fog, and delete the healing stat.",
+        "fixes": [
+          "Reframe the siphon as an iron-scavenging organ supplying heme/Fe-S cofactors, with chemosynthetic symbionts supplying the ATP; keep 'it eats the rust inside its prey' as micronutrient harvesting, remove the wound-side acid fog, and delete the healing stat."
+        ],
+        "analogues": [
+          {
+            "organism": "Vent symbioses — giant tube worms with sulfur-oxidizing bacteria, and iron-oxidizing bacteria such as Gallionella: microbes do the redox, the animal houses or harvests them.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cobrehorno",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Ferroluz clears vent-predators that would otherwise crush Cobrehorno's sinter terraces; Cobrehorno's metal caches fuel Ferroluz's molt cycles."
+    },
+    {
+      "with": "cobrehorno",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Cobrehorno concentrates metal sulfides that Ferroluz harvests for molt cycles; Ferroluz patrols the perimeter, deterring burrowing predators that would fracture Cobrehorno's sinter terraces."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "early metazoan-like lineage"
+  },
+  "temperament": "Patient, explosive, territorial, avoids direct combat",
+  "secrets": [
+    "Can sense prey by their weak bioelectric fields before they move.",
+    "Molting cycle coincides with lunar high tides and vent surges.",
+    "Avoids direct contact with oxidized crust; treats it as toxic."
+  ],
+  "moments": [
+    "Watching it coil in the silt, then flash a blue-white arc that freezes a grazing crustacean mid-bite."
+  ],
+  "journal": [
+    {
+      "en": "It doesn't bite. It simply decides you are dead, and the water obeys."
+    },
+    {
+      "en": "The lagoons taste of copper and old lightning."
+    }
+  ]
+}

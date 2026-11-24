@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Loom Sea fringe, saline crusts & fulgurite glass fields",
+    "habitat": "Loom Sea fringe, saline crusts & fulgurite glass fields. Also, in the council's sketch (no such creature in this world yet): Kiln-runner, both harvest vent tubes; runners take the upper fissures, crabs hold the salt crusts where wind stabilizes their stance.",
     "diet": "Oxidized nitrogen mats, vent tube biomass, dissolved phosphates",
     "active": "Constant, wind-riding crepuscular peaks",
     "predators": []
@@ -36,7 +36,7 @@
           "en": "Wind-Rake"
         },
         "role": "Defence",
-        "effect": "Crouch flat, reducing incoming wind/damage by 60% and gaining traction. Lasts 4s. Cooldown 12s.",
+        "effect": "The creature flattens itself against the ground, drawing its limbs inward to strongly deflect wind and blunt incoming force while gripping the terrain firmly. It holds this low stance for a short while before rising again.",
         "numbers": {}
       },
       "weakness": "Cannot rotate quickly; blind to frontal strikes and overhead threats.",
@@ -100,7 +100,7 @@
           "en": "Drift-Step"
         },
         "role": "Control",
-        "effect": "Move laterally at high speed with 40% reduced stamina cost, slide under 50cm obstacles. Duration 5s. Cooldown 8s.",
+        "effect": "The creature shifts sideways in a swift, gliding stride that requires little effort, allowing it to slip smoothly beneath low barriers. It maintains this lateral drift for a short while before returning to a normal gait.",
         "numbers": {}
       },
       "weakness": "Cannot move forward quickly; vulnerable to frontal grapples.",
@@ -157,7 +157,7 @@
           "en": "Tuck-Shell"
         },
         "role": "Passive",
-        "effect": "When stationary, abdomen forms secondary armoured floor, +50% resist acid/radiation from flare fallout. Passive.",
+        "effect": "When motionless, the creature folds its underside into a thick, reinforced plate that strongly resists corrosive and irradiated environments. This protective layer stays engaged until it begins to move again.",
         "numbers": {}
       },
       "weakness": "Slow to deploy claws, limited sensory input from below.",
@@ -221,7 +221,7 @@
           "en": "Pincer-Clamp"
         },
         "role": "Engage",
-        "effect": "Grapple and crush, 2x damage to armoured/shelled targets, can pry open hydrothermal fissures. Cooldown 3s.",
+        "effect": "The creature clamps its mismatched claws around a target, squeezing with immense force to crack through hard shells and armor. It can also wedge its pincers into tight geological cracks to force them open.",
         "numbers": {}
       },
       "weakness": "Slow strike speed, high stamina drain.",
@@ -262,11 +262,6 @@
   ],
   "relations": [
     {
-      "with": "Kiln-runner",
-      "kind": "cousin",
-      "note": "(council kind 'Competitor') Both harvest vent tubes; runners take the upper fissures, crabs hold the salt crusts where wind stabilizes their stance."
-    },
-    {
       "with": "carmesa",
       "kind": "convergent",
       "via": "carcinisation",
@@ -286,6 +281,18 @@
     },
     {
       "with": "lombardo",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "crang_lira",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "ferrisca",
       "kind": "convergent",
       "via": "carcinisation",
       "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
@@ -315,6 +322,16 @@
     },
     {
       "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
       "who": "autoloop",
       "what": "carcinisation links to 1 creature(s)"
     }

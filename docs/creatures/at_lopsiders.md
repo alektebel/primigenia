@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_lopsiders.c1 | Three paddle-limbs & one spindly tool arm | Extreme limb reduction for weight distribution ← 36g surface acceleration demanding low center of mass ← Qu metric manipulation creating super-dense crust | **F4** High-gravity engineering artifact yields 36 g surface acceleration. | Gravity Crawl (`at_lopsiders.gravity_crawl`) | Basic | Moves across steep terrain without falling and grants +3 carry weight | Vulnerable to sudden weight loss or low-gravity zones |
-| at_lopsiders.c2 | Asymmetric face & upward-bulging eye | Unilateral ocular placement and vertical mandible ← 36g gravity crushing bilateral symmetry and forcing dorsal vision ← High atmospheric pressure shaping vocal cords and jaws | **F4** High-gravity engineering artifact yields 36 g surface acceleration.; **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix. | Dorsal Scan (`at_lopsiders.dorsal_scan`) | Poke | Gains +2 perception against overhead threats within 40m | Cannot track fast-moving prey at ground level without turning |
+| at_lopsiders.c1 | Three paddle-limbs & one spindly tool arm | Extreme limb reduction for weight distribution ← 36g surface acceleration demanding low center of mass ← Qu metric manipulation creating super-dense crust | **F4** High-gravity engineering artifact yields 36 g surface acceleration. | Gravity Crawl (`at_lopsiders.gravity_crawl`) | Basic | It scrambles up steep inclines without ever losing its footing. You can secure extra supplies onto its back for the journey. | Vulnerable to sudden weight loss or low-gravity zones |
+| at_lopsiders.c2 | Asymmetric face & upward-bulging eye | Unilateral ocular placement and vertical mandible ← 36g gravity crushing bilateral symmetry and forcing dorsal vision ← High atmospheric pressure shaping vocal cords and jaws | **F4** High-gravity engineering artifact yields 36 g surface acceleration.; **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix. | Dorsal Scan (`at_lopsiders.dorsal_scan`) | Poke | The creature constantly tilts its face upward, keeping a sharp watch on the sky. This keen awareness lets it easily spot any threat drawing near from overhead. | Cannot track fast-moving prey at ground level without turning |
 
 ### at_lopsiders.c1: Three paddle-limbs & one spindly tool arm
 
 Trait ← Extreme limb reduction for weight distribution ← 36g surface acceleration demanding low center of mass ← Qu metric manipulation creating super-dense crust ← F4
 
-- **Skill:** Gravity Crawl (Basic): Moves across steep terrain without falling and grants +3 carry weight
+- **Skill:** Gravity Crawl (Basic): It scrambles up steep inclines without ever losing its footing. You can secure extra supplies onto its back for the journey.
 - **Weakness:** Vulnerable to sudden weight loss or low-gravity zones
 - **Observe:**
   1. Broad, splayed limb pads pressing flat
@@ -47,7 +47,7 @@ Trait ← Extreme limb reduction for weight distribution ← 36g surface acceler
 
 Trait ← Unilateral ocular placement and vertical mandible ← 36g gravity crushing bilateral symmetry and forcing dorsal vision ← High atmospheric pressure shaping vocal cords and jaws ← F4, F6
 
-- **Skill:** Dorsal Scan (Poke): Gains +2 perception against overhead threats within 40m
+- **Skill:** Dorsal Scan (Poke): The creature constantly tilts its face upward, keeping a sharp watch on the sky. This keen awareness lets it easily spot any threat drawing near from overhead.
 - **Weakness:** Cannot track fast-moving prey at ground level without turning
 - **Observe:**
   1. One eye staring straight up at the sky

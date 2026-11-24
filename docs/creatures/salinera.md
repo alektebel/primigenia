@@ -21,16 +21,16 @@ Gelatinous filter-sack with trailing ciliated tentacles, hyper-renal gills, biol
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| salinera.c1 | Ciliated filter basket expands on nutrient pulse | Ciliated basket expands to trap aggregates ← Phosphorus arrives only in ash pulses ← Stagnant lid volcanism supplies patchy ash | **F26** Productivity is phosphorus-limited: phosphorus arrives only in volcanic ash from F20 hotspots and in weathered flare nitrate, so life blooms in pulses rather than seasons.; **F20** The interior runs a stagnant lid with episodic resurfacing: radiogenic heat only, no tidal heating and no plate cycle, so volcanism is hotspot volcanism rather than a conveyor. | Gill Filter (`salinera.gill_filter`) | Basic | Heal 3 HP and gain +2 P to a local area; weakens in ash-poor zones. | Starves in regions without recent volcanic ash or flare fallout. |
-| salinera.c2 | Hyper-renal salt glands pump concentrated brine | Salt glands excrete 12% saline brine ← Basin is evaporating with single outflow ← Terminator ring ocean concentrates salts | **F17** The Loom Sea is a ~1,400 km-wide ring ocean at the terminator, with a mean depth of 900 m and 6% salinity — an evaporating basin with a single outflow. | Salt Blast (`salinera.salt_blast`) | Poke | Deal 4 damage to enemies within 3m; causes dehydration debuff. | Vulnerable to freshwater shock; player can stun with water-skill. |
-| salinera.c3 | Bioluminescent mating flash attracts mates | Flash synchronizes mating swarm ← Low biomass limits encounter rates ← Phosphorus limitation caps overall productivity | **F26** Productivity is phosphorus-limited: phosphorus arrives only in volcanic ash from F20 hotspots and in weathered flare nitrate, so life blooms in pulses rather than seasons. | Glow Signal (`salinera.glow_signal`) | Social | Attract all Salinera within 20m to player or ally; grants 'Herd' buff. | Attracts predators and flares; player can lure enemies using biolum lure. |
-| salinera.c4 | Sensitive gill cilia shut near vent plumes | Gills clamp shut to block hyperoxic water ← Vents emit concentrated oxygen spikes ← Adapted to 8% ambient but hyperoxic spots burn tissue | **F27** The poisons are H₂S above ~100 ppm, arsenic-rich brine at anoxic seeps, and oxygen above ~0.25 bar in hyperoxic microhabitats such as vents and photosynthetic mats — not in the 8% ambient air. | Vent Dodge (`salinera.vent_dodge`) | Defence | Gain immunity to oxidant damage for 5 turns; move 2m away from vent. | Blind to chemical plumes; player can use chemical smoke to mask vent signals. |
+| salinera.c1 | Ciliated filter basket expands on nutrient pulse | Ciliated basket expands to trap aggregates ← Phosphorus arrives only in ash pulses ← Stagnant lid volcanism supplies patchy ash | **F26** Productivity is phosphorus-limited: phosphorus arrives only in volcanic ash from F20 hotspots and in weathered flare nitrate, so life blooms in pulses rather than seasons.; **F20** The interior runs a stagnant lid with episodic resurfacing: radiogenic heat only, no tidal heating and no plate cycle, so volcanism is hotspot volcanism rather than a conveyor. | Gill Filter (`salinera.gill_filter`) | Basic | The creature filters nutrients to restore its own vitality and strongly strengthens nearby allies, though its power fades in barren, ash-scarred waters. | Starves in regions without recent volcanic ash or flare fallout. |
+| salinera.c2 | Hyper-renal salt glands pump concentrated brine | Salt glands excrete 12% saline brine ← Basin is evaporating with single outflow ← Terminator ring ocean concentrates salts | **F17** The Loom Sea is a ~1,400 km-wide ring ocean at the terminator, with a mean depth of 900 m and 6% salinity — an evaporating basin with a single outflow. | Salt Blast (`salinera.salt_blast`) | Poke | It forcefully expels concentrated brine at nearby foes, leaving them parched and weakened by the sudden salt spray. | Vulnerable to freshwater shock; player can stun with water-skill. |
+| salinera.c3 | Bioluminescent mating flash attracts mates | Flash synchronizes mating swarm ← Low biomass limits encounter rates ← Phosphorus limitation caps overall productivity | **F26** Productivity is phosphorus-limited: phosphorus arrives only in volcanic ash from F20 hotspots and in weathered flare nitrate, so life blooms in pulses rather than seasons. | Glow Signal (`salinera.glow_signal`) | Social | A bright bioluminescent flash ripples from its body, drawing nearby kin to gather closely together and form a protective cluster. | Attracts predators and flares; player can lure enemies using biolum lure. |
+| salinera.c4 | Sensitive gill cilia shut near vent plumes | Gills clamp shut to block hyperoxic water ← Vents emit concentrated oxygen spikes ← Adapted to 8% ambient but hyperoxic spots burn tissue | **F27** The poisons are H₂S above ~100 ppm, arsenic-rich brine at anoxic seeps, and oxygen above ~0.25 bar in hyperoxic microhabitats such as vents and photosynthetic mats — not in the 8% ambient air. | Vent Dodge (`salinera.vent_dodge`) | Defence | Its sensitive gill cilia instantly seal shut as it swiftly retreats from the vent plume, rendering it strongly resistant to the harsh oxidant fumes. | Blind to chemical plumes; player can use chemical smoke to mask vent signals. |
 
 ### salinera.c1: Ciliated filter basket expands on nutrient pulse
 
 Trait ← Ciliated basket expands to trap aggregates ← Phosphorus arrives only in ash pulses ← Stagnant lid volcanism supplies patchy ash ← F26, F20
 
-- **Skill:** Gill Filter (Basic): Heal 3 HP and gain +2 P to a local area; weakens in ash-poor zones.
+- **Skill:** Gill Filter (Basic): The creature filters nutrients to restore its own vitality and strongly strengthens nearby allies, though its power fades in barren, ash-scarred waters.
 - **Weakness:** Starves in regions without recent volcanic ash or flare fallout.
 - **Observe:**
   1. Cloud of ash/dust settling on water
@@ -49,7 +49,7 @@ Trait ← Ciliated basket expands to trap aggregates ← Phosphorus arrives only
 
 Trait ← Salt glands excrete 12% saline brine ← Basin is evaporating with single outflow ← Terminator ring ocean concentrates salts ← F17
 
-- **Skill:** Salt Blast (Poke): Deal 4 damage to enemies within 3m; causes dehydration debuff.
+- **Skill:** Salt Blast (Poke): It forcefully expels concentrated brine at nearby foes, leaving them parched and weakened by the sudden salt spray.
 - **Weakness:** Vulnerable to freshwater shock; player can stun with water-skill.
 - **Observe:**
   1. Gills pulsing with white salt crystals
@@ -67,7 +67,7 @@ Trait ← Salt glands excrete 12% saline brine ← Basin is evaporating with sin
 
 Trait ← Flash synchronizes mating swarm ← Low biomass limits encounter rates ← Phosphorus limitation caps overall productivity ← F26
 
-- **Skill:** Glow Signal (Social): Attract all Salinera within 20m to player or ally; grants 'Herd' buff.
+- **Skill:** Glow Signal (Social): A bright bioluminescent flash ripples from its body, drawing nearby kin to gather closely together and form a protective cluster.
 - **Weakness:** Attracts predators and flares; player can lure enemies using biolum lure.
 - **Observe:**
   1. Sudden synchronized green flash across colony
@@ -85,7 +85,7 @@ Trait ← Flash synchronizes mating swarm ← Low biomass limits encounter rates
 
 Trait ← Gills clamp shut to block hyperoxic water ← Vents emit concentrated oxygen spikes ← Adapted to 8% ambient but hyperoxic spots burn tissue ← F27
 
-- **Skill:** Vent Dodge (Defence): Gain immunity to oxidant damage for 5 turns; move 2m away from vent.
+- **Skill:** Vent Dodge (Defence): Its sensitive gill cilia instantly seal shut as it swiftly retreats from the vent plume, rendering it strongly resistant to the harsh oxidant fumes.
 - **Weakness:** Blind to chemical plumes; player can use chemical smoke to mask vent signals.
 - **Observe:**
   1. Salinera recoiling from white vent plume

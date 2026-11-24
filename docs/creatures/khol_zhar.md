@@ -6,10 +6,10 @@
 
 ## Niche
 
-- **Habitat:** Anticyclone fog-canyons, persistent low-altitude aerosol bands
+- **Habitat:** Anticyclone fog-canyons, persistent low-altitude aerosol bands. Also, in the council's sketch (no such creature in this world yet): Fog-Weaver, fog-Weaver eats dead zooids that fall out; Zharra provides nutrients to Weaver's web.
 - **Diet:** Suspended organic aerosols, dissolved CO₂, NIR photons
 - **Active:** Continuous
-- **Predators:** none
+- **Predators:** Gale-Strider
 
 ## Body
 
@@ -21,16 +21,16 @@ A spherical colony of ~4,000 bilateral zooids spaced 15 cm apart in a rigid latt
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| khol_zhar.c1 | Zooids float in rigid sphere bound by hum | Standing wave radiation pressure counters 1.85g gravity ← 10-bar atmosphere provides high acoustic impedance ← F8 | **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Phase Disrupt (`khol_zhar.phase_disrupt`) | Poke | Emits counter-wave. Scatters colony for 6 seconds. | Vulnerable to frequency jamming; scattered zooids cannot fly or filter food and lose cohesion immediately. |
-| khol_zhar.c2 | Colony concentrates food in wave nodes | Acoustic standing waves create high-pressure nodes that trap particulates ← High density air amplifies acoustic trapping force ← F8, F10 | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F10** Sound speed ~355 m/s with low-frequency attenuation reduced. | Resonant Harvest (`khol_zhar.resonant_harvest`) | Basic | Mimic the hum. Attract food particles to player or creature for 4s. +20% filter efficiency. | Attracts predators that hunt by sound. |
-| khol_zhar.c3 | Low-frequency hum (50 Hz) penetrates haze | Low frequency minimizes scattering in thick haze ← Amber haze filters high frequencies via Mie scattering ← F11, F19 | **F11** Diffuse amber haze with Mie scattering dominant and ~650 W/m² irradiance.; **F19** Peak photosynthetic photon flux at 700–780 nm with haze optical depth of 0.8 at 550 nm. | Harmonic Resonance (`khol_zhar.harmonic_resonance`) | Social | Match pitch perfectly. Merge one zooid as a passive helper. Duration: 30s. | Requires precise pitch matching; failure causes rejection and stress. |
-| khol_zhar.c4 | Hemolymph is azure-blue copper complex | Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in crustal silicates due to weathering under high pressure ← F21 | **F21** Copper-based hemocyanin analogs for O₂ transport. | Copper Lash (`khol_zhar.copper_lash`) | Engage | Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12. | Copper blood is less efficient in low-O2 pockets. |
+| khol_zhar.c1 | Zooids float in rigid sphere bound by hum | Standing wave radiation pressure counters 1.85g gravity ← 10-bar atmosphere provides high acoustic impedance ← F8 | **F8** 10 bar surface pressure with ~12.5 kg/m³ density. | Phase Disrupt (`khol_zhar.phase_disrupt`) | Poke | The creature emits a sharp counter-wave that breaks its rigid formation and scatters the floating zooids across the area for a short while. | Vulnerable to frequency jamming; scattered zooids cannot fly or filter food and lose cohesion immediately. |
+| khol_zhar.c2 | Colony concentrates food in wave nodes | Acoustic standing waves create high-pressure nodes that trap particulates ← High density air amplifies acoustic trapping force ← F8, F10 | **F8** 10 bar surface pressure with ~12.5 kg/m³ density.; **F10** Sound speed ~355 m/s with low-frequency attenuation reduced. | Resonant Harvest (`khol_zhar.resonant_harvest`) | Basic | The creature mimics a steady hum that strongly draws nearby food particles toward itself or the player, temporarily improving its filtration. | Attracts predators that hunt by sound. |
+| khol_zhar.c3 | Low-frequency hum (50 Hz) penetrates haze | Low frequency minimizes scattering in thick haze ← Amber haze filters high frequencies via Mie scattering ← F11, F19 | **F11** Diffuse amber haze with Mie scattering dominant and ~650 W/m² irradiance.; **F19** Peak photosynthetic photon flux at 700–780 nm with haze optical depth of 0.8 at 550 nm. | Harmonic Resonance (`khol_zhar.harmonic_resonance`) | Social | The creature perfectly matches a low-frequency hum to merge with a nearby zooid, creating a passive helper that stays by its side for a short while. | Requires precise pitch matching; failure causes rejection and stress. |
+| khol_zhar.c4 | Hemolymph is azure-blue copper complex | Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in crustal silicates due to weathering under high pressure ← F21 | **F21** Copper-based hemocyanin analogs for O₂ transport. | Copper Lash (`khol_zhar.copper_lash`) | Engage | The creature hurls a splash of blue fluid that coats nearby mechanical targets, causing them to lock up or slowly decay into rust. | Copper blood is less efficient in low-O2 pockets. |
 
 ### khol_zhar.c1: Zooids float in rigid sphere bound by hum
 
 Trait ← Standing wave radiation pressure counters 1.85g gravity ← 10-bar atmosphere provides high acoustic impedance ← F8 ← F8
 
-- **Skill:** Phase Disrupt (Poke): Emits counter-wave. Scatters colony for 6 seconds.
+- **Skill:** Phase Disrupt (Poke): The creature emits a sharp counter-wave that breaks its rigid formation and scatters the floating zooids across the area for a short while.
 - **Weakness:** Vulnerable to frequency jamming; scattered zooids cannot fly or filter food and lose cohesion immediately.
 - **Observe:**
   1. A floating sphere that hums
@@ -49,7 +49,7 @@ Trait ← Standing wave radiation pressure counters 1.85g gravity ← 10-bar atm
 
 Trait ← Acoustic standing waves create high-pressure nodes that trap particulates ← High density air amplifies acoustic trapping force ← F8, F10 ← F8, F10
 
-- **Skill:** Resonant Harvest (Basic): Mimic the hum. Attract food particles to player or creature for 4s. +20% filter efficiency.
+- **Skill:** Resonant Harvest (Basic): The creature mimics a steady hum that strongly draws nearby food particles toward itself or the player, temporarily improving its filtration.
 - **Weakness:** Attracts predators that hunt by sound.
 - **Observe:**
   1. Fog particles swirl into the gaps between zooids
@@ -68,7 +68,7 @@ Trait ← Acoustic standing waves create high-pressure nodes that trap particula
 
 Trait ← Low frequency minimizes scattering in thick haze ← Amber haze filters high frequencies via Mie scattering ← F11, F19 ← F11, F19
 
-- **Skill:** Harmonic Resonance (Social): Match pitch perfectly. Merge one zooid as a passive helper. Duration: 30s.
+- **Skill:** Harmonic Resonance (Social): The creature perfectly matches a low-frequency hum to merge with a nearby zooid, creating a passive helper that stays by its side for a short while.
 - **Weakness:** Requires precise pitch matching; failure causes rejection and stress.
 - **Observe:**
   1. The hum vibrates in the player's teeth
@@ -86,7 +86,7 @@ Trait ← Low frequency minimizes scattering in thick haze ← Amber haze filter
 
 Trait ← Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in crustal silicates due to weathering under high pressure ← F21 ← F21
 
-- **Skill:** Copper Lash (Engage): Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12.
+- **Skill:** Copper Lash (Engage): The creature hurls a splash of blue fluid that coats nearby mechanical targets, causing them to lock up or slowly decay into rust.
 - **Weakness:** Copper blood is less efficient in low-O2 pockets.
 - **Observe:**
   1. Zooids bleed when cut
@@ -100,13 +100,6 @@ Trait ← Copper hemocyanin replaces iron hemoglobin ← Iron oxides locked in c
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: World canon F21 specifies copper-based hemocyanin-like O₂ carriers; blue, copper-bearing blood is a known contingent solution on Earth under different selection pressures than iron hemoglobin. F20 piezolytes and high pO₂ (F9) support protein function at pressure; poorer performance in localized low-O₂ pockets is consistent with hemocyanin’s generally lower O₂ affinity/capacity than mammalian hemoglobin in hypoxia.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Gale-Strider | cousin |  | (council kind 'Predator') Gale-Strider hunts by detecting the Khol-zhar hum; the Zharra evolves erratic phase-shifts to confuse it. |
-| Fog-Weaver | cousin |  | (council kind 'Mutualist') Fog-Weaver eats dead zooids that fall out; Zharra provides nutrients to Weaver's web. |
 
 ## Journal
 

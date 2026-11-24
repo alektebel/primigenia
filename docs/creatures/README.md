@@ -81,6 +81,16 @@
 | [Snake People](at_snake_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
 | [Worms](at_worms.md) | easter_egg | draft | 2 | 2 plausible |
 
+## Thrum (`deepinterior`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cascabel](cascabel.md) | new | draft | 4 | 4 fixable |
+| [Caudal de Hierro](caudal_de_hierro.md) | new | draft | 4 | 2 implausible, 2 unreviewed |
+| [Ocotl](ocotl.md) | new | draft | 4 | 3 fixable, 1 implausible |
+| [Soplillo](soplillo.md) | new | draft | 4 | 4 fixable |
+| [Tumbrela](tumbrela.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
 ## The Deep Sky (`deepsky`)
 
 | Creature | Kind | Status | Chains | Verdicts |
@@ -131,6 +141,19 @@
 | [Cromavolante](cromavolante.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Ostracilo](ostracilo.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
+## Metallic world (`metallic`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cobrehorno](cobrehorno.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Ferrisca](ferrisca.md) | new | draft | 4 | 2 fixable, 2 unreviewed |
+| [Ferroluz](ferroluz.md) | new | draft | 4 | 3 fixable, 1 implausible |
+| [Galvanar](galvanar.md) | new | draft | 4 | 4 fixable |
+| [Rocaescama](rocaescama.md) | new | draft | 4 | 4 fixable |
+| [Sidero-chisp](sidero_chisp.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Sidero-copa](sidero_copa.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Siderogon](siderogon.md) | new | draft | 4 | 4 fixable |
+
 ## Mycelial World (`mycelia`)
 
 | Creature | Kind | Status | Chains | Verdicts |
@@ -155,6 +178,16 @@
 | [Centellón](centellon.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Sifonera de Pluma](sifonera_de_pluma.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Vaelen-tok](vaelen_tok.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## The Verrin Sill (`orbital`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Astroluma](astroluma.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cerradora de Hueco](cerradora_de_hueco.md) | new | draft | 4 | 4 fixable |
+| [Cintillo](cintillo.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Crang-lira](crang_lira.md) | new | draft | 4 | 3 fixable, 1 implausible |
+| [Polvovela](polvovela.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
 ## Primigenia (the island world) (`primigenia`)
 
@@ -290,3 +323,12 @@
 | [Ceniza Roja](ceniza_roja_void.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Polvorín](polvorin.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Velafrío](velafrio.md) | new | draft | 4 | 4 fixable |
+
+## The Highway World (`wheels`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [El Cruce](el_cruce.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Krelm](krelm.md) | new | draft | 4 | 4 fixable |
+| [Rodadora](rodadora.md) | new | draft | 4 | 4 fixable |
+| [Rodapié](rodapie.md) | new | draft | 4 | 3 fixable, 1 plausible |

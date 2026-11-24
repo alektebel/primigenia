@@ -9,10 +9,12 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Volcanic scree slopes, fog belts, shallow shelf edges",
+    "habitat": "Volcanic scree slopes, fog belts, shallow shelf edges. Also, in the council's sketch (no such creature in this world yet): Vent-vents, both scavenge volcanic shelves; Carapaz dominates scree, Vents dominate vents.",
     "diet": "Opportunistic omnivore; crushes calcified fungi, catches falling fruit, scavenges carrion",
     "active": "Crepuscular",
-    "predators": []
+    "predators": [
+      "Kite-rays"
+    ]
   },
   "body": "Bivalve-convergent lineage. Fused, flattened carapace of chitin-mineral composite. Four lateral walking legs with stiff joints. Massive asymmetrical claws. Visceral mass retracts fully under shield. Copper-veined hemolymph visible through translucent carapace edge.",
   "chains": [
@@ -35,7 +37,7 @@
           "en": "Anchor Plate"
         },
         "role": "Defence",
-        "effect": "Locks claws into substrate, reducing incoming damage by 30% and preventing displacement.",
+        "effect": "The creature digs its claws deep into the ground and braces strongly, becoming heavily anchored and much harder to push or knock back. It stands firm against attacks, absorbing blows with its reinforced shell.",
         "numbers": {}
       },
       "weakness": "Slow to right itself if overturned.",
@@ -96,7 +98,7 @@
           "en": "Scuttle Dash"
         },
         "role": "Basic",
-        "effect": "Move 3 meters sideways instantly, ignoring terrain penalties. Dodges frontal attacks.",
+        "effect": "The creature swiftly scuttles sideways in a quick burst, slipping past obstacles and avoiding attacks aimed directly at it. It darts laterally with a sudden, jerky motion that leaves attackers striking empty air.",
         "numbers": {}
       },
       "weakness": "Cannot retreat quickly in forward direction.",
@@ -153,7 +155,7 @@
           "en": "Crush Grip"
         },
         "role": "Engage",
-        "effect": "Pins target, dealing 12 damage and reducing target movement by 40% for 2 turns.",
+        "effect": "The creature clamps its massive claws onto a target, pinning it firmly and restricting its movement for a short while. The trapped foe struggles against the heavy grip as the creature holds it fast.",
         "numbers": {}
       },
       "weakness": "Claws are heavy; slow recovery time.",
@@ -255,16 +257,6 @@
   ],
   "relations": [
     {
-      "with": "Kite-rays",
-      "kind": "cousin",
-      "note": "(council kind 'Predator') High-altitude gliders dive for Carapaz in fog gaps."
-    },
-    {
-      "with": "Vent-vents",
-      "kind": "cousin",
-      "note": "(council kind 'Competitor') Both scavenge volcanic shelves; Carapaz dominates scree, Vents dominate vents."
-    },
-    {
       "with": "carmesa",
       "kind": "convergent",
       "via": "carcinisation",
@@ -284,6 +276,18 @@
     },
     {
       "with": "lombardo",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "crang_lira",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "ferrisca",
       "kind": "convergent",
       "via": "carcinisation",
       "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
@@ -313,6 +317,16 @@
     },
     {
       "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-24",
       "who": "autoloop",
       "what": "carcinisation links to 1 creature(s)"
     }

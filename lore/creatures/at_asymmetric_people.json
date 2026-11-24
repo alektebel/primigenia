@@ -35,7 +35,7 @@
           "en": "Grav-Crawl"
         },
         "role": "Basic",
-        "effect": "move 15m over rough terrain without penalty, ignore 50% terrain hazards",
+        "effect": "The creature scuttles effortlessly across uneven ground and easily sidesteps environmental dangers as it moves.",
         "numbers": {}
       },
       "weakness": "Slow on smooth surfaces; multi-limb coordination requires Engage check to avoid entanglement",

@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_flyers.c1 | Starfish-shaped, multi-chambered turbine heart | High metabolic demand of flight and large brain requires efficient oxygenation ← Atmospheric oxygen and moderate gravity enable high-aerobic lifestyles ← Artificial gene-lock ensures heart pumps blood directly to brain and wings ← Caloric demand outpaces cognitive development, delaying sapience | **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk.; **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F21** Orbital distance matches K2V luminosity for Earth-normal bolometric flux. | Turbine Burst (`at_flyers.turbine_burst`) | Signature | Increases speed by 40% for 2 turns; heart rate spikes, revealing position and draining 3 HP/turn. | Heart overheats if burst is used too long; must rest to cool. |
-| at_flyers.c2 | Digitigrade wing membranes stretched across elongated fingers | Open skies and varied thermal updrafts favor maneuverability ← Elevated air density supports membrane lift ← Lineage exploits unused aerial niches before competition ← Broad membranes maximize surface area for buoyant air currents | **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F21** Orbital distance matches K2V luminosity for Earth-normal bolometric flux.; **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna. | Thermal Ride (`at_flyers.thermal_ride`) | Passive | Gains 5m altitude per turn when stationary, grants +1 evasion. | Cannot land on narrow branches; crashes on complex terrain. |
+| at_flyers.c1 | Starfish-shaped, multi-chambered turbine heart | High metabolic demand of flight and large brain requires efficient oxygenation ← Atmospheric oxygen and moderate gravity enable high-aerobic lifestyles ← Artificial gene-lock ensures heart pumps blood directly to brain and wings ← Caloric demand outpaces cognitive development, delaying sapience | **F8** Oxygen concentration supports high-aerobic metabolisms without rampant fire risk.; **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.; **F21** Orbital distance matches K2V luminosity for Earth-normal bolometric flux. | Turbine Burst (`at_flyers.turbine_burst`) | Signature | The creature suddenly surges forward with frantic energy, its turbine heart pounding loudly enough to betray its location. As it races, the frantic beating weakens nearby targets. | Heart overheats if burst is used too long; must rest to cool. |
+| at_flyers.c2 | Digitigrade wing membranes stretched across elongated fingers | Open skies and varied thermal updrafts favor maneuverability ← Elevated air density supports membrane lift ← Lineage exploits unused aerial niches before competition ← Broad membranes maximize surface area for buoyant air currents | **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F21** Orbital distance matches K2V luminosity for Earth-normal bolometric flux.; **F5** Surface gravity relaxes square-cube scaling limits for terrestrial megafauna. | Thermal Ride (`at_flyers.thermal_ride`) | Passive | When it remains still, the creature steadily climbs higher into the air, its stretched wing membranes catching the updrafts. Its elevated position makes it difficult to track and strike. | Cannot land on narrow branches; crashes on complex terrain. |
 
 ### at_flyers.c1: Starfish-shaped, multi-chambered turbine heart
 
 Trait ← High metabolic demand of flight and large brain requires efficient oxygenation ← Atmospheric oxygen and moderate gravity enable high-aerobic lifestyles ← Artificial gene-lock ensures heart pumps blood directly to brain and wings ← Caloric demand outpaces cognitive development, delaying sapience ← F8, F5, F21
 
-- **Skill:** Turbine Burst (Signature): Increases speed by 40% for 2 turns; heart rate spikes, revealing position and draining 3 HP/turn.
+- **Skill:** Turbine Burst (Signature): The creature suddenly surges forward with frantic energy, its turbine heart pounding loudly enough to betray its location. As it races, the frantic beating weakens nearby targets.
 - **Weakness:** Heart overheats if burst is used too long; must rest to cool.
 - **Observe:**
   1. Chest pulses visibly with starfish pattern
@@ -47,7 +47,7 @@ Trait ← High metabolic demand of flight and large brain requires efficient oxy
 
 Trait ← Open skies and varied thermal updrafts favor maneuverability ← Elevated air density supports membrane lift ← Lineage exploits unused aerial niches before competition ← Broad membranes maximize surface area for buoyant air currents ← F7, F21, F5
 
-- **Skill:** Thermal Ride (Passive): Gains 5m altitude per turn when stationary, grants +1 evasion.
+- **Skill:** Thermal Ride (Passive): When it remains still, the creature steadily climbs higher into the air, its stretched wing membranes catching the updrafts. Its elevated position makes it difficult to track and strike.
 - **Weakness:** Cannot land on narrow branches; crashes on complex terrain.
 - **Observe:**
   1. Fingers splay to tension skin

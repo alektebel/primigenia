@@ -1,0 +1,328 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cobrehorno",
+  "name": {
+    "en": "Cobrehorno"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Deep rift vent fields (1.8x Earth heat flow, pH 4–6.5 gradients)",
+    "diet": "Chemosynthetic symbionts, suspended metal-sulfide particles, vent fluids",
+    "active": "Continuous; slow growth and sintering cycles",
+    "predators": []
+  },
+  "body": "Columnar, branching silicate-sulfide composite plates; heat-shock protein-lined sintering chambers; basaltic dorsal heat-sink; vent-facing intake fronds",
+  "chains": [
+    {
+      "id": "cobrehorno.c1",
+      "trait": "Heat-shock lined sintering chambers",
+      "links": [
+        "Bakes suspended sulfides into dense composite armor",
+        "Vent fluids precipitate metals when cooled by body heat",
+        "High geothermal heat flow accelerates crystallization (Note: native metal reduction remains fantasy; biology concentrates/precipitates only)"
+      ],
+      "roots": [
+        "F18",
+        "F27"
+      ],
+      "skill": {
+        "id": "cobrehorno.kiln_plate",
+        "name": {
+          "en": "Kiln Plate"
+        },
+        "role": "Control",
+        "effect": "The creature vents a protective heat wave that coats the ground, wrapping nearby allies in a shimmering barrier that strongly deflects incoming strikes.",
+        "numbers": {}
+      },
+      "weakness": "Takes 10s to construct; vulnerable mid-build",
+      "observe": [
+        "Water shimmers with heat haze around base",
+        "Branches extrude glassy, concentric plates",
+        "Silt cakes in precise geometric rings"
+      ],
+      "journal": {
+        "en": "It doesn't grow. It cements the vent itself."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Rewrite the chambers as mixing/templating surfaces where vent fluid meets cool seawater, with heat-shock proteins shielding the lining; the armor is precipitated sulfide/oxide, never native metal. Keep 'it cements the vent itself' and delete all stat numbers.",
+        "fixes": [
+          "Rewrite the chambers as mixing/templating surfaces where vent fluid meets cool seawater, with heat-shock proteins shielding the lining; the armor is precipitated sulfide/oxide, never native metal. Keep 'it cements the vent itself' and delete all stat numbers."
+        ],
+        "analogues": [
+          {
+            "organism": "The scaly-foot snail deposits iron-sulfide plates at vents; hot-spring microbial sinter mats concentrate minerals without smelting them.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_squamiferous"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "waren_2003_squamiferous"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrehorno.c2",
+      "trait": "Basaltic dorsal heat-sink plates",
+      "links": [
+        "Maintains internal reactor temperatures for symbionts",
+        "Chemosynthetic metabolism needs stable thermal gradients",
+        "Vent plumes fluctuate wildly in temperature and chemistry"
+      ],
+      "roots": [
+        "F18",
+        "F20"
+      ],
+      "skill": {
+        "id": "cobrehorno.thermal_lure",
+        "name": {
+          "en": "Thermal Lure"
+        },
+        "role": "Engage",
+        "effect": "The creature radiates a warm, inviting scent that draws nearby chemolithotrophs into a gathering pool, where they linger and yield their bounty more readily.",
+        "numbers": {}
+      },
+      "weakness": "Overheats and loses symbionts if displaced to shallow water",
+      "observe": [
+        "Dorsal plates glow dull red under vent light",
+        "Symbiotic bacteria bloom in thick clouds around intake",
+        "Vent currents bend smoothly around its spine"
+      ],
+      "journal": {
+        "en": "It wears the vent's fever as a second skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make the plates passive thermal dampers that keep symbionts inside their tolerance; any red is reflected light, not incandescence; change the weakness to loss of vent chemistry and gradient, not overheating in shallow water.",
+        "fixes": [
+          "Make the plates passive thermal dampers that keep symbionts inside their tolerance; any red is reflected light, not incandescence; change the weakness to loss of vent chemistry and gradient, not overheating in shallow water."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant tube worms hold sulfur-oxidizing symbionts at a narrow fluid/seawater interface; fish show regional endothermy, but nothing lives at reactor temperatures.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrehorno.c3",
+      "trait": "Vacuolar metal-crystal storage nodules",
+      "links": [
+        "Detoxifies dissolved Cu2+/Zn2+ ions",
+        "Free metals denature proteins above 1 µM concentration",
+        "Crustal sulfide weathering leaches ions into vent fluid"
+      ],
+      "roots": [
+        "F19",
+        "F24"
+      ],
+      "skill": {
+        "id": "cobrehorno.metal_cache",
+        "name": {
+          "en": "Metal Cache"
+        },
+        "role": "Passive",
+        "effect": "The creature gathers metal crystals within its nodules, holding them ready for use. These stored metals can be collected to craft items or brew alchemical concoctions.",
+        "numbers": {}
+      },
+      "weakness": "Cannot relocate when heavily laden with nodules",
+      "observe": [
+        "Internal nodules click softly when brushed",
+        "Water clears immediately around its base",
+        "Gills filter metallic particulates into glowing sacs"
+      ],
+      "journal": {
+        "en": "It swallows the mountain's blood and spits out crystal."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Say 'metal-sulfide/phosphate granules', not smelted crystal; 'spits out crystal' becomes shedding loaded granules, and crafting stats go.",
+        "fixes": [
+          "Say 'metal-sulfide/phosphate granules', not smelted crystal; 'spits out crystal' becomes shedding loaded granules, and crafting stats go."
+        ],
+        "analogues": [
+          {
+            "organism": "Hyperaccumulator plants and metal-tolerant fungi/algae pack metals into vacuolar granules; some crabs store metals in hepatopancreatic granules.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_hyperaccumulation"
+            ]
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brooks_1977_hyperaccumulation"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrehorno.c4",
+      "trait": "Electrochemical pH gradient sensors",
+      "links": [
+        "Locates optimal vent plumes for feeding",
+        "Sulfide oxidation and acid fog shift local pH",
+        "Fe-S redox metabolism depends on stable chemical gradients"
+      ],
+      "roots": [
+        "F17",
+        "F21"
+      ],
+      "skill": {
+        "id": "cobrehorno.plume_track",
+        "name": {
+          "en": "Plume Track"
+        },
+        "role": "Basic",
+        "effect": "The creature's sensors flare, causing glowing thermal and acid plumes to shimmer across the terrain and map for a short while.",
+        "numbers": {}
+      },
+      "weakness": "Confused by lightning-induced pH swings or dust storms",
+      "observe": [
+        "Intake fronds angle toward rising bubbles",
+        "Water turns milky near chemical intake",
+        "Symbionts flare bright green along gradient lines"
+      ],
+      "journal": {
+        "en": "It reads the water's sour notes to find the heat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep 'it reads the water's sour notes'; change the weakness to plume turbulence, acid-fog pulses and dust contamination, and remove the minimap stat.",
+        "fixes": [
+          "Keep 'it reads the water's sour notes'; change the weakness to plume turbulence, acid-fog pulses and dust contamination, and remove the minimap stat."
+        ],
+        "analogues": [
+          {
+            "organism": "Bacterial chemotaxis toward pH/sulfide optima, and vent-invertebrate larvae settling on chemical cues from their habitat.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "ferroluz",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Ferroluz clears vent-predators that would otherwise crush Cobrehorno's sinter terraces; Cobrehorno's metal caches fuel Ferroluz's molt cycles."
+    },
+    {
+      "with": "ferroluz",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Cobrehorno concentrates metal sulfides that Ferroluz harvests for molt cycles; Ferroluz patrols the perimeter, deterring burrowing predators that would fracture Cobrehorno's sinter terraces."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "early metazoan-like lineage"
+  },
+  "temperament": "Sedentary, defensive, slow-reacting, highly territorial over vents",
+  "secrets": [
+    "Sintered plates can be harvested for high-grade sulfide ore.",
+    "Releases a cloud of heat-resistant spores when fractured.",
+    "Symbiotic bacteria inside produce heat-stable enzymes used in crafting."
+  ],
+  "moments": [
+    "Watching it slowly extrude a glassy, sulfide-rich plate over a vent mouth, the heat warping the water above it like a mirage."
+  ],
+  "journal": [
+    {
+      "en": "It doesn't eat. It bakes the water into armor."
+    },
+    {
+      "en": "The vents sing through its crystalline ribs."
+    }
+  ]
+}

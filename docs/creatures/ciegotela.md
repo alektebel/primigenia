@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ciegotela.c1 | Eight jointed legs grip smooth basalt | Grips vertical tuff without slipping ← Rock transmits ground tremors efficiently ← D2 gravity demands strong grip | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Grip & Tremor Sense (`ciegotela.grip_tremor_sense`) | Passive | Stays on walls, detects prey 2m away via vibration | Disoriented by loud, sudden roars that mask tremors |
-| ciegotela.c2 | Silk snare spun across cave fissures | Spinnerets extrude liquid protein threads ← D11 dense air reduces drag on strands ← D8 thick atmosphere keeps nets from sagging | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Silk Snare (`ciegotela.silk_snare`) | Control | Pins prey, +30% catch rate, prevents escape | Flammable; wind or fire breaks the web |
-| ciegotela.c3 | Active only at dawn and dusk | Emerges when thermals reverse inward ← D19 wind force drives surface detritus ← F3 26-hour day creates long twilight | **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Crepuscular Ambush (`ciegotela.crepuscular_ambush`) | Basic | +40% first strike chance at dawn/dusk | Hides or freezes in bright midday light |
-| ciegotela.c4 | Dark carapace retains cave moisture | Melanin-like pigment absorbs trace heat ← D10 high oxygen fuels rapid chitin repair ← F15 humid air slows cuticle drying | **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Desiccation Resistance (`ciegotela.desiccation_resistance`) | Defence | -20% stamina drain in dry zones, regenerates shell faster | Overheats if exposed to direct sun or vents |
+| ciegotela.c1 | Eight jointed legs grip smooth basalt | Grips vertical tuff without slipping ← Rock transmits ground tremors efficiently ← D2 gravity demands strong grip | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Grip & Tremor Sense (`ciegotela.grip_tremor_sense`) | Passive | The spider clings firmly to vertical stone surfaces and senses nearby movement through the ground. You can hear its subtle vibrations before it strikes. | Disoriented by loud, sudden roars that mask tremors |
+| ciegotela.c2 | Silk snare spun across cave fissures | Spinnerets extrude liquid protein threads ← D11 dense air reduces drag on strands ← D8 thick atmosphere keeps nets from sagging | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Silk Snare (`ciegotela.silk_snare`) | Control | It weaves a thick silk trap across narrow passages to strongly pin struggling creatures. You must quickly sever the strands before the catch takes hold. | Flammable; wind or fire breaks the web |
+| ciegotela.c3 | Active only at dawn and dusk | Emerges when thermals reverse inward ← D19 wind force drives surface detritus ← F3 26-hour day creates long twilight | **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Crepuscular Ambush (`ciegotela.crepuscular_ambush`) | Basic | The creature lies in wait during twilight hours and strikes swiftly from the shadows. You must watch carefully for its sudden lunge as light fades or breaks. | Hides or freezes in bright midday light |
+| ciegotela.c4 | Dark carapace retains cave moisture | Melanin-like pigment absorbs trace heat ← D10 high oxygen fuels rapid chitin repair ← F15 humid air slows cuticle drying | **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | Desiccation Resistance (`ciegotela.desiccation_resistance`) | Defence | Its dark shell holds moisture tightly, allowing it to endure arid conditions without tiring. The carapace quickly repairs itself after being struck. | Overheats if exposed to direct sun or vents |
 
 ### ciegotela.c1: Eight jointed legs grip smooth basalt
 
 Trait ← Grips vertical tuff without slipping ← Rock transmits ground tremors efficiently ← D2 gravity demands strong grip ← F2, F9
 
-- **Skill:** Grip & Tremor Sense (Passive): Stays on walls, detects prey 2m away via vibration
+- **Skill:** Grip & Tremor Sense (Passive): The spider clings firmly to vertical stone surfaces and senses nearby movement through the ground. You can hear its subtle vibrations before it strikes.
 - **Weakness:** Disoriented by loud, sudden roars that mask tremors
 - **Observe:**
   1. Legs braced on ceiling
@@ -49,7 +49,7 @@ Trait ← Grips vertical tuff without slipping ← Rock transmits ground tremors
 
 Trait ← Spinnerets extrude liquid protein threads ← D11 dense air reduces drag on strands ← D8 thick atmosphere keeps nets from sagging ← F24
 
-- **Skill:** Silk Snare (Control): Pins prey, +30% catch rate, prevents escape
+- **Skill:** Silk Snare (Control): It weaves a thick silk trap across narrow passages to strongly pin struggling creatures. You must quickly sever the strands before the catch takes hold.
 - **Weakness:** Flammable; wind or fire breaks the web
 - **Observe:**
   1. Spinnerets extruding thread
@@ -67,7 +67,7 @@ Trait ← Spinnerets extrude liquid protein threads ← D11 dense air reduces dr
 
 Trait ← Emerges when thermals reverse inward ← D19 wind force drives surface detritus ← F3 26-hour day creates long twilight ← F8, F3, F19
 
-- **Skill:** Crepuscular Ambush (Basic): +40% first strike chance at dawn/dusk
+- **Skill:** Crepuscular Ambush (Basic): The creature lies in wait during twilight hours and strikes swiftly from the shadows. You must watch carefully for its sudden lunge as light fades or breaks.
 - **Weakness:** Hides or freezes in bright midday light
 - **Observe:**
   1. Hides in crevice at noon
@@ -85,7 +85,7 @@ Trait ← Emerges when thermals reverse inward ← D19 wind force drives surface
 
 Trait ← Melanin-like pigment absorbs trace heat ← D10 high oxygen fuels rapid chitin repair ← F15 humid air slows cuticle drying ← F15
 
-- **Skill:** Desiccation Resistance (Defence): -20% stamina drain in dry zones, regenerates shell faster
+- **Skill:** Desiccation Resistance (Defence): Its dark shell holds moisture tightly, allowing it to endure arid conditions without tiring. The carapace quickly repairs itself after being struck.
 - **Weakness:** Overheats if exposed to direct sun or vents
 - **Observe:**
   1. Shell gleams damply

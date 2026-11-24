@@ -39,7 +39,7 @@
           "en": "Structural Empathy"
         },
         "role": "Social",
-        "effect": "Decodes ark network frequencies to calm or disrupt hostile entities within a 20-meter radius, granting advantage on social or command checks.",
+        "effect": "The creature ripples its bioluminescent sails to broadcast calming or agitating signals that wash over nearby foes. Hostile beings either settle down or grow strongly restless, leaving them highly receptive to your words and commands.",
         "numbers": {}
       },
       "weakness": "Cognitive overload in high-gravity zones causes neural tissue to sag, imposing disadvantage on all actions for 3 turns.",
@@ -90,7 +90,7 @@
           "en": "Cerebral Canopy"
         },
         "role": "Control",
-        "effect": "Project thermal plume that cools allies by 3°C and reveals hidden heat signatures within 15m radius",
+        "effect": "The creature projects a sweeping thermal plume that chills nearby allies and exposes hidden heat signatures to view.",
         "numbers": {}
       },
       "weakness": "Sustained neural firing causes rapid radiative overheating, forcing temporary hibernation",

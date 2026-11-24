@@ -32,7 +32,7 @@
           "en": "Mound Lick"
         },
         "role": "Basic",
-        "effect": "Scoops insect biomass, healing 10 HP and granting a 10% movement speed boost for 2 turns.",
+        "effect": "The creature extends its long tongue to scoop up insects, swallowing them to recover its strength and move swiftly for a short while.",
         "numbers": {}
       },
       "weakness": "Slow, deliberate movements make them easy targets for aerial predators.",
@@ -89,7 +89,7 @@
           "en": "Ferment-Gut"
         },
         "role": "Passive",
-        "effect": "+25% resource extraction from soil and mounds; unearths hidden nutrient caches.",
+        "effect": "The creature churns its digestive gut to break down soil and mound matter, steadily gathering nourishment and revealing hidden nutrient deposits nearby.",
         "numbers": {}
       },
       "weakness": "Vulnerable to gut parasites; requires frequent defecation cycles.",

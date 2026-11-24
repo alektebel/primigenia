@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_finger_fishers.c1 | Needle teeth & flexible hooked digits | Precise prey extraction without crushing -> calm shallow swallow seas where brute force triggers escape -> minimal tidal flux across epicontinental shelves -> low tidal amplitude from lunar mass/distance | **F3** Orbital mechanics yield minimal tidal range across shallow shelves.; **F11** Ocean coverage is dominated by shallow epicontinental shelves with low tidal range.; **F23** Orbital radius matches Earth-Moon distance, yielding low tidal flux. | Tide-Snare (`at_finger_fishers.tide_snare`) | Engage | Extends digit hooks to pin aquatic prey within 3m, dealing 15% damage and rooting target for 1 turn. | Digits snap if caught in sudden tidal surges or river floods. |
-| at_finger_fishers.c2 | Refractive eye placement & lateral line sensitivity | Shallow water glare & low contrast -> K2V spectrum filtered through stratocumulus decks -> 1.1 bar atmosphere & 15°C surface temp maintain stable optical refraction -> visual acuity shifts to horizontal polarization detection | **F1** Stellar mass and spectral class define a K2V dwarf with reduced UV output and stable photic zones.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Polar-Gaze (`at_finger_fishers.polar_gaze`) | Passive | +20% detection of submerged prey in shallow water; ignores surface glare. | Disoriented in turbid floodwaters or heavy rain. |
+| at_finger_fishers.c1 | Needle teeth & flexible hooked digits | Precise prey extraction without crushing -> calm shallow swallow seas where brute force triggers escape -> minimal tidal flux across epicontinental shelves -> low tidal amplitude from lunar mass/distance | **F3** Orbital mechanics yield minimal tidal range across shallow shelves.; **F11** Ocean coverage is dominated by shallow epicontinental shelves with low tidal range.; **F23** Orbital radius matches Earth-Moon distance, yielding low tidal flux. | Tide-Snare (`at_finger_fishers.tide_snare`) | Engage | It extends its flexible hooked digits to snatch nearby aquatic prey, strongly clamping them in place for a short while. | Digits snap if caught in sudden tidal surges or river floods. |
+| at_finger_fishers.c2 | Refractive eye placement & lateral line sensitivity | Shallow water glare & low contrast -> K2V spectrum filtered through stratocumulus decks -> 1.1 bar atmosphere & 15°C surface temp maintain stable optical refraction -> visual acuity shifts to horizontal polarization detection | **F1** Stellar mass and spectral class define a K2V dwarf with reduced UV output and stable photic zones.; **F7** Surface pressure is slightly elevated, dampening convective turbulence.; **F10** Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Polar-Gaze (`at_finger_fishers.polar_gaze`) | Passive | Its refractive eyes and sensitive side lines let it strongly detect prey hiding beneath shallow waters, completely ignoring bright surface glare. | Disoriented in turbid floodwaters or heavy rain. |
 
 ### at_finger_fishers.c1: Needle teeth & flexible hooked digits
 
 Trait ← Precise prey extraction without crushing -> calm shallow swallow seas where brute force triggers escape -> minimal tidal flux across epicontinental shelves -> low tidal amplitude from lunar mass/distance ← F3, F11, F23
 
-- **Skill:** Tide-Snare (Engage): Extends digit hooks to pin aquatic prey within 3m, dealing 15% damage and rooting target for 1 turn.
+- **Skill:** Tide-Snare (Engage): It extends its flexible hooked digits to snatch nearby aquatic prey, strongly clamping them in place for a short while.
 - **Weakness:** Digits snap if caught in sudden tidal surges or river floods.
 - **Observe:**
   1. Pale, lanky silhouette against shallow water
@@ -47,7 +47,7 @@ Trait ← Precise prey extraction without crushing -> calm shallow swallow seas 
 
 Trait ← Shallow water glare & low contrast -> K2V spectrum filtered through stratocumulus decks -> 1.1 bar atmosphere & 15°C surface temp maintain stable optical refraction -> visual acuity shifts to horizontal polarization detection ← F1, F7, F10, F25
 
-- **Skill:** Polar-Gaze (Passive): +20% detection of submerged prey in shallow water; ignores surface glare.
+- **Skill:** Polar-Gaze (Passive): Its refractive eyes and sensitive side lines let it strongly detect prey hiding beneath shallow waters, completely ignoring bright surface glare.
 - **Weakness:** Disoriented in turbid floodwaters or heavy rain.
 - **Observe:**
   1. Eyes positioned high on the skull

@@ -1,0 +1,297 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rodadora",
+  "name": {
+    "en": "Rodadora"
+  },
+  "world": "wheels",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Flat salt pans near brine seeps and geothermal vents; avoids dunes. Also, in the council's sketch (no such creature in this world yet): Karrow, karrow uses dead keratin tyres; Rodadora uses living symbiont. Karrow is faster on pure Lanes, but Rodadora can feed its wheel at brine seeps where Karrow starves.",
+    "diet": "Host grazes crustose lichens and chemosynthetic mats; symbiont metabolizes iron/sulfur from brine seeps.",
+    "active": "Diurnal; peaks at midday when thermal winds stabilize.",
+    "predators": [
+      "Tucket"
+    ]
+  },
+  "body": "Bipedal posture with two short walking legs and two manipulator arms. Dorsal body houses a massive, exposed wheel-organ enclosed in a fleshy collar. The wheel is not solid keratin but a pulsating, iridescent mat of tissue that shifts viscosity.",
+  "chains": [
+    {
+      "id": "rodadora.c1",
+      "trait": "Wheel is a metabolically decoupled symbiont colony.",
+      "links": [
+        "Wheel spins freely at high RPM",
+        "Rotational shear would tear nerves and blood vessels if the wheel were host tissue",
+        "Evolution recruited a sessile colony that forms the wheel surface and rolls passively",
+        "Colony is metabolically independent, fed via ducts from the host collar",
+        "Low gravity allows large wheel mass without structural failure or excessive metabolic cost"
+      ],
+      "roots": [
+        "F4",
+        "F16",
+        "F23"
+      ],
+      "skill": {
+        "id": "rodadora.bio_fuel",
+        "name": {
+          "en": "Bio-Fuel"
+        },
+        "role": "Engage",
+        "effect": "The wheel colony rapidly consumes injected nutrients to surge forward at a greatly increased pace. This frantic movement visibly drains vitality from the host as the symbionts burn through their reserves.",
+        "numbers": {}
+      },
+      "weakness": "Symbiont Starvation: If the host cannot feed the wheel (e.g., in barren zones), the wheel slows and eventually ceases rotation, forcing the Rodadora to walk at a quarter speed.",
+      "observe": [
+        "The wheel surface pulses rhythmically, unlike the inert sheen of a dead keratin tyre.",
+        "Host rears up and opens ducts on the collar to drip fluid onto the spinning wheel.",
+        "No blood vessels traverse the axle joint; fluid flows only through fixed ducts in the collar."
+      ],
+      "journal": {
+        "en": "It doesn't roll itself; it sings to its tires and feeds them."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Drop metabolically independent: say metabolically autonomous but water- and micronutrient-subsidised. Grow a dead keratin-mineral core (F18/F23) under a thin living iridescent film and feed that film by a collar fluid brushed onto the inner rim, with no conduit across the axle. Mount the wheel low by the limb pivot instead of dorsally, keep it light, and re-skin Bio-Fuel as spending stored water and micronutrients rather than host HP.",
+        "fixes": [
+          "Drop metabolically independent: say metabolically autonomous but water- and micronutrient-subsidised. Grow a dead keratin-mineral core (F18/F23) under a thin living iridescent film and feed that film by a collar fluid brushed onto the inner rim, with no conduit across the axle. Mount the wheel low by the limb pivot instead of dorsally, keep it light, and re-skin Bio-Fuel as spending stored water and micronutrients rather than host HP."
+        ],
+        "analogues": [
+          {
+            "organism": "Lichen as a composite fungus-plus-photobiont surface, sloth-fur algae trading moisture and micronutrients, echinoderm mutable collagenous tissue for stiffness change; the bacterial flagellar motor is the only true rotary axle biology has built.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodadora.c2",
+      "trait": "Steering via acoustic-symbiont coupling.",
+      "links": [
+        "Wheel has no neural control",
+        "Symbiont colony responds to substrate vibrations",
+        "Host modulates low-frequency hums (40-90 Hz) through the axle",
+        "Different hum patterns induce ciliary shifts in the symbiont rim",
+        "Symbiont creates asymmetric drag, steering the wheel"
+      ],
+      "roots": [
+        "F25",
+        "F9",
+        "F16"
+      ],
+      "skill": {
+        "id": "rodadora.resonance_turn",
+        "name": {
+          "en": "Resonance Turn"
+        },
+        "role": "Control",
+        "effect": "A sharp acoustic pulse locks one side of the rim, forcing the wheel to swivel sharply in place. The abrupt maneuver strains the symbiont network, causing visible instability along the spinning structure.",
+        "numbers": {}
+      },
+      "weakness": "Deaf to high pitches: The Rodadora relies on low hums. A high-frequency whistle or sonic crack can scramble the symbiont's response, causing the wheel to lock or spin wildly.",
+      "observe": [
+        "Host throat sac vibrates visibly in sync with wheel curvature.",
+        "Wheel rim ripples in response to sound, not mechanical input.",
+        "Silence causes the Rodadora to drift; sound makes it snap to direction."
+      ],
+      "journal": {
+        "en": "The road is silent until the Rodadora speaks, and the wheel obeys."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Route the cue through the stationary collar and differential rim-friction pads instead of through the axle, and make it a graded yaw bias that tightens F21's turn only at low-to-moderate speed, never a snap at full speed. Keep the 40-90 Hz call and the whistle startle; add the cost that a continuous hum advertises the grazer to F27 skirls.",
+        "fixes": [
+          "Route the cue through the stationary collar and differential rim-friction pads instead of through the axle, and make it a graded yaw bias that tightens F21's turn only at low-to-moderate speed, never a snap at full speed. Keep the 40-90 Hz call and the whistle startle; add the cost that a continuous hum advertises the grazer to F27 skirls."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric-fish jamming-avoidance and cricket phonotaxis: animals that steer by low-frequency pattern rather than brute force; F25's own hum niche is the direct anchor.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodadora.c3",
+      "trait": "Metabolic braking via crystallizing agent.",
+      "links": [
+        "Need to stop quickly on hard salt",
+        "Friction brakes generate heat; evaporation is slow in dry air",
+        "Symbiont produces a rapid-crystallizing exopolymer under stress",
+        "Host pumps stress hormone into the wheel to trigger crystallization",
+        "Wheel locks instantly without heat buildup"
+      ],
+      "roots": [
+        "F20",
+        "F8",
+        "F23"
+      ],
+      "skill": {
+        "id": "rodadora.hard_stop",
+        "name": {
+          "en": "Hard Stop"
+        },
+        "role": "Defence",
+        "effect": "The wheel abruptly halts its momentum as a freezing agent rapidly crystallizes across its surface. The sudden freeze chills the host while leaving the hardened rim frozen in place.",
+        "numbers": {}
+      },
+      "weakness": "Crystal Lock: If the braking agent is overused or contaminated, the wheel may crystallize permanently until the host spends time to dissolve it, leaving the Rodadora stranded.",
+      "observe": [
+        "Wheel emits a faint sparkle as crystals form along the rim during braking.",
+        "No skid marks or heat haze; stopping is silent and instant.",
+        "Host flinches visibly, indicating metabolic cost of the command."
+      ],
+      "journal": {
+        "en": "It stops by turning itself to glass, then waits to melt."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make the exopolymer a crystalline film that shears off along the rim, converting motion into shed grit plus F20 evaporative cooling over a finite stopping distance and leaving a faint sparkling, damp, smelly track. Delete instant, ice, cold damage and the missing heat; if the film is spent or contaminated it must be regrown through F23, which preserves Crystal Lock as a weakness.",
+        "fixes": [
+          "Make the exopolymer a crystalline film that shears off along the rim, converting motion into shed grit plus F20 evaporative cooling over a finite stopping distance and leaving a faint sparkling, damp, smelly track. Delete instant, ice, cold damage and the missing heat; if the film is spent or contaminated it must be regrown through F23, which preserves Crystal Lock as a weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Trehalose vitrification in desiccation-tolerant tardigrades and yeasts for a glassy protective film, and ice-nucleating proteins that trigger crystallisation on cue; neither erases momentum.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rodadora.c4",
+      "trait": "Symbiont coordination prevents internal shearing.",
+      "links": [
+        "Colony must move as a single rigid wheel",
+        "Without coordination, colony layers would slip against each other",
+        "Host emits continuous low-frequency tone via axle",
+        "Symbiont cilia lock into phase via acoustic resonance",
+        "Ensures wheel integrity at speed"
+      ],
+      "roots": [
+        "F25",
+        "F9"
+      ],
+      "skill": {
+        "id": "rodadora.phase_lock",
+        "name": {
+          "en": "Phase Lock"
+        },
+        "role": "Passive",
+        "effect": "Passive skill. Maintains wheel cohesion. If broken by sonic attack, wheel splits and speed halves until re-locked.",
+        "numbers": {}
+      },
+      "weakness": "Sonic Dissonance: Prolonged exposure to discordant low frequencies (e.g., rival Rodadora) can break phase lock, causing the wheel to shudder and slow.",
+      "observe": [
+        "Two Rodadoras near each other hum in harmony; disharmony causes visible wheel wobble.",
+        "Wheel rim shows concentric ripple patterns when phase is stable.",
+        "Host lowers head to maximize acoustic coupling when speed increases."
+      ],
+      "journal": {
+        "en": "A choir of one, held together by a song."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Let a dead core (F18) carry the shear and redefine Phase Lock as ciliary and matrix cohesion of the thin living film, maintained by collar contact and substrate vibration, with the low hum as a behaviour signal rather than glue. Rival hums can still break ciliary grip and produce a visible wobble and slowdown; keep the passive role and the sonic-dissonance weakness.",
+        "fixes": [
+          "Let a dead core (F18) carry the shear and redefine Phase Lock as ciliary and matrix cohesion of the thin living film, maintained by collar contact and substrate vibration, with the low hum as a behaviour signal rather than glue. Rival hums can still break ciliary grip and produce a visible wobble and slowdown; keep the passive role and the sonic-dissonance weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Metachronal ciliary waves in ciliates and mucociliary epithelia, coordinated by hydrodynamic coupling rather than by sound.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Bipedal ancestor that retained forelimbs for manipulation and grooming of the wheel-collar."
+  },
+  "temperament": "Calm and deliberate; slow to anger but explosive in speed bursts.",
+  "secrets": [
+    "The symbiont colony retains a memory of the host's route; captured Rodadoras can be guided back to their brine seeps by following the symbiont's scent trail.",
+    "If a Rodadora dies, the wheel symbiont can survive for days, rolling aimlessly until it finds a new host or dies of desiccation."
+  ],
+  "moments": [
+    "A Rodadora rears on its walking legs, throat vibrating with a deep hum. The massive wheel behind it spins silently, rim rippling like water, as it accelerates to a blur without a single mechanical clatter."
+  ],
+  "journal": [
+    {
+      "en": "The wheel is alive, and it remembers the sea."
+    },
+    {
+      "en": "Feed the hum, keep the tyre spinning."
+    }
+  ]
+}

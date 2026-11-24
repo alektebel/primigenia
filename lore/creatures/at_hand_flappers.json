@@ -33,7 +33,7 @@
           "en": "Ritual Strut"
         },
         "role": "Social",
-        "effect": "Unfolds flag-hands and performs a rhythmic dance, boosting party morale by 20% and stunning rivals for 1 turn.",
+        "effect": "The creature spreads its flag-like hand-wings and performs a lively, rhythmic dance that strongly lifts the spirits of nearby allies and stuns opponents for a short while.",
         "numbers": {}
       },
       "weakness": "Completely immobile during display; vulnerable to ambush predators.",
@@ -97,7 +97,7 @@
           "en": "Heat-Shed"
         },
         "role": "Defence",
-        "effect": "Reduces incoming damage by 15% during rest turns by venting excess thermal load through frill vasculature.",
+        "effect": "The creature settles down and fans its thermoregulatory frills to vent excess heat, causing its skin to stiffen and making it far more resilient to attacks while it rests.",
         "numbers": {}
       },
       "weakness": "Frills collapse if dehydrated; requires frequent water access.",

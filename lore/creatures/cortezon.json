@@ -35,7 +35,7 @@
           "en": "Ice Shatter"
         },
         "role": "Poke",
-        "effect": "Deals 25 impact damage to walls and armor, breaks ice barriers",
+        "effect": "The creature vibrates its beak to shatter nearby ice and armor plating, leaving cracked surfaces that can be easily cleared.",
         "numbers": {}
       },
       "weakness": "Vibration exposes their position to predators",
@@ -92,7 +92,7 @@
           "en": "Cold Resilience"
         },
         "role": "Defence",
-        "effect": "Reduces frostbite and cold damage by 60%",
+        "effect": "The creature's frost-resistant hide glistens as it moves through freezing conditions without slowing or stumbling.",
         "numbers": {}
       },
       "weakness": "Thermal insulation traps metabolic heat in warm zones",
@@ -149,7 +149,7 @@
           "en": "Gas Digest"
         },
         "role": "Engage",
-        "effect": "Converts atmospheric H2 into 30 energy, fuels burst sprints",
+        "effect": "The creature draws in vent vapors through its spiracles, converting the gases into a sudden burst of speed that carries it swiftly for a short while.",
         "numbers": {}
       },
       "weakness": "Cannot metabolize oxygen or nitrate efficiently",
@@ -206,7 +206,7 @@
           "en": "Grip Anchor"
         },
         "role": "Control",
-        "effect": "Immobilizes target for 8 seconds, prevents knockback",
+        "effect": "The creature's radial arms anchor deeply into the ice, locking it firmly in place so it cannot be pushed or dragged away.",
         "numbers": {}
       },
       "weakness": "Requires solid surface to plant arms; fails in water",
@@ -245,13 +245,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "none",
-      "kind": "cousin",
-      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

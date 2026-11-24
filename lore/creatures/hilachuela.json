@@ -37,7 +37,7 @@
           "en": "Undulate"
         },
         "role": "Passive",
-        "effect": "Move through tight spaces and algae clumps at +20% speed.",
+        "effect": "It slips swiftly through narrow gaps and thick vegetation, allowing you to easily track its path as it navigates tight spaces.",
         "numbers": {}
       },
       "weakness": "Exposed on open sand; slow to turn.",
@@ -100,7 +100,7 @@
           "en": "Strain"
         },
         "role": "Passive",
-        "effect": "Filter food from water at +15% intake rate.",
+        "effect": "It constantly strains the surrounding water, steadily gathering sustenance as it drifts along, leaving a visible trail of particles.",
         "numbers": {}
       },
       "weakness": "Vulnerable if gills clog with sediment.",
@@ -161,7 +161,7 @@
           "en": "Dusk Surge"
         },
         "role": "Passive",
-        "effect": "Rush to feed at dawn/dusk, +30% speed for 10s.",
+        "effect": "It darts eagerly toward food during twilight hours, moving with sudden bursts of energy that make it easy to spot.",
         "numbers": {}
       },
       "weakness": "Predictable timing; easy ambush.",
@@ -223,7 +223,7 @@
           "en": "Scent Trail"
         },
         "role": "Passive",
-        "effect": "Track food and predators within 5m, +20% detection.",
+        "effect": "It constantly senses nearby threats and food sources, adjusting its path with keen awareness so you can anticipate its movements.",
         "numbers": {}
       },
       "weakness": "Relies on water flow; currents disperse scent.",
@@ -276,7 +276,7 @@
       "note": "Eats Hilachuela larvae in the shallows."
     },
     {
-      "with": "Brújula",
+      "with": "brujula",
       "kind": "predation",
       "note": "Filters Hilachuela adults from the water column."
     }

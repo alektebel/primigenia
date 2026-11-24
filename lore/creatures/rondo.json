@@ -42,7 +42,7 @@
           "en": "Long hum"
         },
         "role": "Control",
-        "effect": "Calls the herd into a 20 m corridor from up to 300 m; inside 20 m, upper harmonics allow localization and calm for 6 s. +12 befriend if answered. Honest cost: Garfio hears it but cannot locate the herd.",
+        "effect": "The creature emits a deep call that draws nearby herd members together and calms them for a short while. Responding to the call builds trust, while the sound itself allows the caller to hear the herd but not pinpoint their exact location.",
         "numbers": {}
       },
       "weakness": "Hearing tops out near 10 kHz: any high-pitched Whistle move (even wind through hollow reeds) reads as a calf in trouble, and the nearest adult turns and the herd follows for 8 s.",
@@ -102,7 +102,7 @@
           "en": "Fruit gift"
         },
         "role": "Social",
-        "effect": "+12 befriend; +18 in fruit season. A gift straight from the pouch is fresh for 1 day; sun-dried fruit or nuts keep 3 days.",
+        "effect": "The creature offers fruit from its pouch to build trust, with fresh offerings providing a stronger immediate bond. Dried fruit or nuts stored in the pouch remain usable for a longer period.",
         "numbers": {}
       },
       "weakness": "The pouch hangs bare under the throat: a grab or hit there spills the day's surplus and trust drops 10. In winter it will take offered meat instead and refuses gifts from the player's hand for the rest of the day.",
@@ -161,7 +161,7 @@
           "en": "Herd ring"
         },
         "role": "Defence",
-        "effect": "When cornered or on a moonless night, 3+ Rondos face outward: +40% defence, no flank bonus for attackers, 12 s. In fog they bunch and go still instead: much harder to find, -30% detection.",
+        "effect": "When threatened or in darkness, the creatures form a tight circle facing outward to strongly defend themselves and block flanking attacks. In thick fog they huddle together and remain perfectly still to become much harder to spot.",
         "numbers": {}
       },
       "weakness": "Lure one adult out with dried fruit; the gap it leaves is exactly one body wide and stays open for 4 s.",
@@ -218,7 +218,7 @@
           "en": "Sour spit"
         },
         "role": "Basic",
-        "effect": "Cone of crop ferment to ~4 m: stings eyes/nose, target -accuracy for 3 s. Filling is a telegraphed 2 s drinking motion; one full feed yields two jets, the second takes 20 s to squeeze, then flat until next feeding.",
+        "effect": "The creature telegraphs a drinking motion before spitting a sour spray at nearby threats, causing sharp discomfort and reducing their aim. A single feeding provides a pair of quick bursts before it must rest and drink again.",
         "numbers": {}
       },
       "weakness": "Reload is the weakness: after two jets the proventriculus is empty for the rest of the day. A hard blow to the throat back-floods the fresh gular pouch, souring the day's gifts (trust -10) and leaving the player defenseless for 20 s.",

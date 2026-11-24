@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| mantohoja.c1 | Broad wings for tight canopy turns | High air density increases lift and drag ← Forest understory demands low-speed maneuverability ← Broad wings generate vortex control at 1.6 bar | **F4** Dense air: 1.6 bar | Drift-Dash (`mantohoja.drift_dash`) | Basic | Short burst flight using dense air, moves 8 m and loses 5 stamina | Wing joints stiffen in cold damp, slowing takeoff |
-| mantohoja.c2 | Curved ovipositor injects egg into host | Universal porphyrin-DNA biochemistry shares host enzymes ← Larval gut secretes localized immunosuppressants ← Egg implants inside host abdomen | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Silent Strike (`mantohoja.silent_strike`) | Poke | Inserts egg into target, stuns host for 3s, +15% hatch success | Exposed abdomen during laying invites counterattacks |
-| mantohoja.c3 | Green-red mottled wing camouflage | Canopy light filters through red-purple UV screens ← Prey leaf-insects reflect similar spectral bands ← Matching foliage reduces visual detection | **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Foliage Blend (`mantohoja.foliage_blend`) | Defence | Chance to avoid 1 detection attempt, +10 stealth | Fails against predators that use motion or smell |
-| mantohoja.c4 | Long-range scent tracking at dawn | Molecular diffusion drops to 0.6x in dense humid air ← Chemical trails persist longer in still valleys ← Dawn fog traps odors near forest floor | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Trail (`mantohoja.scent_trail`) | Engage | Marks host path, reveals movement for 12s, +20% tracking | Wind shifts scramble chemical maps |
+| mantohoja.c1 | Broad wings for tight canopy turns | High air density increases lift and drag ← Forest understory demands low-speed maneuverability ← Broad wings generate vortex control at 1.6 bar | **F4** Dense air: 1.6 bar | Drift-Dash (`mantohoja.drift_dash`) | Basic | The mantis glides swiftly through the air on a sudden burst of wind, darting forward before settling down. | Wing joints stiffen in cold damp, slowing takeoff |
+| mantohoja.c2 | Curved ovipositor injects egg into host | Universal porphyrin-DNA biochemistry shares host enzymes ← Larval gut secretes localized immunosuppressants ← Egg implants inside host abdomen | **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont | Silent Strike (`mantohoja.silent_strike`) | Poke | The creature drives its curved ovipositor into the target, paralyzing it briefly while carefully depositing an egg inside. | Exposed abdomen during laying invites counterattacks |
+| mantohoja.c3 | Green-red mottled wing camouflage | Canopy light filters through red-purple UV screens ← Prey leaf-insects reflect similar spectral bands ← Matching foliage reduces visual detection | **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal | Foliage Blend (`mantohoja.foliage_blend`) | Defence | It presses its mottled wings against the nearby foliage, frequently slipping past notice as it moves with remarkable quietness. | Fails against predators that use motion or smell |
+| mantohoja.c4 | Long-range scent tracking at dawn | Molecular diffusion drops to 0.6x in dense humid air ← Chemical trails persist longer in still valleys ← Dawn fog traps odors near forest floor | **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent Trail (`mantohoja.scent_trail`) | Engage | The mantis releases a strong pheromone trail that clings to the target, allowing anyone nearby to easily follow its recent path. | Wind shifts scramble chemical maps |
 
 ### mantohoja.c1: Broad wings for tight canopy turns
 
 Trait ← High air density increases lift and drag ← Forest understory demands low-speed maneuverability ← Broad wings generate vortex control at 1.6 bar ← F4
 
-- **Skill:** Drift-Dash (Basic): Short burst flight using dense air, moves 8 m and loses 5 stamina
+- **Skill:** Drift-Dash (Basic): The mantis glides swiftly through the air on a sudden burst of wind, darting forward before settling down.
 - **Weakness:** Wing joints stiffen in cold damp, slowing takeoff
 - **Observe:**
   1. Wings beat slowly but powerfully
@@ -49,7 +49,7 @@ Trait ← High air density increases lift and drag ← Forest understory demands
 
 Trait ← Universal porphyrin-DNA biochemistry shares host enzymes ← Larval gut secretes localized immunosuppressants ← Egg implants inside host abdomen ← F24
 
-- **Skill:** Silent Strike (Poke): Inserts egg into target, stuns host for 3s, +15% hatch success
+- **Skill:** Silent Strike (Poke): The creature drives its curved ovipositor into the target, paralyzing it briefly while carefully depositing an egg inside.
 - **Weakness:** Exposed abdomen during laying invites counterattacks
 - **Observe:**
   1. Adult approaches host from below
@@ -67,7 +67,7 @@ Trait ← Universal porphyrin-DNA biochemistry shares host enzymes ← Larval gu
 
 Trait ← Canopy light filters through red-purple UV screens ← Prey leaf-insects reflect similar spectral bands ← Matching foliage reduces visual detection ← F25
 
-- **Skill:** Foliage Blend (Defence): Chance to avoid 1 detection attempt, +10 stealth
+- **Skill:** Foliage Blend (Defence): It presses its mottled wings against the nearby foliage, frequently slipping past notice as it moves with remarkable quietness.
 - **Weakness:** Fails against predators that use motion or smell
 - **Observe:**
   1. Wings fold flat against bark
@@ -85,7 +85,7 @@ Trait ← Canopy light filters through red-purple UV screens ← Prey leaf-insec
 
 Trait ← Molecular diffusion drops to 0.6x in dense humid air ← Chemical trails persist longer in still valleys ← Dawn fog traps odors near forest floor ← F16
 
-- **Skill:** Scent Trail (Engage): Marks host path, reveals movement for 12s, +20% tracking
+- **Skill:** Scent Trail (Engage): The mantis releases a strong pheromone trail that clings to the target, allowing anyone nearby to easily follow its recent path.
 - **Weakness:** Wind shifts scramble chemical maps
 - **Observe:**
   1. Antennae sweep in slow arcs

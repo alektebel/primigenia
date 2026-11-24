@@ -21,16 +21,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| hilachuela.c1 | Slender, limbless eel-like body | Maneuvers through turbid volcanic shallows ← Avoids snagging on sediment and algae ← High turbidity and volcanic mud in shallows | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Undulate (`hilachuela.undulate`) | Passive | Move through tight spaces and algae clumps at +20% speed. | Exposed on open sand; slow to turn. |
-| hilachuela.c2 | Ciliated gill rakers filter-feed continuously | Passive feeding while swimming ← Maximizes intake in nutrient-rich waters ← Volcanic runoff and plankton blooms in shallows | **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Strain (`hilachuela.strain`) | Passive | Filter food from water at +15% intake rate. | Vulnerable if gills clog with sediment. |
-| hilachuela.c3 | Swarm activity peaks at dawn and dusk | Follows prey vertical migration ← Avoids midday storms and UV ← Diel migration of zooplankton and intense convection | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | Dusk Surge (`hilachuela.dusk_surge`) | Passive | Rush to feed at dawn/dusk, +30% speed for 10s. | Predictable timing; easy ambush. |
-| hilachuela.c4 | Lateral line and chemosensory barbels detect prey | Compensates for low visibility ← Locates prey swarms and predators ← Turbid water limits vision | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Scent Trail (`hilachuela.scent_trail`) | Passive | Track food and predators within 5m, +20% detection. | Relies on water flow; currents disperse scent. |
+| hilachuela.c1 | Slender, limbless eel-like body | Maneuvers through turbid volcanic shallows ← Avoids snagging on sediment and algae ← High turbidity and volcanic mud in shallows | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Undulate (`hilachuela.undulate`) | Passive | It slips swiftly through narrow gaps and thick vegetation, allowing you to easily track its path as it navigates tight spaces. | Exposed on open sand; slow to turn. |
+| hilachuela.c2 | Ciliated gill rakers filter-feed continuously | Passive feeding while swimming ← Maximizes intake in nutrient-rich waters ← Volcanic runoff and plankton blooms in shallows | **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Strain (`hilachuela.strain`) | Passive | It constantly strains the surrounding water, steadily gathering sustenance as it drifts along, leaving a visible trail of particles. | Vulnerable if gills clog with sediment. |
+| hilachuela.c3 | Swarm activity peaks at dawn and dusk | Follows prey vertical migration ← Avoids midday storms and UV ← Diel migration of zooplankton and intense convection | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | Dusk Surge (`hilachuela.dusk_surge`) | Passive | It darts eagerly toward food during twilight hours, moving with sudden bursts of energy that make it easy to spot. | Predictable timing; easy ambush. |
+| hilachuela.c4 | Lateral line and chemosensory barbels detect prey | Compensates for low visibility ← Locates prey swarms and predators ← Turbid water limits vision | **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight | Scent Trail (`hilachuela.scent_trail`) | Passive | It constantly senses nearby threats and food sources, adjusting its path with keen awareness so you can anticipate its movements. | Relies on water flow; currents disperse scent. |
 
 ### hilachuela.c1: Slender, limbless eel-like body
 
 Trait ← Maneuvers through turbid volcanic shallows ← Avoids snagging on sediment and algae ← High turbidity and volcanic mud in shallows ← F20
 
-- **Skill:** Undulate (Passive): Move through tight spaces and algae clumps at +20% speed.
+- **Skill:** Undulate (Passive): It slips swiftly through narrow gaps and thick vegetation, allowing you to easily track its path as it navigates tight spaces.
 - **Weakness:** Exposed on open sand; slow to turn.
 - **Observe:**
   1. See them weave through algae clumps
@@ -49,7 +49,7 @@ Trait ← Maneuvers through turbid volcanic shallows ← Avoids snagging on sedi
 
 Trait ← Passive feeding while swimming ← Maximizes intake in nutrient-rich waters ← Volcanic runoff and plankton blooms in shallows ← F7, F20
 
-- **Skill:** Strain (Passive): Filter food from water at +15% intake rate.
+- **Skill:** Strain (Passive): It constantly strains the surrounding water, steadily gathering sustenance as it drifts along, leaving a visible trail of particles.
 - **Weakness:** Vulnerable if gills clog with sediment.
 - **Observe:**
   1. Watch gill movement
@@ -68,7 +68,7 @@ Trait ← Passive feeding while swimming ← Maximizes intake in nutrient-rich w
 
 Trait ← Follows prey vertical migration ← Avoids midday storms and UV ← Diel migration of zooplankton and intense convection ← F3, F8, F11
 
-- **Skill:** Dusk Surge (Passive): Rush to feed at dawn/dusk, +30% speed for 10s.
+- **Skill:** Dusk Surge (Passive): It darts eagerly toward food during twilight hours, moving with sudden bursts of energy that make it easy to spot.
 - **Weakness:** Predictable timing; easy ambush.
 - **Observe:**
   1. Count the sun's angle
@@ -87,7 +87,7 @@ Trait ← Follows prey vertical migration ← Avoids midday storms and UV ← Di
 
 Trait ← Compensates for low visibility ← Locates prey swarms and predators ← Turbid water limits vision ← F20
 
-- **Skill:** Scent Trail (Passive): Track food and predators within 5m, +20% detection.
+- **Skill:** Scent Trail (Passive): It constantly senses nearby threats and food sources, adjusting its path with keen awareness so you can anticipate its movements.
 - **Weakness:** Relies on water flow; currents disperse scent.
 - **Observe:**
   1. See barbels twitch
@@ -107,7 +107,7 @@ Trait ← Compensates for low visibility ← Locates prey swarms and predators �
 | With | Kind | Via | Note |
 |---|---|---|---|
 | Cuarteta | predation |  | Eats Hilachuela larvae in the shallows. |
-| Brújula | predation |  | Filters Hilachuela adults from the water column. |
+| brujula | predation |  | Filters Hilachuela adults from the water column. |
 
 ## Journal
 

@@ -40,7 +40,7 @@
           "en": "Low crawl"
         },
         "role": "Basic",
-        "effect": "Moves 1.5× faster through root mats and leaf litter without sinking or alerting surface predators.",
+        "effect": "It scurries swiftly through tangled roots and fallen leaves, staying low enough to avoid sinking while remaining completely hidden from watching predators above.",
         "numbers": {}
       },
       "weakness": "Exposed on open ground; dense air makes running costly (F4, D16).",
@@ -96,7 +96,7 @@
           "en": "Silent glide"
         },
         "role": "Control",
-        "effect": "Drifts 30 m downwind on thermal updrafts, landing softly on canopy or forest floor.",
+        "effect": "It rides gentle air currents to drift silently across the woods, coming to a quiet rest on broad leaves or the soft earth below.",
         "numbers": {}
       },
       "weakness": "Heavy rain or strong gusts knock it from the air (F19, D17).",
@@ -210,7 +210,7 @@
           "en": "Scent track"
         },
         "role": "Poke",
-        "effect": "Locks onto litter plumes within 40 m, ignoring visual decoys and surface noise.",
+        "effect": "It follows strong earthy trails through the undergrowth, paying no mind to fake scents or ground sounds while tracking its target.",
         "numbers": {}
       },
       "weakness": "Blinded by bright daylight; antennae clog in wet spray.",

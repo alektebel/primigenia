@@ -1,0 +1,290 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sidero_chisp",
+  "name": {
+    "en": "Sidero-chisp"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Brackish lagoons, estuaries, tidal channels.",
+    "diet": "Carnivore; small fish, crustaceans, grazers.",
+    "active": "Crepuscular; strikes during low-visibility tides.",
+    "predators": []
+  },
+  "body": "Eel-like, conductive surface tissue, stacked electrocytes, ampullary sensory organs, rust-colored dorsal scales.",
+  "chains": [
+    {
+      "id": "sidero_chisp.c1",
+      "trait": "Electrocytes produce 300V shock in brackish water.",
+      "links": [
+        "Stacked electrocytes generate high voltage",
+        "Stuns prey in low-conductivity water",
+        "Brackish conductivity and electrocyte biology"
+      ],
+      "roots": [
+        "F16",
+        "F26"
+      ],
+      "skill": {
+        "id": "sidero_chisp.brackish_bolt",
+        "name": {
+          "en": "Brackish Bolt"
+        },
+        "role": "Basic",
+        "effect": "The creature lashes out with a sharp electric shock that briefly stuns its target. Nearby enemies in brackish water feel the sudden jolt and freeze in place for a short while.",
+        "numbers": {}
+      },
+      "weakness": "Shock range drops by 70% in high salinity.",
+      "observe": [
+        "Water sparkles violet near body",
+        "Jumps out to strike",
+        "Avoids brine pools"
+      ],
+      "journal": {
+        "en": "A serpent of lightning that fears the deep salt."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the voltage as a short close-range pulse from a large electric organ with a recovery cost, label the lineage highly speculative, and make sure the shock fails in brine as the next chain says.",
+        "fixes": [
+          "Keep the voltage as a short close-range pulse from a large electric organ with a recovery cost, label the lineage highly speculative, and make sure the shock fails in brine as the next chain says."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric eels and knifefish, electric catfish and torpedo rays, independent evolutions of electrocytes; electric eels adjust discharge to water conductivity.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_chisp.c2",
+      "trait": "Electrocytes short-circuit in full brine.",
+      "links": [
+        "High ion concentration causes current leak",
+        "Cannot discharge weapon in brine",
+        "Brine conductivity and electrocyte limits"
+      ],
+      "roots": [
+        "F16",
+        "F26"
+      ],
+      "skill": {
+        "id": "sidero_chisp.brine_vulnerability",
+        "name": {
+          "en": "Brine Vulnerability"
+        },
+        "role": "Passive",
+        "effect": "When surrounded by thick brine, its electrical organs short-circuit and it cannot unleash any electric attacks. Its defenses weaken noticeably, leaving it more exposed to incoming strikes.",
+        "numbers": {}
+      },
+      "weakness": "Trapped in brine pools without attack options.",
+      "observe": [
+        "Retreats when salinity rises",
+        "Body twitches but no spark in brine",
+        "Hides under lagoon edges"
+      ],
+      "journal": {
+        "en": "The salt steals their fire; they are powerless in the deep brine."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "No biological fix needed; phrase the penalty as lost offence plus a brief exposed twitch while current shunts, rather than literal loss of armour.",
+        "fixes": [
+          "No biological fix needed; phrase the penalty as lost offence plus a brief exposed twitch while current shunts, rather than literal loss of armour."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric fish lose discharge effectiveness as water conductivity rises and tune their output to the medium.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_chisp.c3",
+      "trait": "Ampullae detect bio-electric fields.",
+      "links": [
+        "Sensors sense muscle currents",
+        "Finds hidden prey in murky water",
+        "Low visibility and electroreception biology"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "sidero_chisp.electro_locate",
+        "name": {
+          "en": "Electro-locate"
+        },
+        "role": "Poke",
+        "effect": "The creature senses faint bio-electric fields and reveals any hidden targets nearby. Its strikes land with greater accuracy against those it detects.",
+        "numbers": {}
+      },
+      "weakness": "Sensitivity overloaded by lightning; stunned for 1 turn.",
+      "observe": [
+        "Snout twitches toward hidden prey",
+        "Strikes before seeing movement",
+        "Sensors glow faint blue"
+      ],
+      "journal": {
+        "en": "They see the spark of life itself, blind to the world."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Add F16 as a co-root, explain the glow as a symbiont or reflecting structure if you want to keep it, and keep lightning as a genuine overload.",
+        "fixes": [
+          "Add F16 as a co-root, explain the glow as a symbiont or reflecting structure if you want to keep it, and keep lightning as a genuine overload."
+        ],
+        "analogues": [
+          {
+            "organism": "Sharks' and rays' ampullae of Lorenzini; electric fish use electroreception for prey detection and jamming avoidance.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sidero_chisp.c4",
+      "trait": "Dorsal scales match hematite rust color.",
+      "links": [
+        "Pigments produce rust hue",
+        "Camouflage against hematite haze",
+        "Hematite dust and visual ecology"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "sidero_chisp.rust_cloak",
+        "name": {
+          "en": "Rust Cloak"
+        },
+        "role": "Defence",
+        "effect": "Its rust-colored scales blend seamlessly with the murky brackish water, making it nearly invisible at first glance. Enemies struggle to spot it until it moves or attacks.",
+        "numbers": {}
+      },
+      "weakness": "Obvious against blue/green backgrounds (rare but possible).",
+      "observe": [
+        "Scales blend perfectly with mud",
+        "Ambushes prey that walk right by",
+        "Rests half-buried in rust silt"
+      ],
+      "journal": {
+        "en": "A shadow that wears the color of the sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Add F16/F17 as co-roots for rusty silt and acid basins; no biological change needed.",
+        "fixes": [
+          "Add F16/F17 as co-roots for rusty silt and acid basins; no biological change needed."
+        ],
+        "analogues": [
+          {
+            "organism": "Cryptic colour matching in flatfish and other sediment-dwelling fish; animals matching iron-rich soils.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "siderogon",
+      "kind": "cousin",
+      "note": "(council kind 'predator') Sidero-chisp hunts juvenile or sick siderogons in lagoon margins."
+    },
+    {
+      "with": "sidero_copa",
+      "kind": "cousin",
+      "note": "(council kind 'exploit') Sidero-chisp may use sidero-copa shade to ambush, but avoids toxic dew."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Eel-snake lineage."
+  },
+  "temperament": "Ambush, jerky, solitary.",
+  "secrets": [
+    "Harvest electrolyte glands: Sidero-chisp tissue can be used to craft shock tools.",
+    "Lightning rod behavior: Sidero-chisp can be lured into lightning strikes to stun them.",
+    "Brine trap: Luring a sidero-chisp into a brine pool makes it defenseless."
+  ],
+  "moments": [
+    "A shadow splits the mist, then the water boils with violet light. Sidero-chisp strikes, and the lagoon falls silent, save for the fizz of settling ions."
+  ]
+}

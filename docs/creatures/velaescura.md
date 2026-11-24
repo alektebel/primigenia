@@ -21,16 +21,16 @@ Streamlined, pressure-equalized sac with lateral hydrodynamic fins
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| velaescura.c1 | Gill rakers filter chemosynthetic snow | Dense atmosphere carries vent aerosols upward ← Hydrothermal plumes release organic detritus ← Radiogenic heat drives convective transport | **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F13** Focused hydrothermal vent flux of 0.38 W/m² creates redox-rich plumes with steep chemical gradients.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Filter Feed (`velaescura.filter_feed`) | Basic | Converts organic snow into 15 stamina, passive regeneration in plumes | Cannot distinguish toxic vent plumes from food sources |
-| velaescura.c2 | Lateral line detects pressure shifts at long range | High sound speed reduces acoustic attenuation ← Dense hydrogen atmosphere transmits efficiently ← Planetary pressure traps acoustic energy | **F10** Low molecular weight H₂ and high pressure transmit acoustic waves at ~1,200 m/s.; **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling. | Echo Track (`velaescura.echo_track`) | Control | Reveals all entities within 50m, slows their movement by 20% | Sudden loud noises cause temporary disorientation |
-| velaescura.c3 | Internal fluid matches external hydrostatic pressure | 25 km water column generates extreme load ← Deep ocean pressure crushes gas bladders ← High gravity maintains dense water column | **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling.; **F20** Ocean floor pressure reaches ~250 MPa, driving benthic megafauna physiology and membrane adaptation.; **F4** Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding. | Pressure Equalize (`velaescura.pressure_equalize`) | Passive | Immunity to crush damage, allows diving to 20 km depth | Cannot survive rapid pressure drops near ice fractures |
-| velaescura.c4 | Dorsal fin ripples at low frequency | Low temperature reduces metabolic rate ← Cold-adapted enzymes require less energy ← Geothermal heat maintains cool but stable temps | **F16** Low-temperature adapted enzyme kinetics and antifreeze glycoproteins maintain catalytic efficiency at ~275 K.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.; **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling. | Slow Glide (`velaescura.slow_glide`) | Basic | Moves at 2 m/s with zero stamina cost for 10 seconds | Cannot accelerate quickly when startled |
+| velaescura.c1 | Gill rakers filter chemosynthetic snow | Dense atmosphere carries vent aerosols upward ← Hydrothermal plumes release organic detritus ← Radiogenic heat drives convective transport | **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F13** Focused hydrothermal vent flux of 0.38 W/m² creates redox-rich plumes with steep chemical gradients.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input. | Filter Feed (`velaescura.filter_feed`) | Basic | The creature continuously sifts through the falling snow with its gill rakers, drawing nourishment from the particles. This constant filtering causes its plumes to gently pulse with a soft, lingering glow. | Cannot distinguish toxic vent plumes from food sources |
+| velaescura.c2 | Lateral line detects pressure shifts at long range | High sound speed reduces acoustic attenuation ← Dense hydrogen atmosphere transmits efficiently ← Planetary pressure traps acoustic energy | **F10** Low molecular weight H₂ and high pressure transmit acoustic waves at ~1,200 m/s.; **F7** 12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.; **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling. | Echo Track (`velaescura.echo_track`) | Control | The creature senses pressure shifts across the water, making nearby opponents clearly visible and causing them to move sluggishly. | Sudden loud noises cause temporary disorientation |
+| velaescura.c3 | Internal fluid matches external hydrostatic pressure | 25 km water column generates extreme load ← Deep ocean pressure crushes gas bladders ← High gravity maintains dense water column | **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling.; **F20** Ocean floor pressure reaches ~250 MPa, driving benthic megafauna physiology and membrane adaptation.; **F4** Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding. | Pressure Equalize (`velaescura.pressure_equalize`) | Passive | Its internal fluids naturally balance with the surrounding water, letting it plunge into the deepest trenches without being crushed. | Cannot survive rapid pressure drops near ice fractures |
+| velaescura.c4 | Dorsal fin ripples at low frequency | Low temperature reduces metabolic rate ← Cold-adapted enzymes require less energy ← Geothermal heat maintains cool but stable temps | **F16** Low-temperature adapted enzyme kinetics and antifreeze glycoproteins maintain catalytic efficiency at ~275 K.; **F1** Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.; **F11** 25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling. | Slow Glide (`velaescura.slow_glide`) | Basic | Its dorsal fin ripples steadily, carrying it forward at a constant pace without tiring for a short while. | Cannot accelerate quickly when startled |
 
 ### velaescura.c1: Gill rakers filter chemosynthetic snow
 
 Trait ← Dense atmosphere carries vent aerosols upward ← Hydrothermal plumes release organic detritus ← Radiogenic heat drives convective transport ← F7, F13, F1
 
-- **Skill:** Filter Feed (Basic): Converts organic snow into 15 stamina, passive regeneration in plumes
+- **Skill:** Filter Feed (Basic): The creature continuously sifts through the falling snow with its gill rakers, drawing nourishment from the particles. This constant filtering causes its plumes to gently pulse with a soft, lingering glow.
 - **Weakness:** Cannot distinguish toxic vent plumes from food sources
 - **Observe:**
   1. Visible particulate trails in water
@@ -48,7 +48,7 @@ Trait ← Dense atmosphere carries vent aerosols upward ← Hydrothermal plumes 
 
 Trait ← High sound speed reduces acoustic attenuation ← Dense hydrogen atmosphere transmits efficiently ← Planetary pressure traps acoustic energy ← F10, F7, F11
 
-- **Skill:** Echo Track (Control): Reveals all entities within 50m, slows their movement by 20%
+- **Skill:** Echo Track (Control): The creature senses pressure shifts across the water, making nearby opponents clearly visible and causing them to move sluggishly.
 - **Weakness:** Sudden loud noises cause temporary disorientation
 - **Observe:**
   1. Ripple patterns on water surface
@@ -66,7 +66,7 @@ Trait ← High sound speed reduces acoustic attenuation ← Dense hydrogen atmos
 
 Trait ← 25 km water column generates extreme load ← Deep ocean pressure crushes gas bladders ← High gravity maintains dense water column ← F11, F20, F4
 
-- **Skill:** Pressure Equalize (Passive): Immunity to crush damage, allows diving to 20 km depth
+- **Skill:** Pressure Equalize (Passive): Its internal fluids naturally balance with the surrounding water, letting it plunge into the deepest trenches without being crushed.
 - **Weakness:** Cannot survive rapid pressure drops near ice fractures
 - **Observe:**
   1. Incompressible body shape
@@ -84,7 +84,7 @@ Trait ← 25 km water column generates extreme load ← Deep ocean pressure crus
 
 Trait ← Low temperature reduces metabolic rate ← Cold-adapted enzymes require less energy ← Geothermal heat maintains cool but stable temps ← F16, F1, F11
 
-- **Skill:** Slow Glide (Basic): Moves at 2 m/s with zero stamina cost for 10 seconds
+- **Skill:** Slow Glide (Basic): Its dorsal fin ripples steadily, carrying it forward at a constant pace without tiring for a short while.
 - **Weakness:** Cannot accelerate quickly when startled
 - **Observe:**
   1. Undulating fin wave
@@ -97,12 +97,6 @@ Trait ← Low temperature reduces metabolic rate ← Cold-adapted enzymes requir
   - Analogue: Antarctic notothenioids and other cold-adapted swimmers with economical slow muscle undulation at ~0°C-class temperatures.: as named by the judge; no mechanism or reference recorded
   - Fix: Near-freezing F16 kinetics favor low-cost undulatory cruise in a food-sparse, chemosynthetic-detritus niche; poor burst escape when startled is expected for passive filter feeders.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| none | cousin |  | (council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers. |
 
 ## Journal
 

@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Hyphal overburden & karst exhalation zones where network source-sink dynamics concentrate resources",
+    "habitat": "Hyphal overburden & karst exhalation zones where network source-sink dynamics concentrate resources. Also, in the council's sketch (no such creature in this world yet): Siltfilter, siltfilter grazes on the same benthic detritus, inadvertently clearing hyphal paths; Sustrisoma rides the siltfilter’s gill rakers to reach higher nutrient fronts.",
     "diet": "Chemoautotrophic symbiont; digests fungal exudates, ion gradients, and spore dust via external enzymatic hydrolysis. 'Wants' network stability and spore dispersal over personal reproduction.",
     "active": "Nocturnal and crepuscular; activity pulses match chemical diffusion cycles (hours to days)",
     "predators": []
@@ -34,7 +34,7 @@
           "en": "Chemoreflex Pulse"
         },
         "role": "Passive",
-        "effect": "Reveals hidden resource paths within an 8m radius",
+        "effect": "The creature senses chemical trails in the air and reveals hidden resource paths nearby.",
         "numbers": {}
       },
       "weakness": "Sudden VOC bursts blind receptors for 2 turns",
@@ -96,7 +96,7 @@
           "en": "Hyphal Sync"
         },
         "role": "Social",
-        "effect": "Shares movement speed with allies, reducing stamina drain by 40%",
+        "effect": "It syncs its movement with nearby creatures, allowing them to travel together at a steady pace without tiring quickly.",
         "numbers": {}
       },
       "weakness": "Desiccates if exposed to bare rock for >3 turns",
@@ -152,7 +152,7 @@
           "en": "Symbiotic Shield"
         },
         "role": "Defence",
-        "effect": "Converts incoming toxin damage into network resistance boost (+3 for 2 turns)",
+        "effect": "It secretes a protective substance that absorbs harmful chemicals and strongly fortifies the surrounding fungal network for a short while.",
         "numbers": {}
       },
       "weakness": "Melanin-rich zones denature gut enzymes permanently",
@@ -216,7 +216,7 @@
           "en": "Network Resonance"
         },
         "role": "Control",
-        "effect": "Plays VOC/electrical patch to redirect network flow by 15% over 3 turns, drains 20 stamina",
+        "effect": "It emits chemical and electrical signals to steer the flow of resources nearby, though the effort tires it out.",
         "numbers": {}
       },
       "weakness": "Sensitive to sudden pressure drops from frontal systems",
@@ -259,13 +259,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Siltfilter",
-      "kind": "cousin",
-      "note": "(council kind 'commensal') Siltfilter grazes on the same benthic detritus, inadvertently clearing hyphal paths; Sustrisoma rides the siltfilter’s gill rakers to reach higher nutrient fronts."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

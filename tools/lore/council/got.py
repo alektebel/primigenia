@@ -1,6 +1,6 @@
 """Graph-of-Thoughts lore council (A22), world-parametric.
 
-Unit of thought = one causal chain:  trait <- why ... <- world fact(s) -> skill (+ weakness).
+Unit of thought = one causal chain:  trait <- why ... <- world fact(s) -> skill NAME and ROLE with a plain-language behaviour (+ weakness).
 Operations (each step is resumable; outputs in <runs>/got/):
   1 GENERATE   advisors write chains for every creature (JSON)
   2 AGGREGATE  per creature, merge the candidate chains into the best distinct ones (combining links, keeping provenance)
@@ -35,7 +35,7 @@ BASE = CANON + NOTES + "\n\n# THE WORLD CANON (cite facts by id)\n" + PLANET + "
 CHAIN_SCHEMA = """{"creature": str, "trait": str (the observable trait, 3-8 words),
  "links": [str, ...] (the 'why' steps from the trait down to the root, 2-4 steps, each one short and causal),
  "roots": ["F3", ...] (world fact ids from the canon),
- "skill": {"name": str, "role": "Basic|Engage|Poke|Control|Defence|Signature|Passive|Social", "effect": str (what it does in play, with a number)},
+ "skill": {"name": str, "role": "Basic|Engage|Poke|Control|Defence|Signature|Passive|Social", "effect": str (what the creature does, in plain words: a behaviour the player can see and answer; NEVER numbers, turns, percentages, seconds, metres or any game stats: moves and numbers are designed later in the game labs)},
  "weakness": str (how the player can exploit it), "observe": [str, str, str] (three things the player must SEE to reveal the chain),
  "journal": str (one terse, curious line),
  "references": [{"author": "Family, G.", "year": int, "title": str, "venue": str}] (OPTIONAL, 0-2 real published works behind the biology; only if you are sure they exist)}"""
@@ -148,9 +148,9 @@ def aggregate(gen):
 
 
 JUDGES = {"physicist": "causality and physics: does every link follow from the previous one and from the cited world facts?",
-          "skeptic": "honesty: is anything arbitrary ('because it looks cool'), are numbers plausible, is there a better contrarian cause?",
+          "skeptic": "honesty: is anything arbitrary ('because it looks cool'), are the PLANET numbers plausible, is there a better contrarian cause? (game numbers on skills are forbidden)",
           "astrobio": "biological plausibility for THIS creature in THIS world: does selection favour it, is the physiology/energy budget possible, what is the closest real Earth analogue (name it, cite author/year if known, else say unverified)? Where the chemistry or physics is speculative say 'highly speculative' and grade honestly.",
-          "designer": "play: is the skill fun, readable and balanced in its role, is the weakness exploitable, are the 3 observe steps visible in a 3D game?"}
+          "designer": "play: is the skill behaviour fun and readable (judge only the behaviour: numbers, turns and percentages are NOT the council's job, flag them as an error if present), is the weakness exploitable, are the 3 observe steps visible in a 3D game?"}
 if JUDGE_SET: JUDGES = {k: v for k, v in JUDGES.items() if k in JUDGE_SET}
 
 
@@ -247,6 +247,15 @@ def profiles(names=None, final=None):
 
 
 # ---- SPECIATE (new creatures from physics) --------------------------------------------------------------------
+def _complete(gen, out):
+    """The referee must cover every chain of every species (a truncated answer used to leave chains unreviewed): raise so cached() retries."""
+    if not (isinstance(gen, list) and isinstance(out, list)): return
+    got = {str(x.get("name", "")).lower(): len(x.get("chains") or []) for x in out if isinstance(x, dict)}
+    for sp in gen:
+        if isinstance(sp, dict) and sp.get("name") and isinstance(sp.get("chains"), list) and got.get(str(sp["name"]).lower(), 0) < len(sp["chains"]):
+            raise ValueError(f"referee answer incomplete for {sp['name']}")
+
+
 def speciate(seed, n=3, base=None):
     tag = re.sub(r"\W+", "_", seed or "niches")[:40]
     sdir = os.path.join(OUT, "species")
@@ -264,10 +273,14 @@ def speciate(seed, n=3, base=None):
     sc = cached(f"6_species_{tag}_review.json", lambda: jparse(ask("skeptic", ADV["skeptic"] + "\n\n" + BASE,
         f"Check these new species against the world canon and the existing creatures:\n{json.dumps(gen, ensure_ascii=False)}\n"
         'Output ONLY JSON: [{"name": str, "chains": [{"trait": str, "score": 1-10, "fix": str}]}]', temp=0.2, max_tokens=6000)), base=sdir)
-    bio = cached(f"6_species_{tag}_astrobio.json", lambda: jparse(ask("astrobio", persona("astrobio") + "\n\n" + BASE,
+    def bio_ask():
+        out = jparse(ask("astrobio", persona("astrobio") + "\n\n" + BASE,
         f"Referee these new species for biological plausibility in THIS world (say 'highly speculative' where true):\n{json.dumps(gen, ensure_ascii=False)}\n"
         'Output ONLY JSON: [{"name": str, "chains": [{"trait": str, "verdict": "plausible|fixable|implausible", "why": str, '
-        '"analogue": str, "reference": str (author/year or textbook, or "from memory, unverified"), "fix": str}]}]')), base=sdir)
+        '"analogue": str, "reference": str (author/year or textbook, or "from memory, unverified"), "fix": str}]}]'))
+        _complete(gen, out)
+        return out
+    bio = cached(f"6_species_{tag}_astrobio.json", bio_ask, base=sdir)
     return {"species": gen, "review": sc, "astrobio": bio}
 
 
@@ -313,9 +326,10 @@ def species_all():
             for idx, ch in enumerate(chs):
                 bi = match(b.get("chains"), ch["trait"], idx) or {}
                 si = match(v.get("chains"), ch["trait"], idx) or {}
-                bio_items.append({"trait": ch["trait"], "score": VERD.get(bi.get("verdict"), 6), "fix": bi.get("fix") or bi.get("why", ""),
+                # no referee answer = no score (verdict "unreviewed"); never default to 6/"fixable" (A102.2)
+                bio_items.append({"trait": ch["trait"], "score": VERD.get(bi.get("verdict")), "fix": bi.get("fix") or bi.get("why", ""),
                                   "analogue": bi.get("analogue", ""), "reference": bi.get("reference", "")})
-                sk_items.append({"trait": ch["trait"], "score": si.get("score", 6) if isinstance(si.get("score"), (int, float)) else 6, "fix": si.get("fix", "")})
+                sk_items.append({"trait": ch["trait"], "score": si.get("score") if isinstance(si.get("score"), (int, float)) else None, "fix": si.get("fix", "")})
             json.dump(bio_items, open(os.path.join(sdir, f"3_score_r0_{sname(name)}_astrobio.json"), "w"), indent=1, ensure_ascii=False)
             json.dump(sk_items, open(os.path.join(sdir, f"3_score_r0_{sname(name)}_skeptic.json"), "w"), indent=1, ensure_ascii=False)
     json.dump({"chains": chains, "graph": {"edges": edges}}, open(os.path.join(sdir, "graph.json"), "w"), indent=1, ensure_ascii=False)

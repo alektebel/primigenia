@@ -50,7 +50,7 @@
           "en": "Adaptive Gut"
         },
         "role": "Passive",
-        "effect": "Extract +30% calories from any carcass or fruit; tolerates low-conc H₂S and arsenic seeps via inducible enzymes.",
+        "effect": "The creature digests food and fruit much more thoroughly, gaining lasting nourishment from every meal. Its stomach naturally breaks down harmful toxins, allowing it to safely consume poisonous seeps and spoiled matter without harm.",
         "numbers": {}
       },
       "weakness": "Alkaloid-rich red-veined plants (F25) cause cramps and skin-tint warning; must read leaf pigments before consumption.",
@@ -108,7 +108,7 @@
           "en": "Graft"
         },
         "role": "Engage",
-        "effect": "Attach one found carcass part for +1 move slot; rejection chance scales with dietary mismatch and carcass age.",
+        "effect": "The creature pulls a nearby carcass fragment into its flesh, strongly binding it to its body to grant extra movement. If the meat is too old or fundamentally unlike its natural diet, the graft will reject itself and fall away.",
         "numbers": {}
       },
       "weakness": "A rejected graft burns 10 DNA and causes temporary mobility loss; test on cousins first. Heavy metal/arsenic exposure increases rejection.",
@@ -167,7 +167,7 @@
           "en": "Craft Tool"
         },
         "role": "Control",
-        "effect": "Unlock new moves and modify DNA slots; locks allocation for 5 seconds to prevent mutation drift.",
+        "effect": "The creature uses its nimble limbs to reshape its own genetic makeup, unlocking new physical abilities. Once it begins this transformation, it holds its new form steady for a short while, preventing unwanted changes from taking over.",
         "numbers": {}
       },
       "weakness": "Neural processing drains stamina at 2× rate; must rest or feed after three uses.",
@@ -226,7 +226,7 @@
           "en": "Aerodynamic Glide"
         },
         "role": "Basic",
-        "effect": "Reduce fall damage by 60% and glide up to 40 m; sprint stamina drains 1.6× faster.",
+        "effect": "The creature spreads its broad wing membranes to catch the air, gliding gracefully over long distances before landing softly. It moves with great speed, though this rapid motion quickly tires its muscles.",
         "numbers": {}
       },
       "weakness": "High drag makes sudden direction changes costly; wind gusts push off-course.",

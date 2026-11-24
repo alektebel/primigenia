@@ -21,17 +21,17 @@ Tiny, crimson-hued colonies that drink the dim red starlight through red-shifted
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| sinkers.c1 | Rapid mitotic division before cooking | Drifts downward under 2.6 g gravity ← Crosses adiabatic lapse rate of 2 K/km ← Reaches >10 bar cooking zone ← Forces rapid mitosis before protein denaturation | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.; **F15** Adiabatic descent into the >10 bar cooking zone forces rapid mitotic reproduction and armored spore dispersal before thermal denaturation. | Spore Burst (`sinkers.spore_burst`) | Basic | Releases 3 defensive spores on descent, dealing 12 heat damage and slowing pursuit | Completely immobile and vulnerable during the 4-second mitosis phase |
-| sinkers.c2 | Red-shifted near-infrared photopigments in upper decks | Star at 5.2 AU yields 3.5% Earth flux ← Photon starvation limits visible light capture ← Absorbs 600–900 nm NIR bands ← Enables anoxygenic photosynthesis in dim haze | **F1** G2V main-sequence star with 0.95 L☉ luminosity provides reduced, red-skewing insolation (~3.5% Earth flux) at 5.2 AU.; **F14** Red-shifted photopigments and anoxygenic photoautotrophy enable energy capture in NIR-heavy, low-photon flux upper decks.; **F22** Insolation factor is ~0.035 Earth at 5.2 AU, 0.95 L☉. | NIR Pulse (`sinkers.nir_pulse`) | Poke | Gains 15% damage boost and 10% evasion in low-light cloud strata | Suffers neural static and reduced accuracy under bright UV flares |
-| sinkers.c3 | Pressure-reactive azotosome sealant | Azotosome lipids cross-link under high pressure ← Cross-linking forms a temporary, damage-resistant membrane seal ← Rapid ascent to low-pressure zones breaks bonds, causing internal gas expansion ← Root: F13, F16 | **F13** Hydrocarbon-amine amphiphiles or azotosome-like membranes maintain fluidity and solvent compatibility in low-temperature, reduced conditions.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Pressure Seal (`sinkers.pressure_seal`) | Defence | Grants 25% damage reduction for 3s, but applies a stacking 'Decompression' debuff if used in low-pressure zones | Using it in thin upper clouds causes rapid tissue expansion and movement penalty |
-| sinkers.c4 | Armored mineralized spore casing | Shield DNA from high-pressure cooking ← Lethal zone begins above supercritical transition ← No surface means descent is permanent mortality ← Selects for durable dispersal units | **F10** No solid surface exists; supercritical fluid transition occurs at ~100 bar, with a metallic hydrogen dynamo core at Mbar depths.; **F15** Adiabatic descent into the >10 bar cooking zone forces rapid mitotic reproduction and armored spore dispersal before thermal denaturation. | Spore Shell (`sinkers.spore_shell`) | Defence | Block 4 damage, gain 1 stack of armor | Brittle against kinetic shear |
-| sinkers.c5 | Chemosynthetic ammonia oxidation fallback | Fuel metabolism where light fails ← Insolation drops precipitously with depth ← Cloud decks scatter and absorb stellar flux ← Sustains survival in permanent shadow | **F22** Insolation factor is ~0.035 Earth at 5.2 AU, 0.95 L☉.; **F14** Red-shifted photopigments and anoxygenic photoautotrophy enable energy capture in NIR-heavy, low-photon flux upper decks. | Ammonia Tap (`sinkers.ammonia_tap`) | Poke | Deal 4 damage, heal 2 HP | Starved in pure hydrogen pockets |
+| sinkers.c1 | Rapid mitotic division before cooking | Drifts downward under 2.6 g gravity ← Crosses adiabatic lapse rate of 2 K/km ← Reaches >10 bar cooking zone ← Forces rapid mitosis before protein denaturation | **F3** 1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.; **F9** Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.; **F15** Adiabatic descent into the >10 bar cooking zone forces rapid mitotic reproduction and armored spore dispersal before thermal denaturation. | Spore Burst (`sinkers.spore_burst`) | Basic | On its descent, the creature releases a cluster of defensive spores nearby that radiate intense heat and strongly slow anyone chasing it. | Completely immobile and vulnerable during the 4-second mitosis phase |
+| sinkers.c2 | Red-shifted near-infrared photopigments in upper decks | Star at 5.2 AU yields 3.5% Earth flux ← Photon starvation limits visible light capture ← Absorbs 600–900 nm NIR bands ← Enables anoxygenic photosynthesis in dim haze | **F1** G2V main-sequence star with 0.95 L☉ luminosity provides reduced, red-skewing insolation (~3.5% Earth flux) at 5.2 AU.; **F14** Red-shifted photopigments and anoxygenic photoautotrophy enable energy capture in NIR-heavy, low-photon flux upper decks.; **F22** Insolation factor is ~0.035 Earth at 5.2 AU, 0.95 L☉. | NIR Pulse (`sinkers.nir_pulse`) | Poke | In dim cloud layers, its infrared pulses strike strongly while its body shifts nearby to avoid counterattacks. | Suffers neural static and reduced accuracy under bright UV flares |
+| sinkers.c3 | Pressure-reactive azotosome sealant | Azotosome lipids cross-link under high pressure ← Cross-linking forms a temporary, damage-resistant membrane seal ← Rapid ascent to low-pressure zones breaks bonds, causing internal gas expansion ← Root: F13, F16 | **F13** Hydrocarbon-amine amphiphiles or azotosome-like membranes maintain fluidity and solvent compatibility in low-temperature, reduced conditions.; **F16** Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity. | Pressure Seal (`sinkers.pressure_seal`) | Defence | It tightly seals its outer membrane to shrug off blows for a short while, though forcing this seal in thin air causes its body to slowly unravel from the strain. | Using it in thin upper clouds causes rapid tissue expansion and movement penalty |
+| sinkers.c4 | Armored mineralized spore casing | Shield DNA from high-pressure cooking ← Lethal zone begins above supercritical transition ← No surface means descent is permanent mortality ← Selects for durable dispersal units | **F10** No solid surface exists; supercritical fluid transition occurs at ~100 bar, with a metallic hydrogen dynamo core at Mbar depths.; **F15** Adiabatic descent into the >10 bar cooking zone forces rapid mitotic reproduction and armored spore dispersal before thermal denaturation. | Spore Shell (`sinkers.spore_shell`) | Defence | It hardens a mineralized spore casing over its body to absorb incoming strikes, and each impact leaves the armor thicker and more resilient. | Brittle against kinetic shear |
+| sinkers.c5 | Chemosynthetic ammonia oxidation fallback | Fuel metabolism where light fails ← Insolation drops precipitously with depth ← Cloud decks scatter and absorb stellar flux ← Sustains survival in permanent shadow | **F22** Insolation factor is ~0.035 Earth at 5.2 AU, 0.95 L☉.; **F14** Red-shifted photopigments and anoxygenic photoautotrophy enable energy capture in NIR-heavy, low-photon flux upper decks. | Ammonia Tap (`sinkers.ammonia_tap`) | Poke | It draws on stored ammonia to lash out with a corrosive strike while simultaneously drawing nutrients back into its own flesh. | Starved in pure hydrogen pockets |
 
 ### sinkers.c1: Rapid mitotic division before cooking
 
 Trait ← Drifts downward under 2.6 g gravity ← Crosses adiabatic lapse rate of 2 K/km ← Reaches >10 bar cooking zone ← Forces rapid mitosis before protein denaturation ← F3, F9, F15
 
-- **Skill:** Spore Burst (Basic): Releases 3 defensive spores on descent, dealing 12 heat damage and slowing pursuit
+- **Skill:** Spore Burst (Basic): On its descent, the creature releases a cluster of defensive spores nearby that radiate intense heat and strongly slow anyone chasing it.
 - **Weakness:** Completely immobile and vulnerable during the 4-second mitosis phase
 - **Observe:**
   1. Pulsing crimson membrane
@@ -47,7 +47,7 @@ Trait ← Drifts downward under 2.6 g gravity ← Crosses adiabatic lapse rate o
 
 Trait ← Star at 5.2 AU yields 3.5% Earth flux ← Photon starvation limits visible light capture ← Absorbs 600–900 nm NIR bands ← Enables anoxygenic photosynthesis in dim haze ← F1, F14, F22
 
-- **Skill:** NIR Pulse (Poke): Gains 15% damage boost and 10% evasion in low-light cloud strata
+- **Skill:** NIR Pulse (Poke): In dim cloud layers, its infrared pulses strike strongly while its body shifts nearby to avoid counterattacks.
 - **Weakness:** Suffers neural static and reduced accuracy under bright UV flares
 - **Observe:**
   1. Crimson shimmering surface
@@ -62,7 +62,7 @@ Trait ← Star at 5.2 AU yields 3.5% Earth flux ← Photon starvation limits vis
 
 Trait ← Azotosome lipids cross-link under high pressure ← Cross-linking forms a temporary, damage-resistant membrane seal ← Rapid ascent to low-pressure zones breaks bonds, causing internal gas expansion ← Root: F13, F16 ← F13, F16
 
-- **Skill:** Pressure Seal (Defence): Grants 25% damage reduction for 3s, but applies a stacking 'Decompression' debuff if used in low-pressure zones
+- **Skill:** Pressure Seal (Defence): It tightly seals its outer membrane to shrug off blows for a short while, though forcing this seal in thin air causes its body to slowly unravel from the strain.
 - **Weakness:** Using it in thin upper clouds causes rapid tissue expansion and movement penalty
 - **Observe:**
   1. Iridescent liquid film
@@ -77,7 +77,7 @@ Trait ← Azotosome lipids cross-link under high pressure ← Cross-linking form
 
 Trait ← Shield DNA from high-pressure cooking ← Lethal zone begins above supercritical transition ← No surface means descent is permanent mortality ← Selects for durable dispersal units ← F10, F15
 
-- **Skill:** Spore Shell (Defence): Block 4 damage, gain 1 stack of armor
+- **Skill:** Spore Shell (Defence): It hardens a mineralized spore casing over its body to absorb incoming strikes, and each impact leaves the armor thicker and more resilient.
 - **Weakness:** Brittle against kinetic shear
 - **Observe:**
   1. Geometric facets
@@ -92,7 +92,7 @@ Trait ← Shield DNA from high-pressure cooking ← Lethal zone begins above sup
 
 Trait ← Fuel metabolism where light fails ← Insolation drops precipitously with depth ← Cloud decks scatter and absorb stellar flux ← Sustains survival in permanent shadow ← F22, F14
 
-- **Skill:** Ammonia Tap (Poke): Deal 4 damage, heal 2 HP
+- **Skill:** Ammonia Tap (Poke): It draws on stored ammonia to lash out with a corrosive strike while simultaneously drawing nutrients back into its own flesh.
 - **Weakness:** Starved in pure hydrogen pockets
 - **Observe:**
   1. Faint greenish haze

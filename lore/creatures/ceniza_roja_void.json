@@ -9,7 +9,7 @@
   "status": "draft",
   "stage": "space",
   "niche": {
-    "habitat": "Ice veneer, shallow fractures, ejected regolith",
+    "habitat": "Ice veneer, shallow fractures, ejected regolith. Also, in the council's sketch (no such creature in this world yet): Coraza Peregrina, ceniza Roja aggregates within the Coraza's sheltered core; the Coraza provides magnetic navigation and superior shielding, carrying Ceniza to worlds the surface cannot reach alone.",
     "diet": "Radiolytic redox couples in ice lattice; chemolithotrophy upon landing",
     "active": "Cryptobiotic stasis >99.99% of time; brief activation during flyby heat or landing",
     "predators": []
@@ -34,7 +34,7 @@
           "en": "Radiolytic Shielding"
         },
         "role": "Passive",
-        "effect": "Reduces DNA damage accumulation by 60% while exposed to GCR flux; allows longer drift times.",
+        "effect": "Its dark armor grains absorb harsh cosmic radiation, keeping its genetic material intact during long journeys. You see the creature withstand extreme space conditions without deteriorating.",
         "numbers": {}
       },
       "weakness": "Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction.",
@@ -90,7 +90,7 @@
           "en": "Ballistic Seed"
         },
         "role": "Basic",
-        "effect": "Eject propagule to drift toward target world. Success chance +25% if target is within 0.5 ly and velocity matches relative drift.",
+        "effect": "It releases a lightweight silica-ice seed that drifts through the void toward a nearby world. You can guide it to follow the natural flow of space, increasing its chances of reaching the destination.",
         "numbers": {}
       },
       "weakness": "Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes.",
@@ -145,7 +145,7 @@
           "en": "Direct Signal"
         },
         "role": "Social",
-        "effect": "Place chemical beacon; allied Ceniza units within line-of-sight instantly migrate to beacon with +40% speed.",
+        "effect": "It releases a strong chemical scent that marks a specific location in the environment. Allied creatures immediately detect the signal and rush toward the marked spot.",
         "numbers": {}
       },
       "weakness": "Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path.",
@@ -201,7 +201,7 @@
           "en": "Cryptobiotic Stasis"
         },
         "role": "Defence",
-        "effect": "Enter tun state. Immune to radiation and cold damage for 10,000 years; metabolism halted. Recovery costs 20% biomass.",
+        "effect": "It encases itself in a hard, glass-like shell and falls into a deep dormant state. You see the creature become completely impervious to extreme cold and radiation, though it must shed some mass to awaken.",
         "numbers": {}
       },
       "weakness": "Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period.",
@@ -240,13 +240,7 @@
       }
     }
   ],
-  "relations": [
-    {
-      "with": "Coraza Peregrina",
-      "kind": "cousin",
-      "note": "(council kind 'Symbiont/Vector') Ceniza Roja aggregates within the Coraza's sheltered core; the Coraza provides magnetic navigation and superior shielding, carrying Ceniza to worlds the surface cannot reach alone."
-    }
-  ],
+  "relations": [],
   "provenance": {
     "council_run": "autoloop-2026-11-19",
     "by": [

@@ -22,16 +22,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| pellizcador.c1 | Flattened, low-profile carapace | Prevents tumbling in gusts ← Dense air (D4) exerts 1.6x wind force per m/s ← Stable grip on moving herds | **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Anchor grip (`pellizcador.anchor_grip`) | Passive | +60% chance to stay on host during movement. | Exposed to overhead pecking. |
-| pellizcador.c2 | Piercing-sucking chelicerae and blood-feeding | High metabolic cost to maintain fluid intake ← Elevated partial pressure of oxygen (D10) supports rapid tissue regeneration ← Sustained blood meals from large hosts | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Tap feed (`pellizcador.tap_feed`) | Basic | -15% host stamina, +5 player charm if applied before courtship. | Leaves a visible puncture; host grooming removes them. |
-| pellizcador.c3 | Diurnal activity and UV-absorbing pigments | Avoids midday desiccation and DNA damage ← 1.15x solar UV flux at surface (D1) ← Active at dawn/dusk, hides under grass blades at noon | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's | Sun-bask (`pellizcador.sun_bask`) | Control | +10% movement speed at dawn, -20% at midday. | Immobilized by sudden rain or heavy fog. |
-| pellizcador.c4 | Palp-based chemoreception | Scent molecules diffuse slower in still, humid air (D18) ← 0.6x molecular diffusion coefficient (D18) ← Long-lasting trails in morning fog guide them to herds | **F4** Dense air: 1.6 bar; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent track (`pellizcador.scent_track`) | Poke | Reveals host location through grass for 15 seconds. | Useless in strong crosswinds or heavy rain. |
+| pellizcador.c1 | Flattened, low-profile carapace | Prevents tumbling in gusts ← Dense air (D4) exerts 1.6x wind force per m/s ← Stable grip on moving herds | **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Anchor grip (`pellizcador.anchor_grip`) | Passive | The creature clings tightly to its host and rarely falls off when moving. You will see it maintain a firm grip even during rapid motion. | Exposed to overhead pecking. |
+| pellizcador.c2 | Piercing-sucking chelicerae and blood-feeding | High metabolic cost to maintain fluid intake ← Elevated partial pressure of oxygen (D10) supports rapid tissue regeneration ← Sustained blood meals from large hosts | **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | Tap feed (`pellizcador.tap_feed`) | Basic | The creature feeds on its host and weakens it. If applied before courtship, the creature's presence strongly appeals to the target. | Leaves a visible puncture; host grooming removes them. |
+| pellizcador.c3 | Diurnal activity and UV-absorbing pigments | Avoids midday desiccation and DNA damage ← 1.15x solar UV flux at surface (D1) ← Active at dawn/dusk, hides under grass blades at noon | **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's | Sun-bask (`pellizcador.sun_bask`) | Control | The creature moves swiftly during the early morning hours. Its pace slows considerably as the day reaches its peak heat. | Immobilized by sudden rain or heavy fog. |
+| pellizcador.c4 | Palp-based chemoreception | Scent molecules diffuse slower in still, humid air (D18) ← 0.6x molecular diffusion coefficient (D18) ← Long-lasting trails in morning fog guide them to herds | **F4** Dense air: 1.6 bar; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | Scent track (`pellizcador.scent_track`) | Poke | The creature tracks its host and reveals their hidden position through the grass. You will see the location marked for a short while. | Useless in strong crosswinds or heavy rain. |
 
 ### pellizcador.c1: Flattened, low-profile carapace
 
 Trait ← Prevents tumbling in gusts ← Dense air (D4) exerts 1.6x wind force per m/s ← Stable grip on moving herds ← F4, F19
 
-- **Skill:** Anchor grip (Passive): +60% chance to stay on host during movement.
+- **Skill:** Anchor grip (Passive): The creature clings tightly to its host and rarely falls off when moving. You will see it maintain a firm grip even during rapid motion.
 - **Weakness:** Exposed to overhead pecking.
 - **Observe:**
   1. Flat black carapace
@@ -50,7 +50,7 @@ Trait ← Prevents tumbling in gusts ← Dense air (D4) exerts 1.6x wind force p
 
 Trait ← High metabolic cost to maintain fluid intake ← Elevated partial pressure of oxygen (D10) supports rapid tissue regeneration ← Sustained blood meals from large hosts ← F5
 
-- **Skill:** Tap feed (Basic): -15% host stamina, +5 player charm if applied before courtship.
+- **Skill:** Tap feed (Basic): The creature feeds on its host and weakens it. If applied before courtship, the creature's presence strongly appeals to the target.
 - **Weakness:** Leaves a visible puncture; host grooming removes them.
 - **Observe:**
   1. Stylet piercing skin
@@ -69,7 +69,7 @@ Trait ← High metabolic cost to maintain fluid intake ← Elevated partial pres
 
 Trait ← Avoids midday desiccation and DNA damage ← 1.15x solar UV flux at surface (D1) ← Active at dawn/dusk, hides under grass blades at noon ← F1
 
-- **Skill:** Sun-bask (Control): +10% movement speed at dawn, -20% at midday.
+- **Skill:** Sun-bask (Control): The creature moves swiftly during the early morning hours. Its pace slows considerably as the day reaches its peak heat.
 - **Weakness:** Immobilized by sudden rain or heavy fog.
 - **Observe:**
   1. Dark red-purple cuticle
@@ -88,7 +88,7 @@ Trait ← Avoids midday desiccation and DNA damage ← 1.15x solar UV flux at su
 
 Trait ← Scent molecules diffuse slower in still, humid air (D18) ← 0.6x molecular diffusion coefficient (D18) ← Long-lasting trails in morning fog guide them to herds ← F4, F16
 
-- **Skill:** Scent track (Poke): Reveals host location through grass for 15 seconds.
+- **Skill:** Scent track (Poke): The creature tracks its host and reveals their hidden position through the grass. You will see the location marked for a short while.
 - **Weakness:** Useless in strong crosswinds or heavy rain.
 - **Observe:**
   1. Waving palps

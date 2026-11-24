@@ -43,7 +43,7 @@
           "en": "Stable Crawl"
         },
         "role": "Basic",
-        "effect": "Moves through dense undergrowth at 2.1 m/s without tripping (+2 speed in forest/meadow).",
+        "effect": "The creature glides smoothly through thick brush and tangled roots without ever stumbling. It maintains a steady pace across uneven forest floors and open meadows.",
         "numbers": {}
       },
       "weakness": "Exposed leg joints snap under heavy impact; vulnerable to espinodo spine volleys.",
@@ -99,7 +99,7 @@
           "en": "Bury & Liquefy"
         },
         "role": "Engage",
-        "effect": "Dissolves small carcass in crop, storing nutrient paste (+6 nutrition, preserves food for later).",
+        "effect": "The creature secretes acid to break down small carcasses inside its body, storing the resulting nutrient paste for future use. You can watch it bury the remains and retrieve the preserved food when needed.",
         "numbers": {}
       },
       "weakness": "Burrowing exposes abdomen; easily spotted by el_resoplido thermals.",
@@ -158,7 +158,7 @@
           "en": "Moon Lure"
         },
         "role": "Social",
-        "effect": "Pulses belly light to attract mates or calm creatures in darkness (+12 charm, +5 befriend in night variant).",
+        "effect": "It pulses a gentle light from its underside to attract mates or soothe nearby animals in the dark. You can observe this glowing display to peacefully calm or befriend other creatures.",
         "numbers": {}
       },
       "weakness": "Glow gives precise position to nocturnal acechalunas hunters.",
@@ -214,7 +214,7 @@
           "en": "Glide Burst"
         },
         "role": "Basic",
-        "effect": "Short flight up to 9 m, +3 to reach carcasses before larger scavengers.",
+        "effect": "The creature launches into a brief glide, quickly reaching scattered food before larger scavengers can claim it.",
         "numbers": {}
       },
       "weakness": "Heavy rain (F8) mats wings; flight is metabolically costly in still, foggy air.",

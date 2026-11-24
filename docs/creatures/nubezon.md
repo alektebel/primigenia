@@ -21,16 +21,16 @@ Enormous gas-filled hydrocarbon bladder, suspended tethers of woven keratin-anal
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| nubezon.c1 | Enormous gas-filled hydrocarbon bladder | Bladder generates lift ← Dense 40-bar air provides buoyancy ← Gravity 1.35g requires massive volume ← Physical root: High surface pressure and gravity | **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory.; **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨. | Buoyancy Float (`nubezon.buoyancy_float`) | Passive | Reduces fall damage by 80% and grants slow descent at 2 m/s. | Vulnerable to puncture weapons; sudden pressure drops cause explosive decompression. |
-| nubezon.c2 | Conductive Fe-Ni dust lamination in skin | Skin accumulates static charge ← Atmospheric friction in opaque haze generates high voltage ← Conductive metal prevents arc damage and discharges enemies ← Physical root: Reducing atmosphere and photochemical haze | **F8** Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.; **F17** Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance. | Arc Skin (`nubezon.arc_skin`) | Defence | Reflects 40% of incoming kinetic damage and deals 8 shock damage to melee attackers. | Attracted to strong magnetic fields; EMP-like pulses stun and discharge skin. |
-| nubezon.c3 | Tethered siphon-traps for harvesting | Siphons collect tholin particulates ← Haze concentrates organic carbon aloft ← Metabolism requires ammonia and carbon ← Physical root: Ammonia-tholin haze and biochemistry | **F8** Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.; **F18** Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs. | Atmospheric Harvest (`nubezon.atmospheric_harvest`) | Basic | Target siphon deals 5 damage over time and heals Nubezón for 3 HP per tick. | Tethers can be snagged on terrain or entangled; immobilized Nubezón cannot feed. |
-| nubezon.c4 | Low-frequency pulsating resonator | Resonator emits thrums ← Dense air propagates low frequencies far ← Used for mate attraction and territory ← Physical root: Sound speed and propagation in dense atmosphere | **F9** Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.; **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory. | Drum Beat (`nubezon.drum_beat`) | Social | Summons a friendly Nubezón within 40m; allies gain +2 defense for 6s. | High-frequency whistles disrupt resonance; silence zones negate skill range. |
+| nubezon.c1 | Enormous gas-filled hydrocarbon bladder | Bladder generates lift ← Dense 40-bar air provides buoyancy ← Gravity 1.35g requires massive volume ← Physical root: High surface pressure and gravity | **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory.; **F3** Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨. | Buoyancy Float (`nubezon.buoyancy_float`) | Passive | When falling, the creature drifts gently downward like a feather, landing softly without injury. | Vulnerable to puncture weapons; sudden pressure drops cause explosive decompression. |
+| nubezon.c2 | Conductive Fe-Ni dust lamination in skin | Skin accumulates static charge ← Atmospheric friction in opaque haze generates high voltage ← Conductive metal prevents arc damage and discharges enemies ← Physical root: Reducing atmosphere and photochemical haze | **F8** Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.; **F17** Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance. | Arc Skin (`nubezon.arc_skin`) | Defence | Striking the creature sends a sharp electric jolt back into the attacker, while its conductive skin deflects heavy blows. | Attracted to strong magnetic fields; EMP-like pulses stun and discharge skin. |
+| nubezon.c3 | Tethered siphon-traps for harvesting | Siphons collect tholin particulates ← Haze concentrates organic carbon aloft ← Metabolism requires ammonia and carbon ← Physical root: Ammonia-tholin haze and biochemistry | **F8** Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.; **F6** The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.; **F18** Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs. | Atmospheric Harvest (`nubezon.atmospheric_harvest`) | Basic | The creature anchors a tethered siphon that steadily drains energy from a nearby target, replenishing its own form. | Tethers can be snagged on terrain or entangled; immobilized Nubezón cannot feed. |
+| nubezon.c4 | Low-frequency pulsating resonator | Resonator emits thrums ← Dense air propagates low frequencies far ← Used for mate attraction and territory ← Physical root: Sound speed and propagation in dense atmosphere | **F9** Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.; **F5** Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory. | Drum Beat (`nubezon.drum_beat`) | Social | A deep resonant pulse echoes outward, drawing a companion from the distance while strongly bolstering the resilience of nearby allies. | High-frequency whistles disrupt resonance; silence zones negate skill range. |
 
 ### nubezon.c1: Enormous gas-filled hydrocarbon bladder
 
 Trait ← Bladder generates lift ← Dense 40-bar air provides buoyancy ← Gravity 1.35g requires massive volume ← Physical root: High surface pressure and gravity ← F5, F3
 
-- **Skill:** Buoyancy Float (Passive): Reduces fall damage by 80% and grants slow descent at 2 m/s.
+- **Skill:** Buoyancy Float (Passive): When falling, the creature drifts gently downward like a feather, landing softly without injury.
 - **Weakness:** Vulnerable to puncture weapons; sudden pressure drops cause explosive decompression.
 - **Observe:**
   1. Glossy, tensioned skin ripples
@@ -49,7 +49,7 @@ Trait ← Bladder generates lift ← Dense 40-bar air provides buoyancy ← Grav
 
 Trait ← Skin accumulates static charge ← Atmospheric friction in opaque haze generates high voltage ← Conductive metal prevents arc damage and discharges enemies ← Physical root: Reducing atmosphere and photochemical haze ← F8, F6, F17
 
-- **Skill:** Arc Skin (Defence): Reflects 40% of incoming kinetic damage and deals 8 shock damage to melee attackers.
+- **Skill:** Arc Skin (Defence): Striking the creature sends a sharp electric jolt back into the attacker, while its conductive skin deflects heavy blows.
 - **Weakness:** Attracted to strong magnetic fields; EMP-like pulses stun and discharge skin.
 - **Observe:**
   1. Skin sparks in twilight
@@ -67,7 +67,7 @@ Trait ← Skin accumulates static charge ← Atmospheric friction in opaque haze
 
 Trait ← Siphons collect tholin particulates ← Haze concentrates organic carbon aloft ← Metabolism requires ammonia and carbon ← Physical root: Ammonia-tholin haze and biochemistry ← F8, F6, F18
 
-- **Skill:** Atmospheric Harvest (Basic): Target siphon deals 5 damage over time and heals Nubezón for 3 HP per tick.
+- **Skill:** Atmospheric Harvest (Basic): The creature anchors a tethered siphon that steadily drains energy from a nearby target, replenishing its own form.
 - **Weakness:** Tethers can be snagged on terrain or entangled; immobilized Nubezón cannot feed.
 - **Observe:**
   1. Siphons uncurl when airborne
@@ -85,7 +85,7 @@ Trait ← Siphons collect tholin particulates ← Haze concentrates organic carb
 
 Trait ← Resonator emits thrums ← Dense air propagates low frequencies far ← Used for mate attraction and territory ← Physical root: Sound speed and propagation in dense atmosphere ← F9, F5
 
-- **Skill:** Drum Beat (Social): Summons a friendly Nubezón within 40m; allies gain +2 defense for 6s.
+- **Skill:** Drum Beat (Social): A deep resonant pulse echoes outward, drawing a companion from the distance while strongly bolstering the resilience of nearby allies.
 - **Weakness:** High-frequency whistles disrupt resonance; silence zones negate skill range.
 - **Observe:**
   1. Throat sac pulses with blue bioluminescence
@@ -104,7 +104,7 @@ Trait ← Resonator emits thrums ← Dense air propagates low frequencies far �
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Eridian Crawler | cousin |  | (council kind 'Resource Provider') Nubezón molted carapace flakes drift down; Eridians scavenge them for carapace repair. |
+| eridians | cousin |  | (council kind 'Resource Provider') Nubezón molted carapace flakes drift down; Eridians scavenge them for carapace repair. |
 
 ## Journal
 

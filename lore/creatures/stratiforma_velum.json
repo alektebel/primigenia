@@ -12,7 +12,9 @@
     "habitat": "Upper-mid water column, concentrated at the fresher-brine interface",
     "diet": "Dissolved organics, suspended microbes, chemosynthetic spores",
     "active": "Tidal-cycle driven (moves with mixing pulses)",
-    "predators": []
+    "predators": [
+      "Thermarctus ferox"
+    ]
   },
   "body": "Large, translucent sail-like dorsal fin, trailing siphons, buoyant gas bladder",
   "chains": [
@@ -34,7 +36,7 @@
           "en": "Refraction Cloak"
         },
         "role": "Defence",
-        "effect": "Grants +30% dodge chance for 2 turns.",
+        "effect": "The creature ripples its translucent sail-fin, bending light around its body to slip past incoming strikes. Nearby foes find their attacks glancing harmlessly off its shimmering form for a short while.",
         "numbers": {}
       },
       "weakness": "Useless in uniform dark water away from strata.",
@@ -90,7 +92,7 @@
           "en": "Nutrient Siphon"
         },
         "role": "Basic",
-        "effect": "Gains 2 damage/heal over 3 turns.",
+        "effect": "Its trailing chemosensory siphons drift through the water, drawing in nourishment and steadily mending its wounds. The creature slowly regains strength as it feeds on the surrounding currents.",
         "numbers": {}
       },
       "weakness": "Clogged by falling ice slurry.",
@@ -150,7 +152,7 @@
           "en": "Buoyancy Surge"
         },
         "role": "Control",
-        "effect": "Repositions instantly and grants +5 mobility.",
+        "effect": "The creature swiftly shifts its position and moves with greater agility for a short while.",
         "numbers": {}
       },
       "weakness": "Pressure cracks sac if pushed too deep.",
@@ -210,7 +212,7 @@
           "en": "Tidal Sync"
         },
         "role": "Passive",
-        "effect": "Allies gain +2 damage on flexure turn.",
+        "effect": "A pulsatile bioluminescent rhythm radiates from its body, synchronizing with nearby allies and amplifying their strikes. The glowing waves strongly empower those fighting alongside it.",
         "numbers": {}
       },
       "weakness": "Predictable pattern makes them easy to ambush.",
@@ -259,11 +261,6 @@
       "with": "cryostrata_lar",
       "kind": "cousin",
       "note": "(council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons."
-    },
-    {
-      "with": "Thermarctus ferox",
-      "kind": "cousin",
-      "note": "(council kind 'Prey') Vent-stalkers sometimes snag drifting colonies near thermal upwellings."
     }
   ],
   "provenance": {

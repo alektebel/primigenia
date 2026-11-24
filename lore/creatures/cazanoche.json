@@ -41,7 +41,7 @@
           "en": "Moonlit Focus"
         },
         "role": "Engage",
-        "effect": "Reveals hidden trails and weak points in low light (30m radius)",
+        "effect": "The creature's sharp night vision clearly reveals hidden paths and vulnerable spots in dim areas. You can easily spot these concealed routes and weak points when the light is low.",
         "numbers": {}
       },
       "weakness": "Dazzled by sudden bright flashes or auroral pulses (F10)",
@@ -94,7 +94,7 @@
           "en": "Scent Path"
         },
         "role": "Control",
-        "effect": "Locks onto hidden movement trails; calms prey by mimicking pheromones (50m)",
+        "effect": "The creature tracks invisible movement paths and releases calming scents that soothe nearby animals. You can follow its trail and notice the frightened creatures settling down around it.",
         "numbers": {}
       },
       "weakness": "Useless during gales; wind strips scent marks instantly (F16)",
@@ -147,7 +147,7 @@
           "en": "Ground Crawl"
         },
         "role": "Basic",
-        "effect": "Moves silently at low profile; reduces wind noise by 40% (stealth)",
+        "effect": "The creature glides along the ground at a low stance without making a sound. You can approach unseen as it moves quietly through the wind.",
         "numbers": {}
       },
       "weakness": "Trips on slick basalt and shallow water; slow acceleration",
@@ -200,7 +200,7 @@
           "en": "Deep Hum"
         },
         "role": "Social",
-        "effect": "Emits a subsonic pulse that paralyzes fear in prey and deters rivals (60m radius)",
+        "effect": "The creature projects a deep vibration that freezes nearby animals with sudden fear and drives off competitors. You can watch the startled creatures stand still while the area falls under its control.",
         "numbers": {}
       },
       "weakness": "Attracts scavengers and rival apexes to the caller's position (F27)",

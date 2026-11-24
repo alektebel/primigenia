@@ -21,16 +21,16 @@
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| llorona.c1 | Large tapetum lucidum and wide pupils | Enlarged ocular globes with reflective tapetum layer ← 339 local days demand extended low-light foraging cycles (D7) ← Dense 1.6 bar atmosphere scatters blue wavelengths, lowering nocturnal contrast (F4) ← D7, F4 | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F4** Dense air: 1.6 bar | Nocturnal Focus (`llorona.nocturnal_focus`) | Basic | Increases hit chance and observe speed by 15% in darkness or fog | Blinded by sudden bright flashes or lightning strikes |
+| llorona.c1 | Large tapetum lucidum and wide pupils | Enlarged ocular globes with reflective tapetum layer ← 339 local days demand extended low-light foraging cycles (D7) ← Dense 1.6 bar atmosphere scatters blue wavelengths, lowering nocturnal contrast (F4) ← D7, F4 | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F4** Dense air: 1.6 bar | Nocturnal Focus (`llorona.nocturnal_focus`) | Basic | In dim or misty surroundings, the creature tracks targets with ease and strikes with remarkable accuracy. | Blinded by sudden bright flashes or lightning strikes |
 | llorona.c2 | High-crowned, laterally grinding molars | Robust coronoid muscles and flat, enamel-rich cheek teeth ← 10% energy transfer across trophic levels forces selection of dense caloric sources (D25) ← Dry meadow summer concentrates carbohydrate-rich grass heads and fruit pits (F18) ← D25, F18 | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | Seedcrack (`llorona.seedcrack`) | Engage | Deals bonus damage to armoured prey and breaks objects like bones or stone | Slow chewing process, leaves it vulnerable while feeding |
 | llorona.c3 | Muscular forelimbs and expandable cheek pouches | Digitigrade forelegs with curved claws and distensible buccal sacs ← Dense air imposes 1.6x drag, making burrowing thermally efficient (D11) ← Seasonal drought requires underground seed storage to avoid spoilage (F18) ← D11, F18 | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F4** Dense air: 1.6 bar | Cache (`llorona.cache`) | Control | Stores food items in a shallow mound, restoring stamina and granting temporary cover | Foraging leaves visible soil mounds that predators can track |
-| llorona.c4 | Prominent scent glands and low-frequency vocal sacs | Ventral glandular patches and inflatable laryngeal structures ← Molecular diffusion at 0.6x rate means chemical markers persist longer (D18) ← Low-frequency calls propagate farther in 1.6 bar air than high pitches (F4) ← D18, F4 | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Scent Mark (`llorona.scent_mark`) | Social | Leaves a chemical trail that allies can follow (+20% befriend chance if followed) | Wind disperses markers quickly, confusing rivals |
+| llorona.c4 | Prominent scent glands and low-frequency vocal sacs | Ventral glandular patches and inflatable laryngeal structures ← Molecular diffusion at 0.6x rate means chemical markers persist longer (D18) ← Low-frequency calls propagate farther in 1.6 bar air than high pitches (F4) ← D18, F4 | **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | Scent Mark (`llorona.scent_mark`) | Social | It leaves behind a lingering aroma that guides companions along its route, making them much more receptive to friendship. | Wind disperses markers quickly, confusing rivals |
 
 ### llorona.c1: Large tapetum lucidum and wide pupils
 
 Trait ← Enlarged ocular globes with reflective tapetum layer ← 339 local days demand extended low-light foraging cycles (D7) ← Dense 1.6 bar atmosphere scatters blue wavelengths, lowering nocturnal contrast (F4) ← D7, F4 ← F3, F4
 
-- **Skill:** Nocturnal Focus (Basic): Increases hit chance and observe speed by 15% in darkness or fog
+- **Skill:** Nocturnal Focus (Basic): In dim or misty surroundings, the creature tracks targets with ease and strikes with remarkable accuracy.
 - **Weakness:** Blinded by sudden bright flashes or lightning strikes
 - **Observe:**
   1. Eye shine in moonlight
@@ -84,7 +84,7 @@ Trait ← Digitigrade forelegs with curved claws and distensible buccal sacs ←
 
 Trait ← Ventral glandular patches and inflatable laryngeal structures ← Molecular diffusion at 0.6x rate means chemical markers persist longer (D18) ← Low-frequency calls propagate farther in 1.6 bar air than high pitches (F4) ← D18, F4 ← F3, F19
 
-- **Skill:** Scent Mark (Social): Leaves a chemical trail that allies can follow (+20% befriend chance if followed)
+- **Skill:** Scent Mark (Social): It leaves behind a lingering aroma that guides companions along its route, making them much more receptive to friendship.
 - **Weakness:** Wind disperses markers quickly, confusing rivals
 - **Observe:**
   1. Rubs cheeks on stones

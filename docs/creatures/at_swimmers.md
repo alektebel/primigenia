@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_swimmers.c1 | Front flippers conceal manipulative hands and blubber lids | Shallow epicontinental shelves provide abundant hiding spots ← Low tidal range and calm swallow seas reduce need for specialized gills ← Qu larval-stage homology preserves manual dexterity ← Streamlined torsos reduce drag in dense aquatic medium | **F11** Ocean coverage is dominated by shallow epicontinental shelves with low tidal range.; **F3** Orbital mechanics yield minimal tidal range across shallow shelves.; **F15** Qu-engineered synthetic proteins are heritable and retained only when conferring niche advantages. | Hidden Grip (`at_swimmers.hidden_grip`) | Engage | Grab prey or objects with hands inside flippers; +20% control on aquatic targets. | Hands are slow to deploy; vulnerable to ambush by fast-swimming flankers. |
-| at_swimmers.c2 | Non-syntactic, pitch-modulated social calling | Aquatic medium transmits low-frequency pulses efficiently ← Nocturnal temperature inversions trap sound near surface ← Pre-sapient social calling avoids metabolic cost of language centers ← Nutrient-poor marine diets force energy budget toward basic locomotion | **F9** Acoustic propagation favors low-frequency modulation over vast distances.; **F18** Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Tidal Call (`at_swimmers.tidal_call`) | Social | Summons 1 ally from water within 40m, grants +2 dive speed. | Cannot understand complex commands or tool instructions. |
+| at_swimmers.c1 | Front flippers conceal manipulative hands and blubber lids | Shallow epicontinental shelves provide abundant hiding spots ← Low tidal range and calm swallow seas reduce need for specialized gills ← Qu larval-stage homology preserves manual dexterity ← Streamlined torsos reduce drag in dense aquatic medium | **F11** Ocean coverage is dominated by shallow epicontinental shelves with low tidal range.; **F3** Orbital mechanics yield minimal tidal range across shallow shelves.; **F15** Qu-engineered synthetic proteins are heritable and retained only when conferring niche advantages. | Hidden Grip (`at_swimmers.hidden_grip`) | Engage | The creature slips its hidden hands from beneath its flippers to firmly seize prey or nearby objects. It holds onto aquatic targets strongly. | Hands are slow to deploy; vulnerable to ambush by fast-swimming flankers. |
+| at_swimmers.c2 | Non-syntactic, pitch-modulated social calling | Aquatic medium transmits low-frequency pulses efficiently ← Nocturnal temperature inversions trap sound near surface ← Pre-sapient social calling avoids metabolic cost of language centers ← Nutrient-poor marine diets force energy budget toward basic locomotion | **F9** Acoustic propagation favors low-frequency modulation over vast distances.; **F18** Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams.; **F25** Mean surface temperature supports liquid water and stable atmospheric ducting. | Tidal Call (`at_swimmers.tidal_call`) | Social | The creature emits a resonant call that draws a companion from the depths nearby. The summoned ally moves strongly through the water. | Cannot understand complex commands or tool instructions. |
 
 ### at_swimmers.c1: Front flippers conceal manipulative hands and blubber lids
 
 Trait ← Shallow epicontinental shelves provide abundant hiding spots ← Low tidal range and calm swallow seas reduce need for specialized gills ← Qu larval-stage homology preserves manual dexterity ← Streamlined torsos reduce drag in dense aquatic medium ← F11, F3, F15
 
-- **Skill:** Hidden Grip (Engage): Grab prey or objects with hands inside flippers; +20% control on aquatic targets.
+- **Skill:** Hidden Grip (Engage): The creature slips its hidden hands from beneath its flippers to firmly seize prey or nearby objects. It holds onto aquatic targets strongly.
 - **Weakness:** Hands are slow to deploy; vulnerable to ambush by fast-swimming flankers.
 - **Observe:**
   1. Flippers flex to reveal human-like fingers briefly
@@ -47,7 +47,7 @@ Trait ← Shallow epicontinental shelves provide abundant hiding spots ← Low t
 
 Trait ← Aquatic medium transmits low-frequency pulses efficiently ← Nocturnal temperature inversions trap sound near surface ← Pre-sapient social calling avoids metabolic cost of language centers ← Nutrient-poor marine diets force energy budget toward basic locomotion ← F9, F18, F25
 
-- **Skill:** Tidal Call (Social): Summons 1 ally from water within 40m, grants +2 dive speed.
+- **Skill:** Tidal Call (Social): The creature emits a resonant call that draws a companion from the depths nearby. The summoned ally moves strongly through the water.
 - **Weakness:** Cannot understand complex commands or tool instructions.
 - **Observe:**
   1. Throat pouch vibrates rhythmically

@@ -21,16 +21,16 @@ Low-slung hexapod with a silica-sulfur carapace, piezoelectric limbs for tractio
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| cenizor.c1 | Broad grinding mandible | Scrapes adherent iron-sulfide crust off vent walls ← Vent fluids precipitate dense glassy mineral layers ← Supercritical CO2 mixes with basaltic substrate | **F9** Geothermal vents spew reduced H₂S, FeS₂, and supercritical CO₂ pockets across basaltic-silicate crust. | Rock-grind (`cenizor.rock_grind`) | Basic | Chews through mineral armor, +15% damage to rock/armor targets | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
-| cenizor.c2 | Piezoelectric limb joints | Converts mechanical stress into bioelectric pulses ← 1.25g gravity and glassy terrain demand precise footing ← Fluid-based hydraulics would fracture under thermal stress | **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Seismic-step (`cenizor.seismic_step`) | Engage | Dashes to target, +20% evasion on next attack | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
-| cenizor.c3 | Dorsal thermal radiating plates | Dissipates metabolic waste heat into the atmosphere ← High activation energy for sulfur metabolism generates excess ← Dense 3.2 bar atmosphere efficiently conducts heat away | **F5** Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).; **F13** Metabolism oxidizes H₂S and FeS₂ using SO₂ redox gradients without free oxygen. | Heat-sink (`cenizor.heat_sink`) | Defence | Absorbs thermal damage, reflects 30% as AoE | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
-| cenizor.c4 | Infrasound throat communication sac | Broadcasts low-frequency pulses to coordinate grazing ← Dense air and ground transmission carry low frequencies far ← Line-of-sight navigation fails in volcanic haze | **F6** Sound speed is ~500 m/s; low-frequency waves (<100 Hz) travel >2 km via ground-coupled seismic transmission.; **F16** Communication occurs via infrasound throat organs and seismic pulse transmission. | Deep-hum (`cenizor.deep_hum`) | Control | Slows enemies in area, -25% action speed | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
+| cenizor.c1 | Broad grinding mandible | Scrapes adherent iron-sulfide crust off vent walls ← Vent fluids precipitate dense glassy mineral layers ← Supercritical CO2 mixes with basaltic substrate | **F9** Geothermal vents spew reduced H₂S, FeS₂, and supercritical CO₂ pockets across basaltic-silicate crust. | Rock-grind (`cenizor.rock_grind`) | Basic | The creature gnaws relentlessly at stony defenses, tearing through hard carapaces with ease. Its jaws crush through rocky armor, leaving deep grooves in the hardest surfaces. | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
+| cenizor.c2 | Piezoelectric limb joints | Converts mechanical stress into bioelectric pulses ← 1.25g gravity and glassy terrain demand precise footing ← Fluid-based hydraulics would fracture under thermal stress | **F3** Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.; **F18** Locomotion utilizes piezoelectric limb joints and low-friction silicone pads. | Seismic-step (`cenizor.seismic_step`) | Engage | The creature leaps forward with a sudden burst of speed, closing the distance in a blur. Its next strike comes from an unpredictable angle, making it nearly impossible to dodge. | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
+| cenizor.c3 | Dorsal thermal radiating plates | Dissipates metabolic waste heat into the atmosphere ← High activation energy for sulfur metabolism generates excess ← Dense 3.2 bar atmosphere efficiently conducts heat away | **F5** Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).; **F13** Metabolism oxidizes H₂S and FeS₂ using SO₂ redox gradients without free oxygen. | Heat-sink (`cenizor.heat_sink`) | Defence | The creature draws heat into its back plates, glowing brightly as it absorbs the warmth. It then releases the stored energy outward, bathing the nearby area in a sudden wave of heat. | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
+| cenizor.c4 | Infrasound throat communication sac | Broadcasts low-frequency pulses to coordinate grazing ← Dense air and ground transmission carry low frequencies far ← Line-of-sight navigation fails in volcanic haze | **F6** Sound speed is ~500 m/s; low-frequency waves (<100 Hz) travel >2 km via ground-coupled seismic transmission.; **F16** Communication occurs via infrasound throat organs and seismic pulse transmission. | Deep-hum (`cenizor.deep_hum`) | Control | The creature vibrates its throat sac, sending out a low rumble that shakes the ground. Nearby foes move heavily and sluggishly as the deep sound weighs them down. | Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized. |
 
 ### cenizor.c1: Broad grinding mandible
 
 Trait ← Scrapes adherent iron-sulfide crust off vent walls ← Vent fluids precipitate dense glassy mineral layers ← Supercritical CO2 mixes with basaltic substrate ← F9
 
-- **Skill:** Rock-grind (Basic): Chews through mineral armor, +15% damage to rock/armor targets
+- **Skill:** Rock-grind (Basic): The creature gnaws relentlessly at stony defenses, tearing through hard carapaces with ease. Its jaws crush through rocky armor, leaving deep grooves in the hardest surfaces.
 - **Weakness:** Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.
 - **Observe:**
   1. Mandible scraping glassy rock, leaving striated grooves
@@ -49,7 +49,7 @@ Trait ← Scrapes adherent iron-sulfide crust off vent walls ← Vent fluids pre
 
 Trait ← Converts mechanical stress into bioelectric pulses ← 1.25g gravity and glassy terrain demand precise footing ← Fluid-based hydraulics would fracture under thermal stress ← F3, F18
 
-- **Skill:** Seismic-step (Engage): Dashes to target, +20% evasion on next attack
+- **Skill:** Seismic-step (Engage): The creature leaps forward with a sudden burst of speed, closing the distance in a blur. Its next strike comes from an unpredictable angle, making it nearly impossible to dodge.
 - **Weakness:** Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.
 - **Observe:**
   1. Mandible scraping glassy rock, leaving striated grooves
@@ -68,7 +68,7 @@ Trait ← Converts mechanical stress into bioelectric pulses ← 1.25g gravity a
 
 Trait ← Dissipates metabolic waste heat into the atmosphere ← High activation energy for sulfur metabolism generates excess ← Dense 3.2 bar atmosphere efficiently conducts heat away ← F5, F13
 
-- **Skill:** Heat-sink (Defence): Absorbs thermal damage, reflects 30% as AoE
+- **Skill:** Heat-sink (Defence): The creature draws heat into its back plates, glowing brightly as it absorbs the warmth. It then releases the stored energy outward, bathing the nearby area in a sudden wave of heat.
 - **Weakness:** Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.
 - **Observe:**
   1. Mandible scraping glassy rock, leaving striated grooves
@@ -87,7 +87,7 @@ Trait ← Dissipates metabolic waste heat into the atmosphere ← High activatio
 
 Trait ← Broadcasts low-frequency pulses to coordinate grazing ← Dense air and ground transmission carry low frequencies far ← Line-of-sight navigation fails in volcanic haze ← F6, F16
 
-- **Skill:** Deep-hum (Control): Slows enemies in area, -25% action speed
+- **Skill:** Deep-hum (Control): The creature vibrates its throat sac, sending out a low rumble that shakes the ground. Nearby foes move heavily and sluggishly as the deep sound weighs them down.
 - **Weakness:** Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.
 - **Observe:**
   1. Mandible scraping glassy rock, leaving striated grooves
@@ -105,7 +105,6 @@ Trait ← Broadcasts low-frequency pulses to coordinate grazing ← Dense air an
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| none (baseline) | cousin |  | (council kind 'ecological foundation') First trophic layer establishes silicon-hot world food web. |
 | azufraja | prey |  | Azufraja colonies cluster near Cenizor vent-grazing patches to harvest mineral runoff. |
 | quemador | cousin |  | (council kind 'predator') Quemador patrols vent perimeters, hunting stasis-bound Cenizor that failed to migrate during cooling. |
 

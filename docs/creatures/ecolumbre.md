@@ -25,17 +25,17 @@ small and light, dark back, glowing belly patches (ventral photophores), large e
 | ecolumbre.c2 | talks with light | vocal calls would mask its own and the flock's echolocation ← long echoes in lava tubes in dense air ← glow chemistry comes from the cave fungi it eats | **F4** Dense air: 1.6 bar; **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Flash code (`ecolumbre.flash_code`) | Social | befriend by copying its light pattern; needs a glow part | it stops talking when a sight hunter is near |
 | ecolumbre.c3 | only speaks on moonless nights and deep inside | moonlight drowns its signal and lights up its silhouette for sight hunters ← the predator hunts moonlit edges | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | Dark window (`ecolumbre.dark_window`) | Passive | befriending it is only possible on moonless nights or deep in the tubes | on bright nights it hides deep and cannot be met |
 | ecolumbre.c4 | a predator fakes its light code | its code is a reliable signal of a meal ← the predator sees its flashes at cave mouths | **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) | Code check (`ecolumbre.code_check`) | Defence | deep in the tubes the flock confirms identity by clicks, which a mimic outside cannot fake | at the waterfall entrance a fake lure can draw it (and the player) out |
-| ecolumbre.c5 | Grazes wet biofilm and salt crusts on tuff | Biofilm needs constant moisture to thrive ← Waterfall spray keeps tuff overhang perpetually damp ← Spring is dammed by a hard basalt dyke ← Aquifer recharges from high alpine slopes | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles | Salt-Crush (`ecolumbre.salt_crush`) | Basic | Cracks tuff to extract biofilm and salt; restores +10 Biomass and +5 HP. | Drought thins crusts and biofilm; foraging yields drop by 40%. |
-| ecolumbre.c6 | Syncs low hums and ventral flashes to flock | Valley fog blinds eyes most mornings ← Dense air carries low frequencies far and far ← Ventral photophores flash in sync with throat hums ← Marks position and coordinates movement without collision | **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | Chorus Flash (`ecolumbre.chorus_flash`) | Control | Emits synchronized light pulses and hums. Calms allies within 15m, grants +20% evasion for 8s. | Sudden high-pitched sounds break sync; flock freezes and loses evasion. |
-| ecolumbre.c7 | Migrates to humid lava tube before spring tides | Spring tides flood the lower waterfall overhang ← Adults carry eggs to a drip-fed upper lava tube ← Summer heat dries lower zones but upper stays cool ← Tidal rhythm dictates safe migration windows | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Tide Crawl (`ecolumbre.tide_crawl`) | Engage | Sprints along wet walls, gaining +30% movement speed and wall-walking for 4s. Drops a decoy egg that taunts nearby enemies for 3s. If destroyed, releases a 1s stun cloud. | Egg sacs are brittle; rocks or strong bites pop them. Neap tides strand larvae. |
-| ecolumbre.c8 | Climbs alpine grit licks to shed UV-stressed keratin | 1.05g gravity makes high climbs costly ← Summer UV spikes at altitude strip old armor ← Migration to shaded snowline gullies at dawn/dusk minimizes heat stress ← Ingesting olivine grit repairs keratin and hardens new growth | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles | Sun Shed (`ecolumbre.sun_shed`) | Poke | Rubs against basalt outcrops. Removes one debuff, grants 15% flat damage reduction for 10s as new keratin hardens. | Vulnerable while shedding; attacks during this window deal +30% damage. |
-| ecolumbre.c9 | Scoops bioluminescent crustaceans from waterfall spray | Waterfall updrafts trap drifting crustacean swarms ← Dense air and spray create a feeding ring ← Creatures scoop prey with broad keratinous snouts ← Roost behind the fall where noise masks bio-signatures | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F4** Dense air: 1.6 bar | Mist-scoop (`ecolumbre.mist_scoop`) | Defence | Snatch prey from spray; +10% restore. Dive into spray to become invisible to sound and sight for 3s. | Wind shear scatters updraft. Vibration sense detects movement through water. |
+| ecolumbre.c5 | Grazes wet biofilm and salt crusts on tuff | Biofilm needs constant moisture to thrive ← Waterfall spray keeps tuff overhang perpetually damp ← Spring is dammed by a hard basalt dyke ← Aquifer recharges from high alpine slopes | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles | Salt-Crush (`ecolumbre.salt_crush`) | Basic | The creature cracks open the stone to feed on the rich crusts, drawing nourishment back into its own body. | Drought thins crusts and biofilm; foraging yields drop by 40%. |
+| ecolumbre.c6 | Syncs low hums and ventral flashes to flock | Valley fog blinds eyes most mornings ← Dense air carries low frequencies far and far ← Ventral photophores flash in sync with throat hums ← Marks position and coordinates movement without collision | **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | Chorus Flash (`ecolumbre.chorus_flash`) | Control | It flashes its ventral lights and hums in unison, sending a calming resonance that makes nearby allies harder to strike. | Sudden high-pitched sounds break sync; flock freezes and loses evasion. |
+| ecolumbre.c7 | Migrates to humid lava tube before spring tides | Spring tides flood the lower waterfall overhang ← Adults carry eggs to a drip-fed upper lava tube ← Summer heat dries lower zones but upper stays cool ← Tidal rhythm dictates safe migration windows | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | Tide Crawl (`ecolumbre.tide_crawl`) | Engage | It scrambles swiftly across the damp rock and leaves behind a decoy egg that draws enemy attention. When the egg is broken, it bursts into a cloud that temporarily stuns those nearby. | Egg sacs are brittle; rocks or strong bites pop them. Neap tides strand larvae. |
+| ecolumbre.c8 | Climbs alpine grit licks to shed UV-stressed keratin | 1.05g gravity makes high climbs costly ← Summer UV spikes at altitude strip old armor ← Migration to shaded snowline gullies at dawn/dusk minimizes heat stress ← Ingesting olivine grit repairs keratin and hardens new growth | **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F14** Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles | Sun Shed (`ecolumbre.sun_shed`) | Poke | It grinds against the rough stone to shed its old skin, shedding a lingering affliction while a fresh layer hardens to strongly resist harm. | Vulnerable while shedding; attacks during this window deal +30% damage. |
+| ecolumbre.c9 | Scoops bioluminescent crustaceans from waterfall spray | Waterfall updrafts trap drifting crustacean swarms ← Dense air and spray create a feeding ring ← Creatures scoop prey with broad keratinous snouts ← Roost behind the fall where noise masks bio-signatures | **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F4** Dense air: 1.6 bar | Mist-scoop (`ecolumbre.mist_scoop`) | Defence | It scoops nourishment from the waterfall spray and then plunges into the mist, vanishing completely from sight and sound for a short while. | Wind shear scatters updraft. Vibration sense detects movement through water. |
 
 ### ecolumbre.c1: sees with sound
 
 Trait ← it lives where light never arrives: lava tubes and fog-filled gullies ← dense air carries sharp, far echoes ← F4, F8, F9
 
-- **Skill:** Echo sight (Passive): a ping outlines creatures through fog and cave walls duration_s=3, range_m=40
+- **Skill:** Echo sight (Passive): a ping outlines creatures through fog and cave walls
 - **Weakness:** a roar blinds it like a flashbang
 - **Observe:**
   1. watch it cross a pitch-dark tube without hesitating
@@ -51,7 +51,7 @@ Trait ← it lives where light never arrives: lava tubes and fog-filled gullies 
 
 Trait ← vocal calls would mask its own and the flock's echolocation ← long echoes in lava tubes in dense air ← glow chemistry comes from the cave fungi it eats ← F4, F5, F9
 
-- **Skill:** Flash code (Social): befriend by copying its light pattern; needs a glow part range_m=25
+- **Skill:** Flash code (Social): befriend by copying its light pattern; needs a glow part
 - **Weakness:** it stops talking when a sight hunter is near
 - **Observe:**
   1. see a flock flash deep in a tube
@@ -101,7 +101,7 @@ Trait ← its code is a reliable signal of a meal ← the predator sees its flas
 
 Trait ← Biofilm needs constant moisture to thrive ← Waterfall spray keeps tuff overhang perpetually damp ← Spring is dammed by a hard basalt dyke ← Aquifer recharges from high alpine slopes ← F9, F21, F15, F23
 
-- **Skill:** Salt-Crush (Basic): Cracks tuff to extract biofilm and salt; restores +10 Biomass and +5 HP.
+- **Skill:** Salt-Crush (Basic): The creature cracks open the stone to feed on the rich crusts, drawing nourishment back into its own body.
 - **Weakness:** Drought thins crusts and biofilm; foraging yields drop by 40%.
 - **Observe:**
   1. Scrapes jaw against wet wall
@@ -118,7 +118,7 @@ Trait ← Biofilm needs constant moisture to thrive ← Waterfall spray keeps tu
 
 Trait ← Valley fog blinds eyes most mornings ← Dense air carries low frequencies far and far ← Ventral photophores flash in sync with throat hums ← Marks position and coordinates movement without collision ← F4, F8, F16, F3
 
-- **Skill:** Chorus Flash (Control): Emits synchronized light pulses and hums. Calms allies within 15m, grants +20% evasion for 8s.
+- **Skill:** Chorus Flash (Control): It flashes its ventral lights and hums in unison, sending a calming resonance that makes nearby allies harder to strike.
 - **Weakness:** Sudden high-pitched sounds break sync; flock freezes and loses evasion.
 - **Observe:**
   1. Staggered light pulses across cave ceiling
@@ -137,7 +137,7 @@ Trait ← Valley fog blinds eyes most mornings ← Dense air carries low frequen
 
 Trait ← Spring tides flood the lower waterfall overhang ← Adults carry eggs to a drip-fed upper lava tube ← Summer heat dries lower zones but upper stays cool ← Tidal rhythm dictates safe migration windows ← F9, F13
 
-- **Skill:** Tide Crawl (Engage): Sprints along wet walls, gaining +30% movement speed and wall-walking for 4s. Drops a decoy egg that taunts nearby enemies for 3s. If destroyed, releases a 1s stun cloud.
+- **Skill:** Tide Crawl (Engage): It scrambles swiftly across the damp rock and leaves behind a decoy egg that draws enemy attention. When the egg is broken, it bursts into a cloud that temporarily stuns those nearby.
 - **Weakness:** Egg sacs are brittle; rocks or strong bites pop them. Neap tides strand larvae.
 - **Observe:**
   1. Carries white egg in mouth
@@ -156,7 +156,7 @@ Trait ← Spring tides flood the lower waterfall overhang ← Adults carry eggs 
 
 Trait ← 1.05g gravity makes high climbs costly ← Summer UV spikes at altitude strip old armor ← Migration to shaded snowline gullies at dawn/dusk minimizes heat stress ← Ingesting olivine grit repairs keratin and hardens new growth ← F2, F14, F15, F23
 
-- **Skill:** Sun Shed (Poke): Rubs against basalt outcrops. Removes one debuff, grants 15% flat damage reduction for 10s as new keratin hardens.
+- **Skill:** Sun Shed (Poke): It grinds against the rough stone to shed its old skin, shedding a lingering affliction while a fresh layer hardens to strongly resist harm.
 - **Weakness:** Vulnerable while shedding; attacks during this window deal +30% damage.
 - **Observe:**
   1. Patches of missing keratin on flanks
@@ -175,7 +175,7 @@ Trait ← 1.05g gravity makes high climbs costly ← Summer UV spikes at altitud
 
 Trait ← Waterfall updrafts trap drifting crustacean swarms ← Dense air and spray create a feeding ring ← Creatures scoop prey with broad keratinous snouts ← Roost behind the fall where noise masks bio-signatures ← F9, F21, F20, F4
 
-- **Skill:** Mist-scoop (Defence): Snatch prey from spray; +10% restore. Dive into spray to become invisible to sound and sight for 3s.
+- **Skill:** Mist-scoop (Defence): It scoops nourishment from the waterfall spray and then plunges into the mist, vanishing completely from sight and sound for a short while.
 - **Weakness:** Wind shear scatters updraft. Vibration sense detects movement through water.
 - **Observe:**
   1. Dips snout into spray; glowing gut visible
@@ -201,7 +201,7 @@ Trait ← Waterfall updrafts trap drifting crustacean swarms ← Dense air and s
 | Espinodo | predation | F24 | Espinodo is a carnivore that eats meat and bone (F26); Ecolumbre is a soft-bodied grazer/crustacean-eater, making it prey. |
 | Garfio | counter | F4 | Garfio heckles and interrupts courtship with noise; Ecolumbre's low hums (F4) carry far and are harder to mask, maintaining flock sync against disruption. |
 | Coloso | symbiosis | F23 | Ecolumbre grazes biofilm and salt crusts (F23) on Coloso's skin, providing cleaning service; Coloso offers shelter or transport to mineral licks. |
-| Player | mimicry | F4 | Player species can mimic Ecolumbre's ventral flashes and low hums to befriended flocks or calm Rondo herds. |
+| player_lineage | mimicry | F4 | Player species can mimic Ecolumbre's ventral flashes and low hums to befriended flocks or calm Rondo herds. |
 | Nocturnal Creature | opposite | F3 | Nocturnal creature has night variant bonus; Ecolumbre syncs to tides and uses flashes in twilight/dawn (F3), avoiding deep night competition. |
 | Albinos | rivalry | F14 | Albinos lack pigment; Ecolumbre thrives at UV-stressed grit licks (F14) where albinos suffer higher damage, securing access to mineral licks. |
 

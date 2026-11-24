@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Shallow tidal karst shelves and hyphal-overburdened basalt plains
+- **Habitat:** Shallow tidal karst shelves and hyphal-overburdened basalt plains. Also, in the council's sketch (no such creature in this world yet): Siltfilter, lombardo scavenges nutrient paste left behind by Siltfilter benthic grinders; in return, the Lombardo's crushing claws clear carbonate blockages that trap Siltfilter nests.
 - **Diet:** Chitin-glucan rhizomorphs, detrital slurry, carbonate minerals, opportunistic carrion
 - **Active:** Crepuscular and diurnal (tracks low-UV bands, avoids thermal peak)
 - **Predators:** none
@@ -21,16 +21,16 @@ Broad, flattened carapace; laterally angled legs; asymmetrical chelae; ventrally
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| lombardo.c1 | Broad, flattened carapace fused to thoracic segments | Reduces tipping on slick fungal substrates ← Minimizes profile in dense karst fissures ← Shields ventral organs from crushing debris ← Driven by 1.2g gravity and pervasive basalt-karst terrain | **F3** Surface gravity; **F10** Surface lithology and structure | Shell Slide (`lombardo.shell_slide`) | Defence | Reduces incoming damage by 30% and grants 2 turns of cover. | Vulnerable to top-down strikes and high-impact blows that exploit the broad profile. |
-| lombardo.c2 | Lateroposterior walking (crab-like lateral stride) | Aligns body axis with narrow karst fissures ← Reduces joint stress on jagged basalt floors ← Forces lateral locomotion under 1.2g gravity ← Evolved from vertical-climbing ancestors reoriented for ground-hugging travel | **F3** Surface gravity; **F10** Surface lithology and structure | Lateral Step (`lombardo.lateral_step`) | Basic | Moves sideways at full speed without turning penalty; navigates gaps 0.5m wide. | Struggles on smooth vertical surfaces; blind-side vulnerable. |
-| lombardo.c3 | Ventrally tucked, segmented abdomen beneath carapace | Shields soft gills and reproductive ducts in dusty karst ← Streamlines rear for sliding into hollows ← Prevents snagging on hyphal cords under 1.2g ← Maintains low center of gravity during rapid retreats | **F8** Mean visibility range; **F10** Surface lithology and structure; **F13** Primary structural and metabolic polymers | Hide Tuck (`lombardo.hide_tuck`) | Defence | Retract abdomen to seal ventral side, granting camouflage and reducing detection by 50% while stationary. | Immobility while tucked; slow recovery time. |
-| lombardo.c4 | Asymmetrical chelate claws (one crusher, one picker) | Manipulates dense chitin-glucan fungal biomass ← Cracks carbonate micro-crevices for mineral intake ← Replaces visual hunting with tactile probing in 15m haze ← Driven by external enzymatic digestion and persistent atmospheric particulate load | **F7** Atmospheric composition; **F8** Mean visibility range; **F13** Primary structural and metabolic polymers | Crush Claw (`lombardo.crush_claw`) | Engage | Applies 150% force to shatter chitinous armor or fungal nodules; extracts high-nutrient paste. | High metabolic cost; claws jam in wet hyphal mats; slow strike speed. |
+| lombardo.c1 | Broad, flattened carapace fused to thoracic segments | Reduces tipping on slick fungal substrates ← Minimizes profile in dense karst fissures ← Shields ventral organs from crushing debris ← Driven by 1.2g gravity and pervasive basalt-karst terrain | **F3** Surface gravity; **F10** Surface lithology and structure | Shell Slide (`lombardo.shell_slide`) | Defence | The creature lowers its broad carapace to block incoming strikes and settles behind it for cover for a short while. | Vulnerable to top-down strikes and high-impact blows that exploit the broad profile. |
+| lombardo.c2 | Lateroposterior walking (crab-like lateral stride) | Aligns body axis with narrow karst fissures ← Reduces joint stress on jagged basalt floors ← Forces lateral locomotion under 1.2g gravity ← Evolved from vertical-climbing ancestors reoriented for ground-hugging travel | **F3** Surface gravity; **F10** Surface lithology and structure | Lateral Step (`lombardo.lateral_step`) | Basic | The creature strides sideways at full speed without needing to turn, easily crossing narrow gaps nearby. | Struggles on smooth vertical surfaces; blind-side vulnerable. |
+| lombardo.c3 | Ventrally tucked, segmented abdomen beneath carapace | Shields soft gills and reproductive ducts in dusty karst ← Streamlines rear for sliding into hollows ← Prevents snagging on hyphal cords under 1.2g ← Maintains low center of gravity during rapid retreats | **F8** Mean visibility range; **F10** Surface lithology and structure; **F13** Primary structural and metabolic polymers | Hide Tuck (`lombardo.hide_tuck`) | Defence | The creature tucks its segmented abdomen beneath its carapace to seal itself away, becoming nearly invisible when it stays still. | Immobility while tucked; slow recovery time. |
+| lombardo.c4 | Asymmetrical chelate claws (one crusher, one picker) | Manipulates dense chitin-glucan fungal biomass ← Cracks carbonate micro-crevices for mineral intake ← Replaces visual hunting with tactile probing in 15m haze ← Driven by external enzymatic digestion and persistent atmospheric particulate load | **F7** Atmospheric composition; **F8** Mean visibility range; **F13** Primary structural and metabolic polymers | Crush Claw (`lombardo.crush_claw`) | Engage | The creature brings its heavy crusher claw down with great force to shatter hard shells or fungal growths, then uses its finer claw to extract the soft flesh inside. | High metabolic cost; claws jam in wet hyphal mats; slow strike speed. |
 
 ### lombardo.c1: Broad, flattened carapace fused to thoracic segments
 
 Trait ← Reduces tipping on slick fungal substrates ← Minimizes profile in dense karst fissures ← Shields ventral organs from crushing debris ← Driven by 1.2g gravity and pervasive basalt-karst terrain ← F3, F10
 
-- **Skill:** Shell Slide (Defence): Reduces incoming damage by 30% and grants 2 turns of cover.
+- **Skill:** Shell Slide (Defence): The creature lowers its broad carapace to block incoming strikes and settles behind it for cover for a short while.
 - **Weakness:** Vulnerable to top-down strikes and high-impact blows that exploit the broad profile.
 - **Observe:**
   1. Glossy dorsal plate fused to body
@@ -48,7 +48,7 @@ Trait ← Reduces tipping on slick fungal substrates ← Minimizes profile in de
 
 Trait ← Aligns body axis with narrow karst fissures ← Reduces joint stress on jagged basalt floors ← Forces lateral locomotion under 1.2g gravity ← Evolved from vertical-climbing ancestors reoriented for ground-hugging travel ← F3, F10
 
-- **Skill:** Lateral Step (Basic): Moves sideways at full speed without turning penalty; navigates gaps 0.5m wide.
+- **Skill:** Lateral Step (Basic): The creature strides sideways at full speed without needing to turn, easily crossing narrow gaps nearby.
 - **Weakness:** Struggles on smooth vertical surfaces; blind-side vulnerable.
 - **Observe:**
   1. Legs bent laterally
@@ -66,7 +66,7 @@ Trait ← Aligns body axis with narrow karst fissures ← Reduces joint stress o
 
 Trait ← Shields soft gills and reproductive ducts in dusty karst ← Streamlines rear for sliding into hollows ← Prevents snagging on hyphal cords under 1.2g ← Maintains low center of gravity during rapid retreats ← F8, F10, F13
 
-- **Skill:** Hide Tuck (Defence): Retract abdomen to seal ventral side, granting camouflage and reducing detection by 50% while stationary.
+- **Skill:** Hide Tuck (Defence): The creature tucks its segmented abdomen beneath its carapace to seal itself away, becoming nearly invisible when it stays still.
 - **Weakness:** Immobility while tucked; slow recovery time.
 - **Observe:**
   1. Abdomen hidden under shell
@@ -84,7 +84,7 @@ Trait ← Shields soft gills and reproductive ducts in dusty karst ← Streamlin
 
 Trait ← Manipulates dense chitin-glucan fungal biomass ← Cracks carbonate micro-crevices for mineral intake ← Replaces visual hunting with tactile probing in 15m haze ← Driven by external enzymatic digestion and persistent atmospheric particulate load ← F7, F8, F13
 
-- **Skill:** Crush Claw (Engage): Applies 150% force to shatter chitinous armor or fungal nodules; extracts high-nutrient paste.
+- **Skill:** Crush Claw (Engage): The creature brings its heavy crusher claw down with great force to shatter hard shells or fungal growths, then uses its finer claw to extract the soft flesh inside.
 - **Weakness:** High metabolic cost; claws jam in wet hyphal mats; slow strike speed.
 - **Observe:**
   1. One claw oversized and pitted
@@ -102,11 +102,12 @@ Trait ← Manipulates dense chitin-glucan fungal biomass ← Cracks carbonate mi
 
 | With | Kind | Via | Note |
 |---|---|---|---|
-| Siltfilter | cousin |  | (council kind 'Commensal') Lombardo scavenges nutrient paste left behind by Siltfilter benthic grinders; in return, the Lombardo's crushing claws clear carbonate blockages that trap Siltfilter nests. |
 | carapaz | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | carmesa | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | laja_tres | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | salcaran | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| crang_lira | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| ferrisca | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -132,3 +133,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 
 - 2026-11-20 import_got: imported from council run autoloop-2026-11-19
 - 2026-11-19 autoloop: carcinisation links to 4 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)

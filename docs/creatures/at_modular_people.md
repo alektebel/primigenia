@@ -21,14 +21,14 @@ to be written
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_modular_people.c1 | Interlocking dermal hinge joints between segments | Active tectonics (F12) create shifting terrain ← High gravity baseline (F3) demands flexible load distribution ← Interlocking dermal hinges allow rapid structural reconfiguration ← Redeploy units as bridges or barricades in 1 turn | **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.; **F12** Active plate tectonics drive orogenic cave compression and volcanic uplift. | Form Shift (`at_modular_people.form_shift`) | Control | Redeploy 3 units as bridge or barricade in 1 turn | Hinges require moist environment; desiccation causes lock-jam |
-| at_modular_people.c2 | Distributed neural ganglia linked by chemical relay | Qu-modified HGT (F14) enabled phenotypic plasticity ← Atmospheric mixing (F6) ensures rapid pheromone spread ← Eliminates individual ego for consensus decision-making ← Share vision and stamina pools among colony for 3 turns | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F14** Baseline biochemistry follows CHNOPS with Qu-modified horizontal gene transfer. | Hive Sync (`at_modular_people.hive_sync`) | Passive | Share vision and stamina pools among colony for 3 turns | Pheromone jamming causes sector paralysis |
+| at_modular_people.c1 | Interlocking dermal hinge joints between segments | Active tectonics (F12) create shifting terrain ← High gravity baseline (F3) demands flexible load distribution ← Interlocking dermal hinges allow rapid structural reconfiguration ← Redeploy units as bridges or barricades in 1 turn | **F3** Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.; **F12** Active plate tectonics drive orogenic cave compression and volcanic uplift. | Form Shift (`at_modular_people.form_shift`) | Control | The creature flexes its segmented joints to reshape its body into a sturdy bridge or barricade for nearby allies. This structural formation holds firm for a short while before it naturally relaxes. | Hinges require moist environment; desiccation causes lock-jam |
+| at_modular_people.c2 | Distributed neural ganglia linked by chemical relay | Qu-modified HGT (F14) enabled phenotypic plasticity ← Atmospheric mixing (F6) ensures rapid pheromone spread ← Eliminates individual ego for consensus decision-making ← Share vision and stamina pools among colony for 3 turns | **F6** Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.; **F14** Baseline biochemistry follows CHNOPS with Qu-modified horizontal gene transfer. | Hive Sync (`at_modular_people.hive_sync`) | Passive | The colony links its distributed neural ganglia to share sight and endurance across all nearby members. This collective awareness and shared vitality persists for a short while before the chemical signals naturally fade. | Pheromone jamming causes sector paralysis |
 
 ### at_modular_people.c1: Interlocking dermal hinge joints between segments
 
 Trait ← Active tectonics (F12) create shifting terrain ← High gravity baseline (F3) demands flexible load distribution ← Interlocking dermal hinges allow rapid structural reconfiguration ← Redeploy units as bridges or barricades in 1 turn ← F3, F12
 
-- **Skill:** Form Shift (Control): Redeploy 3 units as bridge or barricade in 1 turn
+- **Skill:** Form Shift (Control): The creature flexes its segmented joints to reshape its body into a sturdy bridge or barricade for nearby allies. This structural formation holds firm for a short while before it naturally relaxes.
 - **Weakness:** Hinges require moist environment; desiccation causes lock-jam
 - **Observe:**
   1. Seam-pulsing tissue
@@ -46,7 +46,7 @@ Trait ← Active tectonics (F12) create shifting terrain ← High gravity baseli
 
 Trait ← Qu-modified HGT (F14) enabled phenotypic plasticity ← Atmospheric mixing (F6) ensures rapid pheromone spread ← Eliminates individual ego for consensus decision-making ← Share vision and stamina pools among colony for 3 turns ← F6, F14
 
-- **Skill:** Hive Sync (Passive): Share vision and stamina pools among colony for 3 turns
+- **Skill:** Hive Sync (Passive): The colony links its distributed neural ganglia to share sight and endurance across all nearby members. This collective awareness and shared vitality persists for a short while before the chemical signals naturally fade.
 - **Weakness:** Pheromone jamming causes sector paralysis
 - **Observe:**
   1. Chemical scent trails

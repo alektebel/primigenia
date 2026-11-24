@@ -1,0 +1,294 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "siderogon",
+  "name": {
+    "en": "Siderogon"
+  },
+  "world": "metallic",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Shallow tidal flats, sulfide seeps, rift margins.",
+    "diet": "Chemosynthetic sulfide mats, microbial biofilms.",
+    "active": "Diurnal; crepuscular peaks when tides expose vents.",
+    "predators": [],
+    "prey": [
+      "Microbial sulfide mat"
+    ]
+  },
+  "body": "Bilateral, hex-plate armor of iron-sulfide, internal magnetite chains, magnetite-tipped mandibles, siphon for low-frequency humming.",
+  "chains": [
+    {
+      "id": "siderogon.c1",
+      "trait": "Internal magnetite chains lock to magnetic north.",
+      "links": [
+        "Chains align with dipole field",
+        "Navigates vent plumes and tides",
+        "Strong planetary magnetic field"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "siderogon.magnetic_lock",
+        "name": {
+          "en": "Magnetic Lock"
+        },
+        "role": "Passive",
+        "effect": "The creature moves steadily through shifting winds and tides without losing its way. You watch it navigate the terrain with confident, unbroken strides.",
+        "numbers": {}
+      },
+      "weakness": "Demagnetized by direct lightning strike.",
+      "observe": [
+        "Scales vibrate faintly toward horizon",
+        "Aligns body parallel to magnetic meridian",
+        "Rests with shell plates clamped tight"
+      ],
+      "journal": {
+        "en": "Their bones are compass needles; they walk by the pull of the world."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make it 'aligns to the local field line and reads inclination', a fallback sense that haze and tides make useful, and let nearby ore outcrops scramble it. Drop the immunity claim and reframe lightning as a navigation-glitch secret rather than an electrical charge.",
+        "fixes": [
+          "Make it 'aligns to the local field line and reads inclination', a fallback sense that haze and tides make useful, and let nearby ore outcrops scramble it. Drop the immunity claim and reframe lightning as a navigation-glitch secret rather than an electrical charge."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria such as Magnetospirillum orient with magnetosome chains; homing pigeons and sea turtles use geomagnetic cues, though the animal mechanism is debated.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "siderogon.c2",
+      "trait": "Scales of iron-sulfide resist acid and impact.",
+      "links": [
+        "Deposits FeS plates from seawater",
+        "Immune to acid fog and predators",
+        "Acidic rift chemistry and sulfide crusts"
+      ],
+      "roots": [
+        "F15",
+        "F19"
+      ],
+      "skill": {
+        "id": "siderogon.acid_shell",
+        "name": {
+          "en": "Acid Shell"
+        },
+        "role": "Defence",
+        "effect": "Its iron-sulfide scales easily shrug off corrosive sprays and harsh chemicals. You see the acidic liquids simply slide away without harming the creature.",
+        "numbers": {}
+      },
+      "weakness": "Heavy armor limits movement speed to slow.",
+      "observe": [
+        "Rust-colored plates etched by acid mist",
+        "No predators dare bite the shell",
+        "Siphon vents when fog rolls in"
+      ],
+      "journal": {
+        "en": "Armor forged in poison; nothing cracks the siderogon's back."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Describe a composite plate: FeS inside, inert organic or oxide skin outside. Acid fog etches and slowly wears it, so it resists rather than ignores acid. Keep the heavy-armour, low-mobility trade-off.",
+        "fixes": [
+          "Describe a composite plate: FeS inside, inert organic or oxide skin outside. Acid fog etches and slowly wears it, so it resists rather than ignores acid. Keep the heavy-armour, low-mobility trade-off."
+        ],
+        "analogues": [
+          {
+            "organism": "Scaly-foot snail Chrysomallon squamiferum: greigite/pyrite scales under a vinyl-like organic layer; acid-mine-drainage systems both precipitate and dissolve FeS.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "siderogon.c3",
+      "trait": "Magnetite-tipped mandibles scrape sulfide crusts.",
+      "links": [
+        "Teeth composed of magnetite grains",
+        "Eats hard crusts without wear",
+        "Magnetite deposits and sulfide chemistry"
+      ],
+      "roots": [
+        "F25",
+        "F19"
+      ],
+      "skill": {
+        "id": "siderogon.crust_scrape",
+        "name": {
+          "en": "Crust Scrape"
+        },
+        "role": "Basic",
+        "effect": "Its magnetite-tipped mandibles shatter through thick armor and heavy defenses. You watch the creature crack the surface and leave the target completely exposed.",
+        "numbers": {}
+      },
+      "weakness": "Teeth shatter if struck against solid rock.",
+      "observe": [
+        "Black, glittering mandibles grind rock",
+        "Feeds only on crusty mineral mats",
+        "Teeth grow back slowly after damage"
+      ],
+      "journal": {
+        "en": "Teeth like magnets, eating the earth's iron bones."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Keep the magnetite tips but add continuous tooth replacement, matching 'teeth grow back slowly', and call the lineage a mollusc with a chiton-like radula rather than a literal hybrid. Make wear on rock the stated weakness.",
+        "fixes": [
+          "Keep the magnetite tips but add continuous tooth replacement, matching 'teeth grow back slowly', and call the lineage a mollusc with a chiton-like radula rather than a literal hybrid. Make wear on rock the stated weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Chitons biomineralise magnetite tooth caps and continually replace radular teeth; limpets rasp rock with a radula.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "siderogon.c4",
+      "trait": "Vibrating siphon produces low-frequency hum.",
+      "links": [
+        "Low sound carries kilometers",
+        "Long-range herd communication",
+        "Dense air and low-contrast haze"
+      ],
+      "roots": [
+        "F13",
+        "F14"
+      ],
+      "skill": {
+        "id": "siderogon.long_hum",
+        "name": {
+          "en": "Long Hum"
+        },
+        "role": "Control",
+        "effect": "A low, vibrating hum echoes across the area, drawing nearby allies to its side. You see the creature's companions steady their footing and stand together in quiet unison.",
+        "numbers": {}
+      },
+      "weakness": "Attracts predators who hunt by sound.",
+      "observe": [
+        "Ground trembles with deep thrum",
+        "Herds gather within seconds of call",
+        "Silence when predators are near"
+      ],
+      "journal": {
+        "en": "A voice like grinding tectonic plates calls them home."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/rereview-2026-11-24",
+        "date": "2026-11-24",
+        "summary": "Make it a substrate-coupled thump through wet flats, using the shell as resonator, and keep it far-carrying through ground rather than through open air. Predators hunting by sound remain a good cost.",
+        "fixes": [
+          "Make it a substrate-coupled thump through wet flats, using the shell as resonator, and keep it far-carrying through ground rather than through open air. Predators hunting by sound remain a good cost."
+        ],
+        "analogues": [
+          {
+            "organism": "Elephants' seismic rumbles and blind mole-rats' head-drumming; frogs and insects shifting calls lower in fog or dense habitat.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "sidero_chisp",
+      "kind": "cousin",
+      "note": "(council kind 'predator') Sidero-chisp hunts juvenile or sick siderogons in lagoon margins."
+    },
+    {
+      "with": "sidero_copa",
+      "kind": "cousin",
+      "note": "(council kind 'mutualist') Siderogons may graze non-toxic roots or use sidero-copa for shelter."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "claude",
+      "what": "re-review: the referee had failed (Cursor composer-2.5 unavailable on the Free plan) and every chain defaulted to 6/fixable; verdicts redone with a working referee"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Snail-bivalve hybrid lineage."
+  },
+  "temperament": "Gruff, slow, defensive, social herder.",
+  "secrets": [
+    "Radar target: magnetite makes them glow on magnetic sensors.",
+    "Herd leader has unique hum frequency; copying it summons followers.",
+    "Lightning can charge a siderogon, increasing electrical output temporarily."
+  ],
+  "moments": [
+    "When the wind dies, the herds lock their shells with a thunder-clap of magnetism, standing like rusted statues against the acid mist, humming a chord that vibrates in your chest."
+  ]
+}

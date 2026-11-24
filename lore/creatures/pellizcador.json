@@ -41,7 +41,7 @@
           "en": "Anchor grip"
         },
         "role": "Passive",
-        "effect": "+60% chance to stay on host during movement.",
+        "effect": "The creature clings tightly to its host and rarely falls off when moving. You will see it maintain a firm grip even during rapid motion.",
         "numbers": {}
       },
       "weakness": "Exposed to overhead pecking.",
@@ -100,7 +100,7 @@
           "en": "Tap feed"
         },
         "role": "Basic",
-        "effect": "-15% host stamina, +5 player charm if applied before courtship.",
+        "effect": "The creature feeds on its host and weakens it. If applied before courtship, the creature's presence strongly appeals to the target.",
         "numbers": {}
       },
       "weakness": "Leaves a visible puncture; host grooming removes them.",
@@ -159,7 +159,7 @@
           "en": "Sun-bask"
         },
         "role": "Control",
-        "effect": "+10% movement speed at dawn, -20% at midday.",
+        "effect": "The creature moves swiftly during the early morning hours. Its pace slows considerably as the day reaches its peak heat.",
         "numbers": {}
       },
       "weakness": "Immobilized by sudden rain or heavy fog.",
@@ -219,7 +219,7 @@
           "en": "Scent track"
         },
         "role": "Poke",
-        "effect": "Reveals host location through grass for 15 seconds.",
+        "effect": "The creature tracks its host and reveals their hidden position through the grass. You will see the location marked for a short while.",
         "numbers": {}
       },
       "weakness": "Useless in strong crosswinds or heavy rain.",

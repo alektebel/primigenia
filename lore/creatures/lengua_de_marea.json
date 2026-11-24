@@ -40,7 +40,7 @@
           "en": "Adhere"
         },
         "role": "Defence",
-        "effect": "Anchors to rock, +80% survival in high wave action, -20% movement speed",
+        "effect": "The creature clings tightly to wet stone, resisting strong currents while moving with deliberate slowness.",
         "numbers": {}
       },
       "weakness": "Dries out and loses grip if exposed >4 hours without tide or fog",
@@ -104,7 +104,7 @@
           "en": "Glow-Track"
         },
         "role": "Poke",
-        "effect": "Reveals hidden food sources within 3 m for 10 s, +15% feed efficiency",
+        "effect": "Faint traces guide it to hidden food nearby, which it gathers with eager precision.",
         "numbers": {}
       },
       "weakness": "Disrupted by sudden electrical storms or high-mineral runoff",
@@ -167,7 +167,7 @@
           "en": "Night Shift"
         },
         "role": "Passive",
-        "effect": "+25% foraging speed and -50% predation risk during dark phases",
+        "effect": "It scurries swiftly through the shadows, slipping past predators with quiet grace.",
         "numbers": {}
       },
       "weakness": "Vulnerable to sudden fog clearance or moonless blackouts",
@@ -227,7 +227,7 @@
           "en": "Stone Tongue"
         },
         "role": "Engage",
-        "effect": "Breaks through hard crusts, +20% food value, +5% armor if molted",
+        "effect": "It scrapes away tough outer layers to draw out rich nourishment, and its shedding skin hardens into a protective shell.",
         "numbers": {}
       },
       "weakness": "Requires periodic grit consumption; starvation if only soft algae available",

@@ -42,7 +42,7 @@
           "en": "Short Glide"
         },
         "role": "Basic",
-        "effect": "Dashes 2.5m in dense air, bypassing 1m vertical gap",
+        "effect": "The creature launches forward through the thick air, easily clearing a short vertical drop. You watch it swiftly leap over the gap and land securely above.",
         "numbers": {}
       },
       "weakness": "Loud roars disrupt wing control",
@@ -99,7 +99,7 @@
           "en": "Scent Trail"
         },
         "role": "Poke",
-        "effect": "Tracks dung scent for 3s, reveals hidden carcass fragments",
+        "effect": "The creature strongly follows the dung scent through the air, causing hidden carcass fragments to become visible. You can now clearly see the scattered remains it has uncovered.",
         "numbers": {}
       },
       "weakness": "Sudden bright light blinds and freezes it",
@@ -157,7 +157,7 @@
           "en": "Grip Crawl"
         },
         "role": "Basic",
-        "effect": "Climbs vertical basalt at 0.5 m/s using hooked tarsi",
+        "effect": "The creature scales the sheer rock face with steady grace, using its hooked feet to grip the stone. You watch it steadily ascend the vertical wall without slipping.",
         "numbers": {}
       },
       "weakness": "Vulnerable when flipped on open ground",
@@ -213,7 +213,7 @@
           "en": "Process Scavenge"
         },
         "role": "Engage",
-        "effect": "Consumes carcass/dung in 4s, yields bone and chitin fragments",
+        "effect": "The creature devours the waste matter in a short while, leaving behind scattered bone and chitin fragments. You see the useful scraps remain on the ground for collection.",
         "numbers": {}
       },
       "weakness": "Exposed and immobile while feeding",

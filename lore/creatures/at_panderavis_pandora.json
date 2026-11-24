@@ -36,7 +36,7 @@
           "en": "Fossil Strata Analysis"
         },
         "role": "Poke",
-        "effect": "Identifies out-of-place terrestrial morphology vs native tripedal adaptations with +25% accuracy.",
+        "effect": "The creature's distinctive four-limbed skeleton stands out sharply among the native three-legged locals, making foreign body shapes instantly recognizable. You can quickly tell them apart by their physical structure.",
         "numbers": {}
       },
       "weakness": "High center of mass makes it vulnerable to lateral strikes under 1.22 g.",
@@ -100,7 +100,7 @@
           "en": "Furrow Dredge"
         },
         "role": "Engage",
-        "effect": "Exposes subsurface water and chemolithotrophic symbionts, granting temporary stamina boost (25% for 40s).",
+        "effect": "The creature's rake-like claws tear through the loose soil, revealing hidden underground water and symbiotic microbes. This vigorous digging leaves you feeling refreshed and ready for a short while.",
         "numbers": {}
       },
       "weakness": "Inefficient bipedal/tripedal transition on native terrain; high caloric demand due to dense calcium bones.",

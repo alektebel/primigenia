@@ -6,7 +6,7 @@
 
 ## Niche
 
-- **Habitat:** Ice veneer, shallow fractures, ejected regolith
+- **Habitat:** Ice veneer, shallow fractures, ejected regolith. Also, in the council's sketch (no such creature in this world yet): Coraza Peregrina, ceniza Roja aggregates within the Coraza's sheltered core; the Coraza provides magnetic navigation and superior shielding, carrying Ceniza to worlds the surface cannot reach alone.
 - **Diet:** Radiolytic redox couples in ice lattice; chemolithotrophy upon landing
 - **Active:** Cryptobiotic stasis >99.99% of time; brief activation during flyby heat or landing
 - **Predators:** none
@@ -21,16 +21,16 @@ Filamentous mat of ether-linked lipids embedded with melanin-like pigment grains
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ceniza_roja_void.c1 | Melanin-rich armor grains shield DNA | Prevents high-LET ionization tracks from shattering helices ← Unshielded cosmic rays deliver lethal doses even in vacuum ← F8 | **F8** Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.; **F15** GCR radiolysis of surface ice continuously generates H₂, H₂O₂, and solvated electrons. | Radiolytic Shielding (`ceniza_roja_void.radiolytic_shielding`) | Passive | Reduces DNA damage accumulation by 60% while exposed to GCR flux; allows longer drift times. | Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction. |
-| ceniza_roja_void.c2 | Aerogel-like silica-ice lattice | Allows ejection by tiny outgassing torques and microgravity ← Surface grains escape at velocities near thermal kinetic energy ← F5 | **F5** Surface gravity ~0.00013 g (0.0013 m/s²).; **F6** Chaotic tumbling rotation with no stable axis or predictable seasons. | Ballistic Seed (`ceniza_roja_void.ballistic_seed`) | Basic | Eject propagule to drift toward target world. Success chance +25% if target is within 0.5 ly and velocity matches relative drift. | Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes. |
-| ceniza_roja_void.c3 | Ballistic chemical pheromone bursts | Signals safe landing zones and colony aggregation in straight lines ← No turbulence or plume formation in hard vacuum ← F11 | **F11** Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted. | Direct Signal (`ceniza_roja_void.direct_signal`) | Social | Place chemical beacon; allied Ceniza units within line-of-sight instantly migrate to beacon with +40% speed. | Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path. |
-| ceniza_roja_void.c4 | Trehalose glass tun formation | Suspends metabolism for millennia during energy gaps ← Radiolytic fuels and solvents are scarce and patchy ← F3 | **F19** Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps.; **F3** Stellar flybys and molecular cloud passages occur on staggered timescales. | Cryptobiotic Stasis (`ceniza_roja_void.cryptobiotic_stasis`) | Defence | Enter tun state. Immune to radiation and cold damage for 10,000 years; metabolism halted. Recovery costs 20% biomass. | Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period. |
+| ceniza_roja_void.c1 | Melanin-rich armor grains shield DNA | Prevents high-LET ionization tracks from shattering helices ← Unshielded cosmic rays deliver lethal doses even in vacuum ← F8 | **F8** Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.; **F15** GCR radiolysis of surface ice continuously generates H₂, H₂O₂, and solvated electrons. | Radiolytic Shielding (`ceniza_roja_void.radiolytic_shielding`) | Passive | Its dark armor grains absorb harsh cosmic radiation, keeping its genetic material intact during long journeys. You see the creature withstand extreme space conditions without deteriorating. | Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction. |
+| ceniza_roja_void.c2 | Aerogel-like silica-ice lattice | Allows ejection by tiny outgassing torques and microgravity ← Surface grains escape at velocities near thermal kinetic energy ← F5 | **F5** Surface gravity ~0.00013 g (0.0013 m/s²).; **F6** Chaotic tumbling rotation with no stable axis or predictable seasons. | Ballistic Seed (`ceniza_roja_void.ballistic_seed`) | Basic | It releases a lightweight silica-ice seed that drifts through the void toward a nearby world. You can guide it to follow the natural flow of space, increasing its chances of reaching the destination. | Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes. |
+| ceniza_roja_void.c3 | Ballistic chemical pheromone bursts | Signals safe landing zones and colony aggregation in straight lines ← No turbulence or plume formation in hard vacuum ← F11 | **F11** Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted. | Direct Signal (`ceniza_roja_void.direct_signal`) | Social | It releases a strong chemical scent that marks a specific location in the environment. Allied creatures immediately detect the signal and rush toward the marked spot. | Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path. |
+| ceniza_roja_void.c4 | Trehalose glass tun formation | Suspends metabolism for millennia during energy gaps ← Radiolytic fuels and solvents are scarce and patchy ← F3 | **F19** Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps.; **F3** Stellar flybys and molecular cloud passages occur on staggered timescales. | Cryptobiotic Stasis (`ceniza_roja_void.cryptobiotic_stasis`) | Defence | It encases itself in a hard, glass-like shell and falls into a deep dormant state. You see the creature become completely impervious to extreme cold and radiation, though it must shed some mass to awaken. | Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period. |
 
 ### ceniza_roja_void.c1: Melanin-rich armor grains shield DNA
 
 Trait ← Prevents high-LET ionization tracks from shattering helices ← Unshielded cosmic rays deliver lethal doses even in vacuum ← F8 ← F8, F15
 
-- **Skill:** Radiolytic Shielding (Passive): Reduces DNA damage accumulation by 60% while exposed to GCR flux; allows longer drift times.
+- **Skill:** Radiolytic Shielding (Passive): Its dark armor grains absorb harsh cosmic radiation, keeping its genetic material intact during long journeys. You see the creature withstand extreme space conditions without deteriorating.
 - **Weakness:** Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction.
 - **Observe:**
   1. Red dust coating ice crystals
@@ -48,7 +48,7 @@ Trait ← Prevents high-LET ionization tracks from shattering helices ← Unshie
 
 Trait ← Allows ejection by tiny outgassing torques and microgravity ← Surface grains escape at velocities near thermal kinetic energy ← F5 ← F5, F6
 
-- **Skill:** Ballistic Seed (Basic): Eject propagule to drift toward target world. Success chance +25% if target is within 0.5 ly and velocity matches relative drift.
+- **Skill:** Ballistic Seed (Basic): It releases a lightweight silica-ice seed that drifts through the void toward a nearby world. You can guide it to follow the natural flow of space, increasing its chances of reaching the destination.
 - **Weakness:** Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes.
 - **Observe:**
   1. Filaments loosening from ice matrix
@@ -66,7 +66,7 @@ Trait ← Allows ejection by tiny outgassing torques and microgravity ← Surfac
 
 Trait ← Signals safe landing zones and colony aggregation in straight lines ← No turbulence or plume formation in hard vacuum ← F11 ← F11
 
-- **Skill:** Direct Signal (Social): Place chemical beacon; allied Ceniza units within line-of-sight instantly migrate to beacon with +40% speed.
+- **Skill:** Direct Signal (Social): It releases a strong chemical scent that marks a specific location in the environment. Allied creatures immediately detect the signal and rush toward the marked spot.
 - **Weakness:** Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path.
 - **Observe:**
   1. Crystal shards releasing vapor that hangs motionless
@@ -84,7 +84,7 @@ Trait ← Signals safe landing zones and colony aggregation in straight lines �
 
 Trait ← Suspends metabolism for millennia during energy gaps ← Radiolytic fuels and solvents are scarce and patchy ← F3 ← F19, F3
 
-- **Skill:** Cryptobiotic Stasis (Defence): Enter tun state. Immune to radiation and cold damage for 10,000 years; metabolism halted. Recovery costs 20% biomass.
+- **Skill:** Cryptobiotic Stasis (Defence): It encases itself in a hard, glass-like shell and falls into a deep dormant state. You see the creature become completely impervious to extreme cold and radiation, though it must shed some mass to awaken.
 - **Weakness:** Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period.
 - **Observe:**
   1. Filaments curling into glassy spheres
@@ -97,12 +97,6 @@ Trait ← Suspends metabolism for millennia during energy gaps ← Radiolytic fu
   - Analogue: Tardigrade tun formation (Milnesium tardigradum and relatives); nematode anhydrobiosis with trehalose glass.: as named by the judge; no mechanism or reference recorded
   - Fix: Optional honesty tweak: change 'immune' for 10,000 years to 'metabolically suspended; radiation and cold tolerant with greatly reduced active damage; total dose and repair cost still bind long drift'—gameplay numbers can stay if framed as relative resistance.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
-
-## Relations
-
-| With | Kind | Via | Note |
-|---|---|---|---|
-| Coraza Peregrina | cousin |  | (council kind 'Symbiont/Vector') Ceniza Roja aggregates within the Coraza's sheltered core; the Coraza provides magnetic navigation and superior shielding, carrying Ceniza to worlds the surface cannot reach alone. |
 
 ## Journal
 

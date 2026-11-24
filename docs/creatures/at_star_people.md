@@ -24,14 +24,14 @@ Enlarged associative cortices with neural plasticity <- Multi-world adaptation p
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| at_star_people.c1 | Enlarged associative cortices with neural plasticity | Expanded cortical folding & synaptic proliferation ← Rapid multi-world environmental acclimatization ← Engineered epigenetic switches & germline vaults | **F6** Star People possess a unified engineered physiology with enlarged associative cortices and neural plasticity.; **F17** Star People reproduction relies on germline cryo-stasis and engineered epigenetic switches for rapid environmental acclimatization. | Cognitive Molding (`at_star_people.cognitive_molding`) | Control | +50% skill acquisition speed, adapts to unfamiliar gravity/atmosphere within 2 encounters | Neural overload in chaotic information environments; -40% accuracy under cognitive stress |
-| at_star_people.c2 | Cryogenic germline vaults for instant population scaling | Dormant gamete preservation in vacuum-sealed vaults ← Automated seeding & rapid demographic growth ← Fast automated ships & vacuum transit | **F17** Star People reproduction relies on germline cryo-stasis and engineered epigenetic switches for rapid environmental acclimatization. | Vault Bloom (`at_star_people.vault_bloom`) | Signature | Instantly spawn 3 allied units in a 5m radius; cooldown 120s. Costs 40% current biomass. | Vaults require stable cryo-thermal regulation; power loss causes mass germline apoptosis |
+| at_star_people.c1 | Enlarged associative cortices with neural plasticity | Expanded cortical folding & synaptic proliferation ← Rapid multi-world environmental acclimatization ← Engineered epigenetic switches & germline vaults | **F6** Star People possess a unified engineered physiology with enlarged associative cortices and neural plasticity.; **F17** Star People reproduction relies on germline cryo-stasis and engineered epigenetic switches for rapid environmental acclimatization. | Cognitive Molding (`at_star_people.cognitive_molding`) | Control | Its mind strongly adapts to unfamiliar gravitational and atmospheric conditions, rapidly mastering new techniques within a short while. | Neural overload in chaotic information environments; -40% accuracy under cognitive stress |
+| at_star_people.c2 | Cryogenic germline vaults for instant population scaling | Dormant gamete preservation in vacuum-sealed vaults ← Automated seeding & rapid demographic growth ← Fast automated ships & vacuum transit | **F17** Star People reproduction relies on germline cryo-stasis and engineered epigenetic switches for rapid environmental acclimatization. | Vault Bloom (`at_star_people.vault_bloom`) | Signature | The creature instantly releases allied forms from its cryogenic vaults to bolster nearby ranks. It draws upon its stored vitality to fuel the emergence, requiring a long rest before it can bloom again. | Vaults require stable cryo-thermal regulation; power loss causes mass germline apoptosis |
 
 ### at_star_people.c1: Enlarged associative cortices with neural plasticity
 
 Trait ← Expanded cortical folding & synaptic proliferation ← Rapid multi-world environmental acclimatization ← Engineered epigenetic switches & germline vaults ← F6, F17
 
-- **Skill:** Cognitive Molding (Control): +50% skill acquisition speed, adapts to unfamiliar gravity/atmosphere within 2 encounters
+- **Skill:** Cognitive Molding (Control): Its mind strongly adapts to unfamiliar gravitational and atmospheric conditions, rapidly mastering new techniques within a short while.
 - **Weakness:** Neural overload in chaotic information environments; -40% accuracy under cognitive stress
 - **Observe:**
   1. Large cranial vault with prominent frontal lobes
@@ -50,7 +50,7 @@ Trait ← Expanded cortical folding & synaptic proliferation ← Rapid multi-wor
 
 Trait ← Dormant gamete preservation in vacuum-sealed vaults ← Automated seeding & rapid demographic growth ← Fast automated ships & vacuum transit ← F17
 
-- **Skill:** Vault Bloom (Signature): Instantly spawn 3 allied units in a 5m radius; cooldown 120s. Costs 40% current biomass.
+- **Skill:** Vault Bloom (Signature): The creature instantly releases allied forms from its cryogenic vaults to bolster nearby ranks. It draws upon its stored vitality to fuel the emergence, requiring a long rest before it can bloom again.
 - **Weakness:** Vaults require stable cryo-thermal regulation; power loss causes mass germline apoptosis
 - **Observe:**
   1. Subdermal cryo-chamber ports at the clavicle

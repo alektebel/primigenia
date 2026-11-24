@@ -21,16 +21,16 @@ Delicate bilobed wings with polarization-sensitive leading edges; ciliated filtr
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| nubevolar.c1 | Compound eyes detect ring polarization vectors for navigation | Ice and dust ring particles scatter and polarize incident light ← Multi-lobed eyes resolve polarization angles independent of intensity ← Stable sky compass works in heavy haze and eclipse darkness | **F18** Ring-scattered starlight is highly polarized, providing a stable sky compass during eclipses and heavy haze. | Polar-Lock (`nubevolar.polar_lock`) | Basic | Grants 'True Aim' on ranged attacks and allows flight through 'Obscured' terrain without penalty for 4 turns. | Confused by smooth water surfaces that depolarize light; cannot navigate in total darkness. |
-| nubevolar.c2 | Wing edges harvest ring-shadow thermals for energy-free soaring | Ring shadow band creates sharp thermal gradients on surface ← Convection cells rise along shadow boundaries ← Wing morphology optimizes lift in low-velocity thermal columns | **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Shadow Glide (`nubevolar.shadow_glide`) | Basic | Moves 50% further per turn without expending movement when in 'Shadow' or 'Thermal' terrain; falls 1 level if forced out of thermal. | Cannot soar in uniform lighting or still air; requires thermal contrast. |
-| nubevolar.c3 | Cilia nets deploy to filter aerosol plankton from dense air | 2.1 bar atmosphere supports stable aerosol layers ← Vent plumes inject spores and organic particulates upward ← Ciliated nets trap particles; ciliary beating moves food to mouth | **F9** Surface pressure is 2.1 bar with a mean temperature of 285 K, dominated by 78% nitrogen and 18% carbon dioxide. | Aero-Feed (`nubevolar.aero_feed`) | Basic | Heals 5 HP and removes 1 'Exhaustion' per turn while in air; reduces speed by 30% due to net drag. | Cilia clog with dust or heavy particulates; requires grooming. |
-| nubevolar.c4 | Mating flares mimic eclipse light drop to synchronize reproduction | Eclipse periodicity creates predictable light signature every 58 hours ← Bioluminescent organs flash in sequence with shadow onset ← Synchronized mating ensures offspring hatch during optimal thermal windows | **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Eclipse-Charm (`nubevolar.eclipse_charm`) | Social | At eclipse onset, all Nubevolar in 60m range gain 'Reproduction Ready' (can spawn an ally at end of turn) and attract 'Predator' attention for 2 turns. | Mass aggregation during eclipse makes them vulnerable to area predators. |
+| nubevolar.c1 | Compound eyes detect ring polarization vectors for navigation | Ice and dust ring particles scatter and polarize incident light ← Multi-lobed eyes resolve polarization angles independent of intensity ← Stable sky compass works in heavy haze and eclipse darkness | **F18** Ring-scattered starlight is highly polarized, providing a stable sky compass during eclipses and heavy haze. | Polar-Lock (`nubevolar.polar_lock`) | Basic | Its compound eyes lock onto distant targets, ensuring every projectile finds its mark. It glides smoothly through thick fog and dense foliage as if the air were completely clear. | Confused by smooth water surfaces that depolarize light; cannot navigate in total darkness. |
+| nubevolar.c2 | Wing edges harvest ring-shadow thermals for energy-free soaring | Ring shadow band creates sharp thermal gradients on surface ← Convection cells rise along shadow boundaries ← Wing morphology optimizes lift in low-velocity thermal columns | **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Shadow Glide (`nubevolar.shadow_glide`) | Basic | It rides the dark updrafts with effortless grace, covering great distances without tiring. If caught in open light, it quickly descends to the nearest lower ground. | Cannot soar in uniform lighting or still air; requires thermal contrast. |
+| nubevolar.c3 | Cilia nets deploy to filter aerosol plankton from dense air | 2.1 bar atmosphere supports stable aerosol layers ← Vent plumes inject spores and organic particulates upward ← Ciliated nets trap particles; ciliary beating moves food to mouth | **F9** Surface pressure is 2.1 bar with a mean temperature of 285 K, dominated by 78% nitrogen and 18% carbon dioxide. | Aero-Feed (`nubevolar.aero_feed`) | Basic | While airborne, it unfurls fine mesh nets to catch floating nourishment, steadily renewing its vigor and clearing away weariness. The heavy nets slow its flight, making its movements deliberately sluggish. | Cilia clog with dust or heavy particulates; requires grooming. |
+| nubevolar.c4 | Mating flares mimic eclipse light drop to synchronize reproduction | Eclipse periodicity creates predictable light signature every 58 hours ← Bioluminescent organs flash in sequence with shadow onset ← Synchronized mating ensures offspring hatch during optimal thermal windows | **F12** The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours. | Eclipse-Charm (`nubevolar.eclipse_charm`) | Social | When the sky darkens, the flock emits a synchronized glow that strongly stirs an urge to multiply nearby. This brilliant display naturally draws the watchful eyes of hungry hunters to the area. | Mass aggregation during eclipse makes them vulnerable to area predators. |
 
 ### nubevolar.c1: Compound eyes detect ring polarization vectors for navigation
 
 Trait ← Ice and dust ring particles scatter and polarize incident light ← Multi-lobed eyes resolve polarization angles independent of intensity ← Stable sky compass works in heavy haze and eclipse darkness ← F18
 
-- **Skill:** Polar-Lock (Basic): Grants 'True Aim' on ranged attacks and allows flight through 'Obscured' terrain without penalty for 4 turns.
+- **Skill:** Polar-Lock (Basic): Its compound eyes lock onto distant targets, ensuring every projectile finds its mark. It glides smoothly through thick fog and dense foliage as if the air were completely clear.
 - **Weakness:** Confused by smooth water surfaces that depolarize light; cannot navigate in total darkness.
 - **Observe:**
   1. Eyes shift iridescent color as sky polarization changes.
@@ -49,7 +49,7 @@ Trait ← Ice and dust ring particles scatter and polarize incident light ← Mu
 
 Trait ← Ring shadow band creates sharp thermal gradients on surface ← Convection cells rise along shadow boundaries ← Wing morphology optimizes lift in low-velocity thermal columns ← F12
 
-- **Skill:** Shadow Glide (Basic): Moves 50% further per turn without expending movement when in 'Shadow' or 'Thermal' terrain; falls 1 level if forced out of thermal.
+- **Skill:** Shadow Glide (Basic): It rides the dark updrafts with effortless grace, covering great distances without tiring. If caught in open light, it quickly descends to the nearest lower ground.
 - **Weakness:** Cannot soar in uniform lighting or still air; requires thermal contrast.
 - **Observe:**
   1. Hovers motionless in thin shadow bands.
@@ -68,7 +68,7 @@ Trait ← Ring shadow band creates sharp thermal gradients on surface ← Convec
 
 Trait ← 2.1 bar atmosphere supports stable aerosol layers ← Vent plumes inject spores and organic particulates upward ← Ciliated nets trap particles; ciliary beating moves food to mouth ← F9
 
-- **Skill:** Aero-Feed (Basic): Heals 5 HP and removes 1 'Exhaustion' per turn while in air; reduces speed by 30% due to net drag.
+- **Skill:** Aero-Feed (Basic): While airborne, it unfurls fine mesh nets to catch floating nourishment, steadily renewing its vigor and clearing away weariness. The heavy nets slow its flight, making its movements deliberately sluggish.
 - **Weakness:** Cilia clog with dust or heavy particulates; requires grooming.
 - **Observe:**
   1. Nets deploy like lacework when drifting.
@@ -87,7 +87,7 @@ Trait ← 2.1 bar atmosphere supports stable aerosol layers ← Vent plumes inje
 
 Trait ← Eclipse periodicity creates predictable light signature every 58 hours ← Bioluminescent organs flash in sequence with shadow onset ← Synchronized mating ensures offspring hatch during optimal thermal windows ← F12
 
-- **Skill:** Eclipse-Charm (Social): At eclipse onset, all Nubevolar in 60m range gain 'Reproduction Ready' (can spawn an ally at end of turn) and attract 'Predator' attention for 2 turns.
+- **Skill:** Eclipse-Charm (Social): When the sky darkens, the flock emits a synchronized glow that strongly stirs an urge to multiply nearby. This brilliant display naturally draws the watchful eyes of hungry hunters to the area.
 - **Weakness:** Mass aggregation during eclipse makes them vulnerable to area predators.
 - **Observe:**
   1. Glows in rhythmic pulses as shadow approaches.
