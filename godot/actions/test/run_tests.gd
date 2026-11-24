@@ -1336,7 +1336,33 @@ func _t_context() -> void:
 		"context: set B picks the slow-step, the run-up snap, the quick spring and the leap off the stride")
 	check(Clock.variant_id(0, 3, false, h.layer.actions, true) == "bite_gallop" and Clock.variant_id(3, 1, false, h.layer.actions, true) == "spit",
 		"context: the cells set B does not change keep the A74 file")
+	var bh = _build("starters/b_runner")
+	bh.layer.idle_on = false
+	bh.run(0.5)
+	bh.sf.begin(0, 10, 4, true)
+	var b_seen := false
+	for i in 100:
+		bh.frame(1.0 / 60.0)
+		for ins in bh.layer.inst:
+			if ins.id == "roar_move_far_b":
+				b_seen = true
+	check(b_seen, "context: B far roar plays bellow in stride")
+	bh.free_all()
+	var swell_a := 0.0
+	var swell_b := 0.0
+	for track in raw.roar_move_gallop.tracks:
+		if track.ch == "body.inflate":
+			for key in track.keys:
+				swell_a = maxf(swell_a, float(key[2]))
+	for track in raw.roar_move_far_b.tracks:
+		if track.ch == "body.inflate":
+			for key in track.keys:
+				swell_b = maxf(swell_b, float(key[2]))
+	check(swell_b > swell_a and swell_b < swell_a * 1.2, "context: B far roar has a slightly bigger chest swell than gallop")
 	Clock.attack_set = "a"
+	check(Clock.variant_id(10, 4, false, h.layer.actions, true) == "roar_move_far_b", "context: B far roar selects bellow in stride")
+	check(Clock.variant_id(10, 4, false, h.layer.actions) == "roar_move_far", "context: A far roar keeps the plant and rear")
+	check(h.layer.actions.roar_move_far_b.legs == "free" and h.layer.actions.roar_move_far.legs == "plant", "context: B far roar leaves the gait free while A plants")
 	# projectile and acid hit events
 	var shots := []
 	var acid := []

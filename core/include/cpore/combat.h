@@ -220,7 +220,7 @@ typedef struct {
     int8_t  target;   /* creature id                                              */
     int8_t  dir;      /* dodge                                                    */
     int16_t heading_x, heading_y; /* MOVE with dir=-1; nonzero vector */
-    uint8_t hold;     /* A74: the attack key was held (spit: charged glob / charged lob); ignored by every other move */
+    uint8_t hold;     /* A74/A75: spit charged glob/lob; roar set B bellow in stride; ignored by other moves */
 } CpCombatAction;
 
 /* order() return codes (readable text via cp_combat_order_error) */

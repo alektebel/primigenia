@@ -31,7 +31,7 @@ func settle(n: int) -> void:
 
 func _provider() -> Dictionary:
 	if _attack_now:
-		return {"verb": V_ATTACK, "target": _target, "move": MOVES[_attack], "dir": 1 if _hold else 0, "run": _run}
+		return {"verb": V_ATTACK, "target": _target, "move": MOVES[_attack], "dir": 1 if _hold or (_attack == "roar" and ActionClock.attack_set == "b") else 0, "run": _run}
 	if _heading != Vector2.ZERO:
 		return {"verb": V_HEADING, "hx": int(_heading.x * 32767.0), "hz": int(_heading.y * 32767.0), "run": _run}
 	return {"verb": 1}

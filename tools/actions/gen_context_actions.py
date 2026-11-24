@@ -189,6 +189,10 @@ save(roar_move("roar_move", "stand", "A68/A74 rear-up roar, the roar move: crouc
 save(roar_move("roar_move_walk", "walk", "A74 bellow on the move: the head pushed out low, the chest swelling, the gait does not stop. C 6/1/6 layered.", "free"))
 save(roar_move("roar_move_gallop", "gallop", "A74 bellow on the run: as the walking bellow with a smaller body motion; the run carries on and the overshoot is C's.", "free"))
 save(roar_move("roar_move_far", "far", "A74 far roar: run in, plant (dust at the plant), rear up. The run-in is the loco's burst; C's roar plants at 3.2 m.", "plant"))
+# A75 starting visual value: 1.15x the gallop chest swell; context action tests check the free gait and swell.
+rfb = roar_move("roar_move_far_b", "gallop", "A75 far B: bellow in stride. The run carries on with a slightly bigger chest swell than the gallop bellow; no plant or rear-up.", "free")
+scale(rfb, "body.inflate", 1.15)
+save(rfb)
 # ---------------------------------------------------------------- fear (the roar's victim)
 save({
     "schema": "cpore.action/1", "id": "fear_cower", "class": "reaction", "driver": {"kind": "c_event", "event": "fear"},
