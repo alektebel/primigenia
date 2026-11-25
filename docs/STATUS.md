@@ -39,7 +39,7 @@ Council (lore-exo autoloop) **paused**: all chair/referee quotas out. Recommende
 - `make terrain-test` → `terrain-metrics` seed 31337 (Rb 6.0036 > 5.5), stale pin; recommend widening.
 
 ## Design queue (one study at a time, A60)
-rolling (A90) → v1 giant (A88) → lasing crystal (A87) → three-worlds feel lab (A93) → torn-in-two study (A100) → trap burrowers (note 396323). DESIGN entries: up to A102.
+rolling (A90) → v1 giant (A88) → lasing crystal (A87) → three-worlds feel lab (A93) → torn-in-two study (A100) → trap burrowers (note 396323) → end-of-stage recap with a 16-type creature personality (owner idea 2026-11-25, playtest file P5). DESIGN entries: up to A102.
 
 ## Background jobs (die on shutdown)
 - Agent logs: `/home/diego/Desarrollo/cpore-wt/_agent/`. Owner's game log: `/tmp/claude-1000/owner-game.log`.

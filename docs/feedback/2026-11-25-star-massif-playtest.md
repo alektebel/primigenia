@@ -49,6 +49,7 @@ Work starts 2026-11-25 (day). Order: **P1 rendering bugs → P2 controls → P3 
 | 420112 | "I want to be able to befriend from my own species for now. There should be slots at the right. At the start, no befriend and progress befriendings one by one. For now let me add 3" |
 | 396323 | "would be cool to have burrow creatures like the one of star wars that set up traps" (design queue: original trapdoor/antlion-style ambusher, not a recreation) |
 | b3b68a | camera freedom (above) |
+| (chat, 01:35) | "at the end of the creature stage, would be cool to see a log of every action you took, and how it affected your 16 personality type of creature" — end-of-stage recap: a timeline of the player's actions and how each moved the creature along a 16-type personality (no such system exists yet: needs the axes, which actions feed them, and whether the type changes later stages). |
 
 ## Also noted
 - The game ran on the AMD 860M, not the RTX (`failed to load driver: nvidia-drm`). fps on the RTX still unmeasured.
