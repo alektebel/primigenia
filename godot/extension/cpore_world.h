@@ -8,6 +8,7 @@
 #include <vector>
 extern "C" {
 #include "cpore/world.h"
+#include "cpore/flora.h"
 }
 
 class CporeWorld : public godot::RefCounted {
@@ -16,7 +17,8 @@ class CporeWorld : public godot::RefCounted {
     std::vector<char> observe_buffer;
     // The island heights the C world reads (PLAN-heights H1/H4): held here so the buffers outlive the world's pointer.
     godot::PackedFloat32Array field_height, field_level;
-    CpStageField field;
+    CpStageField field = {};
+    CpFieldStore field_store = {};   // island-realism M3: the cover and trunks of the attached island (freed with the field)
     bool field_attached = false;
     godot::Dictionary field_meta;
     godot::String error_text;
@@ -27,6 +29,7 @@ protected:
 
 public:
     CporeWorld();
+    ~CporeWorld();
     static int version();
     static godot::Dictionary grip_profile(const godot::String &genome);
     static godot::Dictionary default_setup(int64_t seed);
@@ -77,6 +80,8 @@ public:
     void clear_field();
     bool has_field() const { return field_attached; }
     godot::Dictionary field_info() const;
+    double ground_speed(double x, double z) const;   // the field's speed factor at (x, z): 1 unless cover_slow or trail_bonus is set
+    int trunk_count() const;
     double water_depth(double x, double z) const;
     double bound() const;
     // C1-nav: the running GO path as (x,z) points, nearest first (empty without one); the nav grid; event bookkeeping.

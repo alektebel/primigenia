@@ -43,6 +43,11 @@ const PROFILE := {
 }
 const CLIMATE_SPACINGS := [8.0, 14.0, 20.0, 40.0]
 
+# Island-realism M3: on an island with climate maps the big trees come from the C trunk records (core/src/flora_place.c, d.trunks: x, z, radius,
+# height, species id): the same trees the sim treats as circle obstacles, so there is no second placement. GDScript keeps everything small.
+const TRUNK_STRIDE := 5
+const TRUNK_IDS := {1: "nieblon", 2: "madre_de_agua"}
+
 static func recipes() -> Array:
 	return JSON.parse_string(FileAccess.get_file_as_string(RECIPES))
 
@@ -304,11 +309,17 @@ static func generate(d, setup: Dictionary, world_seed: int, density: float, rows
 	var out := []
 	var blocked := river_mask(d)
 	var impact := impact_basin(d, world_seed)
-	for r in by_zone.get("spring", []):
-		var s := spring_site(d, reserved, r, blocked)
-		if not s.is_empty():
-			append_plant(out, r, s, rng, by_zone)
-			reserved.append(s.p)
+	if d.has_climate():
+		# the spring tree is a C trunk (species 2): keep the small flora off it, as it was off the GDScript spring site
+		for i: int in d.trunks.size() / TRUNK_STRIDE:
+			if int(d.trunks[i * TRUNK_STRIDE + 4]) == 2:
+				reserved.append(Vector2(d.trunks[i * TRUNK_STRIDE], d.trunks[i * TRUNK_STRIDE + 1]))
+	else:
+		for r in by_zone.get("spring", []):
+			var s := spring_site(d, reserved, r, blocked)
+			if not s.is_empty():
+				append_plant(out, r, s, rng, by_zone)
+				reserved.append(s.p)
 	var ctx := {"world_seed": world_seed, "density": density, "reserved": reserved, "camps": camps, "by_zone": by_zone, "noise": noise,
 		"impact": impact, "blocked": blocked}
 	if d.has_climate():
@@ -324,6 +335,7 @@ static func generate(d, setup: Dictionary, world_seed: int, density: float, rows
 						continue
 					rng.seed = hash(Vector3i(world_seed + pass_i * 7919, x, z))
 					place_cell(d, ctx, rng, out, sp, x, z)
+		append_trunks(d, out, by_zone, world_seed)
 		return out
 	var side := ceili(d.size_m / SPACING)
 	for z in side:
@@ -369,6 +381,8 @@ static func place_cell(d, ctx: Dictionary, rng: RandomNumberGenerator, out: Arra
 		return
 	var r: Dictionary = choices[rng.randi() % choices.size()]
 	if climate:
+		if r.id == "nieblon" or r.id == "madre_de_agua":
+			return   # a C trunk (append_trunks)
 		if not climate_ok(d, r, s, zone):
 			return
 	# The render terrain compresses the alpine belt; its snow material tracks that belt.
@@ -395,6 +409,33 @@ static func place_cell(d, ctx: Dictionary, rng: RandomNumberGenerator, out: Arra
 			continue
 		if zone in habitats(d, other, ctx.noise, ctx.impact, ctx.camps):
 			append_plant(out, r, other, rng, by_zone)
+
+# The trees of the C trunk records as plant records, each with its own seeded draws (yaw, variant, host vines), appended after the small flora.
+static func append_trunks(d, out: Array, by_zone: Dictionary, world_seed: int) -> void:
+	var rows := {}
+	for id in TRUNK_IDS.values():
+		for zone in by_zone:
+			for r in by_zone[zone]:
+				if r.id == id:
+					rows[id] = r
+	var rng := RandomNumberGenerator.new()
+	for i: int in d.trunks.size() / TRUNK_STRIDE:
+		var base: int = i * TRUNK_STRIDE
+		var id: String = TRUNK_IDS.get(int(d.trunks[base + 4]), "")
+		if id == "" or not rows.has(id):
+			continue
+		var p := Vector2(d.trunks[base], d.trunks[base + 1])
+		var k: int = d.cell_index(p.x, p.y)
+		var s := {"p": p, "h": d.visual_ground(p.x, p.y), "up": facet(d, p), "k": k, "sea": false}
+		rng.seed = hash(Vector3i(world_seed + 104729, i, int(d.trunks[base + 4])))
+		var plant := record(rows[id], s, rng)
+		plant.height = d.trunks[base + 3]
+		out.append(plant)
+		for vine in by_zone.get("host", []):
+			if rng.randf() < float(vine.chance) * 0.5:
+				var v := record(vine, s, rng)
+				v.height = clampf(plant.height * 0.72, vine.height[0], vine.height[1])
+				out.append(v)
 
 static func append_plant(out: Array, r: Dictionary, s: Dictionary, rng: RandomNumberGenerator, by_zone: Dictionary, host_scale: float = 1.0) -> void:
 	var plant := record(r, s, rng)

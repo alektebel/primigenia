@@ -1942,7 +1942,17 @@ static int desc_trails(const CpTerrainParams *p, const CpIslandDesc *d, CpTerrai
             corridor_walls(n, cost, bx0, by0, bx1, by1, cell, half, wxm[leg], wym[leg], wxm[leg + 1], wym[leg + 1], 0);
             if (len < 1) ok = 0; else total += total ? len - 1 : len;
         }
-        if (ok && total > 1) { trail_carve(p, t, ws, path, total, -1, 0.f, 0.f); done++; }
+        if (ok && total > 1) {
+            trail_carve(p, t, ws, path, total, -1, 0.f, 0.f); done++;
+            if (t->trail) for (int k = 0; k < total; k++) {   /* the lane: the path cell and its 4 neighbours */
+                int c = path[k], x = c % n, y = c / n;
+                t->trail[c] = 1;
+                if (x > 0) t->trail[c - 1] = 1;
+                if (x < n - 1) t->trail[c + 1] = 1;
+                if (y > 0) t->trail[c - n] = 1;
+                if (y < n - 1) t->trail[c + n] = 1;
+            }
+        }
     }
     return done;
 }
@@ -2143,6 +2153,7 @@ static int generate_impl(const CpTerrainParams *p, const CpIslandDesc *d, CpTerr
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
     }
+    if (out->trail) memset(out->trail, 0, (size_t)nn);
     if (d && d->ntrail > 0 && desc_trails(p, d, out, ws)) {
         apply_protect(p, d, out->height);
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,

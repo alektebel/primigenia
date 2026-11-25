@@ -351,6 +351,8 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("clear_field"), &CporeWorld::clear_field);
     ClassDB::bind_method(D_METHOD("has_field"), &CporeWorld::has_field);
     ClassDB::bind_method(D_METHOD("field_info"), &CporeWorld::field_info);
+    ClassDB::bind_method(D_METHOD("ground_speed", "x", "z"), &CporeWorld::ground_speed);
+    ClassDB::bind_method(D_METHOD("trunk_count"), &CporeWorld::trunk_count);
     ClassDB::bind_method(D_METHOD("water_depth", "x", "z"), &CporeWorld::water_depth);
     ClassDB::bind_method(D_METHOD("bound"), &CporeWorld::bound);
     ClassDB::bind_method(D_METHOD("path"), &CporeWorld::path);
@@ -741,7 +743,47 @@ int CporeWorld::set_field(const Dictionary &entry) {
     field.half = size_m * 0.5f;
     field.height = field_height.ptr();
     field.water_level = field_level.size() ? field_level.ptr() : nullptr;
-    field.hash = std::strtoull(hash_utf8.get_data(), nullptr, 16);
+    const uint64_t terrain_hash = std::strtoull(hash_utf8.get_data(), nullptr, 16);
+    field.hash = terrain_hash;
+    // Island-realism M3: an authored island carries its vegetation maps; the field then gets its undergrowth cover and trunks and a hash that
+    // covers both. entry["trunks"] (5 floats per record, CporeTerrain.trunks) skips the placement; cover_slow / trail_bonus are the movement
+    // tunings (default: what the game ships, both 0 = off).
+    PackedByteArray biome_map, veg_map, climate_map, river_map, trail_map;
+    const auto bytes = [&](const char *key, int64_t want) -> PackedByteArray {
+        if (!entry.has(key) || entry[key].get_type() != Variant::PACKED_BYTE_ARRAY) return PackedByteArray();
+        PackedByteArray b = entry[key];
+        return b.size() == want ? b : PackedByteArray();
+    };
+    biome_map = bytes("biome", count); veg_map = bytes("veg", count * 4); climate_map = bytes("climate", 256 * 256 * 4);
+    river_map = bytes("river", count); trail_map = bytes("trail", count);
+    CpFloraMaps maps{};
+    const bool have_maps = biome_map.size() && veg_map.size();
+    if (have_maps) {
+        maps.n = int32_t(n); maps.size_m = size_m; maps.seed = entry.has("seed") ? uint32_t(int64_t(entry["seed"])) : 0u;
+        maps.climate_n = climate_map.size() && entry.has("climate_n") ? int32_t(int64_t(entry["climate_n"])) : 0;
+        maps.height = field.height; maps.water_level = field.water_level;
+        maps.biome = biome_map.ptr(); maps.veg = veg_map.ptr(); maps.climate = climate_map.size() ? climate_map.ptr() : nullptr;
+        maps.river = river_map.size() ? river_map.ptr() : nullptr; maps.trail = trail_map.size() ? trail_map.ptr() : nullptr;
+    }
+    std::vector<CpStageTrunk> given;
+    bool have_given = false;
+    if (have_maps && entry.has("trunks") && entry["trunks"].get_type() == Variant::PACKED_FLOAT32_ARRAY) {
+        const PackedFloat32Array tr = entry["trunks"];
+        if (tr.size() % 5 == 0) {
+            have_given = true;
+            given.resize(size_t(tr.size() / 5));
+            for (size_t i = 0; i < given.size(); ++i)
+                given[i] = CpStageTrunk{tr[5 * i], tr[5 * i + 1], tr[5 * i + 2], tr[5 * i + 3], int32_t(tr[5 * i + 4])};
+        }
+    }
+    float slow = CP_FIELD_COVER_SLOW_SHIP, bonus = CP_FIELD_TRAIL_BONUS_SHIP;
+    if (entry.has("cover_slow")) cpore::to_float(entry["cover_slow"], slow);
+    if (entry.has("trail_bonus")) cpore::to_float(entry["trail_bonus"], bonus);
+    if (cp_field_build(&field, &field_store, have_maps ? &maps : nullptr, terrain_hash, slow, bonus, have_given ? given.data() : nullptr, int(given.size())) != 0) {
+        error_text = "set_field: could not build the field's cover and trunks";
+        field_attached = false;
+        return -1;
+    }
     if (cp_stage_attach_field(world.get(), &field)) {
         error_text = "set_field: the field was rejected";
         field_attached = false;
@@ -752,12 +794,19 @@ int CporeWorld::set_field(const Dictionary &entry) {
     field_meta["n"] = int64_t(n);
     field_meta["size_m"] = double(size_m);
     field_meta["hash"] = hash_hex;
+    field_meta["field_hash"] = cpore::hash_text(field.hash);
+    field_meta["trunks"] = int64_t(field.trunks ? field.trunks->count : 0);
+    field_meta["cover_slow"] = double(field.cover_slow);
+    field_meta["trail_bonus"] = double(field.trail_bonus);
     field_meta["seed"] = entry.has("seed") ? int64_t(entry["seed"]) : int64_t(0);
     return 0;
 }
 
+CporeWorld::~CporeWorld() { cp_field_store_free(&field_store); }
+
 void CporeWorld::clear_field() {
     cp_stage_attach_field(world.get(), nullptr);
+    cp_field_store_free(&field_store);
     field_attached = false;
     field_height = PackedFloat32Array();
     field_level = PackedFloat32Array();
@@ -765,6 +814,8 @@ void CporeWorld::clear_field() {
 }
 
 Dictionary CporeWorld::field_info() const { return field_meta; }
+double CporeWorld::ground_speed(double x, double z) const { return cp_stage_ground_speed(world.get(), float(x), float(z)); }
+int CporeWorld::trunk_count() const { return field_attached && field.trunks ? field.trunks->count : 0; }
 double CporeWorld::water_depth(double x, double z) const { return cp_stage_water_depth(world.get(), float(x), float(z)); }
 double CporeWorld::bound() const { return cp_stage_bound(world.get()); }
 PackedVector2Array CporeWorld::path() const {

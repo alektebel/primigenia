@@ -13,6 +13,7 @@ extern "C" {
 #include "cpore/terrain.h"
 #include "cpore/island.h"
 #include "cpore/climate.h"
+#include "cpore/flora.h"
 }
 #include <memory>
 #include <cinttypes>
@@ -63,6 +64,9 @@ void CporeTerrain::_bind_methods() {
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("island_info", "blob"), &CporeTerrain::island_info);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("climate_hash", "data"), &CporeTerrain::climate_hash);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("climate_version"), &CporeTerrain::climate_version);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("flora_version"), &CporeTerrain::flora_version);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("trunks", "data"), &CporeTerrain::trunks);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("trunk_clear", "trunks", "x", "z", "margin"), &CporeTerrain::trunk_clear);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("surface_maps", "data"), &CporeTerrain::surface_maps);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("visual_maps", "data", "options"), &CporeTerrain::visual_maps);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("sun_visibility", "data", "sun"), &CporeTerrain::sun_visibility);
@@ -127,7 +131,7 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
     // An authored island (island.h): options["island_blob"] is its ISL1 blob. Then the climate maps (part II, M2) come with it:
     // climate (RGBA8 climate_n^2), biome (n*n) and veg (n*n*4), and the result carries "island" and "island_hash" for the cache key.
     std::unique_ptr<CpIslandDesc> desc;
-    PackedByteArray climate, biome, veg;
+    PackedByteArray climate, biome, veg, trail;
     std::vector<float> climate_work;
     if (options.has("island_blob")) {
         if (options["island_blob"].get_type() != Variant::PACKED_BYTE_ARRAY) { busy.store(false); result["error"] = int(CP_TERR_ERR_RANGE); return result; }
@@ -139,7 +143,8 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
             climate.resize(CP_TERRAIN_CLIMATE_N * CP_TERRAIN_CLIMATE_N * 4);
             biome.resize(count); veg.resize(int64_t(count) * 4);
             climate_work.resize(cp_terrain_climate_work_floats());
-            t.climate = climate.ptrw(); t.biome = biome.ptrw(); t.veg = veg.ptrw();
+            trail.resize(count);
+            t.climate = climate.ptrw(); t.biome = biome.ptrw(); t.veg = veg.ptrw(); t.trail = trail.ptrw();
             ws.climate_work = climate_work.data();
         }
     }
@@ -168,6 +173,8 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
             result["climate_n"] = t.climate_n;
             result["climate"] = climate; result["biome"] = biome; result["veg"] = veg;
             result["climate_hash"] = cpore::hash_text(cp_terrain_climate_hash(&t));
+            result["trail"] = trail;   // Island-realism M3: the game-trail lanes; the sim's trunks are added below, after the caves
+            result["flora_version"] = CP_FLORA_VERSION;
         }
     }
     result["params"] = resolved;
@@ -185,6 +192,14 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
         caves.append(cave);
     }
     result["caves"] = caves;
+    if (desc && t.climate_n > 0) {
+        Dictionary maps_in;
+        maps_in["n"] = t.n; maps_in["size_m"] = double(t.size_m); maps_in["seed"] = int64_t(p.seed);
+        maps_in["height"] = height; maps_in["water_level"] = level; maps_in["river"] = river;
+        maps_in["biome"] = biome; maps_in["veg"] = veg; maps_in["climate"] = climate; maps_in["climate_n"] = t.climate_n; maps_in["trail"] = trail;
+        maps_in["caves"] = caves;
+        result["trunks"] = trunks(maps_in);
+    }
     result["volcano"] = Vector4(t.volcano_x_m, t.volcano_y_m, t.volcano_radius_m, t.crater_radius_m);
     return result;
 }
@@ -204,6 +219,68 @@ Dictionary CporeTerrain::island_info(const PackedByteArray &blob) {
 }
 
 int CporeTerrain::climate_version() { return CP_CLIMATE_VERSION; }
+int CporeTerrain::flora_version() { return CP_FLORA_VERSION; }
+
+// The sim's trunks of a generate() result (or any dictionary with n, size_m, seed, height, biome, veg, climate, climate_n and optional
+// water_level, river, trail): 5 floats per record (x, z, radius, height, species id), in placement order. Empty without climate maps.
+PackedFloat32Array CporeTerrain::trunks(const Dictionary &data) {
+    PackedFloat32Array out;
+    int64_t n, cn = 0, seed = 0;
+    double size = 0;
+    if (!data.has("n") || !cpore::to_int(data["n"], CP_TERRAIN_N_MIN, CP_TERRAIN_N_MAX, n) || !data.has("size_m") || !(size = double(data["size_m"])) ) return out;
+    if (data.has("seed")) seed = int64_t(data["seed"]);
+    if (data.has("climate_n")) cn = int64_t(data["climate_n"]);
+    const auto bytes = [&](const char *key, int64_t want) -> PackedByteArray {
+        if (!data.has(key) || data[key].get_type() != Variant::PACKED_BYTE_ARRAY) return PackedByteArray();
+        PackedByteArray b = data[key];
+        return b.size() == want ? b : PackedByteArray();
+    };
+    PackedByteArray biome = bytes("biome", n * n), veg = bytes("veg", n * n * 4), climate = bytes("climate", 256 * 256 * 4), river = bytes("river", n * n), trail = bytes("trail", n * n);
+    if (!biome.size() || !veg.size() || !data.has("height") || data["height"].get_type() != Variant::PACKED_FLOAT32_ARRAY) return out;
+    PackedFloat32Array height = data["height"], level;
+    if (height.size() != n * n) return out;
+    if (data.has("water_level") && data["water_level"].get_type() == Variant::PACKED_FLOAT32_ARRAY) level = data["water_level"];
+    if (level.size() != n * n) level = PackedFloat32Array();
+    CpFloraMaps m{};
+    m.n = int32_t(n); m.size_m = float(size); m.seed = uint32_t(seed); m.climate_n = climate.size() ? int32_t(cn) : 0;
+    m.height = height.ptr(); m.water_level = level.size() ? level.ptr() : nullptr;
+    m.biome = biome.ptr(); m.veg = veg.ptr(); m.climate = climate.size() ? climate.ptr() : nullptr;
+    m.river = river.size() ? river.ptr() : nullptr; m.trail = trail.size() ? trail.ptr() : nullptr;
+    std::vector<float> cave_xz;
+    if (data.has("caves") && data["caves"].get_type() == Variant::ARRAY) {
+        const Array caves = data["caves"];
+        for (int i = 0; i < caves.size(); ++i) {
+            if (caves[i].get_type() != Variant::DICTIONARY) continue;
+            const Dictionary c = caves[i];
+            if (!c.has("position") || c["position"].get_type() != Variant::VECTOR3) continue;
+            const Vector3 pos = c["position"];
+            cave_xz.push_back(pos.x); cave_xz.push_back(pos.z);
+        }
+    }
+    m.cave_xz = cave_xz.data(); m.n_caves = int32_t(cave_xz.size() / 2);
+    std::vector<CpStageTrunk> rec(1 << 16);
+    int count = cp_flora_trunks(&m, rec.data(), int(rec.size()));
+    if (count > int(rec.size())) { rec.resize(size_t(count) + size_t(count) / 4 + 16); count = cp_flora_trunks(&m, rec.data(), int(rec.size())); }
+    if (count < 0) return out;
+    out.resize(int64_t(count) * 5);
+    float *w = out.ptrw();
+    for (int i = 0; i < count; ++i) {
+        w[5 * i] = rec[i].x; w[5 * i + 1] = rec[i].z; w[5 * i + 2] = rec[i].r; w[5 * i + 3] = rec[i].h; w[5 * i + 4] = float(rec[i].species);
+    }
+    return out;
+}
+
+// Is (x, z) at least `margin` metres clear of every trunk (centre distance >= radius + margin)? Brute force over the records: a few hundred
+// queries at setup time over ~50 000 trunks cost milliseconds.
+bool CporeTerrain::trunk_clear(const PackedFloat32Array &trunks, double x, double z, double margin) {
+    const float *r = trunks.ptr();
+    const int64_t count = trunks.size() / 5;
+    for (int64_t i = 0; i < count; ++i) {
+        const double dx = r[5 * i] - x, dz = r[5 * i + 1] - z, reach = double(r[5 * i + 2]) + margin;
+        if (dx * dx + dz * dz < reach * reach) return false;
+    }
+    return true;
+}
 
 // cp_terrain_climate_hash of a generate() result that carries climate, biome and veg ("" otherwise).
 String CporeTerrain::climate_hash(const Dictionary &data) {

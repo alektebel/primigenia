@@ -11,7 +11,8 @@ extends RefCounted
 # The blob itself is passed as params["island_blob"] (PackedByteArray): resolve() turns it into "island" and "island_hash"
 # (CporeTerrain.island_info) and drops it from the key. An authored island also carries the climate maps (island-realism plan part
 # II, M2): entries hold "climate" (RGBA8 climate_n^2), "biome" (n*n), "veg" (n*n*4), "climate_n" and "climate_hash", verified on load,
-# and the file name carries the climate kernel version (CP_CLIMATE_VERSION) so a changed kernel misses old files.
+# and the file name carries the climate kernel version (CP_CLIMATE_VERSION) so a changed kernel misses old files. Entries also hold "trail" (n*n,
+# the game-trail lanes) and "trunks" (5 floats per record, core/src/flora_place.c) with "flora_version" (M3).
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
 
@@ -113,6 +114,11 @@ static func _valid(entry: Dictionary, params: Dictionary) -> bool:
 		if typeof(cn) != TYPE_INT or cn < 1 or entry.climate.size() != 256 * 256 * 4 or entry.biome.size() != n * n or entry.veg.size() != n * n * 4:
 			return false
 		if typeof(entry.get("climate_hash")) != TYPE_STRING or CporeTerrain.climate_hash(entry) != entry.climate_hash:
+			return false
+		# island-realism M3: the game-trail lanes and the sim's trunks come with the maps; a file made before them, or by another placement, is a miss
+		if typeof(entry.get("trail")) != TYPE_PACKED_BYTE_ARRAY or entry.trail.size() != n * n:
+			return false
+		if typeof(entry.get("trunks")) != TYPE_PACKED_FLOAT32_ARRAY or entry.trunks.size() % 5 != 0 or entry.get("flora_version") != CporeTerrain.flora_version():
 			return false
 	if n < 8 or entry.height.size() != n * n or entry.flow.size() != n * n or entry.sediment.size() != n * n \
 			or entry.water_level.size() != n * n or entry.material.size() != n * n or entry.river.size() != n * n or entry.surface.size() != n * n * 4 \

@@ -1,5 +1,6 @@
 #include "cpore/world.h"
 #include "cpore/steer.h"
+#include "cpore/flora.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -544,6 +545,69 @@ static float walk_dist(float hx,float hz,int ticks){
     float x0=w.player.x,z0=w.player.z;
     for(int i=0;i<ticks;i++)cp_stage_step(&w,&a);
     return sqrtf((w.player.x-x0)*(w.player.x-x0)+(w.player.z-z0)*(w.player.z-z0));
+}
+/* ---- island-realism M3: cover and trunks in the field; the field hash covers both ---- */
+static void trunk_field(void){
+    static uint8_t cover[FN*FN];
+    static CpStageTrunk rec[3];
+    static int32_t start[16*16+1],index[3];   /* 64 cells * 4 m = 256 m, 16 m buckets */
+    static CpStageTrunks tr;
+    field_build(0);
+    const uint64_t terrain_hash=fld.hash;
+    /* a bare field keeps the terrain hash untouched */
+    {CpStageField f=fld;cp_stage_field_seal(&f,terrain_hash);assert(f.hash==terrain_hash);}
+    for(int i=0;i<FN*FN;i++)cover[i]=(uint8_t)(i%FN<32?200:1);   /* west half dense undergrowth, east half light; nothing is 0 */
+    cover[10*FN+10]=0;                                           /* one trail cell */
+    rec[0]=(CpStageTrunk){0,0,.5f,15,CP_FLORA_SP_NIEBLON};
+    rec[1]=(CpStageTrunk){40,-30,.7f,18,CP_FLORA_SP_NIEBLON};
+    rec[2]=(CpStageTrunk){-90,90,1.6f,30,CP_FLORA_SP_MADRE};
+    assert(cp_stage_trunks_cells(FN*FCELL)==16&&cp_stage_trunks_index(&tr,rec,3,FN*FCELL,start,index)==0&&tr.count==3);
+    CpStageField f=fld;f.cover=cover;f.trunks=&tr;
+    cp_stage_field_seal(&f,terrain_hash);
+    const uint64_t base=f.hash;
+    assert(base!=terrain_hash);
+    {   /* every member is covered */
+        CpStageField g=f;uint8_t keep=cover[100];cover[100]^=1;cp_stage_field_seal(&g,terrain_hash);assert(g.hash!=base);cover[100]=keep;
+        rec[1].r=.71f;cp_stage_field_seal(&g,terrain_hash);assert(g.hash!=base);rec[1].r=.7f;
+        rec[2].species=CP_FLORA_SP_NIEBLON;cp_stage_field_seal(&g,terrain_hash);assert(g.hash!=base);rec[2].species=CP_FLORA_SP_MADRE;
+        g.cover_slow=.4f;cp_stage_field_seal(&g,terrain_hash);assert(g.hash!=base);
+        g.cover_slow=0;g.trail_bonus=.15f;cp_stage_field_seal(&g,terrain_hash);assert(g.hash!=base);
+        g.trail_bonus=0;cp_stage_field_seal(&g,terrain_hash);assert(g.hash==base);   /* deterministic: same inputs, same hash */
+        g.cover=NULL;cp_stage_field_seal(&g,terrain_hash);assert(g.hash!=base);
+    }
+    /* a snapshot made on one field refuses another with different trunks (the field hash is in the header) */
+    {
+        CpStageField other=f;rec[0].x=1;cp_stage_field_seal(&other,terrain_hash);rec[0].x=0;
+        assert(other.hash!=f.hash);
+        cp_stage_setup_default(&setup,42);setup.terrain=CP_STAGE_FIELD;setup.n=0;setup.nest_x=-50;setup.nest_z=0;
+        memset(&w,0,sizeof w);assert(cp_stage_attach_field(&w,&f)==0&&cp_stage_reset(&w,&setup)==0);
+        static uint8_t blob[48+offsetof(CpStageWorld,field)];
+        assert(cp_stage_snapshot(&w,blob,sizeof blob)>0);
+        static CpStageWorld r;memset(&r,0,sizeof r);
+        assert(cp_stage_restore(&r,blob,sizeof blob,&other)==CP_STAGE_SNAP_ERR_FIELD);
+        memset(&r,0,sizeof r);assert(cp_stage_restore(&r,blob,sizeof blob,&f)==CP_STAGE_SNAP_OK);
+    }
+    /* trunks are circle obstacles: the spatial hash finds the same trunks as a brute-force scan, and can_walk refuses what they cover */
+    f.cover_slow=0;f.trail_bonus=0;cp_stage_field_seal(&f,terrain_hash);
+    memset(&w,0,sizeof w);assert(cp_stage_attach_field(&w,&f)==0&&cp_stage_reset(&w,&setup)==0);
+    for(int k=0;k<4000;k++){
+        const float x=-120+240*(float)((k*7919)%1000)/1000.f,z=-120+240*(float)((k*104729)%1000)/1000.f,r=.3f+(float)(k%5)*.6f;
+        int brute=0;
+        for(int i=0;i<3;i++)if(sqrtf((x-rec[i].x)*(x-rec[i].x)+(z-rec[i].z)*(z-rec[i].z))<rec[i].r+r)brute=1;
+        assert(cp_stage_trunk_hit(&w,x,z,r)==brute);
+    }
+    assert(!cp_stage_can_walk(&w,-10,0,10,0,.6f));      /* straight through the trunk at the origin */
+    assert(cp_stage_can_walk(&w,-10,5,10,5,.6f));       /* 5 m beside it */
+    assert(cp_stage_can_walk(&w,-10,1,10,1,.1f));       /* 1 m beside it, reach .6 */
+    assert(!cp_stage_can_walk(&w,-10,1,10,1,.6f));      /* reach 1.1 */
+    /* speed: 1 with both tunings 0; with them on, dense undergrowth slows, a trail speeds, light undergrowth barely slows */
+    assert(cp_stage_ground_speed(&w,-100,-100)==1.f&&cp_stage_ground_speed(&w,cc(10),cc(10))==1.f);
+    f.cover_slow=CP_FIELD_COVER_SLOW_PLAN;f.trail_bonus=CP_FIELD_TRAIL_BONUS_PLAN;cp_stage_field_seal(&f,terrain_hash);
+    memset(&w,0,sizeof w);assert(cp_stage_attach_field(&w,&f)==0&&cp_stage_reset(&w,&setup)==0);
+    assert(fabsf(cp_stage_ground_speed(&w,cc(10),cc(10))-1.15f)<1e-6f);
+    assert(fabsf(cp_stage_ground_speed(&w,cc(5),cc(30))-(1.f-.4f*200.f/255.f))<1e-5f);
+    assert(cp_stage_ground_speed(&w,cc(50),cc(30))>.998f);
+    puts("PASS trunk field: hash covers cover, trunks and tunings; obstacles; speed factors");
 }
 static void field_mode(void){
     /* reset needs a field */
@@ -1094,6 +1158,7 @@ int main(void) {
     numeric_boundaries();
     snapshots();
     field_mode();
+    trunk_field();
     field_fight();
     debug_ops();
     nav_contract();

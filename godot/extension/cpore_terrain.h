@@ -1,6 +1,8 @@
 #pragma once
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/packed_float32_array.hpp>
 #include <atomic>
 
 class CporeTerrain : public godot::RefCounted {
@@ -25,6 +27,10 @@ public:
     static godot::Dictionary island_info(const godot::PackedByteArray &blob);
     static godot::String climate_hash(const godot::Dictionary &data);
     static int climate_version();
+    // Island-realism M3 (core/src/flora_place.c): the sim's trunks, 5 floats per record (x, z, radius, height, species id), and a clearance query.
+    static int flora_version();
+    static godot::PackedFloat32Array trunks(const godot::Dictionary &data);
+    static bool trunk_clear(const godot::PackedFloat32Array &trunks, double x, double z, double margin);
     // Derived render maps (see docs/godot/M0.md): {surface: RGBA8 n*n*4, chunk_bounds: min/max per 64-cell chunk}.
     static godot::Dictionary surface_maps(const godot::Dictionary &data);
     // Optional baked sun visibility (PLAN-rock step 9, off by default): n*n bytes, 255 lit .. 0 shadowed, for a sun direction given as

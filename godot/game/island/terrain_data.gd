@@ -46,6 +46,10 @@ var veg: PackedByteArray          # RGBA8 (n*n): R canopy density, G undergrowth
 var climate: PackedByteArray      # RGBA8 (climate_n^2): R precipitation 0..4000 mm/yr, G temperature -10..30 C, B cloud water, A fog frequency
 var climate_n: int = 0
 var biome_tex: ImageTexture       # R8 biome id (nearest sampling), n*n
+# Island-realism M3 (core/src/flora_place.c): the sim's trunks, 5 floats per record (x, z, radius, height, species id: 1 nieblon, 2 madre de agua), in
+# placement order; empty on the seed islands. The same records are the C world's circle obstacles (CporeWorld.set_field takes them from the entry).
+var trunks: PackedFloat32Array
+var trail: PackedByteArray        # n*n, 1 on the lane of an authored game trail (cover is 0 there for the sim)
 var veg_tex: ImageTexture
 
 # Adds the derived maps to a CporeTerrain.generate() result (worker-thread safe).
@@ -84,6 +88,8 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 		vh_range = entry.vh_range
 		vmaps = entry.vmaps
 	biome = PackedByteArray()
+	trunks = PackedFloat32Array()
+	trail = PackedByteArray()
 	veg = PackedByteArray()
 	climate = PackedByteArray()
 	climate_n = 0
@@ -97,6 +103,12 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 		if typeof(cm) == TYPE_PACKED_BYTE_ARRAY and typeof(cn) == TYPE_INT and cn > 0 and cm.size() == cn * cn * 4:
 			climate = cm
 			climate_n = cn
+		var tr: Variant = entry.get("trunks")
+		if typeof(tr) == TYPE_PACKED_FLOAT32_ARRAY and tr.size() % 5 == 0:
+			trunks = tr
+		var tl: Variant = entry.get("trail")
+		if typeof(tl) == TYPE_PACKED_BYTE_ARRAY and tl.size() == n * n:
+			trail = tl
 	if build_textures:
 		if has_climate():
 			biome_tex = _tex(Image.FORMAT_R8, biome)

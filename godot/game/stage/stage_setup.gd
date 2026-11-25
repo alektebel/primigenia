@@ -91,8 +91,16 @@ static func find_spot(data, nest: Vector2, distance: float, arc: float, probe, t
 			return target
 	return null
 
+# Island-realism M3: a spot, and every sample of a straight approach line, keeps this far from every trunk record of the sim (a 3 m body, the largest
+# certified, plus half a metre; the trunk's own radius is added by the query). The nest keeps NEST_TRUNK_CLEAR (tests/island_gen.h island_nest).
+const TRUNK_MARGIN := 3.5
+const NEST_TRUNK_CLEAR := 12.0
+
+static func trunk_free(data, x: float, z: float, margin: float) -> bool:
+	return data.trunks.is_empty() or CporeTerrain.trunk_clear(data.trunks, x, z, margin)
+
 static func dry(data, x: float, z: float) -> bool:
-	return data.ground(x, z) > 1.0 and not data.is_pond_at(x, z)
+	return data.ground(x, z) > 1.0 and not data.is_pond_at(x, z) and trunk_free(data, x, z, TRUNK_MARGIN)
 
 static func clear_of_water(x: float, z: float, water: Vector3) -> bool:
 	return water.z <= 0.0 or Vector2(x, z).distance_to(Vector2(water.x, water.y)) > water.z + 4.0
@@ -165,7 +173,7 @@ static func shore_clear(data, x: float, z: float, margin: float) -> bool:
 static func nest_ok(data, x: float, z: float, water: Vector3) -> bool:
 	if not dry(data, x, z) or not clear_of_water(x, z, water):
 		return false
-	return not data.has_climate() or (data.normal(x, z).y >= NEST_GENTLE and shore_clear(data, x, z, NEST_SHORE))
+	return not data.has_climate() or (data.normal(x, z).y >= NEST_GENTLE and shore_clear(data, x, z, NEST_SHORE) and trunk_free(data, x, z, NEST_TRUNK_CLEAR))
 
 # The valley centre, or the nearest cell on an expanding ring that is dry, gentle and clear of the shore.
 static func find_nest(data, water: Vector3 = Vector3.ZERO) -> Vector2:

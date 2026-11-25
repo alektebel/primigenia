@@ -35,7 +35,7 @@ static int star;
 static void generate(unsigned seed){
     CpTerrainParams p;
     island_generate(&t,&ws,&p,seed,star,0);
-    f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
+    f=island_field(&t,&p,ws.scratch,0,0);
     reset(0,0,0,0);
 }
 int main(int argc,char **argv){

@@ -79,7 +79,7 @@ func run(t) -> void:
 	t.eq(sp.size(), 8, "eight species (C2 secrets added Acechalunas and Babosa)")
 	t.eq(sp[3].name, "Garfio", "species 3 is Garfio")
 	t.eq(sp[3].temperament, 2, "Garfio is aggressive")
-	t.eq(CporeWorld.version(), 3, "stage version")
+	t.eq(CporeWorld.version(), 4, "stage version")
 	var st: Dictionary = a.state()
 	t.check(st.has("entities") and st.has("combat") and st.has("order") and st.has("arena"), "state schema")
 	t.eq(st.entities[0].id, 0, "entity 0 is the player")

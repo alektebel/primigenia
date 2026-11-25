@@ -130,6 +130,69 @@ static float field_ground(const CpStageField *f,float x,float z){
     const float *h=f->height+(size_t)j*f->n+i;
     return fu>=fv?h[0]+fu*(h[1]-h[0])+fv*(h[f->n+1]-h[1]):h[0]+fv*(h[f->n]-h[0])+fu*(h[f->n+1]-h[f->n]);
 }
+/* --- island-realism M3: the field's cover (speed) and trunks (circle obstacles). Static and derived: no snapshot change. --- */
+static void seal_u32(uint64_t *h,uint32_t v){for(int i=0;i<4;i++){*h^=(uint8_t)(v>>(8*i));*h*=1099511628211ULL;}}
+static void seal_f(uint64_t *h,float v){uint32_t b=0;if(v!=0.f)memcpy(&b,&v,4);seal_u32(h,b);}
+void cp_stage_field_seal(CpStageField *f,uint64_t terrain_hash){
+    if(!f)return;
+    uint64_t h=terrain_hash;
+    if(f->cover||f->trunks){
+        seal_u32(&h,0x4d33434fu);   /* "M3CO" */
+        seal_u32(&h,(uint32_t)CP_STAGE_VERSION);
+        if(f->cover){
+            const size_t nn=(size_t)f->n*(size_t)f->n;
+            seal_u32(&h,(uint32_t)f->n);
+            for(size_t i=0;i<nn;i++){h^=f->cover[i];h*=1099511628211ULL;}
+        }
+        if(f->trunks){
+            seal_u32(&h,(uint32_t)f->trunks->count);
+            for(int i=0;i<f->trunks->count;i++){
+                const CpStageTrunk *t=&f->trunks->rec[i];
+                seal_f(&h,t->x);seal_f(&h,t->z);seal_f(&h,t->r);seal_f(&h,t->h);seal_u32(&h,(uint32_t)t->species);
+            }
+        }
+        seal_f(&h,f->cover_slow);seal_f(&h,f->trail_bonus);
+    }
+    f->hash=h;
+}
+float cp_stage_ground_speed(const CpStageWorld *w,float x,float z){
+    if(!w||w->setup.terrain!=CP_STAGE_FIELD||!field_ok(w->field)||!w->field->cover)return 1.f;
+    const CpStageField *f=w->field;
+    if(f->cover_slow==0.f&&f->trail_bonus==0.f)return 1.f;
+    const float lim=(float)f->n;
+    const int i=clampi(floor_int(clamp((x+f->half)/f->cell,-1,lim)),0,f->n-1),j=clampi(floor_int(clamp((z+f->half)/f->cell,-1,lim)),0,f->n-1);
+    const uint8_t c=f->cover[(size_t)j*f->n+i];
+    return c==0?1.f+f->trail_bonus:1.f-f->cover_slow*((float)c*(1.f/255.f));
+}
+/* The first trunk the segment (x,z)->(x+dx,z+dz) of a body of radius r runs into, or -1. A body that already overlaps a trunk (a spawn, a
+ * teleport) may move away from it: only a move that gets closer, or crosses it, is refused. */
+static int trunk_in_way(const CpStageWorld *w,float x,float z,float dx,float dz,float r,int lenient){
+    if(w->setup.terrain!=CP_STAGE_FIELD||!field_ok(w->field)||!w->field->trunks||w->field->trunks->count<1)return -1;
+    const CpStageField *f=w->field;
+    const CpStageTrunks *tr=f->trunks;
+    const float pad=r+CP_TRUNK_RMAX,ex=x+dx,ez=z+dz;
+    const float lo_x=(x<ex?x:ex)-pad,hi_x=(x>ex?x:ex)+pad,lo_z=(z<ez?z:ez)-pad,hi_z=(z>ez?z:ez)+pad;
+    const int cn=tr->cell_n;
+    const int i0=clampi(floor_int((lo_x+f->half)/tr->cell),0,cn-1),i1=clampi(floor_int((hi_x+f->half)/tr->cell),0,cn-1);
+    const int j0=clampi(floor_int((lo_z+f->half)/tr->cell),0,cn-1),j1=clampi(floor_int((hi_z+f->half)/tr->cell),0,cn-1);
+    const float d2=dx*dx+dz*dz;
+    for(int j=j0;j<=j1;j++)for(int i=i0;i<=i1;i++){
+        const int c=j*cn+i;
+        for(int q=tr->start[c];q<tr->start[c+1];q++){
+            const CpStageTrunk *t=&tr->rec[tr->index[q]];
+            const float u=d2>0?clamp(((t->x-x)*dx+(t->z-z)*dz)/d2,0,1):0;
+            const float reach=t->r+r;
+            if(length(x+dx*u-t->x,z+dz*u-t->z)>=reach)continue;
+            const float d0=length(x-t->x,z-t->z);
+            if(lenient&&d0<reach&&length(ex-t->x,ez-t->z)>=d0)continue;   /* already inside and not going deeper */
+            return tr->index[q];
+        }
+    }
+    return -1;
+}
+int cp_stage_trunk_hit(const CpStageWorld *w,float x,float z,float r){
+    return trunk_in_way(w,x,z,0,0,r,0)>=0;
+}
 static float bound_of(int terrain,const CpStageField *f){
     return terrain==CP_STAGE_FIELD&&field_ok(f)?f->half-2*f->cell:195.f;
 }
@@ -199,6 +262,7 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
         const float t=distance>0?clamp(((o->x-x)*dx+(o->z-z)*dz)/(distance*distance),0,1):0;
         if(length(x+dx*t-o->x,z+dz*t-o->z)<o->r+radius)return 0;
     }
+    if(trunk_in_way(w,x,z,dx,dz,radius,1)>=0)return 0;
     return 1;
 }
 /* A body does not follow a planned line to the centimetre (yaw inertia, turn radius), so a route may not skim blocking water:
@@ -206,6 +270,7 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
  * Carved deep rivers are one cell wide, so without this a plan threads the corner between two deep cells and the body drives
  * into the channel. Field terrain only (the other terrains have no narrow channels). */
 #define WATER_MARGIN 1.f
+#define TRUNK_MARGIN .5f
 static int water_clear(const CpStageWorld *w,float x,float z,float nx,float nz,float clear){
     if(w->setup.terrain!=CP_STAGE_FIELD)return 1;
     const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
@@ -247,6 +312,7 @@ static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float
         if(ab(height-previous)>(climb+.0001f)*run)return 0;
         previous=height;
     }
+    if(trunk_in_way(w,x,z,nx-x,nz-z,radius+TRUNK_MARGIN,1)>=0)return 0;   /* the body does not hold a line to the centimetre: keep clear of the trunks too */
     return water_clear(w,x,z,nx,nz,radius+WATER_MARGIN);
 }
 static float player_climb(const CpStageWorld *w){
@@ -284,6 +350,7 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
         const float t=distance>0?clamp(((o->x-x)*dx+(o->z-z)*dz)/(distance*distance),0,1):0;
         if(length(x+dx*t-o->x,z+dz*t-o->z)<o->r+radius)return CP_STAGE_BLOCK_OBSTACLE;
     }
+    if(trunk_in_way(w,x,z,dx,dz,radius,1)>=0)return CP_STAGE_BLOCK_OBSTACLE;
     return CP_STAGE_BLOCK_CLIFF;
 }
 /* The walk grid: cells of ~4 m over the walkable square, 8 passability bits per cell computed with
@@ -497,7 +564,12 @@ static int nav_astar(const CpStageWorld *w,int start,int goal){
             if(!(m&(1u<<d)))continue;
             const int n=(j+NAV_DZ[d])*nav.dim+i+NAV_DX[d];
             const float rise=nav_ground(w,i+NAV_DX[d],j+NAV_DZ[d])-nav_ground(w,i,j);
-            const int ng=nav_g[idx]+((d&1)?14:10)+(int)(ab(rise)/nav.cs*6*(CP_STEER_GRADE_MAX/nav.grip));   /* a steeper step costs more: 6 per unit of grade */
+            int step=((d&1)?14:10)+(int)(ab(rise)/nav.cs*6*(CP_STEER_GRADE_MAX/nav.grip));   /* a steeper step costs more: 6 per unit of grade */
+            {   /* island-realism M3: slow undergrowth costs more, a trail less (a factor of exactly 1 changes nothing) */
+                const float sp=cp_stage_ground_speed(w,nav_c(i+NAV_DX[d]),nav_c(j+NAV_DZ[d]));
+                if(sp!=1.f)step=(int)((float)step/sp+.5f);
+            }
+            const int ng=nav_g[idx]+step;
             if(nav_stamp[n]==nav.gen&&ng>=nav_g[n])continue;
             nav_stamp[n]=nav.gen;
             nav_g[n]=ng;
@@ -910,6 +982,7 @@ static int fall_clear(const CpStageWorld *w,float x,float z,float nx,float nz,fl
         float t=d2>0?clamp(((o->x-x)*dx+(o->z-z)*dz)/d2,0,1):0;
         if(length(x+dx*t-o->x,z+dz*t-o->z)<o->r+r)return 0;
     }
+    if(trunk_in_way(w,x,z,dx,dz,r,1)>=0)return 0;
     return 1;
 }
 static void fall_tick(CpStageWorld *w){
@@ -1011,6 +1084,7 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     const float ox=c->x,oz=c->z,old=c->speed,r=cp_combat_body_radius(&c->profile);
     CpSteerBody body;
     cp_steer_creature(m,c,&body);
+    speed*=cp_stage_ground_speed(w,c->x,c->z);   /* undergrowth slows, a game trail speeds (1 unless the field is tuned; island-realism M3) */
     if(c!=&w->player){
         float gx,gz;ground_grad(w,c->x,c->z,&gx,&gz,.25f);
         if(c->slip_air||length(gx,gz)>body.slide+.0001f){
@@ -1060,8 +1134,24 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
         c->z=nz;
     }
     else {
+        const float bx=c->x,bz=c->z;
         if(!steep_up(w,c,c->x,c->z,nx,c->z)&&cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
         if(!steep_up(w,c,c->x,c->z,c->x,nz)&&cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
+        if(c->x==bx&&c->z==bz){
+            /* island-realism M3: a round trunk blocks both axis moves when met diagonally; slide round it (the move less its component into the trunk) */
+            const int t=trunk_in_way(w,bx,bz,nx-bx,nz-bz,r,1);
+            if(t>=0){
+                const CpStageTrunk *tk=&w->field->trunks->rec[t];
+                const float ux=bx-tk->x,uz=bz-tk->z,ul=length(ux,uz);
+                if(ul>1e-4f){
+                    const float qx=ux/ul,qz=uz/ul,mx=nx-bx,mz=nz-bz,into=mx*qx+mz*qz;
+                    if(into<0){
+                        const float sx2=bx+mx-qx*into,sz2=bz+mz-qz*into;
+                        if(!steep_up(w,c,bx,bz,sx2,sz2)&&cp_stage_can_walk(w,bx,bz,sx2,sz2,r)){c->x=sx2;c->z=sz2;}
+                    }
+                }
+            }
+        }
     }
     /* A54: .01 not .02: a softer start (and the slow creep down to a shore, wanted speed x .4) must still count as pushing against a wall */
     if(c==&w->player&&step>.01f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
@@ -2240,6 +2330,7 @@ static int spot_ok(const CpStageWorld *w,float x,float z,float radius){
         const CpStageObstacle *o=&w->setup.obstacles[i];
         if(length(x-o->x,z-o->z)<o->r+radius)return 0;
     }
+    if(cp_stage_trunk_hit(w,x,z,radius))return 0;
     return 1;
 }
 const char *cp_stage_debug_error(int code){

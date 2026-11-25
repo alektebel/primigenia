@@ -22,7 +22,7 @@ static float nest_x,nest_z;   /* the origin on the ring island; the dry, gentle,
 static void generate(unsigned seed){
     CpTerrainParams p;
     island_generate(&t,&ws,&p,seed,star,0);
-    f=(CpStageField){p.n,p.size_m,p.size_m/p.n,p.size_m*.5f,t.height,ws.scratch,cp_terrain_hash(&t)};
+    f=island_field(&t,&p,ws.scratch,0,0);
     nest_x=nest_z=0;if(star)island_nest_of(&f,&nest_x,&nest_z);
 }
 static unsigned world_seed=5;

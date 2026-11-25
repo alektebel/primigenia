@@ -1,11 +1,11 @@
 {
 	"camera": {},
-	"created": "2026-11-24T23:17:37",
+	"created": "2026-11-25T00:59:14",
 	"engine": {
 		"build": "unknown",
 		"layout": "c1425e625a51a7ea",
 		"snapshot_version": 3,
-		"stage_version": 3
+		"stage_version": 4
 	},
 	"format": "primigenia.scenario/1",
 	"genome": {
@@ -138,7 +138,7 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "f65a4a9117faced7",
+	"hash": "a3fdf120db4d0a90",
 	"island": {
 		"seed": 1,
 		"terrain_hash": "21bdd31b1ce706a5",
@@ -221,7 +221,7 @@
 		"traits": []
 	},
 	"name": "cliff_crossing",
-	"note": "Below a cliff with a GO target on the rim (~88 m detour, 2 waypoints): path overlay and A* routing.",
+	"note": "Below a cliff with a GO target on the rim (~94 m detour, 6 waypoints): path overlay and A* routing.",
 	"plants": [],
 	"quest": {},
 	"recipe": "cliff_crossing.log",

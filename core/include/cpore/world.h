@@ -4,7 +4,7 @@
 #include "cpore/combat.h"
 #include "cpore/ledger.h"
 #include "cpore/creature_types.h"
-#define CP_STAGE_VERSION 3
+#define CP_STAGE_VERSION 4   /* 4: island-realism M3 (static trunks are circle obstacles; the field may carry cover and trunks) */
 /* Roster v9 (T9, docs/plans/creature-loop.md): 32 wild slots. The island setup fills at most CP_STAGE_ROSTER_CAP of them; the rest are
  * reserved so evolving always finds a free slot for the cousin and the nest family can later be backed by C slots (godot/game/island/family.gd).
  * It is a budget, not fixed indices (cp_stage_evolve and the debug spawn take the next free index, setup.n):
@@ -167,14 +167,36 @@ typedef struct {
     CpRng rng;
     int32_t kind,spam_move,delay,reaction,ranged_commit,timer;
 } CpStageBot;
+/* A trunk that matters to the sim (island-realism plan 4.3; core/src/flora_place.c): a circle obstacle, placed once from the vegetation maps. */
+typedef struct CpStageTrunk {
+    float x,z,r,h;                   /* metres: centre, collision radius, tree height */
+    int32_t species;                 /* CP_FLORA_SP_* (flora.h) */
+} CpStageTrunk;
+/* The trunks as a static spatial hash: `index` lists record numbers cell by cell (bucket c = index[start[c]..start[c+1])), buckets are
+ * `cell` metres square over the field's square, row-major j*cell_n+i. Built by cp_stage_trunks_index (flora_place.c); not owned by C. */
+typedef struct CpStageTrunks {
+    int32_t count,cell_n;
+    float cell;
+    const CpStageTrunk *rec;
+    const int32_t *start,*index;
+} CpStageTrunks;
+#define CP_TRUNK_RMAX 2.f            /* no trunk is wider than this (the spatial queries inflate by it) */
 /* Generated island heights handed to the world by pointer (PLAN-heights H1). Not owned by C. */
 typedef struct CpStageField {
     int32_t n;
     float size_m,cell,half;          /* cell = size_m/n, half = size_m/2 */
     const float *height;             /* n*n metres, row-major j*n+i (z rows, x columns) */
     const float *water_level;        /* n*n depression-filled level, may be NULL */
-    uint64_t hash;                   /* cp_terrain_hash of the generated terrain */
+    uint64_t hash;                   /* cp_terrain_hash of the generated terrain, then sealed with the fields below by cp_stage_field_seal */
+    /* Island-realism M3 (all optional, NULL/0 = a bare field: nothing below touches the simulation). Static and derived, so no snapshot
+     * change; they are folded into `hash` by cp_stage_field_seal, so a different cover, trunk set or tuning is a different field. */
+    const uint8_t *cover;            /* n*n undergrowth 0..255 at the field's resolution; 0 ONLY on a game trail (off the trails it is at least 1) */
+    const CpStageTrunks *trunks;
+    float cover_slow,trail_bonus;    /* speed *= 1 - cover_slow*cover/255 in undergrowth, *= 1 + trail_bonus on a trail. Ship 0 and 0 (plan risk 5): R tunes (0.4 and 0.15) */
 } CpStageField;
+/* Folds cover, trunks and the two tuning values into f->hash (terrain_hash is cp_terrain_hash of the island). With no cover and no
+ * trunks the hash is the terrain hash unchanged. Call after every change to those members. */
+void cp_stage_field_seal(CpStageField *f,uint64_t terrain_hash);
 /* Events since the last cp_stage_ack_events(): what the agent could not see from positions alone. */
 enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPAWN, CP_STAGE_EV_ORDER_REJECTED,
        CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED,
@@ -347,6 +369,10 @@ typedef struct {
     uint32_t grace_until,wake_until[CP_STAGE_MAX_WILD]; /* v8 AI clocks; zero keeps legacy hashes */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
+/* Speed factor of the ground at (x,z) from the field's cover (1 off the field, without cover, or with both tunings 0). */
+float cp_stage_ground_speed(const CpStageWorld *w,float x,float z);
+/* Trunks within the circle: number of trunks whose centre is closer than r + their radius to (x,z). */
+int cp_stage_trunk_hit(const CpStageWorld *w,float x,float z,float r);
 /* --- first-quest digging (core/src/stage_dig.c) --- */
 void cp_stage_dig_reset(CpStageWorld *w);
 int cp_stage_dig_order(CpStageWorld *w,const CpStageInput *a);

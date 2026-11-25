@@ -145,6 +145,10 @@ typedef struct CpTerrain {
      *   veg      n*n*4: R canopy, G undergrowth, B grass, A litter and moss wetness */
     uint8_t *climate, *biome, *veg;
     int climate_n;
+    /* Game trails (island-realism M3). Optional caller-owned n*n bytes: cp_terrain_generate_desc clears it and sets 1 on every cell
+     * of a carved authored trail (kind game_trail or path) and on its 4 neighbours (a lane about 3 cells wide). NULL skips the map.
+     * Not part of cp_terrain_hash (the shape) nor of the climate hash: the stage field hash (world.h) covers what the sim derives from it. */
+    uint8_t *trail;
 } CpTerrain;
 
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.

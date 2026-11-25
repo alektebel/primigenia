@@ -1,11 +1,11 @@
 {
 	"camera": {},
-	"created": "2026-11-24T23:18:02",
+	"created": "2026-11-25T00:59:48",
 	"engine": {
 		"build": "unknown",
 		"layout": "c1425e625a51a7ea",
 		"snapshot_version": 3,
-		"stage_version": 3
+		"stage_version": 4
 	},
 	"format": "primigenia.scenario/1",
 	"genome": {
@@ -138,7 +138,7 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "96fa4b89a2e8c0f8",
+	"hash": "462580f1235b6672",
 	"island": {
 		"seed": 1,
 		"terrain_hash": "21bdd31b1ce706a5",
