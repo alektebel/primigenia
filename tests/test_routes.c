@@ -47,7 +47,7 @@ int main(int argc,char **argv){
     char file[128];snprintf(file,sizeof file,star?"tests/routes/star-seed%u.txt":"tests/routes/seed%u.txt",seed);
     FILE *fp=fopen(file,"r");assert(fp);
     unsigned long long expected=0;
-    assert(fscanf(fp,"terrain %llx",&expected)==1&&expected==f.hash);
+    assert(fscanf(fp,"terrain %llx",&expected)==1&&expected==cp_terrain_hash(&t));   /* the fixture pins the terrain (shape); the field adds cover and trunks (M3) on top */
     char names[32][40];float x[32],z[32];int count=0,npairs=0;
     int pairs[64][2];
     assert(fscanf(fp," places %d",&count)==1&&count>=9&&count<=32);

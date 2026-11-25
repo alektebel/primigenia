@@ -123,6 +123,11 @@ static void forest_cases(const CpTerrainParams *p,float nx,float nz){
         const float d=sqrtf((ax-bx)*(ax-bx)+(az-bz)*(az-bz));
         if(d<150||d>400)continue;
         int ok;const int ticks=trip(&field,ax,az,bx,bz,&ok);
+        if(!ok){   /* only pairs the bare terrain joins count (a jungle patch can sit on an island of its own, or behind a cliff) */
+            CpStageField bare=field;bare.cover=NULL;bare.trunks=NULL;
+            int bare_ok;trip(&bare,ax,az,bx,bz,&bare_ok);
+            if(!bare_ok){printf("  (pair (%.0f,%.0f) -> (%.0f,%.0f) is not joined without trunks either: skipped)\n",ax,az,bx,bz);continue;}
+        }
         printf("  forest crossing %d: (%.0f,%.0f) -> (%.0f,%.0f) %.0f m: %s in %d ticks\n",pairs,ax,az,bx,bz,d,ok?"REACHED":"NOT REACHED",ticks);
         reached_all&=ok;total_ticks+=ticks;pairs++;
     }
