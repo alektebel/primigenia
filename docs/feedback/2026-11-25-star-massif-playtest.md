@@ -6,7 +6,9 @@ Two older open notes are folded in (4f8fe4 from 11-23, e165fe from 11-22).
 
 Work starts 2026-11-25 (day). Order: **P1 rendering bugs → P2 controls → P3 debug switches → P4 creature look → P5 design (grilling first)**.
 
-## P1: rendering bugs on the 8 km island (B1 regressions, fix first)
+**Read with care:** only 4 screenshots were opened (6ab42a, b2d7f2, e1a940, b32dc3). Every other row comes from the note text alone, and every "likely cause" is an untested guess: nobody has debugged these or checked that B1 caused them. Open each note before fixing it. 89e156 says "my foes"; "friends" is a reading, confirm it.
+
+## P1: rendering bugs on the 8 km island (B1 suspected, fix first)
 | Note | Owner's words | What the screenshot shows | Likely cause / first look |
 |---|---|---|---|
 | 6ab42a | "broken graphics" | Night, near trees: the mountain is torn into huge stretched sheets and spikes reaching up into the sky. | Far-terrain chunk/LOD vertices or skirts wrong at the 8 km scale (B1 widened water/river culling only). Check `terrain` chunk build and LOD seams at the island's real bounds. |

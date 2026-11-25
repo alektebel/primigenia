@@ -33,7 +33,7 @@ Council (lore-exo autoloop) **paused**: all chair/referee quotas out. Recommende
 - The game ran on the AMD iGPU (`failed to load driver: nvidia-drm`); `sudo systemctl enable --now nvidia-powerd`, then fps on the RTX.
 
 ## Known issues
-- See P1 of the playtest file (B1 regressions on the 8 km island).
+- See P1 of the playtest file (B1 suspected; causes are untested guesses, 4 of 24 screenshots opened).
 - Loop score on Star massif fails: species by 30 min (4–5 < 8), fights per kill seed 42 (3), Garfio win rate (unmeasured). For R.
 - B1 risks: far GO into the cave refused (7.8 m nav cells); 2-legged bodies can't use the three passes; uncached gen ~10.5 s (W13 limit); lake water-quad shows a pale rectangle; first cave ~370 m from the nest.
 - `make terrain-test` → `terrain-metrics` seed 31337 (Rb 6.0036 > 5.5), stale pin; recommend widening.
@@ -43,6 +43,13 @@ rolling (A90) → v1 giant (A88) → lasing crystal (A87) → three-worlds feel 
 
 ## Background jobs (die on shutdown)
 - Agent logs: `/home/diego/Desarrollo/cpore-wt/_agent/`. Owner's game log: `/tmp/claude-1000/owner-game.log`.
+
+## Session gotchas
+- Phone page: its local build dir (scratchpad `labpicks`) is GONE. Rebuild from the published artifact (Artifact read + files listing); lab copies carry an injected script writing localStorage `pick_<lab>`; forest `.bin/.glb` are served as base64 `.txt` via `window.__b64fetch`.
+- `agents.sh restart lore` restarts autoloop2, not lore-exo; don't use `--retry-failed` (it re-runs primigenia).
+- M3's WIP commit 6ac83bee was made after its agent was stopped: untested, no gate results exist. Agent brief: plan §4.3/§4.5 M3, gates as B1.
+- In-game notes live only in git-ignored `feedback/notes/` (text is copied into the playtest file).
+- ~26 older worktrees have uncommitted files; not audited. Don't remove any without looking.
 
 ## Next free ids
 - C events: next free **32**. Snapshot: 16. Terrain version: 5. `CP_STAGE_VERSION`: 3 (M3 → 4).
