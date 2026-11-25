@@ -19,7 +19,9 @@ Merged 2026-11-24/25:
 ## Agents in flight (worktrees in `/home/diego/Desarrollo/cpore-wt/<name>`)
 | Branch (worktree) | Step | Next |
 |---|---|---|
-| `climate/m3-sim` (climate-m3) | M3: trunks + cover in the sim (`CP_STAGE_VERSION` 4; cover/trail multipliers ship OFF) | review, merge, rebuild |
+| `climate/m3-sim` (climate-m3) | M3: trunks + cover in the sim (`CP_STAGE_VERSION` 4; cover/trail multipliers ship OFF). **Paused 01:30 at the owner's request**: core committed (f7a0241f), WIP tests/fixtures (6ac83bee); its last words: "scenarios re-recorded, commit core, then export route fixtures". | restart a fresh agent on the branch: finish route fixtures, run all gates, report; then review, merge, rebuild |
+
+Everything is shut down (no agents, no Godot, council paused). Restart agents from this table on the next session.
 
 Council (lore-exo autoloop) **paused**: all chair/referee quotas out. Recommended restart once Codex resets (2026-11-25 23:13) with Codex as chair and referee; owner hasn't confirmed.
 
